@@ -109,6 +109,22 @@ public class SKOSPrefixMapperServiceImpl implements
         }
     }
 
+    public void assingAllSKOSToPrefix(String conceptURI, String prefix, int level) {
+        final Query query = entityManager.createNamedQuery("update.skosConceptsForParentAndLevel");
+        
+        query.setParameter("parentURI", conceptURI);
+        query.setParameter("prefix", prefix);
+        query.setParameter("level", level);
+        
+        final int executeUpdate = query.executeUpdate();
+        System.out.println("executeUpdate : " + executeUpdate);
+        
+    }
+    
+    public void assingAllSKOSToPrefix(SKOSConcept concept, String prefix, int level) {
+    }
+
+
     private SKOSConcept getTopConcept(SKOSConcept nextConcept) {
         SKOSConcept top = nextConcept;
         while (top.getBroader() != null) {
@@ -215,9 +231,36 @@ public class SKOSPrefixMapperServiceImpl implements
     }
 
     @Override
+    public List<SKOSToPrefixMapper> getAllMappings(int nestLevel) {
+        final Query query =
+            entityManager.createNamedQuery("select.skosMapForLevel");
+        query.setParameter("level", nestLevel);
+        final List<SKOSToPrefixMapper> resultList = query.getResultList();
+
+        return resultList;
+    }
+
+    @Override
     public void removeAllMapping() {
         final Query query =
                 entityManager.createNamedQuery("delete.allSkosMaps");
         query.executeUpdate();
     }
+
+    @Override
+    public int getSKOSNestigLevel(SKOSConcept concept) {
+        final String uri = ((KiWiUriResource) concept.getResource()).getUri();
+
+        try {
+            final Query query =
+                entityManager.createNamedQuery("select.skosTopConceptLevel");
+            query.setParameter("parentURI", uri);
+            final Integer singleResult = (Integer) query.getSingleResult();
+            return singleResult.intValue();
+        } catch (NoResultException e) {
+            // FIXME : document this. 
+            return -1;
+        }
+    }
+
 }

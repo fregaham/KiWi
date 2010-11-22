@@ -56,8 +56,12 @@ import javax.persistence.*;
         @NamedQuery(name = "select.skosMapForPrefixAndLabel", query = "SELECT skos_map from SKOSToPrefixMapper AS skos_map WHERE skos_map.prefix=:prefix AND skos_map.label LIKE :pattern"),
         @NamedQuery(name = "select.allSkosMaps", query = "SELECT skos_map from SKOSToPrefixMapper AS skos_map"),
         @NamedQuery(name = "select.skosMapForLevel", query = "SELECT skos_map from SKOSToPrefixMapper AS skos_map WHERE skos_map.level=:level"),
-        @NamedQuery(name = "select.countskosMapForLevel", query = "SELECT COUNT(skos_map) from SKOSToPrefixMapper AS skos_map WHERE skos_map.level=:level"),
-
+        @NamedQuery(name = "select.skosMapForLevelAndParent", query = "SELECT skos_map from SKOSToPrefixMapper AS skos_map WHERE skos_map.level=:level AND skos_map.parentURI=:parentURI"),
+        @NamedQuery(name = "select.skosTopConceptLevel", query = "SELECT MAX(skos_map.level) from SKOSToPrefixMapper AS skos_map WHERE skos_map.parentURI=:parentURI"),
+        @NamedQuery(name = "update.skosConceptsForParentAndLevel", query = 
+                  "UPDATE SKOSToPrefixMapper skos_map " +
+         		  " SET skos_map.prefix=:prefix " +
+                  " WHERE skos_map.parentURI=:parentURI AND skos_map.level=:level"),
         @NamedQuery(name = "delete.allSkosMaps", query = "DELETE FROM SKOSToPrefixMapper")})
 @Entity
 public class SKOSToPrefixMapper implements Serializable {

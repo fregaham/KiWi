@@ -14,9 +14,9 @@
      
    <persistence-unit name="KiWi">
       <provider>org.hibernate.ejb.HibernatePersistence</provider>
-      <jta-data-source>java:/KiWiDS</jta-data-source>
+      <jta-data-source>java:/DefaultDS</jta-data-source>
       <properties>
-         <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+         <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
          
          <!-- valid values are validate, update, create, create-drop -->
          <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
@@ -48,7 +48,7 @@
 
          <!-- path to where GATE is installed, also, where the information extraction feature storage will store its data -->
          <property name="kiwi.gate.home" 
-                  value="kiwi-test/gate"/>
+                  value="/Users/josef/tmp/kiwi/gate"/>
                  
          <!--  caching -->
    		 <property name="hibernate.cache.region.factory_class" 

@@ -155,6 +155,13 @@ public class SetupDataAction implements Serializable {
     	p_metadata.setDescription("Perspective for viewing and editing the RDF metadata of a content item. Displays RDF datatype properties as a tabular list");
     	p_metadata.getTypes().add(ci_resource);
     	perspectiveService.addPerspective(p_metadata);
+    	
+    	//SunSpace Perspective - added by Josef
+    	ContentItem ci_sunspace = tripleStore.createUriResource(Constants.NS_KIWI_CORE+"SunSpaceItem").getContentItem();
+    	Perspective p_sunspace = new Perspective("SunSpace", "sunspace");
+    	p_sunspace.setDescription("SunSpace Use Case perspective");
+    	p_sunspace.getTypes().add(ci_sunspace);
+    	perspectiveService.addPerspective(p_sunspace);
    	
     	ContentItem ci_photo = tripleStore.createUriResource(Constants.NS_KIWI_CORE+"Image").getContentItem();
     	ContentItem ci_media = tripleStore.createUriResource(Constants.NS_KIWI_CORE+"MediaContent").getContentItem();

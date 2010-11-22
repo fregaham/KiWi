@@ -40,6 +40,10 @@ package kiwi.action.ontology;
 
 import java.io.Serializable;
 
+import kiwi.model.content.ContentItem;
+import kiwi.model.kbase.KiWiUriResource;
+import kiwi.model.ontology.SKOSConcept;
+
 
 /**
  * This Helper is only used to encapsulate model specific
@@ -53,31 +57,21 @@ public class SKOSConceptUIHelper implements Serializable {
 
     private static final long serialVersionUID = -808958766714416201L;
 
-    private int nestLevel;
-
+    private String patrentConceptURI;
+    
     private String title;
 
-    private String prefix;
+    private String [] prefixes;
 
-    public SKOSConceptUIHelper(int nestLevel, String title, String prefix) {
-        super();
-        this.nestLevel = nestLevel;
+    public SKOSConceptUIHelper(SKOSConcept topConcept, String title, int prefixexCount, String prefix) {
         this.title = title;
-        this.prefix = prefix;
-    }
-
-    /**
-     * @return the nestLevel
-     */
-    public int getNestLevel() {
-        return nestLevel;
-    }
-
-    /**
-     * @param nestLevel the nestLevel to set
-     */
-    public void setNestLevel(int nestLevel) {
-        this.nestLevel = nestLevel;
+        final ContentItem delegate = topConcept.getDelegate();
+        final String uri = ((KiWiUriResource) delegate.getResource()).getUri();
+        this.patrentConceptURI = uri;
+        this.prefixes = new String[prefixexCount];
+        for (int i = 0; i < prefixexCount; i++) {
+            prefixes[i] = prefix;
+        }
     }
 
     /**
@@ -95,26 +89,46 @@ public class SKOSConceptUIHelper implements Serializable {
     }
 
     /**
-     * @return the prefix
+     * @return the prefixes
      */
-    public String getPrefix() {
-        return prefix;
+    public String[] getPrefixes() {
+        return prefixes;
     }
 
     /**
-     * @param prefix the prefix to set
+     * @param prefixes the prefixes to set
      */
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
+    public void setPrefixes(String[] prefixes) {
+        this.prefixes = prefixes;
     }
 
-    /*
-     * (non-Javadoc)
+    /**
+     * @return the patrentConceptURI
+     */
+    public String getPatrentConceptURI() {
+        return patrentConceptURI;
+    }
+
+    /**
+     * @param patrentConceptURI the patrentConceptURI to set
+     */
+    public void setPatrentConceptURI(String patrentConceptURI) {
+        this.patrentConceptURI = patrentConceptURI;
+    }
+    
+    
+
+    /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
-        return "SkosConceptUIHelper [nestLevel=" + nestLevel + ", title="
-        + title + ", prefix=" + prefix + "]";
+        final StringBuilder p = new StringBuilder();
+        for (String prefix : prefixes) {
+            p.append(prefix);
+            p.append(",");
+        }
+        return "SKOSConceptUIHelper [title=" + title + " prefix=" + p + "]";
     }
+
 }

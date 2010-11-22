@@ -56,6 +56,9 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.security.crypto.PRF;
+import org.jboss.seam.transaction.Transaction;
+import org.jboss.seam.transaction.UserTransaction;
 
 
 /**
@@ -94,18 +97,21 @@ public class SKOSMapperAction {
         conceptHelpers = new SKOSConceptUIHelper[topConcepts.size()];
         int coneptIdex = 0;
         for (SKOSConcept concept : topConcepts) {
-
             // mihai : I am not sure about the title, this can be
             // that two different SKOS concepts have the same
             // title.
             final String title = concept.getTitle();
-            conceptHelpers[coneptIdex++] =
-                    new SKOSConceptUIHelper(1, title, title);
+            final int skosNestigLevel =
+                    skosPrefixMapperService.getSKOSNestigLevel(concept);
 
+            // this because the level count starts with 0
+            final int realLevel = skosNestigLevel + 1;
+            conceptHelpers[coneptIdex++] =
+                    new SKOSConceptUIHelper(concept, title, realLevel, title);
         }
     }
 
-    public void defaultMap() {
+    public void generateSKOSMap() {
         skosPrefixMapperService.removeAllMapping();
         final List<SKOSConcept> topConcepts = skosService.getTopConcepts();
 
@@ -125,11 +131,6 @@ public class SKOSMapperAction {
             skosPrefixMapperService.assingSKOSToPrefix(nextConcept,
                     defaultPrefix, level);
 
-            // mihai : very ugly way to the top concept.
-            final boolean isTopLevel = level > 0;
-            final SKOSConcept topConcept =
-                    isTopLevel ? nextConcept : getTopConcept(nextConcept);
-
             final HashSet<SKOSConcept> nextNarrower = nextConcept.getNarrower();
             allNarrower.addAll(nextNarrower);
             final Iterator<SKOSConcept> nextNarrowerIterator =
@@ -146,6 +147,7 @@ public class SKOSMapperAction {
                 level++;
             }
         }
+
     }
 
     private SKOSConcept getTopConcept(SKOSConcept nextConcept) {
@@ -157,11 +159,11 @@ public class SKOSMapperAction {
         return top;
     }
 
-    private void show(Set<SKOSConcept> narrower) {
-        for (SKOSConcept concept : narrower) {
-            System.out.println("--->" + concept.getTitle());
-        }
-    }
+//    private void show(Set<SKOSConcept> narrower) {
+//        for (SKOSConcept concept : narrower) {
+//            System.out.println("--->" + concept.getTitle());
+//        }
+//    }
 
     private String buildPrefix(SKOSConcept concept) {
         // mihai : use this method to customize the way how the
@@ -206,5 +208,18 @@ public class SKOSMapperAction {
      */
     public void setConceptHelpers(SKOSConceptUIHelper[] conceptHelpers) {
         this.conceptHelpers = conceptHelpers;
+    }
+
+    public void commitAll() {
+        for (SKOSConceptUIHelper helper : conceptHelpers) {
+            log.debug("Do #0 mapping.", helper);
+            final String conceptURI = helper.getPatrentConceptURI();
+            final String[] prefixes = helper.getPrefixes();
+            int level = 0;
+            for (String prefix : prefixes) {
+                skosPrefixMapperService.assingAllSKOSToPrefix(conceptURI, prefix, level);
+                level++;
+            }
+        }
     }
 }

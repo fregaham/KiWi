@@ -56,6 +56,10 @@ import kiwi.model.ontology.SKOSToPrefixMapper;
 public interface SKOSPrefixMapperService {
 
     void assingSKOSToPrefix(SKOSConcept concept, String prefix, int level);
+    
+    void assingAllSKOSToPrefix(SKOSConcept concept, String prefix, int level);
+    
+    void assingAllSKOSToPrefix(String conceptURI, String prefix, int level);
 
     String getTopConceptPrefix(SKOSConcept concept);
 
@@ -70,4 +74,8 @@ public interface SKOSPrefixMapperService {
     Set<String> getAllTopConceptPrefixes();
 
     void removeAllMapping();
+
+    int getSKOSNestigLevel(SKOSConcept concept);
+
+    List<SKOSToPrefixMapper> getAllMappings(int nestLevel);
 }

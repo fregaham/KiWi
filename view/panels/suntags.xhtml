@@ -1,0 +1,975 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+		    	xmlns:rich="http://richfaces.org/rich"
+		    	xmlns:a="http://richfaces.org/a4j"
+	            xmlns:p="http://primefaces.prime.com.tr/ui" 
+	            xmlns:c="http://java.sun.com/jstl/core"
+    			xmlns:kiwi="http://www.kiwi-project.eu/jsf">
+	<p:tab title="Sun Tags">
+
+
+	<script type="text/javascript" src="/KiWi/view/widgets/sun/common/js/jquery.template.js"></script> 
+    <script type="text/javascript" src="/KiWi/view/widgets/sun/common/js/jquery.overlay-min.js"></script>
+	<script type="text/javascript">
+		console.log("jQuery.toJSON is " + typeof jQuery.toJSON)
+	</script>
+	<script type="text/javascript" src="/KiWi/view/widgets/sun/common/js/jquery.json-2.2.min.js"></script>
+	<script type="text/javascript">
+		console.log("jQuery.toJSON is " + typeof jQuery.toJSON)
+	</script>
+	
+	<link rel="stylesheet" type="text/css" href="/KiWi/view/widgets/sun/tags_editor/css/suggester.css" />
+	<link rel="stylesheet" type="text/css" href="/KiWi/view/widgets/sun/tags_editor/css/tags_editor.css" />
+
+	<div> 
+            <button id="sun_tag_editor_button" rel="#sun_tag_editor_overlay">Sun Tags</button> 
+            <div id="sun_tag_editor_overlay" class="overlay"/> 
+ 
+            <script type="text/javascript" src="/KiWi/view/widgets/sun/tags_editor/js/jquery.tags_editor_2.js"></script> 
+            <script type="text/javascript" src="/KiWi/view/widgets/sun/tags_editor/js/tags_editor_templates_2.js"></script> 
+ 
+			<script type="text/javascript" src="/KiWi/view/widgets/sun/tags_editor/js/jquery.suggester.js"></script> 
+ 
+            <script type="text/javascript"> 
+			 //<![CDATA[
+
+
+				// TEST DATA
+				var alltags = {};
+				
+				var regions = [
+					{
+						"label"		: "World",
+						"children"	: [
+							{
+								"label"		: "EMEA",
+								"children"	: [
+									{
+										"label"		: "Europe",
+										"children"	: [
+											{
+												"label"		: "Belgium",
+												"children"	: [
+ 
+												]
+											},
+											{
+												"label"		: "Czech Rep.",
+												"children"	: [
+ 
+												]
+											},
+											{
+												"label"		: "France",
+												"children"	: [
+ 
+												]
+											},
+											{
+												"label"		: "Germany",
+												"children"	: [
+ 
+												]
+											},
+											{
+												"label"		: "Ireland",
+												"children"	: [
+ 
+												]
+											},
+											{
+												"label"		: "Luxembourg",
+												"children"	: [
+ 
+												]
+											},
+											{
+												"label"		: "Netherlands",
+												"children"	: [
+ 
+												]
+											},
+											{
+												"label"		: "Poland",
+												"children"	: [
+ 
+												]
+											},
+											{
+												"label"		: "Switzerland",
+												"children"	: [
+ 
+												]
+											},
+											{
+												"label"		: "UK",
+												"children"	: [
+ 
+												]
+											},
+											{
+												"label"		: "Europe",
+												"children"	: [
+ 
+												]
+											}
+										]
+									},
+									{
+										"label"		: "Middle East",
+										"children"	: [
+ 
+										]
+									},
+									{
+										"label"		: "Africa",
+										"children"	: [
+ 
+										]
+									}
+								]
+							},
+							{
+								"label"		: "Americas",
+								"children"	: [
+ 
+								]
+							},
+							{
+								"label"		: "Asia",
+								"children"	: [
+ 
+								]
+							}
+						]
+					}
+				];
+ 
+ 
+ 
+				var bus = [
+					{
+						"label"		: "Oracle Corp.",
+						"children"	: [
+							{
+								"label"		: "Software",
+								"children"	: [
+									{
+										"label"		: "Java",
+										"children"	: [
+ 
+ 
+										]
+									},
+									{
+										"label"		: "Solaris",
+										"children"	: [
+ 
+ 
+										]
+									}
+								]
+							},
+							{
+								"label"		: "Hardware",
+								"children"	: []
+							},
+							{
+								"label"		: "Services",
+								"children"	: []
+							}
+						]
+					}
+				];
+ 
+				var industries = [
+					{
+						"label"		: "Industry",
+						"children"	: [
+							{
+								"label"		: "Transportation",
+								"children"	: [
+									{
+										"label"		: "Mass Transit",
+										"children"	: [
+											{
+												"label"		: "Ferry Svcs",
+												"children"	: [
+													{
+														"label"		: "Bus",
+														"children"	: []
+													},
+													{
+														"label"		: "Taxi",
+														"children"	: []
+													},
+												]
+											}
+										]
+									},
+									{
+										"label"		: "Air Services",
+										"children"	: [
+											{
+												"label"		: "Airlines",
+												"children"	: []
+											},
+											{
+												"label"		: "Airports",
+												"children"	: []
+											}
+										]
+									},
+									{
+										"label"		: "Logistic",
+										"children"	: [
+											{
+												"label"		: "Tracking",
+												"children"	: []
+											},
+											{
+												"label"		: "Courier",
+												"children"	: []
+											}
+										]
+									},
+									{
+										"label"		: "Travel",
+										"children"	: [
+											{
+												"label"		: "Hotel",
+												"children"	: []
+											},
+											{
+												"label"		: "Casino",
+												"children"	: []
+											},
+											{
+												"label"		: "Motel",
+												"children"	: []
+											}
+										]
+									}
+ 
+								]
+							},
+							{
+								"label"		: "Other",
+								"children"	: [
+									{
+										"label"		: "Agriculture",
+										"children"	: []
+									},
+									{
+										"label"		: "Business",
+										"children"	: []
+									},
+									{
+										"label"		: "Construction",
+										"children"	: []
+									},
+									{
+										"label"		: "Mining",
+										"children"	: []
+									},
+									{
+										"label"		: "Other",
+										"children"	: []
+									},
+									{
+										"label"		: "Computer",
+										"children"	: [
+											{
+												"label"		: "Integration",
+												"children"	: []
+											},
+											{
+												"label"		: "Programming",
+												"children"	: []
+											}
+										]
+									}
+								]
+							},
+							{
+								"label"		: "Media",
+								"children"	: [
+									{
+										"label"		: "Internet",
+										"children"	: []
+									},
+									{
+										"label"		: "Publishing",
+										"children"	: []
+									},
+									{
+										"label"		: "Broadcast",
+										"children"	: []
+									},
+									{
+										"label"		: "Film",
+										"children"	: []
+									},
+									{
+										"label"		: "Gaming",
+										"children"	: []
+									},
+									{
+										"label"		: "Music",
+										"children"	: []
+									},
+									{
+										"label"		: "Cable",
+										"children"	: []
+									},
+									{
+										"label"		: "Satellite",
+										"children"	: []
+									},
+									{
+										"label"		: "Sports",
+										"children"	: []
+									}
+								]
+							}
+						]
+					}
+				];
+ 
+				products = [
+					{
+						"label"		: "Product",
+						"children"	: [
+							{
+								"label"		: "Hardware",
+								"children"	: [
+									{
+										"label"		: "x64",
+										"children"	: []
+									},
+									{
+										"label"		: "Sunray",
+										"children"	: []
+									},
+									{
+										"label"		: "SPARC",
+										"children"	: []
+									},
+									{
+										"label"		: "Blade",
+										"children"	: []
+									},
+									{
+										"label"		: "NETRA",
+										"children"	: []
+									},
+									{
+										"label"		: "Storage",
+										"children"	: []
+									}
+								]
+							},
+							{
+								"label"		: "Software",
+								"children"	: [
+									{
+										"label"		: "Virtualization",
+										"children"	: []
+									},
+									{
+										"label"		: "Solaris",
+										"children"	: []
+									},
+									{
+										"label"		: "Storage",
+										"children"	: []
+									},
+									{
+										"label"		: "Desktop",
+										"children"	: []
+									},
+									{
+										"label"		: "Dev Tools",
+										"children"	: [
+											{
+												"label"		: "NetBeans",
+												"children"	: [
+													{
+														"label"		: "NetBeans 5.0",
+														"children"	: []
+													},
+													{
+														"label"		: "NetBeans 5.5",
+														"children"	: []
+													},
+													{
+														"label"		: "NetBeans 6.0",
+														"children"	: []
+													},
+													{
+														"label"		: "NetBeans 6.5",
+														"children"	: []
+													},
+												]
+											}
+										]
+									},
+								]
+							}
+						]
+					}
+				];
+ 
+ 
+ 
+ 
+				freetags = [
+					"web2.0", "telco", "software development",
+					"wurst", "sunspace", "folksonomy",
+					"taxonomy", "semantic web", "specification",
+					"invoice", "presentation"
+				].sort();
+ 
+ 
+ 
+ 
+				function addFreeTags(data) {
+					for (var i = 0; i < data.length; i++) {
+						var uri = "http://test/free/" + data[i];
+						var tag = {
+							"uri": uri,
+							"label": data[i],
+							"controlled":0
+						}
+						alltags[uri] = tag;
+					}
+				}
+ 
+				var comps = [
+					{
+						"label"		: "Consumer",
+						"children"	: [
+							{
+								"label"		: "Apple",
+								"children"	: []
+							}
+						]
+					},
+					{
+						"label"		: "Enterprise",
+						"children"	: [
+							{
+								"label"		: "Dell",
+								"children"	: []
+							},
+							{
+								"label"		: "HP",
+								"children"	: []
+							},
+							{
+								"label"		: "IBM",
+								"children"	: []
+							},
+							{
+								"label"		: "Microsoft",
+								"children"	: []
+							}
+						]
+					},
+					
+				];
+ 
+				function addTaxonomy(prefix, data, parentURI) {
+					for (var i = 0; i < data.length; i++) {
+						var uri = "http://test/" + prefix + "_" + data[i].label;
+ 
+						var tag = {
+							"uri": uri,
+							"label": data[i].label,
+							"controlled":1,
+							"prefix":prefix
+						}
+ 
+						if (parentURI) {
+							tag.parent = parentURI;
+						}
+ 
+						if ((data[i].children) && (data[i].children.length > 0)) {
+							tag.hasChildren = true;
+							addTaxonomy(prefix, data[i].children, uri);
+						}
+ 
+						alltags[uri] = tag;
+					}
+				}
+ 
+				function labelMatch(q, label){
+					if (q.length == 0)
+						return true;
+ 
+					if (q.length > label.length)
+						return false;
+ 
+					q = q.toLowerCase();
+					label = label.toLowerCase();
+					if (label.substr(0, q.length) != q)
+						return false;
+ 
+					return true;
+				}
+ 
+				function getSuggestions(q){
+					var prefix = null;
+					var label = null;
+					if (q.indexOf(":") != -1) {
+						prefix = q.substr(0, q.indexOf(":"));
+						label = q.substr(q.indexOf(":") + 1);
+					} else {
+						label = q;
+					}
+ 
+					var result = [];
+					for (uri in alltags) {
+						var tag = alltags[uri];
+ 
+						// If prefix was specified, but does not match, skip this one
+						if (prefix && tag.prefix != prefix)
+							continue;
+ 
+						// If labels match, add it
+						if (labelMatch(label, tag.label)) {
+							result.push(tag);
+						}
+					}
+					return result;
+				}
+ 
+				function getChildren(parentURI) {
+					var result = [];
+					var tag = alltags[parentURI];
+ 
+					if (tag == null)
+						return result;
+					
+					for (uri in alltags) {
+						var tag = alltags[uri];
+						if ((tag.parent == parentURI)) {
+							result.push(tag);
+						}
+					}
+					return result;
+				}
+ 
+				function getChildren(parentURI) {
+					var result = [];
+ 
+					for (uri in alltags) {
+						var tag = alltags[uri];
+						if ((tag.parent == parentURI)) {
+							result.push(tag);
+						}
+					}
+					return result;
+				}
+ 
+				function getTagAndSiblings(tagURI) {
+					var result = [];
+ 
+					var tag = alltags[tagURI];
+					if (tag == null)
+						return result;
+ 
+					var parent = alltags[tag.parent];
+					if (parent == null)
+						return parent;
+					
+					return getChildren(parent.uri);
+				}
+ 
+				function getTagsByLabels(labels){
+					var result = [];
+					for (var i = 0; i < labels.length; i++) {
+						for (var uri in alltags) {
+							var tag = alltags[uri];
+							if (tag.label == labels[i]) {
+								result.push(tag);
+							}
+						}
+					}
+					return result;
+				}
+ 
+				function cloneTag(label, score) {
+					var tag = getTagsByLabels([label])[0];
+					tag.score = score;
+					return tag;
+				}
+ 
+				function getTagByFullLabel(label){
+					for (var uri in alltags) {
+						var tag = alltags[uri];
+						if ((tag.prefix) && (tag.prefix + ":" + tag.label == label)) {
+							return tag;
+						} else {
+							if (tag.label == label)
+								return tag;
+						}
+					}
+					return null;
+				}
+ 
+				addTaxonomy("industry", industries, null);
+				addTaxonomy("prod", products, null);
+				addTaxonomy("region", regions, null);
+				addTaxonomy("bu", bus, null);
+				addTaxonomy("comp", comps, null);
+ 
+				addFreeTags(freetags);
+ 
+				var tagsEditor = null;
+		jQuery.noConflict();
+		jQuery(document).ready(function(){
+                    (function($){
+                        $("#sun_tag_editor_button").overlay({
+				onBeforeLoad:function(){
+                                    $("#sun_tag_editor_overlay").append("<div id=\"sun_tag_editor_overlay_content\"></div>");
+									var resourceURI = "#{currentContentItem.resource.uri}";
+                                    tagsEditor = new $.TagsEditor("#sun_tag_editor_overlay_content", resourceURI);
+ 
+									// Tell the widget not to send actual add/remove requests
+									tagsEditor.testAddRemove = false;
+ 
+									// Set test data in; the widget won't attempt
+									// to invoke webservice
+									var resTags = getTagsByLabels(["UK", "software development"]);
+									/*
+									 * Try to load tags manually
+									 *
+									tagsEditor.testData = {
+										"resource":"URI-of-tagged-resource",
+										"items": resTags
+									};*/
+ 
+									// Set test data in; the widget won't attempt
+									// to invoke webservice
+										tagsEditor.testDataTagExtract = {
+										"optional": [
+											cloneTag("Software", 3.766575813293457),
+											cloneTag("Poland", 1.766575813293457),
+											cloneTag("IBM", 2.766575813293457)
+										],
+										"required": [
+											{
+												"label": "Region",
+												"uri": "http://example.oracle.com/region",
+												"narrower": [
+													{
+														"score": 0.2,
+														"label": "EMEA",
+														"uri": "http://example.oracle.com/emea"
+													},
+													{
+														"score": 0,
+														"label": "USA",
+														"uri": "http://example.oracle.com/usa"
+													},
+													{
+														"score": 0.5,
+														"label": "Latin America",
+														"uri": "http://kiwi.sunsolutioncenter.de/KiWi/content/latin_america/344d6845-f517-442a-b0a9-3752c4bfbcfe"
+													}
+												]
+											},
+											{
+												"label": "Business Unit",
+												"uri": "http://example.oracle.com/business_unit",
+												"narrower": [
+													{
+														"score": 0,
+														"label": "Software",
+														"uri": "http://example.oracle.com/software"
+													},
+													{
+														"score": 1.0,
+														"label": "Hardware",
+														"uri": "http://kiwi.sunsolutioncenter.de/KiWi/content/hardware/5f4b391a-d293-4f95-bf2c-d2d0a19e36c2"
+													}
+												]
+											}
+										]
+									};
+ 
+									// WebService GetCategories nevraci property "required" ale jen pole
+									tagsEditor.testDataRequiredCategories = {
+										required: [
+											{
+												"label": "Region",
+												"prefix":"region",
+												"required": true
+											},
+											{
+												"label": "Business Unit",
+												"prefix":"bu",
+												"required": true
+											},
+											{
+												"label": "Industry",
+												"prefix":"industry",
+												"required": true
+											},
+											{
+												"label": "Product",
+												"prefix":"prod",
+												"required": true
+											},
+											{
+												"label": "Technology",
+												"prefix":"tech",
+												"required": false
+											},
+											{
+												"label": "Community",
+												"prefix":"community",
+												"required": false
+											},
+											{
+												"label": "Competitor",
+												"prefix":"comp",
+												"required": false
+											}
+ 
+										]
+ 
+									};
+ 
+	tagsEditor.invokeAddTagWithLabel = function(label, suggester){
+		var tag = {
+			label: label
+		}
+ 
+		var self = this;
+		this.safeInvoke(function(){
+			// If we are not in test mode, invoke a web service
+			if (!self.testAddRemove) {
+				$.ajax({
+					url: self.ENDPOINT_TAGGING + self.FUNC_ADDTAGS,
+					data : {
+						"resource" : self.RESOURCE_URI,
+						//"tags"	   : $.toJSON([tag])		// ENABLE THIS FOR NEW WS
+						"tags"	   : label
+					},
+					dataType: "jsonp",
+					jsonp: "jsonpCallback",
+					success: function(data){
+						self.onSuccessAddTagWithLabel(data, suggester);
+					},
+					error: function(xhr, textStatus, errorThrown){
+						self.onFailureAddTagWithLabel(textStatus, suggester);
+					}
+				});
+			}
+			// otherwise, just dummy deferred
+			else {
+				console.log("TODO:Would invoke AddTag webservice with label=" + tag.label);
+				window.setTimeout(function(){
+ 
+ 
+					// Testing a controlled tag?
+					if (label.indexOf(":") != -1) {
+						var tag = getTagByFullLabel(label);
+						if (tag) {
+							self.onSuccessAddTagWithLabel([tag], suggester);
+						} else {
+							self.onFailureAddTagWithLabel(label + " does not exist", suggester);
+						}
+ 
+						/*
+						var prefix = label.substr(0, label.indexOf(":"));
+						var labelPart = label.substr(label.indexOf(":") + 1);
+ 
+						var tags = getTagsByLabels([label]);
+						if (tags.length == 0) {
+							self.onFailureAddTagWithLabel(label + " does not exist", suggester);
+							return;
+						}
+						if (tags[0].prefix != prefix)
+ 
+						// If tag label contains "no", it does not exist
+						if (labelPart == "no" || labelPart == "none") {
+							self.onFailureAddTagWithLabel(label + " does not exist", suggester);
+							return;
+						}
+ 
+						// Otherwise, just create this test controlled tag it and return it
+							var tag = 	{
+								"uri": newURI,
+								"label": labelPart,
+								"controlled": 1,
+								"prefix": prefix
+							};
+							self.onSuccessAddTagWithLabel([tag], suggester);
+							return;
+						*/
+					}
+					// This is a test free tag
+					else {
+						var tag = getTagByFullLabel(label);
+						if (tag) {
+							self.onSuccessAddTagWithLabel([tag], suggester);
+						} else {
+							var newURI = "http://this/is/new/" + label;
+							var tag = {
+								"label": label,
+								"uri": newURI,
+								"controlled": 0
+							}
+							self.onSuccessAddTagWithLabel([tag], suggester);
+						}
+						/*
+ 
+						// If tag label contains "no", it does not exist
+						if (labelPart == "no" || labelPart == "none") {
+							self.onFailureAddTagWithLabel(label + " does not exist", suggester);
+							return;
+						}
+ 
+						var newURI = "http://this/is/new/" + label;
+						var tag = {
+							"label": label,
+							"uri": newURI,
+							"controlled": 0
+						}
+						self.onSuccessAddTagWithLabel([tag], suggester);
+						return;
+						*/
+					}
+ 
+				},500);
+			}
+		});
+	}
+ 
+                                    tagsEditor.deploy();
+ 
+									
+ 
+								   // Provide custom implementation of data-related methods
+									tagsEditor.suggester.loadSuggestions = function(txt) {
+										// Normally, we would do AJAX here,
+										// for now, just load with test data										
+										//Simulation of downloading time - 2s
+										var t = setTimeout(function(){
+											tagsEditor.suggester.onLoadSuggestions(getSuggestions(txt));
+										}, 500);
+ 
+										// Normally, this function would return jQuery ajax
+										// object; calling abort on it would cancel the request;
+										// so here we provide a stub with abort function
+										return {
+											abort : function(){
+												window.clearTimeout(t);
+											}
+										}
+ 
+									}
+									tagsEditor.suggester2.loadSuggestions = function(txt) {
+										// Normally, we would do AJAX here,
+										// for now, just load with test data										
+										//Simulation of downloading time - 2s
+										var t = setTimeout(function(){
+											//tagsEditor.suggester2.onLoadSuggestions(suggestions);
+											tagsEditor.suggester2.onLoadSuggestions(getSuggestions(txt));
+										}, 500);
+										// Normally, this function would return jQuery ajax
+										// object; calling abort on it would cancel the request;
+										// so here we provide a stub with abort function
+										return {
+											abort : function(){
+												window.clearTimeout(t);
+											}
+										}
+									}
+ 
+ 
+									tagsEditor.suggester.loadChildren = function(uri){
+										//Load children from the server
+										//Simulation of downloading time - 2s - hiding parrents/suggestions
+										setTimeout(function(){
+											//And load children
+											//tagsEditor.suggester.onLoadChildren(children);
+											tagsEditor.suggester.onLoadChildren(getChildren(uri));
+										}, 2000);
+									}
+									tagsEditor.suggester2.loadChildren = function(uri){
+										//Load children from the server
+										//Simulation of downloading time - 2s - hiding parrents/suggestions
+										setTimeout(function(){
+											//And load children
+											//tagsEditor.suggester2.onLoadChildren(children);
+											tagsEditor.suggester2.onLoadChildren(getChildren(uri));
+										}, 2000);
+									}
+									
+ 
+									tagsEditor.suggester.loadParents = function(tagURI){
+										//Simulation of downloading time - 2s - hiding parrents/suggestions
+										setTimeout(function(){
+											//And load children
+											//tagsEditor.suggester.onLoadChildren(parents);
+											tagsEditor.suggester.onLoadChildren(getTagAndSiblings(tagURI));
+										}, 2000);
+									}
+ 
+									tagsEditor.suggester2.loadParents = function(tagURI){
+										//Simulation of downloading time - 2s - hiding parrents/suggestions
+										setTimeout(function(){
+											//And load children
+											//tagsEditor.suggester2.onLoadChildren(parents);
+											tagsEditor.suggester2.onLoadChildren(getTagAndSiblings(tagURI));
+										}, 2000);
+									}
+ 
+									tagsEditor.suggester2.loadSiblings = function(tagURI){
+										console.log(tagURI);
+										console.log(getTagAndSiblings(tagURI));
+										//Simulation of downloading time - 2s - hiding parrents/suggestions
+										setTimeout(function(){
+											//And load children
+											//tagsEditor.suggester2.onLoadSuggestions(siblings);
+											tagsEditor.suggester2.onLoadChildren(getTagAndSiblings(tagURI));
+										}, 2000);
+									}
+ 
+ 
+ 
+ 
+				},
+				onClose:function(){                                        
+					$("#sun_tag_editor_overlay_content").remove();
+				},
+				expose: {
+					color: '#BAD0DB',
+					opacity: 0.7,
+					closeSpeed: 1000
+				},
+				finish: {
+					top: 100,
+					left: 'center',
+					absolute: false
+				},
+				closeOnEsc : false
+			});
+                    })(jQuery);
+                });
+             //]]>    
+            </script> 
+        </div> 
+
+                      
+	</p:tab>
+</ui:composition>

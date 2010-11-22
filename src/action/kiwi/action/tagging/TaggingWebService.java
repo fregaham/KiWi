@@ -14,6 +14,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import kiwi.action.tagging.pojo.JSONGetPrefiexesListResults;
 import kiwi.action.tagging.pojo.JSONTagListResults;
 import kiwi.action.tagging.pojo.JSONTaxonomiesListResults;
 import kiwi.api.content.ContentItemService;
@@ -41,224 +42,264 @@ import org.json.JSONException;
 import org.openrdf.query.algebra.Str;
 
 /**
- * WebService endpoint for tagging
- * Path to the methods:
- * [TaggingWS] = http://localhost:8080/KiWi/seam/resource/services/widgets/tagging
+ * WebService endpoint for tagging Path to the methods: [TaggingWS] =
+ * http://localhost:8080/KiWi/seam/resource/services/widgets/tagging
  * 
  * [TaggingWS]/listTags.json?docUri=http://
  * query.json?q=StartPage&jsonpCallback=cb123
+ * 
  * @author Szaby Grünwald
- *
+ * 
  */
 @Name("kiwi.webservice.TaggingWebService")
 @Scope(ScopeType.STATELESS)
 @Path("/widgets/tagging")
 public class TaggingWebService {
 
-	@Logger
-	private static Log log;
+    @Logger
+    private static Log log;
 
-	@In(create = true)
-	TaggingService taggingService;
-	
-	@In(create = true)
-	private User currentUser;
+    @In(create = true)
+    TaggingService taggingService;
 
-	@In(create=true)
-	private EquityService equityService;
-	
-	@In(create=true)
-	private SKOSPrefixMapperService skosPrefixMapperService;
-	
-	@In(create=true)
-	private SKOSService skosService;
-	
-	
-	public enum OrderTypes {
-		ALPHA, USAGE, EQUITY
-	}
+    @In(create = true)
+    private User currentUser;
 
-	/**
-	 * GET webservice for listing tags for a specific resource.
-	 * @param docUri WS URI parameter "resource=" resource uri
-	 * @param order WS parameter "order=" sorting order, can be alpha, usage or equity 
-	 * Default is usage.
-	 * @param reverse WS parameter "reverse=" true or false. Default is false.
-	 * @return
-	 */
-	@GET
-	@Path("/listTags.json")
-	@Produces("application/json")
-	public Response getTags(
-			@QueryParam("resource") 						String docUri,
-			@QueryParam("order")	@DefaultValue("usage") 	String order,
-			@QueryParam("reverse") 	@DefaultValue("false")	boolean reverse
-			) {
-		try {
-			ContentItemService ciService = (ContentItemService)Component.getInstance("contentItemService");
-			ContentItem item = ciService.getContentItemByUri(docUri);
-			
-			if(item == null){
-				throw new WebApplicationException(
-					Response.status(Status.NOT_FOUND).build()
-				);
-			}
-			
-			OrderTypes orderType = OrderTypes.ALPHA; 
-			if("alpha".equals(order)){
-				orderType = OrderTypes.ALPHA;
-			} else { 
-				if("usage".equals(order)){
-					orderType = OrderTypes.USAGE;
-				} else { 
-					if("equity".equals(order)) {
-						orderType = OrderTypes.EQUITY;
-					} else {
-						// 400 "order type " + order + " is undefined.") 
-						return Response.status(Status.BAD_REQUEST).entity("400 - order type " + order + " is undefined.").build();
-					}
-				}
-			}
-			
-			List<Tag> tags = taggingService.getTags(item);
-			JSONTagListResults jsonRes = new JSONTagListResults();
-			
-			insertTagsToJsonResult(tags, jsonRes, item);
-			jsonRes.sortTags(orderType, reverse);
-//			jsonRes.setResource(docUri);
-//			jsonRes.setCurrentLogin(currentUser.getLogin());
-//			jsonRes.setOrder(order);
-//			jsonRes.setReverse(String.valueOf(reverse));
-			
-			return Response.ok(jsonRes.toString()).build();
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
-		}
-	}
+    @In(create = true)
+    private EquityService equityService;
 
-	private void insertTagsToJsonResult(List<Tag> tags,
-			JSONTagListResults jsonRes, ContentItem item) {
-		log.info("JSON packing #0 tags", tags.size());
-		TagCloudService tagCloudService = (TagCloudService)Component.getInstance("tagCloudService");
-		LinkedList<ExtendedTagCloudEntry> tagCloud = new LinkedList<ExtendedTagCloudEntry>();
-		tagCloud.addAll(tagCloudService.aggregateTags(tags));
-		
-		for(ExtendedTagCloudEntry tagCloudEntry:tagCloud){
-			
-			String uri = ((KiWiUriResource)tagCloudEntry.getTag().getResource()).getUri();
-			Long usage = taggingService.getTagUsage(tagCloudEntry.getTag());
-			
-			List<Tag> tagCloudEntryTags = taggingService.getTagsByTaggedTaggingIds(item.getId(),tagCloudEntry.getTag().getId());
-			double tq = equityService.getTagEquity(tagCloudEntryTags.get(0));
-			
-			final ContentItem tag = tagCloudEntry.getTag();
-			// mihai : I am not sure if the skos title is the same with the tag title.
-			final String label = tag.getTitle();
-			boolean controlled = taggingService.isControlled(tagCloudEntry.getTag().getResource());
-			boolean isOwnTag = tagCloudEntry.isOwnTag();
-			log.info("tag label: #0, uri: #1, tq: #2", label, uri, tq);
-			try {
+    @In(create = true)
+    private SKOSPrefixMapperService skosPrefixMapperService;
+
+    @In(create = true)
+    private SKOSService skosService;
+
+    public enum OrderTypes {
+        ALPHA, USAGE, EQUITY
+    }
+
+    /**
+     * GET webservice for listing tags for a specific resource.
+     * 
+     * @param docUri
+     *            WS URI parameter "resource=" resource uri
+     * @param order
+     *            WS parameter "order=" sorting order, can be alpha, usage or
+     *            equity Default is usage.
+     * @param reverse
+     *            WS parameter "reverse=" true or false. Default is false.
+     * @return
+     */
+    @GET
+    @Path("/listTags.json")
+    @Produces("application/json")
+    public Response getTags(@QueryParam("resource") String docUri,
+            @QueryParam("order") @DefaultValue("usage") String order,
+            @QueryParam("reverse") @DefaultValue("false") boolean reverse) {
+        try {
+            ContentItemService ciService = (ContentItemService) Component
+                    .getInstance("contentItemService");
+            ContentItem item = ciService.getContentItemByUri(docUri);
+
+            if (item == null) {
+                throw new WebApplicationException(Response.status(
+                        Status.NOT_FOUND).build());
+            }
+
+            OrderTypes orderType = OrderTypes.ALPHA;
+            if ("alpha".equals(order)) {
+                orderType = OrderTypes.ALPHA;
+            } else {
+                if ("usage".equals(order)) {
+                    orderType = OrderTypes.USAGE;
+                } else {
+                    if ("equity".equals(order)) {
+                        orderType = OrderTypes.EQUITY;
+                    } else {
+                        // 400 "order type " + order + " is undefined.")
+                        return Response
+                                .status(Status.BAD_REQUEST)
+                                .entity("400 - order type " + order
+                                        + " is undefined.").build();
+                    }
+                }
+            }
+
+            List<Tag> tags = taggingService.getTags(item);
+            JSONTagListResults jsonRes = new JSONTagListResults();
+
+            insertTagsToJsonResult(tags, jsonRes, item);
+            jsonRes.sortTags(orderType, reverse);
+            // jsonRes.setResource(docUri);
+            // jsonRes.setCurrentLogin(currentUser.getLogin());
+            // jsonRes.setOrder(order);
+            // jsonRes.setReverse(String.valueOf(reverse));
+
+            return Response.ok(jsonRes.toString()).build();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Status.BAD_REQUEST).entity(e.getMessage())
+                    .build();
+        }
+    }
+
+    private void insertTagsToJsonResult(List<Tag> tags,
+            JSONTagListResults jsonRes, ContentItem item) {
+        log.info("JSON packing #0 tags", tags.size());
+        TagCloudService tagCloudService = (TagCloudService) Component
+                .getInstance("tagCloudService");
+        LinkedList<ExtendedTagCloudEntry> tagCloud = new LinkedList<ExtendedTagCloudEntry>();
+        tagCloud.addAll(tagCloudService.aggregateTags(tags));
+
+        for (ExtendedTagCloudEntry tagCloudEntry : tagCloud) {
+
+            String uri = ((KiWiUriResource) tagCloudEntry.getTag()
+                    .getResource()).getUri();
+            Long usage = taggingService.getTagUsage(tagCloudEntry.getTag());
+
+            List<Tag> tagCloudEntryTags = taggingService
+                    .getTagsByTaggedTaggingIds(item.getId(), tagCloudEntry
+                            .getTag().getId());
+            double tq = equityService.getTagEquity(tagCloudEntryTags.get(0));
+
+            final ContentItem tag = tagCloudEntry.getTag();
+            // mihai : I am not sure if the skos title is the same with the tag
+            // title.
+            final String label = tag.getTitle();
+            boolean controlled = taggingService.isControlled(tagCloudEntry
+                    .getTag().getResource());
+            boolean isOwnTag = tagCloudEntry.isOwnTag();
+            log.info("tag label: #0, uri: #1, tq: #2", label, uri, tq);
+            try {
                 jsonRes.addTag(uri, usage, label, tq, controlled, isOwnTag);
             } catch (JSONException e) {
                 log.error(e.getMessage(), e);
             }
-		}
-	}
+        }
+    }
 
-	/**
-	 * Webservice for creating tags for a resource 
-	 * @param docUri WS URI parameter "resource=" resource uri
-	 * @param tags
-	 * @return
-	 */
-	@GET
-	@Path("/addTags")
-	@Produces("application/json")
-	public Response addTags(@QueryParam("resource") String docUri,
-			@QueryParam("tags") String tags){
-		
-		ContentItemService ciService = (ContentItemService)Component.getInstance("contentItemService");
-		ContentItem item = ciService.getContentItemByUri(docUri);
-		
-		if(item==null)
-			return Response.status(Status.NOT_FOUND).build();
-		if(tags == null || "".equals(tags.trim()))
-			throw new WebApplicationException(
-					Response.status(Status.BAD_REQUEST).
-//					header(HttpHeaders.WWW_AUTHENTICATE, "what comes here?").
-					entity("400 - Required parameter tags was empty.").
-					build()
-			);
-		
-		String[] tagLabels = tags.split(",");
-		
-		taggingService.addTags(item, tagLabels);
-		return Response.ok("{}").build();
-	}
-	
-	/**
-	 * Webservice for removing existing tags belonging to a resource.
-	 * @param docUri WS URI parameter "resource=" resource uri
-	 * @param tags comma-separated list of tag URI's to remove
-	 * @param mode can be private of shared
-	 * @return
-	 */
-	@GET
-	@Path("/removeTags")
-	@Produces("application/json")
-	public Response removeTags(@QueryParam("resource") String docUri,
-			@QueryParam("tags") String tags,
-			@QueryParam("mode") @DefaultValue("private")String mode){
-		
-		ContentItemService ciService = (ContentItemService)Component.getInstance("contentItemService");
-		ContentItem item = ciService.getContentItemByUri(docUri);
-		
-		if(item==null)
-			return Response.status(Status.NOT_FOUND).build();
+    /**
+     * Webservice for creating tags for a resource
+     * 
+     * @param docUri
+     *            WS URI parameter "resource=" resource uri
+     * @param tags
+     * @return
+     */
+    @GET
+    @Path("/addTags")
+    @Produces("application/json")
+    public Response addTags(@QueryParam("resource") String docUri,
+            @QueryParam("tags") String tags) {
 
-		if(tags == null || "".equals(tags.trim()))
-			throw new WebApplicationException(
-					Response.status(Status.BAD_REQUEST).
-//					header(HttpHeaders.WWW_AUTHENTICATE, "what comes here?").
-					entity("Required parameter tags was empty.").
-					build()
-			);
-		
-		String[] tagUris = tags.split(",");
-		taggingService.removeTaggings(item, tagUris, (mode.toLowerCase()!="private"? true: false));
-		
-		return Response.ok("{}").build();
-	}
-	
-	@GET
-	@Path("/getTaxonomies")
-	@Produces("application/json")
-	public Response getTaxonomies(){
-	    final List<SKOSToPrefixMapper> allMappings = skosPrefixMapperService.getAllMappings();
+        ContentItemService ciService = (ContentItemService) Component
+                .getInstance("contentItemService");
+        ContentItem item = ciService.getContentItemByUri(docUri);
 
-	    final JSONTaxonomiesListResults results = new JSONTaxonomiesListResults();
-	    for (SKOSToPrefixMapper mapper : allMappings) {
-	        final String label = mapper.getLabel();
-	        final String prefix = mapper.getPrefix();
-	        try {
-	            results.addTaxonomies(label, prefix, false);
-	        } catch (JSONException jException) {
-	            log.error(jException.getMessage(), jException);
-	        }
-	    }
-	    return Response.ok(results.toString()).build();
-	}
-	
-	@GET
+        if (item == null)
+            return Response.status(Status.NOT_FOUND).build();
+        if (tags == null || "".equals(tags.trim()))
+            throw new WebApplicationException(Response
+                    .status(Status.BAD_REQUEST).
+                    // header(HttpHeaders.WWW_AUTHENTICATE, "what comes here?").
+                    entity("400 - Required parameter tags was empty.").build());
+
+        String[] tagLabels = tags.split(",");
+
+        taggingService.addTags(item, tagLabels);
+        return Response.ok("{}").build();
+    }
+
+    /**
+     * Webservice for removing existing tags belonging to a resource.
+     * 
+     * @param docUri
+     *            WS URI parameter "resource=" resource uri
+     * @param tags
+     *            comma-separated list of tag URI's to remove
+     * @param mode
+     *            can be private of shared
+     * @return
+     */
+    @GET
+    @Path("/removeTags")
+    @Produces("application/json")
+    public Response removeTags(@QueryParam("resource") String docUri,
+            @QueryParam("tags") String tags,
+            @QueryParam("mode") @DefaultValue("private") String mode) {
+
+        ContentItemService ciService = (ContentItemService) Component
+                .getInstance("contentItemService");
+        ContentItem item = ciService.getContentItemByUri(docUri);
+
+        if (item == null)
+            return Response.status(Status.NOT_FOUND).build();
+
+        if (tags == null || "".equals(tags.trim()))
+            throw new WebApplicationException(Response
+                    .status(Status.BAD_REQUEST).
+                    // header(HttpHeaders.WWW_AUTHENTICATE, "what comes here?").
+                    entity("Required parameter tags was empty.").build());
+
+        String[] tagUris = tags.split(",");
+        taggingService.removeTaggings(item, tagUris,
+                (mode.toLowerCase() != "private" ? true : false));
+
+        return Response.ok("{}").build();
+    }
+
+    @GET
+    @Path("/getPrefixes")
+    @Produces("application/json")
+    public Response getPrefixes() {
+        final List<SKOSToPrefixMapper> allMappings = skosPrefixMapperService
+                .getAllMappings();
+
+        final JSONGetPrefiexesListResults result = new JSONGetPrefiexesListResults();
+        for (SKOSToPrefixMapper mapper : allMappings) {
+            final String prefix = mapper.getPrefix();
+            try {
+                result.addPrefix(prefix);
+            } catch (JSONException jException) {
+                log.error(jException.getMessage(), jException);
+            }
+        }
+
+        return Response.ok(result.toString()).build();
+    }
+
+    @GET
+    @Path("/getTaxonomies")
+    @Produces("application/json")
+    public Response getTaxonomies() {
+        final List<SKOSToPrefixMapper> allMappings = skosPrefixMapperService
+                .getAllMappings(0);
+
+        final JSONTaxonomiesListResults results = new JSONTaxonomiesListResults();
+        for (SKOSToPrefixMapper mapper : allMappings) {
+            final String label = mapper.getLabel();
+            final String prefix = mapper.getPrefix();
+            try {
+                results.addTaxonomies(label, prefix, false);
+            } catch (JSONException jException) {
+                log.error(jException.getMessage(), jException);
+            }
+        }
+        
+        return Response.ok(results.toString()).build();
+    }
+
+    @GET
     @Path("/searchTags")
     @Produces("application/json")
-    public Response searchTags(@QueryParam("q") String q){
-        
+    public Response searchTags(@QueryParam("q") String q) {
+
         if (!q.contains(":")) {
-            final String msg = "The query "+q+" does not follow the syntax prefix:query.";
-            final IllegalArgumentException ex = new IllegalArgumentException(msg);
+            final String msg = "The query " + q
+                    + " does not follow the syntax prefix:query.";
+            final IllegalArgumentException ex = new IllegalArgumentException(
+                    msg);
             log.error(msg, ex);
             throw ex;
         }
@@ -267,23 +308,27 @@ public class TaggingWebService {
         final String query = q.substring(q.indexOf(":") + 1, q.length()).trim();
         log.debug("Try to process #0:#1", prefix, query);
 
-        // This pattern matches all the string that starts with the given prefix.
+        // This pattern matches all the string that starts with the given
+        // prefix.
         final String jpqlLikePattern = query + "%";
-        final Set<SKOSConcept> concepts =
-                skosPrefixMapperService.getConcepts(prefix, jpqlLikePattern);
-        
+        final Set<SKOSConcept> concepts = skosPrefixMapperService.getConcepts(
+                prefix, jpqlLikePattern);
+
         // FIXME : skos concepts sunt si tags :)
         final JSONTagListResults jsonRes = new JSONTagListResults();
         for (SKOSConcept concept : concepts) {
-            final String uri = ((KiWiUriResource) concept.getResource()).getUri();
+            final String uri = ((KiWiUriResource) concept.getResource())
+                    .getUri();
             final ContentItem item = concept.getDelegate();
             final Long usage = 0l;
-            
+
             double tq = equityService.getTagEquity(item);
-            
+
             final String label = item.getTitle();
-            // mihai : I am not sure if this is the right way to obtain the controlled attribute.
-            boolean controlled = taggingService.isControlled(concept.getResource());
+            // mihai : I am not sure if this is the right way to obtain the
+            // controlled attribute.
+            boolean controlled = taggingService.isControlled(concept
+                    .getResource());
             // FIXME : this is wrong, obtian the isOwnTag from somewhere
             // FIXME : I am not sure if I need this attribute.
             boolean isOwnTag = false;

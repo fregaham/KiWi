@@ -1,0 +1,149 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:a="http://richfaces.org/a4j"
+	template="layout/main.xhtml">
+
+	<ui:define name="breadcrumps">
+		<ul>
+			<li class="first"><s:link view="/edukms/abcmaths/home.xhtml"
+				value="| Information Platform Home" /></li>
+			<li><s:link view="/edukms/abcmaths/blogEditor.xhtml"
+				value="Blog Entry" /></li>
+		</ul>
+	</ui:define>
+
+	<ui:define name="body">
+
+<style>
+
+#cover {
+	margin: 10px 0 0 0;
+	width: 800px;
+}
+
+h2 {
+	color: #6f91c0;
+	font-size: 14px;
+	margin-left: 5px;
+	margin-top: -15px;
+	font-weight: 300;
+}
+
+h1 {
+	color: #999;
+	font-size: 14px;
+	margin-left: 20px;
+	margin-top: -15px;
+	font-weight: 300;
+}
+
+
+.buttonclass {
+	text-decoration: none;
+	margin-right: 5px;
+}
+
+#buttons { /*border-bottom: 1px solid #FFE8C3; */
+	padding: 10px;
+}
+
+#trennlinie {
+	border-bottom: 1px solid #ddd;
+	margin: 10px;
+}
+
+
+
+</style>
+
+		 
+     
+		<div id="cover">
+		<h:form >
+		
+			<fieldset class="fieldsetborder"
+					style="float:left; width:100%; height: 570px; margin-left: -170px; border:1px solid #ddd">
+			
+			<div><img style="margin: 10px 15px 0 15px; float: left;"
+				src="#{facesContext.externalContext.requestContextPath}/view/img/editor.png" /><br />
+			<h2 style="margin-top: 5px;">You will now create a new Blog Entry:</h2>
+			<br />
+
+			
+			<table border="0"><tr><td valign="center">
+			<h3 style="margin: -2px 0px 0 20px">Step 1: Please insert a title for your blog entry:&#160;&#160; </h3></td><td valign="middle">
+			
+			<h:inputText id="dkmsContentItemName"
+				style="width:343px; margin:0 0 0 0px; vertical-align:top" required="true"
+				value="#{dkmsContentItemBean.dkmsContentItemName}" ><s:validate /><h:messages /></h:inputText>
+			</td></tr></table><br/>
+			
+			<h3 style="margin: 0 0 0 22px">Step 3: Edit your blog entry right here:</h3>
+			<br/>
+
+			</div>
+
+			<div id="editor" style="margin-left:20px">
+			<rich:editor language="en" width="500"
+				height="100" value="#{dkmsContentItemBean.taskContent}" theme="simple"
+				viewMode="visual">
+				
+			</rich:editor>
+			</div>	
+			<br/>
+			<div id="trennlinie"></div>		
+			<br/>
+				
+			
+			</fieldset>
+
+			 <fieldset class="fieldsetborder" style="float:right; width: 200px; height: 570px; margin-right: -160px; border:1px solid #ddd">
+
+			
+			<div id="buttons">
+		
+			
+			<h:commandLink class="buttonclass" 	action="#{dkmsBasicAction.goToAbcmathsHome()}">
+			<img
+				src="#{facesContext.externalContext.requestContextPath}/view/img/arrowleft_small.png"
+				style="vertical-align: middle; margin-right: 5px; margin-left:6px" />Cancel</h:commandLink>
+			<br /><br/>
+		    <h:commandLink				
+				action="#{dkmsBasicAction.nextStepBlog()}" >
+				<img title="Weiter"
+					src="#{facesContext.externalContext.requestContextPath}/view/img/arrowright_small.png" style="vertical-align:middle; margin-right: 7px; margin-left:8px"/>Proceed
+			</h:commandLink>
+		
+		
+		</div>
+		<br/>
+		
+	     
+	    
+		
+		
+			</fieldset>
+		</h:form>
+		</div>
+		
+<!--		test:-->
+<!--		<c:forEach items="#{dkmsContentItemBean.dkmsMediaList}" var="item">    	    -->
+<!--      	   -->
+<!--      	    <img src="#{dkmsReadModusAction.getMiniMultimediaFilename(item)}" style="margin: 0px 15px 0 5px; float: left; " /><br/>-->
+<!--			pic-->
+<!--			<div id="trennlinie"></div>-->
+<!--		-->
+<!--		</c:forEach> -->
+
+
+
+     
+		
+	</ui:define>
+</ui:composition>

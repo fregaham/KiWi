@@ -1,0 +1,91 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                             "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:m="http://code.google.com/p/gmaps4jsf/"
+			 	xmlns:c="http://java.sun.com/jstl/core"
+			 	xmlns:a4j="http://richfaces.org/a4j"			 	
+                xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+                template="layout/main.xhtml">               	
+		 
+	 <ui:define name="breadcrumps">
+	 	<ul>
+	 		<li class="first">				 			
+				<s:link view="/edukms/authorInterface/home.xhtml" value="AI Startseite"/>
+	 		</li>
+	 		<li>				 			
+				<s:link view="/edukms/authorInterface/step1.xhtml" value="Start Aufgaben/Lernsequenz"/>
+	 		</li>
+	 	</ul>
+	 </ui:define>
+	 
+	 <ui:define name="body">
+	 
+	 <style>
+	 
+	 h1 {  
+	 	 	
+	 	color: #6f91c0;
+	 	font-size: 16px;
+	 	margin-left:20px;	 	
+	 
+	 }
+	 
+	 h2 {  
+	 	 	
+	 	color: #6f91c0;
+	 	font-size: 14px;
+	 	margin-left:20px;	 	
+	 
+	 }
+	 
+	 #cover {
+	 
+		 margin: 10px -40px 0 0;
+		 width: 500px;
+	 
+	 }	
+	 
+	 #arrows {
+	 	width: 500px;
+	 	margin: 20px;
+	 	
+	 } 
+	 
+	</style>
+	 
+	 <div id="cover">
+	 
+	 <fieldset class="fieldsetborder">
+			<legend>Schritt 1: Allgemeine Information</legend>
+	 	<div>
+		 	<img style="margin:10px 0 0 15px" src="#{facesContext.externalContext.requestContextPath}/view/img/information.png"/><br/><br/>
+		 	<h1>Das Programm wird Sie nun schrittweise durch die Erstellung einer neuen Aufgaben- bzw. Lernsequenz fuehren. </h1>
+		 	<h1>Dieser Prozess ist sehr einfach gestaltet und kann ohne tiefergehende Computerkenntnisse bewaeltigt werden.</h1>
+		</div>
+		<div id="arrows">
+			<table width="500px">
+				<tr>
+					<td align="left"></td>
+					<td align="right"><img title="Weiter" src="#{facesContext.externalContext.requestContextPath}/view/img/arrowright.png"/></td>
+				</tr>			
+			</table>
+			
+			
+		</div>
+	 
+	 
+	 </fieldset>	
+	 
+	 </div>
+	 
+	 
+	 
+	 
+  </ui:define>
+</ui:composition>

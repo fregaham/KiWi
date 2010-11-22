@@ -1,0 +1,12 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:p="http://primefaces.prime.com.tr/ui">
+                
+	<p:panel id="welcome" header="Welcome to your Dashboard" toggleable="true" closable="true" widgetVar="welcomeWidget" closeListener="#{dashboardAction.removePortlet}">
+		<h:outputText escape="false" value="&#x3C;p&#x3E;Hello #{currentUser.firstName}! This is your personal Dashboard. Add, drag and remove widgets ... and have fun!&#x3C;/p&#x3E;&#x3C;p style='font-weight:bold;text-align:right;'&#x3E;Your KiWi Team&#x3C;/p&#x3E;" />
+	</p:panel>
+	
+</ui:composition>

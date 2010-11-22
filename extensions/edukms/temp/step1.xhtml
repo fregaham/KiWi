@@ -1,0 +1,220 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                             "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:m="http://code.google.com/p/gmaps4jsf/"
+			 	xmlns:c="http://java.sun.com/jstl/core"
+			 	xmlns:a4j="http://richfaces.org/a4j"			 	
+                xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+                template="layout/main.xhtml">               	
+		 
+	 <ui:define name="breadcrumps">
+	 	<ul>
+	 		<li class="first">				 			
+				<s:link view="/edukms/authorInterface/home.xhtml" value="AI Startseite"/>
+	 		</li>
+	 		<li>				 			
+				<s:link view="/edukms/authorInterface/startSequence.xhtml" value="Aufgaben/Lernsequenz"/>
+	 		</li>
+	 	</ul>
+	 </ui:define>
+	 
+	 <ui:define name="body">
+	 
+	 <style>
+	 
+	 h1 {  
+	 	 	
+	 	color: #6f91c0;
+	 	font-size: 16px;
+	 	margin-left:20px;
+	 	margin-right: 10px;
+	 	line-hight:20px;	 	
+	 
+	 }
+	 
+	 ul li {
+		list-style-image:url(../img/li.png);
+		color: #6f91c0;
+	 	font-size: 14px;
+	 	margin-left: 30px;
+	 	margin-top: 5px;
+	}	
+	
+	li img {
+		vertical-align: center;	
+	}
+	
+	h2 {  
+	 	 	
+	 	color: #6f91c0;
+	 	font-size: 14px;
+	 	margin-left:20px;
+	 	margin-top: -15px;	 	
+	 
+	 }
+	 
+	 #cover {
+	 
+		 margin: 10px -40px 0 0;
+		 width: 500px;
+	 
+	 }	
+	 
+	 #arrows {
+	 	width: 500px;
+	 	margin: 20px;
+	 	
+	 } 
+	 
+	 #choice {
+	 	margin-left:20px;
+	 }
+	 
+	 #tool {
+	 	margin-left:20px;
+	 	margin-top:10px;
+	 	display:none;
+	 
+	 }
+	 
+	</style>
+	
+	<script>
+
+		function selectAufgabe(){
+	
+		if (document.formAngabe.selectAngabeJa.checked){	
+			document.getElementById('tool').style.display = 'block';
+			document.formAngabe.selectAngabeNein.checked = false;
+		}
+		else {		
+			document.getElementById('tool').style.display = 'none';
+		}
+
+		
+	}
+
+		function nextStep(){
+			
+			if (document.formAngabe.selectAngabeNein.checked){	
+				document.getElementById('tool').style.display = 'none';
+				document.formAngabe.selectAngabeJa.checked = false;
+				document.angabeTypChooser.selectEditor.checked = false;
+				document.angabeTypChooser.selectSlides.checked = false;
+				document.angabeTypChooser.selectMovie.checked = false;
+			}			
+	}
+
+		function activateEditor(){
+			
+			if (document.angabeTypChooser.selectEditor.checked){	
+				document.angabeTypChooser.selectSlides.checked = false;
+				document.angabeTypChooser.selectMovie.checked = false;
+			}	
+					
+	}
+
+		function activateSlides(){
+			
+			if (document.angabeTypChooser.selectSlides.checked){	
+				document.angabeTypChooser.selectEditor.checked = false;
+				document.angabeTypChooser.selectMovie.checked = false;
+			}
+						
+	}
+
+		function activateMovie(){
+			
+			if (document.angabeTypChooser.selectMovie.checked){	
+				document.angabeTypChooser.selectEditor.checked = false;
+				document.angabeTypChooser.selectSlides.checked = false;
+			}
+						
+	}
+		
+	</script>
+	 
+	 <div id="cover">
+	 
+	 <fieldset class="fieldsetborder">
+			<legend>Schritt 1: Angabe bzw. Lerninhalt</legend>
+	 	<div>
+		 	<img style="margin:10px 15px 0 15px; float:left;" src="#{facesContext.externalContext.requestContextPath}/view/img/angabe.png"/><br/>
+		 	<h1 style="margin-top:0px;">Ich moechte eine Angabe bzw. einen Lerninhalt zu dieser Aufgaben- bzw. Lernsequenz erstellen: </h1><br/><br/>
+		 	<div id="choice">
+		 	<form name="formAngabe">		 		
+		 		<table >
+				 <tr>
+				 <td width="100px"><label for="selectAngabeJa">
+				   <input name="selectAngabeJa"
+				     value="Ja" type="checkbox" onclick="selectAufgabe()"><h2>Ja</h2></input>
+				   </label></td>
+				 <td><label for="selectAngabeNein">
+				   <input name="selectAngabeNein"
+				     value="Nein" type="checkbox" onclick="nextStep()"><h2>Nein, ueberspringen!</h2></input>
+				    </label></td>				 
+				 </tr>
+				</table>				
+		 	</form>	
+		 	</div>	
+		 	<div id="tool">
+		 	<br/>
+		 	<h1 style="margin-left:0">Ich moechte ...</h1>
+		 	<form name="angabeTypChooser">
+		 		<span id="selectTool">
+		 		<table >
+				 <tr>
+				 <td width="400px" height="20px"><label for="selectTool">
+				   <input name="selectEditor"
+				     value="Editor" type="checkbox" onclick="activateEditor()"><h2>einen Text + Bild Editor verwenden</h2></input>
+				   </label>
+				   </td></tr>
+				   <tr>
+				 <td width="400px" height="20px"><label for="selectToole">
+				   <input name="selectSlides"
+				     value="Slides" type="checkbox" onclick="activateSlides()"><h2>Folien hochladen</h2></input>
+				    </label></td>
+				    </tr>
+				   <tr>
+				 <td width="400px" height="20px"><label for="selectToole">
+				   <input name="selectMovie"
+				     value="Movie" type="checkbox" onclick="activateMovie()"><h2>eine Movie-Datei hochladen</h2></input>
+				    </label></td>				 
+				 </tr>
+				</table>
+				</span>
+		 	</form>	
+		 	</div>	 	 	
+		</div><br/>
+		<div id="arrows">
+			<table width="500px">
+				<tr>					
+					<td align="left">
+						<s:link view="/edukms/authorInterface/bausteinInfo.xhtml">
+							<img title="Zurueck" src="#{facesContext.externalContext.requestContextPath}/view/img/arrowleft.png"/>
+						</s:link>
+					</td>
+					<td align="right">
+					<h:form>
+					    <h:commandLink action="#{dkmsBasicAction.newDkmsContentItem()}" style="text-decoration:none">
+					    	<img title="Weiter" src="#{facesContext.externalContext.requestContextPath}/view/img/arrowright.png"/>
+					    </h:commandLink>
+					</h:form>
+					
+<!--						<s:link view="/edukms/authorInterface/editor.xhtml">-->
+<!--							<img title="Weiter" src="#{facesContext.externalContext.requestContextPath}/view/img/arrowright.png"/>-->
+<!--						</s:link>-->
+					</td>
+				</tr>			
+			</table>			
+		</div>	 
+	 </fieldset>	 
+	 </div>	 
+  </ui:define>
+</ui:composition>

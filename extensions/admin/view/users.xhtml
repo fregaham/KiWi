@@ -1,0 +1,114 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:m="http://code.google.com/p/gmaps4jsf/"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                template="/template/kiwi/template_2col.xhtml">
+
+    <ui:define name="sidebar">
+        <ui:include src="elements/sidebar.xhtml"/>
+    </ui:define>
+
+    <ui:define name="center">
+
+        <style type="text/css">
+            .userTable .rich-inplace-view,.userTable .rich-inplace-changed {
+                border: none;
+                white-space: normal;
+            }
+
+            .userTable .rich-inplace-view-hover,.userTable .rich-inplace-changed-hover
+            {
+                background-color: #F0F8FF;
+                white-space: normal;
+            }
+        </style>
+
+        <h1 class="title ui-widget-header ui-corner-all">Manage Users</h1>
+
+        <p:messages />
+
+        <div class="jqTooltip"></div>
+
+
+        <h:form id="formSelectUser">
+            <rich:extendedDataTable value="#{kiwi.admin.manageUsersAction.users}" var="user"
+                                    height="300px"
+                                    onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+                                    onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'"
+                                    selectionMode="single" selection="#{kiwi.admin.manageUsersAction.selection}"
+                                    rowKeyVar="row" id="userTable" styleClass="userTable">
+                <f:facet name="header">
+					Select User to Edit
+                </f:facet>
+
+                <rich:column>
+                    <f:facet name="header">
+                        <h:outputText value="Login" />
+                    </f:facet>
+                    <h:outputText value="#{user.login}" />
+                </rich:column>
+
+                <rich:column>
+                    <f:facet name="header">
+                        <h:outputText value="First Name" />
+                    </f:facet>
+                    <h:outputText value="#{user.firstName}" />
+                </rich:column>
+
+                <rich:column>
+                    <f:facet name="header">
+                        <h:outputText value="Last Name" />
+                    </f:facet>
+                    <h:outputText value="#{user.lastName}" />
+                </rich:column>
+
+                <rich:column>
+                    <f:facet name="header">
+                        <h:outputText value="EMail" />
+                    </f:facet>
+                    <h:outputText value="#{user.email}" />
+                </rich:column>
+
+                <a:support reRender="selectedUserPanel" id="extended_table_bean_take_selection"
+                           event="onselectionchange" />
+            </rich:extendedDataTable>
+
+
+        </h:form>
+
+        <div style="margin-top: 20px"></div>
+
+        <rich:panel id="selectedUserPanel">
+            <f:facet name="header"><h:outputText value="Selected User:  #{kiwi.admin.manageUsersAction.selectedUser.login}"/></f:facet>
+
+            <h:form>
+                <s:validateAll>
+                    <h:panelGrid columns="2" rowClasses="prop" columnClasses="name,value">
+                        <h:outputLabel for="fn">First Name:</h:outputLabel>
+                        <h:inputText id="fn" value="#{kiwi.admin.manageUsersAction.selectedUser.firstName}" required="true"/>
+                        <h:outputLabel for="ln">Last Name:</h:outputLabel>
+                        <h:inputText id="ln" value="#{kiwi.admin.manageUsersAction.selectedUser.lastName}" required="true"/>
+                        <h:outputLabel for="password">Password:</h:outputLabel>
+                        <h:inputSecret id="password" value="#{kiwi.admin.manageUsersAction.selectedUserPassword}"/>
+                        <h:outputLabel for="validate">Validate:</h:outputLabel>
+                        <h:inputSecret id="validate" value="#{kiwi.admin.manageUsersAction.selectedUserValidate}"/>
+                        <h:outputLabel for="email">E-Mail:</h:outputLabel>
+                        <h:inputText id="email" value="#{kiwi.admin.manageUsersAction.selectedUser.email}"  required="true"/>
+                    </h:panelGrid>
+                </s:validateAll>
+                <p:commandButton ajax="false" value="Update" action="#{kiwi.admin.manageUsersAction.saveSelectedUser()}"/>
+            </h:form>
+        </rich:panel>
+
+    </ui:define>         
+
+</ui:composition>

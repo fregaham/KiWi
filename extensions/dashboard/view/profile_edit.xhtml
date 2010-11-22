@@ -1,0 +1,167 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                             "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:m="http://code.google.com/p/gmaps4jsf/"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                template="/template/kiwi/template_2col.xhtml">
+                
+	<ui:define name="script">
+	</ui:define>
+	
+	<ui:define name="stylesheet">
+		<link href="stylesheet/profile.css" rel="stylesheet" type="text/css" />
+	</ui:define>
+
+	<ui:define name="sidebar">
+     	<h2 class="box_title">Links</h2>
+    	<ul class="box_content">
+    		<li><s:link view="/dashboard/home.xhtml" styleClass="navload" value="My Dashboard" /></li>
+			<li><s:link view="/dashboard/profile.xhtml" styleClass="navload" value="View my Profile" /></li>
+		</ul>	
+	</ui:define>
+
+	<ui:define name="center">
+		<h1 class="title ui-widget-header ui-corner-all">My Profile</h1>
+		<div class="box">
+        <h:form id="formUserProfile">
+        		
+            <h3>#{messages['profile.label.general']}</h3>
+            <div id="profileGeneral" class="profileSection">
+            
+            	<p:commandLink onclick="mediaUploadDialog.show();" id="main_media_content" style="position: absolute; right:2px; top:2px;" title="click to edit">
+            	<kiwi:mediaContent contentItem="#{kiwi.dashboard.profileAction.profilePhoto}" 
+	                    edit="false"
+	                    style="padding: 3px; margin:4px;border:solid 1px #ccc;">
+	                <ui:define name="nomedia">
+	                    <h:graphicImage url="/img/avatar_kiwi.jpg" width="75" height="100"/>
+	                </ui:define>
+	                <s:transformImageSize 
+	                    maintainRatio="true"
+	                    width="80"/>
+	            </kiwi:mediaContent>
+	            </p:commandLink>
+            
+                <h:panelGrid columns="2" columnClasses="label,value">
+                    <h:outputText value="Name: "/>
+                    <h:panelGroup>
+                           <rich:inplaceInput value="#{kiwi.dashboard.profileAction.firstName}" defaultLabel="click to enter your first name" showControls="true"/>
+                           <h:outputText value=" "/>
+                           <rich:inplaceInput value="#{kiwi.dashboard.profileAction.lastName}" defaultLabel="click to enter your last name" showControls="true"/>
+                    </h:panelGroup>
+                
+                    <h:outputText value="Gender: "/>
+                    <rich:inplaceSelect value="#{kiwi.dashboard.profileAction.gender}" 
+                        defaultLabel="select ..." 
+                        selectWidth="200"
+                        showControls="true">
+				        <f:selectItem itemValue="male" itemLabel="male" />
+				        <f:selectItem itemValue="female" itemLabel="female" />
+                    </rich:inplaceSelect>
+                    
+                    <h:outputText value="Birthday: "/>
+                    <rich:calendar value="#{kiwi.dashboard.profileAction.birthday}"
+                        locale="#{locale}" popup="true" showApplyButton="false" 
+                        datePattern="dd. MMM. yyyy"
+                        cellWidth="24px" cellHeight="22px" style="width:200px"/>
+                    
+                    <h:outputText value="Street: "/>
+                    <!--  todo: should be autocomplete... -->
+                    <rich:inplaceInput value="#{kiwi.dashboard.profileAction.street}" 
+                        defaultLabel="street name/number ..." 
+                        inputWidth="200"
+                        showControls="true"/>
+                        
+                    <h:outputText value="City: "/>
+                    <!--  todo: should be autocomplete... -->
+                    <rich:inplaceInput value="#{kiwi.dashboard.profileAction.cityName}" 
+                        defaultLabel="city name ..." 
+                        inputWidth="200"
+                        showControls="true"/>
+                </h:panelGrid>
+            </div>
+
+            <h3>Personal</h3>
+            <div id="profileDescription" class="profileSection">
+                <h:panelGrid columns="1">
+                <f:facet name="header">
+                <h:panelGroup>
+                		<h:outputText value="Interests:"/>
+            			<h:graphicImage url="/img/contacts.png" width="16" height="16" id="tooltipInterestsPicture" style="position: relative; right:2px; top:2px; display: inline;" />
+            			<rich:toolTip for="tooltipInterestsPicture" >To get suggested interests based on your activities, have your skills computed in the admin area.</rich:toolTip>
+            	</h:panelGroup>
+            	</f:facet>		
+            		<a:outputPanel id="userInterests">
+                    <rich:inplaceInput value="#{kiwi.dashboard.profileAction.interests}"
+                        defaultLabel="enter interests ..."
+                        inputWidth="400"
+                        showControls="true"
+                    />
+                    <h3>Suggested interests:</h3>
+                    	<div id="suggestedInterests" style="width:550px;">
+                		<ui:repeat var="suggestedInterest" value="#{kiwi.dashboard.profileAction.inferredInterests}" >
+                		<h:outputText value="#{suggestedInterest}" />
+                		<a:commandButton action="#{kiwi.dashboard.profileAction.addInterest(suggestedInterest)}" image="img/type_add.png" reRender="userInterests"/>
+                		</ui:repeat>
+                		</div>
+                	</a:outputPanel>	
+                    <h:outputText value="About Me:"/>
+                    <rich:editor id="profileDescriptionEditor"
+                                 required = "false"
+                                 width    = "500"
+                                 height   = "60"
+                                 theme    = "advanced"
+                                 configuration = "tinymce-small"
+                                 plugins  = "safari,pagebreak,style,layer,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,visualchars,nonbreaking,xhtmlxtras"
+                                 value    = "#{kiwi.dashboard.profileAction.description}">
+                    </rich:editor>
+                    
+                
+                </h:panelGrid>
+            </div>
+            
+            <h3>Contact</h3>
+            <div id="profileContact" class="profileSection">
+                <h:panelGrid columns="2" columnClasses="label,value">
+                    <h:outputText value="E-Mail: "/>
+                    <rich:inplaceInput value="#{kiwi.dashboard.profileAction.email}" defaultLabel="email address" showControls="true"/>
+
+                    <h:outputText value="Mobile: "/>
+                    <rich:inplaceInput value="#{kiwi.dashboard.profileAction.mobile}" defaultLabel="mobile phone number" showControls="true"/>
+
+                    <h:outputText value="Phone: "/>
+                    <rich:inplaceInput value="#{kiwi.dashboard.profileAction.phone}" defaultLabel="landline phone number" showControls="true"/>
+
+                    <h:outputText value="Skype: "/>
+                    <rich:inplaceInput value="#{kiwi.dashboard.profileAction.skypeAccount}" defaultLabel="Skype ID" showControls="true"/>
+
+                    <h:outputText value="Facebook: "/>
+                    <rich:inplaceInput value="#{kiwi.dashboard.profileAction.facebookAccount}" defaultLabel="Facebook ID" showControls="true"/>
+
+                    <h:outputText value="Twitter: "/>
+                    <rich:inplaceInput value="#{kiwi.dashboard.profileAction.twitterAccount}" defaultLabel="Twitter ID" showControls="true"/>
+
+                </h:panelGrid>
+            </div>
+		    <div class="profileSection" style="width:600px;">
+            	<div id="profile_actionmenu" >
+            		<p:commandButton value="Cancel" action="/dashboard/profile.xhtml" ajax="false" />
+            		<span style="margin-left:10px;"/>
+                    <p:commandButton value="#{messages['profile.save']}" action="#{kiwi.dashboard.profileAction.save()}" ajax="false" />
+            	</div>
+            </div>
+        </h:form>
+        </div>
+	</ui:define>
+		
+	<ui:define name="panels">
+		<ui:include src="/dialogs2/mediaupload.xhtml" />
+	</ui:define>
+</ui:composition>

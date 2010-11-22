@@ -1,0 +1,46 @@
+/********** comments ***********/
+#formComments\:comments a {
+	color: #000000;
+}
+
+#formWikiPreview\:versionedMetadataPanel\:previewRemovedTriples {
+	margin-top: 10px;
+}
+
+#formWikiPreview\:versionedMetadataPanel\:previewAddedTriples {
+	margin-top: 10px;
+}
+
+.versionedMediaContent, .versionedMetadata, .versionedTags {
+	cursor:pointer;
+	margin-top:10px;
+	padding:2px 0 1px 18px;
+	background:url("../img/arrowRight.gif") no-repeat scroll left top transparent;
+	color: #8BC53E;
+}
+
+.versionedMediaContentPanel {
+	color: #8BC53E;
+}
+
+.versionedMediaContentOpen, .versionedMetadataOpen, .versionedTagsOpen,
+.versionedMediaContentOpen h3, .versionedMetadataOpen h3, .versionedTagsOpen h3 {
+	background:url("../img/arrowDown.gif") no-repeat scroll left top transparent;
+	padding-left: 20px;
+	color: #8BC53E;
+	margin-top:5px;
+}
+
+.versionedMediaContentClosed, .versionedMetadataClosed, .versionedTagsClosed,
+.versionedMediaContentClosed a:visited, .versionedMetadataClosed a:visited, .versionedTagsClosed a:visited {
+	background:url("../img/arrowRight.gif") no-repeat scroll left top transparent;
+	padding-left: 20px;
+	color: #8BC53E;
+	margin-top:5px;
+}
+
+.commentButton:hover {
+	background: none repeat scroll 0 0 #C9E59F;
+}
+
+

@@ -1,0 +1,63 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:s="http://jboss.com/products/seam/taglib">
+    
+    
+   	 	<h2 class="box_title">User Interface</h2>
+    	<ul class="box_content">
+			<li><s:link view="/admin/applications.xhtml" styleClass="navload" value="Configure Applications" /></li>
+			<li><s:link view="/admin/perspectives.xhtml" styleClass="navload" value="Configure Perspectives" /></li>
+			<li><s:link view="/admin/pagelinks.xhtml" styleClass="navload" value="Configure Pagelinks for Wiki" /></li>
+		</ul>
+   
+    	<hr class="spacer10" />
+    	
+    	<h2 class="box_title">Applications</h2>
+    	<ul class="box_content">
+			<li><s:link view="/admin/tagit.xhtml" styleClass="navload" value="Configure TagIT" /></li>
+		</ul>
+		
+		<hr class="spacer10" />
+    	
+    	<h2 class="box_title">Services</h2>
+    	<ul class="box_content">
+    		<li><s:link view="/admin/ie.xhtml" styleClass="navload" value="Configure Information Extraction" /></li>
+			<li><s:link view="/admin/reasoning.xhtml" styleClass="navload" value="Configure Reasoner" /></li>
+			<li><s:link view="/admin/ceq.xhtml" styleClass="navload" value="Configure CEQ"/></li>
+			<li><s:link view="/admin/statistics.xhtml" styleClass="navload" value="KiWi Statistics" /></li>
+			<li><s:link view="/admin/solr.xhtml" styleClass="navload" value="Configure Search Index" /></li>
+    	</ul>
+    	
+    	<hr class="spacer10" />
+    	
+    	<h2 class="box_title">Metadata</h2>
+    	<ul class="box_content">
+    		<li><s:link view="/admin/namespaces.xhtml" styleClass="navload" value="Manage Namespaces" /></li>
+			<li><s:link view="/admin/ontology/select.xhtml" styleClass="navload" value="Load Ontologies"/></li>
+			<li><s:link view="/admin/vmt/vmt.xhtml" styleClass="navload" value="Vocabulary Management Tool"/></li>
+    	</ul>
+    	
+    	<hr class="spacer10" />
+    	
+    	<h2 class="box_title">Import/Export</h2>
+    	<ul class="box_content">
+    		<li><s:link view="/admin/import.xhtml" styleClass="navload" value="Import Data"/></li>
+			<li><s:link view="/admin/export.xhtml" styleClass="navload" value="Export Data"/></li>
+			<li><s:link view="/admin/lodImport/lodImport.xhtml" styleClass="navload" value="Import LOD Sources"/></li>
+			<!--<li><s:link view="/admin/dbimport.xhtml" styleClass="navload" value="Import DB" /></li>-->
+			<li><s:link view="/admin/sunspaceimport.xhtml" styleClass="navload" value="Import Sun Space"/></li>
+			<li><s:link view="/admin/storedProceduresControlPanel.xhtml" styleClass="navload" value="Manage Stored Procedures"/></li>
+            <li><s:link view="/admin/skosmapping.xhtml" styleClass="navload" value="SKOS Mapping"/></li>
+    	</ul>
+    	
+    	<hr class="spacer10" />
+    		
+    	<h2 class="box_title">Users &amp; Permissions</h2>
+    	<ul class="box_content">
+    		<li><s:link view="/admin/users.xhtml" styleClass="navload" value="Manage Users" /></li>
+			<li><s:link view="/admin/permissions.xhtml" styleClass="navload" value="Manage Permissions" /></li>
+			<li><s:link view="/admin/userSkills.xhtml" styleClass="navload" value="Compute User Skills" /></li>
+			<li><s:link view="/admin/userInteraction.xhtml" styleClass="navload" value="Compute User Interactions" /></li>
+		</ul>
+    
+</ui:composition>

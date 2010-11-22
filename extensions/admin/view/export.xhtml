@@ -1,0 +1,36 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                             "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:m="http://code.google.com/p/gmaps4jsf/"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                template="/template/kiwi/template_2col.xhtml">
+
+
+ 	<ui:define name="sidebar">
+ 		<ui:include src="elements/sidebar.xhtml"/>
+ 	</ui:define>
+
+    <ui:define name="center">
+        <h1 class="title ui-widget-header ui-corner-all">Export Data</h1>
+        
+       <p:messages showDetail="false" id="messages"/>
+
+        <p>
+            In the following, you can export data from internal sources.
+        </p>
+        
+        <h:form id="manualEmportForm">
+            <p:panel header="Export">
+                <p:commandButton ajax="false" action="#{kiwi.admin.exportAction.exportAllData()}" value="Export All!"/>
+            </p:panel>
+        </h:form>
+        
+    </ui:define>         
+                
+</ui:composition>

@@ -1,0 +1,59 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+        xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:p="http://primefaces.prime.com.tr/ui">
+
+
+	    <style>
+		   .calLeft,.calRight {
+		   		width: 50%;
+		   }
+	    </style> 
+		
+		<h1>Media perspective for<h:outputText value=" "/><h:outputText property="http://www.kiwi-project.eu/kiwi/core/title"/></h1>
+		
+		<p style="margin-top: 20px; margin-left: 10px; margin-right: 10px;" class="help">
+		  The content item currently displayed represents a media resource. Below you can find a visual representation of the
+		  resource. An appropriate player will be chosen depending on the type of the resource. 
+		</p>
+
+		<br/>
+
+		<h:form prependId="false">
+			<p:panel header="Media Resource #{currentContentItem.title}" id="mediapanel">
+				<s:div styleClass="ui-messages-error ui-corner-all" rendered="#{kiwi.core.ui.mediaPerspectiveAction.unsaved}">
+					<s:div >
+						<h:outputText value="There are unsaved changes. Click on 'save' to make your updates persistent."/>
+					</s:div>
+	
+					<s:div style="text-align: center; margin-top: 2px;">
+						<p:commandButton value="Save" update="mediapanel,imageMetadataPanel" actionListener="#{kiwi.core.ui.mediaPerspectiveAction.save}" />
+					</s:div>
+				</s:div>
+				
+				<s:div style="text-align: center;">
+					<s:fragment rendered="#{kiwi.core.ui.mediaPerspectiveAction.isImage(currentContentItem)}">
+						<s:graphicImage value="#{kiwi.core.ui.mediaPerspectiveAction.getMediaContent(currentContentItem).data}" >
+							<s:transformImageSize width="400" maintainRatio="true"/>
+						</s:graphicImage>
+					</s:fragment>
+					<s:fragment rendered="#{kiwi.core.ui.mediaPerspectiveAction.isMedia(currentContentItem)}">
+						<p:media value="#{kiwi.core.ui.mediaPerspectiveAction.getMedia(currentContentItem)}" width="400" player="#{kiwi.core.ui.mediaPerspectiveAction.getPlayer(currentContentItem)}"/>
+					</s:fragment>
+				</s:div>
+				
+				<s:div style="text-align: center; margin-top: 10px;">
+					<p:fileUpload fileUploadListener="#{kiwi.core.ui.mediaPerspectiveAction.listener}" 
+					              allowTypes="*.jpg;*.png;*.gif;*.ram;*.mov;*.swf;*.flv;*.avi;*.mp3;*.ra"
+								  auto="true" update="mediapanel" />
+				</s:div>
+			</p:panel>
+		</h:form>
+	        
+</ui:composition>

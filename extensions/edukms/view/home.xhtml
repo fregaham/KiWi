@@ -1,0 +1,102 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                             "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:m="http://code.google.com/p/gmaps4jsf/"
+			 	xmlns:c="http://java.sun.com/jstl/core"
+			 	xmlns:a4j="http://richfaces.org/a4j"			 	
+                xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+                template="layout/main.xhtml">               	
+		 
+ <ui:define name="breadcrumps">
+ 	<ul>
+ 		<li class="first">				 			
+			<s:link view="/edukms/home.xhtml" value="| EduKMS Home"/>
+ 		</li>
+ 	</ul>
+ </ui:define>
+
+ <ui:define name="body">
+	 
+	 <style>
+	 
+	 #cover {
+	 	margin-top:10px;
+	 	 	
+	 }
+	 
+	 #selectionGrid {
+	 	border-bottom:1px solid #D2B48C;
+	 	margin:10px 0 5px 0;
+	 	width:600px;
+	 	height:110px;
+	 }
+	 
+	 #selectionGrid img {
+			
+		opacity:0.8;
+		}
+		
+	 #selectionGrid img:hover {
+			
+		opacity:1;
+		
+	}
+	 	 
+	 </style>
+	 
+	 <div id="cover">
+	 		<div id="selectionGrid">	 				
+				<s:link view="/edukms/authorInterface/home.seam">
+				<img src="#{facesContext.externalContext.requestContextPath}/view/img/ailogo.jpg" 
+				alt="AI" style="float:left; margin-right:10px; margin-bottom:5px" 
+				title="AI"/>
+				<p><h:outputText value="AI Author Interface" style="font-size:15px; color:#CD853F; line-height:15px"/></p><br/>
+				<p><h:outputText value="A tool for designing and developing teaching and learning materials (exercices) especially designed for the creation of instructional materials, which are conceived for the access in EPIE and ABCMaths. " /></p>
+				</s:link>					
+			</div>
+			
+			<div id="selectionGrid">
+				<s:link view="/edukms/abcmaths/home.seam">
+				<img src="#{facesContext.externalContext.requestContextPath}/view/img/abcmathslogo.jpg" 
+				alt="ABCmaths" style="float:left; margin-right:10px; margin-bottom:4px" 
+				title="ABCmaths"/>
+				<p><h:outputText value="ABCMaths" style="font-size:15px; color:#CD853F; line-height:15px"/></p><br/>
+				<p><h:outputText value="In addition to big ideas linked to mathematics itself, ABCmaths includes a focus on big ideas of mathematics teaching. " /></p>
+				<!-- <p><h:outputText value="This takes into account the special situation of mathematics classrooms, in which mathematical practices are linked to learning and the orchestration of learning opportunities by teachers." /></p> -->
+				</s:link>					
+			</div>	
+				 					
+			<div id="selectionGrid">					 
+			  	<s:link view="/edukms/epie/home.seam" >
+				<img src="#{facesContext.externalContext.requestContextPath}/view/img/epielogo.jpg" 
+				alt="EPIE" style="float:left; margin-right:10px; margin-bottom:6px" 
+				title="EPIE"/>
+				<p><h:outputText value="EPIE Exercice Pool for Informatics Education" style="font-size:15px; color:#CD853F; line-height:15px"/></p><br/>
+				<p><h:outputText value="The platform constitutes a tool for exchanging, sharing and communicating teaching and learning materials in form of exercices. " /></p>
+				<!-- <p><h:outputText value="The system is especially developed for the use in education and for didactic tasks and should become a hub for the communication and presentation of ideas about the sensible instruction of informatics." /></p> -->				
+			    </s:link>					
+			</div>
+							
+			
+			<div id="selectionGrid">
+				<s:link view="/">
+				<img src="#{facesContext.externalContext.requestContextPath}/view/img/ovatlogo.jpg" 
+				alt="OVAT" style="float:left; margin-right:10px; margin-bottom:5px" 
+				title="OVAT"/>
+				<p><h:outputText value="OVAT Online Vocabulary Administration Tool" style="font-size:15px; color:#CD853F; line-height:15px"/></p><br/>
+				<p><h:outputText value="The platform constitutes a tool for designing and maintaining a special controlled vocabulary focusing the language of informatics and mathematics didactic. " /></p>
+				</s:link>					
+			</div>									
+					
+				
+	 </div> <!-- end cover -->			
+			 		    
+</ui:define>
+		 	
+</ui:composition>

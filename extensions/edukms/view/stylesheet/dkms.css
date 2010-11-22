@@ -1,0 +1,14 @@
+@charset "UTF-8";
+/**
+ * DKMS Didactic Knowledge Management System
+ *
+ * Main stylesheet
+ */
+
+/* import core styles  */
+  @import url(./style.css);
+  @import url(./layout.css);
+
+/* import screen layout */
+  @import url(./screen/dkmsScreen.css);
+

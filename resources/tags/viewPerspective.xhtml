@@ -1,0 +1,32 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:c="http://java.sun.com/jstl/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    >
+    
+	<!-- if the user has read permission, render the view and widgets templates when available -->
+    <s:fragment rendered="#{permissionAction.hasPermission('read')}"> 
+    	<s:fragment rendered="#{kiwi.ui.perspectiveAction.currentPerspective.view}">    
+	    	<ui:include  src="/perspectives/#{kiwi.ui.perspectiveAction.currentPerspective.viewTemplate}">
+    			<ui:param name="contentItem" value="#{currentContentItem}" />
+   				<ui:param name="ctx" value="#{rdf.getCurrentResource()}" />
+	    	</ui:include>
+    	</s:fragment>
+    	<s:div rendered="#{not kiwi.ui.perspectiveAction.currentPerspective.view}" styleClass="errorMessage">
+    		No view associated with perspective.
+    	</s:div>
+  	</s:fragment> 
+     
+    <!-- render an error message as "content" when the user does not have read permission on the current content item -->
+    <s:fragment rendered="#{not permissionAction.hasPermission('read')}">
+    	<div class="errorMessage">
+    		<h:outputText value="#{messages['permission.failed']}. "/>
+    	</div>
+    </s:fragment>
+
+
+
+</ui:composition>

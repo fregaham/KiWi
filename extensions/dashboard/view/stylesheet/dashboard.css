@@ -1,0 +1,36 @@
+
+
+.contact {
+    border-top: 1px solid #ccc;
+    margin-top: 10px;
+    padding-top: 5px;
+}
+
+.contactPhoto {
+    float: left;
+    height: 100%;
+    padding: 4px;
+    margin-right: 10px;
+}
+
+.contactContent {
+    padding: 5px;
+}
+
+.contactActions {
+    color: #ccc;
+}
+
+#addContact {
+    border-top: 1px solid #ccc;
+    margin-top: 10px;
+    padding-top: 5px;
+}	
+
+#addContact h4 {
+    margin-top: 0;
+    margin-bottom: 5px;
+    color: #F26421;
+    font-size: 1.2em;
+}
+

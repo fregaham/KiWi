@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:s="http://jboss.com/products/seam/taglib"
+      xmlns:p="http://primefaces.prime.com.tr/ui"
+      xmlns:a="http://richfaces.org/a4j"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <head>
+
+        <!-- scripts -->
+        <p:resources />
+        <ui:insert name="script" />
+
+        <!-- stylesheets -->
+        <link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.requestContextPath}/stylesheet/kiwi/style.css" />
+        <link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.requestContextPath}/stylesheet/kiwi/jquery-ui-1.8.4.custom.css" />
+        <ui:insert name="stylesheet" />
+
+        <!-- other links -->
+        <link rel="shortcut icon" href="#{facesContext.externalContext.requestContextPath}/favicon.ico" type="image/x-icon" />
+        <ui:insert name="link" />
+
+        <title>KiWi - Knowledge in a Wiki</title>
+
+        <script type="text/javascript">
+                jQuery.noConflict();
+        </script>
+    </head>
+
+    <body>
+        <div id="breadcrumb">
+            <ui:include src="elements/breadcrumb.xhtml"/>
+        </div>
+
+        <p:ajaxStatus id="ajax_loader_prime">
+            <f:facet name="start">
+                <h:graphicImage value="/images/kiwi/ajax-loader.gif"/>
+            </f:facet>
+
+            <f:facet name="complete">
+                <h:outputText value="" />
+            </f:facet>
+        </p:ajaxStatus>
+
+        <div id="ajax_loader_rich" style="display:none;">
+            <h:graphicImage value="/images/kiwi/ajax-loader.gif"/>
+        </div>
+
+
+        <a:status
+            onstart="jQuery('#ajax_loader_rich').show()"
+            onstop="jQuery('#ajax_loader_rich').hide()"
+            />
+
+        <div id="header">
+
+            <h1>
+                <s:link view="/home.xhtml">
+                    <f:param name="title" />
+                    <f:param name="uri" value="#{configurationService.startPage}"/>
+                    <f:param name="id" />
+                    <f:param name="kiwiid"/>
+	        	KiWi Logo
+                </s:link>
+            </h1>
+            <ui:include src="elements/search.xhtml"/>
+        </div>
+        <div id="body">
+            <div id="user">
+                <ui:include src="elements/user.xhtml"/>
+            </div>
+            <div id="navigation">
+                <ui:include src="elements/top_navigation.xhtml"/>
+            </div>
+            <div id="main">
+                <div id="content_full">
+                    <ui:insert name="center"/>
+                </div>
+            </div>
+        </div>
+        <div id="footer">
+    	Powered by KiWi
+        </div>
+        <ui:insert name="panels" />
+    </body>
+
+</html>

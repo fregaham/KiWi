@@ -1,0 +1,219 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+    xmlns:c="http://java.sun.com/jstl/core"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:p="http://primefaces.prime.com.tr/ui">
+                
+	<p:panel id="recommendations" header="Recommendations" toggleable="true" closable="true" widgetVar="recommendationsWidget" closeListener="#{dashboardAction.removePortlet}">
+	<rich:dragIndicator id="dragRec"/>
+    <rich:dragIndicator id="dragRecSolr"/>
+	<rich:dragIndicator id="dragRuleBased"/>    
+    <rich:dragIndicator id="dragRecSocialCapital"/>
+   	<h:form id="dragForm" >    
+      		<rich:panel id="dragMyPanel" >
+
+	           <f:facet name="header">
+						<h:outputText value="My Similar Recommendations" />
+						<!--<a:commandButton action="#{tagRelationAction.createTag}" value="Confirm" />-->
+				</f:facet>
+	
+	   			<rich:dropSupport id="simZone" acceptedTypes="text" dropValue="recType" dropListener="#{recommendationAction.processDrop}" reRender="dragMyPanel">
+				</rich:dropSupport>
+
+        		<s:span id="mySimSpan" rendered="#{recommendationActionScope.userSimilarItems.size() &gt; 0}">
+							<h:dataTable id="simTable" columns="1" var="simItem" value="#{recommendationActionScope.userSimilarItems}" >
+								                    <h:column>
+								                        <h:outputText value="#{simItem.contentItem.title}"></h:outputText>
+														<a:commandLink action="#{recommendationAction.removeSimilarRecommendation(simItem)}" value="  Remove" reRender="dragMyPanel"/>
+																														                        
+								                    </h:column>
+						    </h:dataTable>
+				</s:span>
+				<s:span id="nomySimSpan" rendered="#{recommendationActionScope.userSimilarItems.size() == 0}">
+							<h:outputText value="Drag your recommendations to here."/>
+				</s:span>				
+            </rich:panel>
+
+            
+         <rich:panel > 
+         <f:facet name="header">
+					<h:outputText value="Generated Recommendations" />
+         </f:facet> 
+	    <rich:tabPanel switchType="ajax">
+	    	<rich:tab label="Individual">
+			    <a:outputPanel id="userRecommendations" layout="block">
+			        <div>
+			        
+			        		<s:span id="recomlist" rendered="#{recommendationActionScope.personalRecommendations.size() &gt; 0}">
+							<div><ul>
+								<h:dataTable id="src" columns="1" value="#{recommendationActionScope.personalRecommendations}" var="recommendation" footerClass="footerClass">
+									<h:column>
+										<a:outputPanel >
+				                           <rich:dragSupport dragIndicator=":dragRec" dragValue="#{recommendation}"  dragType="text" >
+												<rich:dndParam name="label" value="Recommendation: #{recommendation.title}"/>
+											</rich:dragSupport>
+											<li>
+											<s:link view="/home.xhtml" value="#{recommendation.title}" propagation="none">
+												<f:param name="title" value="#{recommendation.title}"/>
+												<f:param name="uri"/>
+						                        <f:param name="id" />
+						                        <f:param name="kiwiid" value="#{recommendation.resource.kiwiIdentifier}"/>
+											</s:link><br/>
+											<h:outputText value="by "/>
+											<h:outputText value="#{recommendation.author.firstName} "/>
+											<h:outputText value="#{recommendation.author.lastName}"/>
+											</li>
+									</a:outputPanel>
+									</h:column>
+								</h:dataTable>	
+								</ul>
+							</div>
+						</s:span>
+						<s:span id="norecomlist" rendered="#{recommendationActionScope.personalRecommendations.size() &lt;= 0}">
+									<h:outputText value="No recommendations so far."/>
+						</s:span>
+                       
+			       </div>
+			    </a:outputPanel>
+	        </rich:tab>
+	        
+	        <rich:tab label="Group" reRender="dragPanel">
+			    <a:outputPanel id="groupRecommendations" layout="block">
+			            <s:span id="grouprec" rendered="#{recommendationActionScope.groupRecommendations.size() &gt; 0}">
+			                <div><ul>
+			                    <ui:repeat var="groupRecs" value="#{recommendationActionScope.groupRecommendations}" >
+			                    <li><b><h:outputText value="Group:"/></b><h:outputText value="#{groupRecs.getKey().name}"/>
+			                        <ul>
+			                        <ui:repeat var="contentitems" value="#{groupRecs.getValue()}">
+			                            <li>
+			                            <kiwi:link contentItem="#{contentitems}"/>
+			                            <br/>
+			                            <h:outputText value="by "/>
+			                            <h:outputText value="#{contentitems.author.firstName} "/>
+			                            <h:outputText value="#{contentitems.author.lastName}"/>
+			                            </li>
+			                        </ui:repeat>
+			                        </ul>
+			                    </li>
+			                    </ui:repeat>
+			                      </ul>
+			                </div>
+			            </s:span>
+			            <s:span id="nogrouprec" rendered="#{recommendationActionScope.groupRecommendations.size() &lt;= 0}">
+			                        <h:outputText value="No Grouped Recommendations."/>
+			            </s:span>
+			    </a:outputPanel>
+    		</rich:tab>
+    	
+	        <rich:tab label="Social">
+			    <a:outputPanel id="socialRecommendations" layout="block">
+		            <s:span id="socialList" rendered="#{recommendationActionScope.contactRecommendations.size() &gt; 0}">
+						<div><ul>
+							<h:dataTable id="srcTable" columns="1" value="#{recommendationActionScope.contactRecommendations}" var="socialRec" footerClass="footerClass">
+								<h:column>
+									<a:outputPanel >
+				                           <rich:dragSupport dragIndicator=":dragRecSocial" dragValue="#{socialRec}"  dragType="text" >
+												<rich:dndParam name="label" value="Recommendation: #{socialRec.recommendedItem.title}"/>
+											</rich:dragSupport>		                        
+					                        <li>
+					                        <s:link view="/home.xhtml" value="#{socialRec.recommendedItem.title}" propagation="none">
+					                            <f:param name="title" value="#{socialRec.recommendedItem.title}"/>
+					                            <f:param name="uri"/>
+					                            <f:param name="id" />
+					                            <f:param name="kiwiid" value="#{socialRec.recommendedItem.resource.kiwiIdentifier}"/>
+					                        </s:link>
+											<a:commandLink action="#{recommendationAction.removeContactRecommendation(socialRec)}" value="  Remove" reRender="socialList,srcTable"/>		                        
+					                        <br/>
+					                        <h:outputText value="recommended by "/>
+					                        <h:outputText value="#{socialRec.recommendationSender.firstName} "/>
+					                        <h:outputText value="#{socialRec.recommendationSender.lastName}"/>
+					                        </li>
+		                        </a:outputPanel>
+									</h:column>
+								</h:dataTable>	
+								</ul>
+							</div>
+						</s:span>		            
+		            
+		            <s:span id="noSocialList" rendered="#{recommendationActionScope.contactRecommendations.size() &lt;= 0}">
+		                        <h:outputText value="No social recommendation"/>
+		            </s:span>
+			    </a:outputPanel>
+    	</rich:tab>
+    	
+	        <rich:tab label="Rule Based">
+			    <a:outputPanel id="ruleBasedRecommendations" layout="block">
+		            <s:span id="ruleBasedList" rendered="#{recommendationActionScope.ruleBasedRecommendations.size() &gt; 0}">
+						<div><ul>
+							<h:dataTable var="ruleBasedRec" id="srcRuleTable" columns="1" value="#{recommendationActionScope.ruleBasedRecommendations}" footerClass="footerClass">
+								<h:column>
+									<a:outputPanel >
+				                           <rich:dragSupport dragIndicator=":dragRuleBased" dragValue="#{ruleBasedRec}"  dragType="text" >
+												<rich:dndParam name="label" value="Recommendation: #{ruleBasedRec.title}"/>
+											</rich:dragSupport>		                        
+					                        <li>
+					                        <s:link view="/home.xhtml" value="#{ruleBasedRec.title}" propagation="none">
+					                            <f:param name="title" value="#{ruleBasedRec.title}"/>
+					                            <f:param name="uri"/>
+					                            <f:param name="id" />
+					                            <f:param name="kiwiid" value="#{ruleBasedRec.resource.kiwiIdentifier}"/>
+					                        </s:link>
+											<!--<a:commandLink action="#{recommendationAction.removeContactRecommendation(ruleBasedRec)}" value="  Remove" reRender="ruleBasedList,srcRuleTable"/>		                        
+					                        --></li>
+		                            </a:outputPanel>
+									</h:column>
+								</h:dataTable>	
+								</ul>
+							</div>
+						</s:span>		            
+		            
+		            <s:span id="noRuleBasedList" rendered="#{recommendationActionScope.ruleBasedRecommendations.size() &lt;= 0}">
+		                        <h:outputText value="No rule based recommendations."/>
+		            </s:span>
+			    </a:outputPanel>
+    		</rich:tab>
+    		
+   	        <rich:tab label="Solr">
+			    <a:outputPanel id="socialCapitalRecommendations" layout="block">
+  		            <s:span id="recomlistSolr" rendered="#{recommendationActionScope.personalRecommendationsFromSolr.size() &gt; 0}">
+							<div><ul>
+								<h:dataTable id="srcSolr" columns="1" value="#{recommendationActionScope.personalRecommendationsFromSolr}" var="recommendation" footerClass="footerClass">
+									<h:column>
+										<a:outputPanel >
+				                           <rich:dragSupport dragIndicator=":dragRecSolr" dragValue="#{recommendation}" dragType="text" >
+												<rich:dndParam name="label" value="Recommendation: #{recommendation.title}"/>
+											</rich:dragSupport>
+											<li>
+											<s:link view="/home.xhtml" value="#{recommendation.title}" propagation="none">
+												<f:param name="title" value="#{recommendation.title}"/>
+												<f:param name="uri"/>
+						                        <f:param name="id" />
+						                        <f:param name="kiwiid" value="#{recommendation.resource.kiwiIdentifier}"/>
+											</s:link><br/>
+											<h:outputText value="by "/>
+											<h:outputText value="#{recommendation.author.firstName} "/>
+											<h:outputText value="#{recommendation.author.lastName}"/>
+											</li>
+									</a:outputPanel>
+									</h:column>
+								</h:dataTable>	
+								</ul>
+							</div>
+						</s:span>
+						<s:span id="norecomlistSolr" rendered="#{recommendationActionScope.personalRecommendationsFromSolr.size() &lt;= 0}">
+									<h:outputText value="No recommendations so far."/>
+						</s:span> 
+			    </a:outputPanel>
+    	 </rich:tab>    	
+
+	    </rich:tabPanel>   
+		</rich:panel> 
+    	</h:form>
+	</p:panel>   
+</ui:composition>

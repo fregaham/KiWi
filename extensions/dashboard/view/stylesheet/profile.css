@@ -1,0 +1,49 @@
+
+#formUserProfile #userName {
+	font-size:200%;
+    font-weight:bold;
+    margin-bottom: 1em;
+}
+
+#formUserProfile h3 {
+    margin-bottom: 0;
+    padding-left: 0.5em;
+}
+
+#formUserProfile td.label {
+	width: 200px;
+	font-weight: bolder;
+}
+
+#formUserProfile td.value {
+	width: 600px;
+}
+
+#formUserProfile td {
+	padding: 2px;
+}
+
+#formUserProfile .profileSection {
+    border-top: 1px solid #ccc;
+    margin-bottom: 10px;
+    padding: 0.5em;
+    padding-left: 1em;
+}
+
+#formUserProfile #profileGeneral {
+    width: 600px;
+    position: relative;
+}
+
+#formUserProfile #profileDescription {
+	width: 600px;
+}
+
+#formUserProfile #profileContact {
+	width: 600px;
+}
+
+#formUserProfile #profile_actionmenu {
+	width: 100%;
+	text-align: right;
+}

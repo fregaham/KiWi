@@ -1,0 +1,67 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:m="http://code.google.com/p/gmaps4jsf/"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                template="/template/kiwi/template_2col.xhtml">
+
+    <ui:define name="stylesheet">
+        <style type="text/css">
+            .aname {
+                padding: 6px;
+            }
+            .fontSize {
+                font-size: 12px;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="sidebar">
+        <ui:include src="elements/sidebar.xhtml"/>
+    </ui:define>
+
+    <ui:define name="center">
+        <h1 class="title ui-widget-header ui-corner-all">Import Sun Space information</h1>
+
+        <h:outputText value="Default SKOS Concept mapping (the top concept title is used like prefix)."/>
+
+        <h:form id="skos-map-deafult-panel">
+
+            <h:panelGrid id="panel" columns="2">
+                <h:outputText value="SKOS Concept Level for all concepts : "/>
+                <h:inputText value="#{skosMapperAction.conceptLevel}"/>
+            </h:panelGrid>
+
+            <p:commandButton ajax="false"
+                             action="#{skosMapperAction.defaultMap()}"
+                             value="Do Deault Mapping"/>
+        </h:form>
+
+        <h:form id="skos-map-panel">
+        
+        <h:panelGrid id="panel" columns="3">
+            <c:forEach  items="#{skosMapperAction.conceptHelpers}"
+                        var="conceptHelper">
+                <h:outputText value="#{conceptHelper.title}"/>
+                <h:inputText value="#{conceptHelper.prefix}"/>
+                <h:inputText value="#{conceptHelper.nestLevel}"/>
+            </c:forEach>
+        
+        </h:panelGrid>
+                
+        <p:commandButton ajax="false"
+                         action="#{skosMapperAction.commit()}"
+                         value="Commit"/>
+        </h:form>
+        
+
+    </ui:define>
+</ui:composition>

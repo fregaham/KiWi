@@ -1,0 +1,64 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+		    	xmlns:a4j="http://richfaces.org/a4j"
+		    	xmlns:rich="http://richfaces.org/rich"
+    			template="/template/kiwi/template_2col.xhtml">
+
+	<ui:define name="sidebar">
+ 		<ui:include src="elements/sidebar.xhtml"/>
+ 	</ui:define>
+ 	
+    <ui:define name="center">
+
+<!--	<script src="styles.js" type="text/javascript">
+    </script>-->
+
+		<a4j:region>
+	    <h:form id="formWikiHistory">
+	   	    <h1>History: <!-- #{currentContentItem.title} --></h1>
+	  	
+	    	<s:div>
+	    		<h:commandButton action="#{kiwi.action.revision.viewRevisionsAction.compare}" 
+	    				value="Compare selected revisions"/>
+	    			<rich:dataTable value="#{kiwi.action.revision.viewRevisionsAction.wikiRevisions}" 
+	    			emptyMessage="No revisions found" border="0"
+	    			var="rev">
+						<h:column rendered="#{kiwi.action.revision.viewRevisionsAction.showRevision(rev)}">
+	 						<h:selectBooleanCheckbox value="#{rev.checked}" /> 
+	 					</h:column>
+	 					<h:column rendered="#{kiwi.action.revision.viewRevisionsAction.showRevision(rev)}">
+			   	    		<h:commandLink value="Revision #{rev.title} created 
+								on #{rev.prettyDate}
+								by #{rev.userlogin}"
+	 							action="#{kiwi.action.revision.viewRevisionsAction.selectRevision(rev)}"/>
+						</h:column>
+	  	    	    </rich:dataTable>
+<!--	    		<p:dataTable value="#{kiwi.action.revision.viewRevisionsAction.wikiRevisions}" var="rev" border="0">-->
+<!--					<p:column rendered="#{kiwi.action.revision.viewRevisionsAction.showRevision(rev)}">-->
+<!-- 						test <h:selectBooleanCheckbox value="#{rev.checked}" /> -->
+<!-- 					</p:column>-->
+<!-- 					<p:column rendered="#{kiwi.action.revision.viewRevisionsAction.showRevision(rev)}">-->
+<!--		   	    		test2  <h:commandLink value="Revision #{rev.title} created -->
+<!--									on #{rev.prettyDate}-->
+<!--									by #{rev.userlogin}"-->
+<!-- 							action="#{kiwi.action.revision.viewRevisionsAction.selectRevision(rev)}"/>-->
+<!--					</p:column>-->
+<!--  	    	    </p:dataTable>-->
+				<h:commandButton action="#{kiwi.action.revision.viewRevisionsAction.compare}" 
+	    				value="Compare selected revisions"/>
+	    	</s:div>
+	    	<h:selectBooleanCheckbox value="#{kiwi.action.revision.viewRevisionsAction.onlyShowContentUpdates}" id="showTCUCheckBox">
+			    <a4j:support id="checkboxSupport" event="onchange" reRender="formWikiHistory"/>
+			</h:selectBooleanCheckbox>		
+			<h:outputText value="Only show ContentUpdates"/>
+	    </h:form>
+	    </a4j:region>
+    </ui:define>
+    
+</ui:composition>

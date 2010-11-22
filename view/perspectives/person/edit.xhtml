@@ -1,0 +1,203 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+    xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+    xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:p="http://primefaces.prime.com.tr/ui"
+	xmlns:a="http://richfaces.org/a4j">
+		
+		<style type="text/css">
+			.profile-name {
+				font-size: x-large;
+				font-weight: bold;
+			}
+			
+			.profile-label {
+				font-weight: bold;
+			}
+			
+			.colPhoto {
+				
+			}
+			
+			.colData {
+				vertical-align: top;
+			}
+			
+			td {
+				
+				padding: 5px;
+			}
+		</style>
+		
+		<h:form>
+
+			<p:panel header="Profile">
+				<h:panelGrid columns="2" cellpadding="10" columnClasses="colPhoto,colData">
+					<h:panelGroup>
+						<c:if test="#{kiwi.core.ui.personPerspectiveAction.hasProfilePhoto()}">
+							<s:graphicImage value="#{kiwi.core.ui.personPerspectiveAction.getProfilePhoto().mediaContent.data}"
+								             fileName="#{kiwi.core.ui.personPerspectiveAction.getProfilePhoto().mediaContent.fileName}_thumb" >
+								<s:transformImageSize width="200" maintainRatio="true"/>
+							</s:graphicImage>
+						</c:if>
+						<c:if test="#{not kiwi.core.ui.personPerspectiveAction.hasProfilePhoto()}">
+							<h:graphicImage value="#{configurationService.baseUri}/img/noProfilePicture.png" />
+						</c:if>
+						<br/>
+						<p:autoComplete completeMethod="#{kiwi.core.ui.personPerspectiveAction.autocompletePhotos}"
+										value="#{kiwi.core.ui.personPerspectiveAction.selectedPhoto}"
+						                var="resource" itemLabel="#{resource.label} (#{resource.namespacePrefix})"
+										itemValue="#{resource}" forceSelection="true" converter="kiwiResourceConverter"/>
+						<p:commandButton value="Add" action="#{kiwi.core.ui.personPerspectiveAction.addPhoto}" ajax="false"/>
+					</h:panelGroup>
+					
+					<h:panelGroup>
+						<h:panelGrid columns="2" cellpadding="10">
+							<h:panelGroup>Name:</h:panelGroup>
+							<h:panelGroup>
+								<h:selectOneMenu property="http://xmlns.com/foaf/0.1/title">
+									<f:selectItem itemLabel="" itemValue="" />
+									<f:selectItem itemLabel="Mr." itemValue="" />
+									<f:selectItem itemLabel="Ms." itemValue="" />
+									<f:selectItem itemLabel="Dr." itemValue="" />
+								</h:selectOneMenu>
+								<h:outputText value=" "  />
+								<h:inputText property="http://xmlns.com/foaf/0.1/firstName" size="20"/>
+								<h:outputText value=" "  />
+								<h:inputText property="http://xmlns.com/foaf/0.1/lastName"  size="28"/>
+							</h:panelGroup>
+							
+							<h:panelGroup>E-Mail:</h:panelGroup>
+							<h:panelGroup>
+								<h:inputText property="http://xmlns.com/foaf/0.1/email"  size="60"/>
+							</h:panelGroup>
+							
+							<h:panelGroup>Homepage:</h:panelGroup>
+							<h:panelGroup>
+								<h:inputText property="http://xmlns.com/foaf/0.1/homepage"  size="60"/>
+							</h:panelGroup>
+							
+							<h:panelGroup>Phone:</h:panelGroup>
+							<h:panelGroup>
+								<h:inputText property="http://xmlns.com/foaf/0.1/phone"  size="60"/>
+							</h:panelGroup>
+						
+						</h:panelGrid>
+					</h:panelGroup>
+				</h:panelGrid>
+			</p:panel>		
+			
+			<p:panel header="Personal" toggleable="true">
+				<h:panelGrid columns="2" cellpadding="10">
+					<h:outputText value="Birthday" styleClass="profile-label" />
+					<p:calendar property="http://xmlns.com/foaf/0.1/birthday" />
+					
+					<h:outputText value="Interests" styleClass="profile-label" />
+					<h:panelGroup>
+						<ui:repeat rel="http://xmlns.com/foaf/0.1/interest" var="interest">
+							<h:outputText property="http://www.kiwi-project.eu/kiwi/core/title" ctx="interest"/>
+							<h:commandLink action="#{rdf.removeRelation(interest)}">
+								<h:graphicImage value="/img/type_delete.png" style="border: none;"/>
+							</h:commandLink>
+							<h:outputText value=", " />
+						</ui:repeat>
+						<p:autoComplete completeMethod="#{kiwi.core.ui.personPerspectiveAction.autocompleteInterests}"
+										value="#{kiwi.core.ui.personPerspectiveAction.selectedInterest}"
+						                var="resource" itemLabel="#{resource.label} (#{resource.namespacePrefix})"
+										itemValue="#{resource}" forceSelection="true" converter="kiwiResourceConverter"/>
+						<p:commandButton value="Add" action="#{kiwi.core.ui.personPerspectiveAction.addInterest}" ajax="false"/>
+					</h:panelGroup>
+	
+					<h:outputText value="Friends" styleClass="profile-label" />
+					<h:panelGroup>
+						<ui:repeat rel="http://xmlns.com/foaf/0.1/knows" var="friend">
+							<h:outputText property="http://xmlns.com/foaf/0.1/firstName" ctx="friend"/>
+							<h:outputText value=" "  />
+							<h:outputText property="http://xmlns.com/foaf/0.1/lastName" ctx="friend"/>
+							
+							<h:commandLink action="#{rdf.removeRelation(friend)}">
+								<h:graphicImage value="/img/type_delete.png" style="border: none;"/>
+							</h:commandLink>
+							<h:outputText value=", " />
+						</ui:repeat>
+						<p:autoComplete completeMethod="#{kiwi.core.ui.personPerspectiveAction.autocompletePersons}"
+										value="#{kiwi.core.ui.personPerspectiveAction.selectedFriend}"
+						                var="resource" itemLabel="#{resource.label} (#{resource.namespacePrefix})"
+										itemValue="#{resource}" forceSelection="true" converter="kiwiResourceConverter"/>
+						<p:commandButton value="Add" action="#{kiwi.core.ui.personPerspectiveAction.addFriend}" ajax="false"/>
+
+					</h:panelGroup>
+	
+					<h:outputText value="Groups" styleClass="profile-label" />
+					<h:panelGroup>
+						<ui:repeat rel="http://xmlns.com/foaf/0.1/member" var="member">
+							<h:outputText property="http://xmlns.com/foaf/0.1/givenname" ctx="member"/>
+							<h:outputText value=" "  />
+							<h:outputText property="http://xmlns.com/foaf/0.1/surname" ctx="member" />
+							
+							<h:commandLink action="#{rdf.removeRelation(member)}">
+								<h:graphicImage value="/img/type_delete.png" style="border: none;"/>
+							</h:commandLink>
+							<h:outputText value=", " />
+						</ui:repeat>
+						<p:autoComplete completeMethod="#{kiwi.core.ui.personPerspectiveAction.autocompleteGroups}"
+										value="#{kiwi.core.ui.personPerspectiveAction.selectedGroup}"
+						                var="resource" itemLabel="#{resource.label} (#{resource.namespacePrefix})"
+										itemValue="#{resource}" forceSelection="true" converter="kiwiResourceConverter"/>
+						<p:commandButton value="Add" action="#{kiwi.core.ui.personPerspectiveAction.addGroup}" ajax="false"/>
+					</h:panelGroup>
+	
+				</h:panelGrid>
+			</p:panel>
+			
+			<p:panel header="Work" toggleable="true">
+				<h:panelGrid columns="2" cellpadding="10">
+					<h:outputText value="Workplace Homepage" styleClass="profile-label" />
+					<h:inputText property="http://xmlns.com/foaf/0.1/workplaceHomepage" size="60" />
+	
+					<h:outputText value="School Homepage" styleClass="profile-label" />
+					<h:inputText property="http://xmlns.com/foaf/0.1/schoolHomepage" size="60"/>
+					
+					<h:outputText value="Current Projects" styleClass="profile-label" />
+					<h:panelGroup>
+						<ui:repeat rel="http://xmlns.com/foaf/0.1/currentProject" var="project">
+							<h:outputText property="http://www.kiwi-project.eu/kiwi/core/title" ctx="project" />
+							<h:commandLink action="#{rdf.removeRelation(project)}">
+								<h:graphicImage value="/img/type_delete.png" style="border: none;"/>
+							</h:commandLink>
+							<h:outputText value=", "  />
+						</ui:repeat>
+						<p:autoComplete completeMethod="#{kiwi.core.ui.personPerspectiveAction.autocompleteProjects}"
+										value="#{kiwi.core.ui.personPerspectiveAction.selectedCurrentProject}"
+						                var="resource" itemLabel="#{resource.label} (#{resource.namespacePrefix})"
+										itemValue="#{resource}" forceSelection="true" converter="kiwiResourceConverter"/>
+						<p:commandButton value="Add" action="#{kiwi.core.ui.personPerspectiveAction.addCurrentProject}" ajax="false"/>
+					</h:panelGroup>
+					
+					<h:outputText value="Past Projects" styleClass="profile-label" />
+					<h:panelGroup>
+						<ui:repeat rel="http://xmlns.com/foaf/0.1/pastProject" var="project">
+							<h:outputText property="http://www.kiwi-project.eu/kiwi/core/title" ctx="project"/>
+							<h:commandLink action="#{rdf.removeRelation(project)}">
+								<h:graphicImage value="/img/type_delete.png" style="border: none;"/>
+							</h:commandLink>
+							<h:outputText value=", "  />
+						</ui:repeat>
+						<p:autoComplete completeMethod="#{kiwi.core.ui.personPerspectiveAction.autocompleteProjects}"
+										value="#{kiwi.core.ui.personPerspectiveAction.selectedPastProject}"
+						                var="resource" itemLabel="#{resource.label} (#{resource.namespacePrefix})"
+										itemValue="#{resource}" forceSelection="true" converter="kiwiResourceConverter"/>
+						<p:commandButton value="Add" action="#{kiwi.core.ui.personPerspectiveAction.addPastProject}" ajax="false"/>
+					</h:panelGroup>
+					
+				</h:panelGrid>
+			</p:panel>
+		
+			<p:commandButton action="#{kiwi.core.ui.personPerspectiveAction.save()}" value="Save" />
+		</h:form>
+		
+</ui:composition>

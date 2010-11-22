@@ -1,0 +1,109 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                             "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:m="http://code.google.com/p/gmaps4jsf/"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                template="/template/kiwi/template_2col.xhtml">
+
+    <ui:define name="stylesheet">
+        <style type="text/css">
+            .aname {
+                padding: 12px;
+            }
+        </style>
+    </ui:define>
+
+     <ui:define name="sidebar">
+        <ui:include src="elements/sidebar.xhtml"/>
+    </ui:define>
+ 
+    <ui:define name="center">
+
+        <h1 class="title ui-widget-header ui-corner-all">Configure Search Index</h1>
+
+        <p:messages id="messages"/>
+
+        <h3>Parameters</h3>
+        <h:form>
+            <s:validateAll>
+                <h:panelGrid columns="2" columnClasses="aname,avalue">
+                    <h:outputLabel value="SOLR Server URL:" for="serverUrl"/>
+                    <h:inputText id="serverUrl" value="#{kiwi.admin.solrConfigurationAction.solrServer}" size="40" required="true" />
+                    <h:outputLabel value="SOLR Home Directory:" for="serverHome"/>
+                    <h:inputText id="serverHome" value="#{kiwi.admin.solrConfigurationAction.solrHome}" size="40" required="true" />                    
+                </h:panelGrid>
+           </s:validateAll>
+           <p:commandButton ajax="true" action="#{kiwi.admin.solrConfigurationAction.save()}" value="Save" />
+        </h:form><br/>
+        
+        <h3>RDF Facets</h3>
+        
+        <h:form>
+	        <rich:orderingList value ="#{kiwi.admin.solrConfigurationAction.rdfFacets}"  
+	                     var = "facet" 
+	                      id = "facetList"
+	              listHeight = "300" 
+	               listWidth = "650">
+	            <s:convertEntity/>
+	            <rich:column  width="180">
+	                <f:facet name="header">
+	                    <h:outputText value="Facet Property" />
+	                </f:facet> 
+	                <h:outputText value="#{facet.label}"/>
+	            </rich:column>
+	            <rich:column  width="50"> 
+	                <f:facet name="header">
+	                    <h:outputText value="Action" />
+	                </f:facet>
+	                <p:commandButton ajax="true" action="#{kiwi.admin.solrConfigurationAction.removeFacet(facet)}" value="Remove" reRender="facetList"/>
+	            </rich:column>
+	        </rich:orderingList>
+	    </h:form>
+	    <h:form>
+	        <s:validateAll>
+		        <h:panelGrid columns="2" columnClasses="aname,avalue">
+		            <h:panelGroup>
+				        <h:selectOneMenu value="#{kiwi.admin.solrConfigurationAction.selectedFacet}" required="true">
+				            <s:selectItems value="#{kiwi.admin.solrConfigurationAction.availableFacets}" var="type"
+				                label="#{type.title} (#{type.resource.namespacePrefix})" noSelectionLabel="Please select ..." />
+				            <kiwi:convertEntity />
+				        </h:selectOneMenu>
+		            </h:panelGroup>
+		            <h:panelGroup>
+			            <p:commandButton ajax="true" action="#{kiwi.admin.solrConfigurationAction.addFacet()}" value="Add" reRender="facetList"/>
+		            </h:panelGroup>
+		        </h:panelGrid>
+	        </s:validateAll>
+            <p:commandButton ajax="false" action="#{kiwi.admin.solrConfigurationAction.saveFacets()}" value="Save" />
+        </h:form><br/>
+        
+        <h3>Actions</h3>
+        <h:panelGrid columns="2" columnClasses="aname,avalue">
+	        <h:outputText value="Rebuild search index:" />
+	        <h:form>
+	            <p:commandButton ajax="true" action="#{kiwi.admin.solrConfigurationAction.rebuildSearchIndex()}" value="Rebuild" />
+	        </h:form>
+            <h:outputText value="Optimize search index:" />
+            <h:form>
+                <p:commandButton ajax="true" action="#{kiwi.admin.solrConfigurationAction.optimize()}" value="Optimize" />
+            </h:form>
+			<h:outputText value="Refresh CEQ values:" />
+			<h:form>
+                <p:commandButton ajax="true" action="#{kiwi.admin.solrConfigurationAction.updateCEQValues()}" value="Refresh" />
+            </h:form>
+            <h:outputText value="Rebuild semantic vectors:" />
+            <h:form>
+                <p:commandButton ajax="true" action="#{kiwi.admin.solrConfigurationAction.rebuildSemanticVectors()}" value="Rebuild" />
+            </h:form>
+        </h:panelGrid>
+    </ui:define>         
+                
+</ui:composition>

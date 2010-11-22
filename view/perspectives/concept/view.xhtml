@@ -1,0 +1,179 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+    xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+    xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:p="http://primefaces.prime.com.tr/ui"
+	xmlns:a="http://richfaces.org/a4j">
+
+
+		<style>
+	        .inplace{
+	            border: none;
+	            cursor:pointer; 
+	        }
+	        .hover {
+	            color: #{a4jSkin.generalTextColor};
+	            background-color :#{a4jSkin.tipBorderColor};
+	        }   
+		   
+		   .typelist td {
+		   		vertical-align: top;
+		   }
+	    </style> 
+		
+		<h1>Concept perspective for<h:outputText value=" "/><h:outputText property="http://www.kiwi-project.eu/kiwi/core/title"/></h1>
+		
+		<p style="margin-top: 20px; margin-left: 10px; margin-right: 10px;" class="help">
+		  The content item currently displayed represents a SKOS concept. Using this perspective,
+		  you can get additional concept related information about the content item, i.e. broader/narrower concepts, labels, etc.
+		  When you switch to "edit" mode, some of this information can also be edited. Note that inferred metadata is listed 
+		  separately. When hovering the mouse over inferred data, an explanation justifying its existance is displayed.
+		</p>
+
+		<br/>
+
+		<style>
+			.labelColumn {
+				width: 50%;
+			}
+		</style>
+
+		<p:panel header="Labels" footer="The labels listed above are associated with the concept">
+			<h:panelGrid columns="2" columnClasses="labelColumn,labelColumn" width="100%">
+				<h:panelGroup>
+					<strong>Preferred Label:</strong><br/>
+					<h:outputText value="#{skosService.getPreferredLabel(contentItem.resource)}"/>
+				</h:panelGroup>
+				<h:panelGroup>
+					<strong>Alternative Labels:</strong><br/>
+					<c:forEach items="#{skosService.listAlternativeLabels(contentItem.resource)}" var="label" varStatus="status">
+						<h:outputText value="#{label}" />
+						<c:if test="#{not status.last}">,<h:outputText value=" "/></c:if>
+			    	</c:forEach>
+				</h:panelGroup>
+			</h:panelGrid>
+		</p:panel>
+		
+		<br/>
+
+		<!-- list of superconcepts (needs proper layouting) -->
+		<p:panel header="Broader Concepts" footer="The currently displayed item is in a skos relation with the resources listed above, or the resource listed above are in a skos:narrower relation with the current resource.">
+	    	<strong>Base:</strong><br/>
+			<c:forEach items="#{skosService.listBroader(contentItem.resource,false)}" var="sc" varStatus="status">
+	    		<h:outputLink value="#{configurationService.baseUri}/home.seam?kiwiid=#{kiwi.ui.utility.encodeURL(sc.kiwiIdentifier)}">
+					<h:outputText value="#{sc.label} (#{sc.namespacePrefix})" />
+				</h:outputLink>
+				<c:if test="#{not status.last}">,<h:outputText value=" "/></c:if>
+	    	</c:forEach>
+			<br/>
+	    	<strong>Inferred:</strong><br/>
+			<c:forEach items="#{skosService.listBroader(contentItem.resource,true)}" var="sc" varStatus="status">
+                <s:link view="/home.xhtml" value="#{sc.label} (#{sc.namespacePrefix})"  propagation="none">
+                    <f:param name="title"/><f:param name="uri"/><f:param name="id" /><f:param name="kiwiid" value="#{sc.kiwiIdentifier}"/>
+                    <rich:toolTip attached="true" layout="block">
+			            <f:facet name="defaultContent">
+			                <strong>Please wait...</strong>
+			            </f:facet>
+                
+						<h:dataTable value="#{explanationService.explainTripleTextually(broaderTripleIds.get(sc), true)}" var="story">
+						  <h:column>
+		                	<h:outputText value="#{story.openingLine.body}" escape="false" style="font-weight:bold"/><h:outputText value=" #{story.openingLine.connective}" style="margin-left:5px"/>
+		                	<br/>
+						  	<h:dataTable value="#{story.body}" var="line">
+						  		<h:column>
+						  			<h:outputText value="#{line.body}" escape="false" style="font-weight:bold; margin-left:15px"/> <h:outputText value=" #{line.connective}" style="margin-left:5px"/> <br/>
+						  		</h:column>
+						  	</h:dataTable>
+						  	<br/> <br/>
+						  </h:column>
+						</h:dataTable>						                
+                    </rich:toolTip>    
+                </s:link>
+				<c:if test="#{not status.last}">,<h:outputText value=" "/></c:if>
+	    	</c:forEach>			
+		</p:panel>
+		
+		<br/>
+
+		<!-- list of subclasses (needs proper layouting) -->
+		<p:panel header="Narrower Concepts" footer="The resources listed above are in a skos:broader relation with the currently displayed item, or the current resource is in a skos:narrower relation with them.">
+	    	<strong>Base:</strong><br/>
+	    	<c:forEach items="#{skosService.listNarrower(contentItem.resource,false)}" var="sc" varStatus="status">
+	    		<h:outputLink value="#{configurationService.baseUri}/home.seam?kiwiid=#{kiwi.ui.utility.encodeURL(sc.kiwiIdentifier)}">
+					<h:outputText value="#{sc.label} (#{sc.namespacePrefix})" />
+				</h:outputLink>
+				<c:if test="#{not status.last}">,<h:outputText value=" "/></c:if>
+	    	</c:forEach>
+			<br/>
+	    	<strong>Inferred:</strong><br/>
+	    	<c:forEach items="#{skosService.listNarrower(contentItem.resource,true)}" var="sc" varStatus="status">
+                <s:link view="/home.xhtml" value="#{sc.label} (#{sc.namespacePrefix})"  propagation="none">
+                    <f:param name="title"/><f:param name="uri"/><f:param name="id" /><f:param name="kiwiid" value="#{sc.kiwiIdentifier}"/>
+                    <rich:toolTip attached="true" layout="block">
+			            <f:facet name="defaultContent">
+			                <strong>Please wait...</strong>
+			            </f:facet>
+                
+						<h:dataTable value="#{explanationService.explainTripleTextually(narrowerTripleIds.get(sc), true)}" var="story">
+						  <h:column>
+		                	<h:outputText value="#{story.openingLine.body}" escape="false" style="font-weight:bold"/><h:outputText value=" #{story.openingLine.connective}" style="margin-left:5px"/>
+		                	<br/>
+						  	<h:dataTable value="#{story.body}" var="line">
+						  		<h:column>
+						  			<h:outputText value="#{line.body}" escape="false" style="font-weight:bold; margin-left:15px"/> <h:outputText value=" #{line.connective}" style="margin-left:5px"/> <br/>
+						  		</h:column>
+						  	</h:dataTable>
+						  	<br/> <br/>
+						  </h:column>
+						</h:dataTable>						                
+                    </rich:toolTip>    
+                </s:link>
+				<c:if test="#{not status.last}">,<h:outputText value=" "/></c:if>
+	    	</c:forEach>
+		</p:panel>
+
+		<br/>
+
+		<p:panel header="Related Concepts" footer="The resources listed above are in a skos:related relation with the currently displayed item, or the current resource is in a skos:related relation with them.">
+	    	<strong>Base:</strong><br/>
+	    	<c:forEach items="#{skosService.listRelated(contentItem.resource,false)}" var="sc" varStatus="status">
+	    		<h:outputLink value="#{configurationService.baseUri}/home.seam?kiwiid=#{kiwi.ui.utility.encodeURL(sc.kiwiIdentifier)}">
+					<h:outputText value="#{sc.label} (#{sc.namespacePrefix})" />
+				</h:outputLink>
+				<c:if test="#{not status.last}">,<h:outputText value=" "/></c:if>
+	    	</c:forEach>
+			<br/>
+	    	<strong>Inferred:</strong><br/>
+	    	<c:forEach items="#{skosService.listRelated(contentItem.resource,true)}" var="sc" varStatus="status">
+                <s:link view="/home.xhtml" value="#{sc.label} (#{sc.namespacePrefix})"  propagation="none">
+                    <f:param name="title"/><f:param name="uri"/><f:param name="id" /><f:param name="kiwiid" value="#{sc.kiwiIdentifier}"/>
+                    <rich:toolTip attached="true" layout="block">
+			            <f:facet name="defaultContent">
+			                <strong>Please wait...</strong>
+			            </f:facet>
+                
+						<h:dataTable value="#{explanationService.explainTripleTextually(relatedTripleIds.get(sc), true)}" var="story">
+						  <h:column>
+		                	<h:outputText value="#{story.openingLine.body}" escape="false" style="font-weight:bold"/><h:outputText value=" #{story.openingLine.connective}" style="margin-left:5px"/>
+		                	<br/>
+						  	<h:dataTable value="#{story.body}" var="line">
+						  		<h:column>
+						  			<h:outputText value="#{line.body}" escape="false" style="font-weight:bold; margin-left:15px"/> <h:outputText value=" #{line.connective}" style="margin-left:5px"/> <br/>
+						  		</h:column>
+						  	</h:dataTable>
+						  	<br/> <br/>
+						  </h:column>
+						</h:dataTable>						                
+                </rich:toolTip>    
+                </s:link>
+				<c:if test="#{not status.last}">,<h:outputText value=" "/></c:if>
+	    	</c:forEach>
+		</p:panel>
+	        
+</ui:composition>

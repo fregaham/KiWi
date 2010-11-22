@@ -1,0 +1,62 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+    xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+    xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:a="http://richfaces.org/a4j">
+		<div class="searchResultItem">
+		 
+		   		<h2 class="result_title">
+					<kiwi:link value="#{ci.title}" contentItem="#{ci}" styleClass="searchResultTitle" />
+				</h2>
+				
+				<p class="result_author">
+					<h:outputText value="by "/>
+		                           <a:commandLink 
+		                               action="#{searchAction.searchEngine.addSearchPerson(ci.author.login)}" 
+		                               styleClass="searchAddTag" 
+		                               value="#{ci.author.login}" 
+		                               reRender="searchresults,search-keyword,articlemeta"/>
+		
+					<h:outputText value=" "/>
+					<h:outputText value="#{ci.modified}">
+						<f:convertDateTime type="both"/>
+					</h:outputText>
+				</p>
+				
+				<p class="result_tags">
+				<h:outputText style="font-weight:bold;color:#8BC53E" value="Tags: " />
+				<ui:repeat var="tag" value="#{tagCloudService.aggregateTagsByCI(ci)}" >
+					
+					<!-- Add Tag button -->
+					<a:commandLink 
+						action="#{searchAction.searchEngine.addSearchTag(tag.tagTitle)}" 
+						styleClass="searchAddTag" 
+						value="#{tag.tagTitle}" 
+						reRender="#{searchAction.renderedSearchPageParts()}" />
+					<h:outputText value=" " />
+				</ui:repeat>
+				</p>
+				
+				<p class="result_score">
+					<h:outputText style="font-weight:bold;color:#8BC53E" value="Score: " />
+					<h:outputText value="#{score}" />
+					<h:outputText style="font-weight:bold;color:#8BC53E" value=", CEQ: " />
+					<h:outputText value="#{ceq}" />
+				</p>
+				
+				<kiwi:link contentItem="#{ci}" value=" " style="">
+					<kiwi:mediaContent contentItem="#{ci}" edit="false" salt="_resItem">
+						<s:transformImageSize width="80" maintainRatio="true" />
+					</kiwi:mediaContent>
+				</kiwi:link>
+				<p class="result_preview">
+                   ...<h:outputText value="#{preview}" escape="false" />...
+                </p>
+<!-- 				<h:outputText value="#{searchAction.renderPreview(ci)}" escape="false" /> -->
+			
+		</div>
+</ui:composition>

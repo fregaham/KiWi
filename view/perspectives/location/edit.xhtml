@@ -1,0 +1,101 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+		    	xmlns:a4j="http://richfaces.org/a4j">
+		    	
+		<script type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=#{tagit2.explorerAction.gmapkey}"></script>
+		<script type="text/javascript">
+			/* <![CDATA[ */
+
+			var kiwi_location_perspective_map;
+			var kiwi_location_perspective_marker;
+			var kiwi_location_perspective_geocoder;
+			
+			var kiwi_location_perspective_start;
+			
+			jQuery(document).ready(function(){
+					
+					var lat = jQuery("#locationForm\\:lat").val();
+					var lng = jQuery("#locationForm\\:lng").val();
+					kiwi_location_perspective_map = new GMap2(document.getElementById("map"));
+					kiwi_location_perspective_geocoder = new GClientGeocoder();
+					kiwi_location_perspective_start = new GLatLng(45,12);
+				
+					if( lat!="" && lng!="" ) {
+						setMarker(new GLatLng(lat, lng));	
+					} else {
+						locate();
+					}
+        		
+					kiwi_location_perspective_map.setUIToDefault();
+		
+			});
+			
+			function setMarker(point) {
+				kiwi_location_perspective_map.setCenter(point, 12);
+				if( !kiwi_location_perspective_marker ) {
+					kiwi_location_perspective_marker = new GMarker(point,{draggable:true});
+					GEvent.addListener(kiwi_location_perspective_marker,"dragend",function(p){
+						jQuery("#locationForm\\:lat").val(p.lat());
+						jQuery("#locationForm\\:lng").val(p.lng());
+					});
+					kiwi_location_perspective_map.addOverlay(kiwi_location_perspective_marker);
+				} else  {
+					kiwi_location_perspective_marker.setLatLng(point);
+				}
+				jQuery("#locationForm\\:lat").val(point.lat());
+				jQuery("#locationForm\\:lng").val(point.lng());
+			}
+			
+			function locate() {
+				var address = jQuery("#locationForm\\:street").val()+" "+jQuery("#locationForm\\:postal").val()+" "+jQuery("#locationForm\\:city").val()+" "+jQuery("#locationForm\\:country").val();
+				if(jQuery.trim(address) == "") {
+					alert("Please insert an adress and press geolocate and/or drag and drop the marker.");
+					setMarker(kiwi_location_perspective_start);
+				} else  {
+					kiwi_location_perspective_geocoder.getLatLng(address,function(point) {
+      					if (!point) {
+							alert("No point found for "+address+"''. Marker set to "+kiwi_location_perspective_start+" by default.");
+							setMarker(kiwi_location_perspective_start);
+      					} else {
+							setMarker(point);
+      					}
+    				});
+				}
+			 }
+			 
+			 /* ]]> */
+
+		</script>
+
+
+		<h1>Location for<h:outputText value=" "/><h:outputText property="http://www.kiwi-project.eu/kiwi/core/title"/></h1>
+		
+		<p style="margin-top: 20px; margin-left: 10px; margin-right: 10px;" class="help">
+		  In the following, you can browse the location data associated with the page 
+		  '#{currentContentItem.title}'. Click on "Edit" to modify the
+		  location.
+		</p>
+		
+		<h:form id="locationForm">
+			<table style="margin-left:10px;">
+
+				<tr><td style="font-weight:bold;padding:5px;">Street:</td><td><h:inputText id="street" property="http://www.w3.org/2000/10/swap/pim/contact#street" size="40" maxlength="50"/></td></tr>
+				<tr><td style="font-weight:bold;padding:5px;">City:</td><td><h:inputText id="city" property="http://www.w3.org/2000/10/swap/pim/contact#city" size="40" maxlength="50"/></td></tr>
+				<tr><td style="font-weight:bold;padding:5px;">PostalCode:</td><td><h:inputText id="postal" property="http://www.w3.org/2000/10/swap/pim/contact#postalCode" size="40" maxlength="50"/></td></tr>
+				<tr><td style="font-weight:bold;padding:5px;">Country:</td><td><h:inputText id="country" property="http://www.w3.org/2000/10/swap/pim/contact#country" size="40" maxlength="50"/></td></tr>
+
+			</table>
+			<h:inputHidden id="lat" property="http://www.w3.org/2003/01/geo/wgs84_pos#lat" value="47.9"/>
+			<h:inputHidden id="lng" property="http://www.w3.org/2003/01/geo/wgs84_pos#long" value="13.03" />
+			<div id="map" style="width:400px;height:200px;border:1px solid black;margin-top:10px;margin-left:10px;" ></div>
+			<h:commandButton action="#{rdf.addRelation()}" value="Save" style="margin-left:10px;margin-top:10px"/>
+			<button style="font-size:14px;" onclick="locate(); return false;">Geolocate</button>
+	    </h:form> 
+</ui:composition>

@@ -1,0 +1,12 @@
+DECLARE
+    time_diff interval := action_time - create_time;
+    result double precision;
+BEGIN
+
+    result = unit_value - extract(epoch FROM time_diff) / 6000000;
+    IF result < 0 THEN
+        result = 0;
+    END IF;
+
+RETURN result;
+END;

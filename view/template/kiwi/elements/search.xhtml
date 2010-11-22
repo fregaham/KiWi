@@ -1,0 +1,11 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:s="http://jboss.com/products/seam/taglib">
+	
+		<h:form styleClass="quick-search">
+                <h:inputText value="#{searchAction.searchQuery}" size="25" autocomplete="off" id="quick-search-query" style="margin-right:5px;"/>
+                <a4j:commandButton id="hdrSearchBtn" action="#{searchAction.getSearchView()}" value="#{messages['hdr.search']}" type="submit" />
+        </h:form>
+</ui:composition>

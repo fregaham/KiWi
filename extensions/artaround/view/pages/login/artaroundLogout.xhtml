@@ -1,0 +1,51 @@
+<!--
+	Copyright © Rolf Sint, Michael Schneider, Christian Osterrieder, 2010
+ */
+ -->
+
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                             "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:m="http://code.google.com/p/gmaps4jsf/"
+			 	xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+                template="../../layout/template-3col.xhtml">
+
+	
+				 <ui:define name="body">
+      			 	 <div>
+      			 	 <fieldset class="fieldsetborder">
+      			 	 <legend>Logged Out</legend>
+      			 	 <br/>
+      			 	 <h2 style="color:#333; margin-left: 10px">Servus, Pfia Gott, und Auf Wiedersehn...</h2>
+      			 	 <br/>
+      			 	 <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" style="float:left; margin-left: 10px; margin-right:5px"/>
+      			 	 <s:link view="/artaround/home.xhtml" value="Zur ArtAround Startseite" style="margin-left:10px"/>
+	 			 	 <br/><br/>
+	 			 	 </fieldset>
+	 			 	 <br/>
+	 			 	 <fieldset class="fieldsetborder">
+	 			 	 <legend>Partner</legend>
+	 			 	 <br/>
+	 			 	 <a href="http://www.rotary.at/" style="margin-left:40px" target="_blank"><img src="#{facesContext.externalContext.requestContextPath}/view/img/rotaryLogo.png" alt="Rotary Club" title="Rotary Club"/></a>
+	 			 	 <br/><br/>
+	 			 	 <div style="border-bottom: 1px solid #ccc"></div>
+	 			 	 <br/><br/>	
+	 			 	 <a href="http://www.sos-kinderdorf.at" target="_blank"><img src="#{facesContext.externalContext.requestContextPath}/view/img/sosKinderdorf_logo.gif" alt="SOS Kinderdorf" title="SOS Kinderdorf"/></a>
+	 			 	 <br/><br/>
+	 			 	 <div style="border-bottom: 1px solid #ccc"></div>
+	 			 	 <br/><br/>
+	 			 	 <a href="http://lichtinsdunkel.orf.at/" style="margin-left:10px" target="_blank"><img src="#{facesContext.externalContext.requestContextPath}/view/img/lichtinsdunkel.jpeg" alt="ORF Licht ins Dunkel" title="ORF Licht ins Dunkel"/></a>
+	 			 	 <br/><br/>
+	 			 	  			 	
+	 			 	 </fieldset>
+      			 	 </div>
+   				 </ui:define>         
+	
+</ui:composition>

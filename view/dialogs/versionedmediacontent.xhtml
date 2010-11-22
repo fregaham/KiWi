@@ -1,0 +1,42 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:kiwi="http://www.kiwi-project.eu/jsf">
+
+	<!--  commenting functionality -->
+	<rich:togglePanel id="versionedMediaContent" switchType="ajax"
+		stateOrder="closed,open">
+		<f:facet name="closed">
+			<rich:toggleControl style="color: #8BC53E;text-decoration:none;">
+				<h3 class="versionedMediaContentClosed" style="color: #8BC53E;text-decoration:none;">MediaContent</h3>
+			</rich:toggleControl>
+		</f:facet>
+
+		<f:facet name="open">
+ 		<f:subview id="versionedMediaContentPanel"> 
+			<rich:toggleControl style="color: #8BC53E;text-decoration:none;">
+				<h3 class="versionedMediaContentOpen">MediaContent</h3>
+			</rich:toggleControl>
+			
+			<s:div id="media_content">
+				   	<s:div rendered="#{kiwi.action.revision.previewAction.mediaContent == null}" style="width: 96%; margin: 1%; padding: 10px; border:1px solid red; text-align: center;">
+				   		No media content associated with this version.
+				    </s:div>
+				    <s:div rendered="#{kiwi.action.revision.previewAction.mediaContent != null}" style="width: 100%; margin: 10px; text-align: center">
+				    	<center>
+					    	<s:graphicImage style="padding: 3px; border: 1px solid black;"
+					    					value="#{kiwi.action.revision.previewAction.mediaContent.data}" 
+					    	                fileName="#{kiwi.action.revision.previewAction.mediaContent.fileName}"/>
+				    	</center>
+				    </s:div>
+			    </s:div>
+			
+ 		</f:subview>
+		</f:facet>
+	</rich:togglePanel>
+</ui:composition>

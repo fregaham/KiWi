@@ -1,0 +1,56 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:m="http://code.google.com/p/gmaps4jsf/"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                template="/template/kiwi/template_2col.xhtml">
+
+    <ui:define name="sidebar">
+        <ui:include src="elements/sidebar.xhtml"/>
+    </ui:define>
+
+    <ui:define name="center">
+
+        <a:outputPanel id="userInteractionPanel" >
+            <h:form>
+                <h1 class="title ui-widget-header ui-corner-all">Compute User Interactions</h1>
+                <rich:messages styleClass="message"/>
+
+                <p:commandButton ajax="false"  value="compute" action="#{userInteractionAction.computeUserInteractions()}"/>
+
+                <p:commandButton ajax="false" value="clean" action="#{userInteractionAction.deleteUserInteractions()}"/>
+
+
+                <br/><br/>
+                <h3>User Interactions</h3>
+
+                <s:span id="userInteractionSpan" rendered="#{userInteractionAction.getUserInteractions().size() &gt; 0}">
+                    <div><ul>
+                            <ui:repeat var="userInteraction" value="#{userInteractionAction.getUserInteractions()}" >
+                                <li><b>
+                                        <h:outputText value="Users: "/></b><h:outputText value="#{userInteraction.user2.firstName}"/>
+                                    <h:outputText value=" x "/>
+                                    <h:outputText value="#{userInteraction.user.firstName}"/>
+                                    <h:outputText value=" = "/>
+                                    <h:outputText value="#{userInteraction.interactivity}"/>
+                                </li>
+                            </ui:repeat>
+                        </ul><br/>
+                    </div>
+                </s:span>
+                <s:span id="noInteractionss" rendered="#{userInteractionAction.getUserInteractions().size() &lt;= 0}">
+                    <h:outputText value="No user interactions found"/>
+                </s:span>
+            </h:form>
+        </a:outputPanel>
+    </ui:define>
+
+</ui:composition>

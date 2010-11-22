@@ -1,0 +1,143 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE rdf:RDF [
+<!ENTITY owl "http://www.w3.org/2002/07/owl#">
+<!ENTITY xsd "http://www.w3.org/2001/XMLSchema#">
+<!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#">
+<!ENTITY hgtags "http://www.holygoat.co.uk/owl/redwood/0.1/tags/">
+<!ENTITY sioc "http://rdfs.org/sioc/ns#">
+<!ENTITY foaf "http://xmlns.com/foaf/0.1/">
+<!ENTITY cont "http://www.w3.org/2000/10/swap/pim/contact#">
+<!ENTITY geo "http://www.w3.org/2003/01/geo/wgs84_pos#">
+<!ENTITY kiwi "http://www.kiwi-project.eu/kiwi/core/">
+<!ENTITY logica "http://www.kiwi-project.eu/kiwi/logica/">
+<!ENTITY ideator "http://www.ideator.at/">
+<!ENTITY skos "http://www.w3.org/2004/02/skos/core#">
+<!ENTITY artaround "http://www.artaround.at/">
+<!ENTITY edukms "http://www.edukms.at/">
+<!ENTITY dc "http://purl.org/dc/elements/1.1/">]>
+
+
+<rdf:RDF 
+	xmlns:rdf="&rdf;"
+	xmlns:rdfs="&rdfs;"
+	xmlns:owl="&owl;"
+	xmlns:dc="&dc;"
+	xmlns:foaf="&foaf;"
+	xmlns:kiwi="&kiwi;"
+	xmlns:geo="&geo;"
+	xmlns:cont="&cont;"
+	xmlns:hgtags="&hgtags;"
+	xmlns:sioc="&sioc;"
+	xmlns:ideator="&ideator;"
+	xmlns:skos="&skos;"
+	xmlns:artaround="&artaround;"
+	xmlns:edukms="&edukms;"
+	xml:base="http://users.fh-salzburg.ac.at/~fhs12575/ontology/">
+    
+    <!-- Edukms root concept schema --> 
+   	<rdf:Description rdf:about="&edukms;EdukmsThesaurus">
+        <rdf:type rdf:resource="&skos;ConceptScheme"/>
+        <rdfs:label>Edukms Thesaurus</rdfs:label>
+        <skos:hasTopConcept rdf:resource="&edukms;bigIdeas"/>
+         <skos:hasTopConcept rdf:resource="&edukms;representationType"/>
+    </rdf:Description>
+    
+    <!-- ABCMaths Big Idea -->
+    <rdf:Description rdf:about="&edukms;bigIdeas">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en">Big Idea</skos:prefLabel>
+        <skos:definition xml:lang="en">This is the corresponding Big Idea of ABCMaths Resources</skos:definition>
+        <skos:narrower rdf:resource="&edukms;functionalDependence"/>         
+        <skos:narrower rdf:resource="&edukms;argumentationProof"/>  
+        <skos:narrower rdf:resource="&edukms;infinity"/>
+        <skos:narrower rdf:resource="&edukms;multipleRepresentation"/>
+        <skos:narrower rdf:resource="&edukms;insecurityVariationRandomDeviations"/>
+        <skos:narrower rdf:resource="&edukms;doingUndoingInverting"/>
+        <skos:narrower rdf:resource="&edukms;specialisationGeneralisation"/>
+            
+    </rdf:Description>
+    
+    
+    <rdf:Description rdf:about="&edukms;functionalDependence">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en">functional dependence</skos:prefLabel>
+        <skos:definition xml:lang="en">--</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
+    </rdf:Description>
+    
+    <rdf:Description rdf:about="&edukms;argumentationProof">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en"><![CDATA[argumentation/proof]]></skos:prefLabel>
+        <skos:definition xml:lang="en">--</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
+    </rdf:Description>
+    
+     <rdf:Description rdf:about="&edukms;infinity">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en">infinity</skos:prefLabel>
+        <skos:definition xml:lang="en">--</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
+    </rdf:Description>
+    
+    <rdf:Description rdf:about="&edukms;multipleRepresentation">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en">multiple representation</skos:prefLabel>
+        <skos:definition xml:lang="en">--</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
+    </rdf:Description>
+    
+    <rdf:Description rdf:about="&edukms;insecurityVariationRandomDeviations">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en"><![CDATA[insecurity/variation,random deviations]]></skos:prefLabel>
+        <skos:definition xml:lang="en">--</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
+    </rdf:Description>
+    
+    <rdf:Description rdf:about="&edukms;doingUndoingInverting">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en"><![CDATA[doing/undoing,inverting]]></skos:prefLabel>
+        <skos:definition xml:lang="en">--</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
+    </rdf:Description>
+    
+    <rdf:Description rdf:about="&edukms;specialisationGeneralisation">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en"><![CDATA[specialisation/generalisation]]></skos:prefLabel>
+        <skos:definition xml:lang="en">--</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
+    </rdf:Description>
+    
+    
+    <!-- Edukms Representation Type -->
+    <rdf:Description rdf:about="&edukms;representationType">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en">Representation Type</skos:prefLabel>
+        <skos:definition xml:lang="en">This is the representation type of EduKMS Resources</skos:definition>
+        <skos:narrower rdf:resource="&edukms;graphic"/>
+        <skos:narrower rdf:resource="&edukms;numeric"/>
+        <skos:narrower rdf:resource="&edukms;symbolic"/>
+    </rdf:Description>
+    
+     <rdf:Description rdf:about="&edukms;graphic">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en">graphic</skos:prefLabel>
+        <skos:definition xml:lang="en">--</skos:definition>
+        <skos:broader rdf:resource="&edukms;representationType"/>
+    </rdf:Description>
+    
+    <rdf:Description rdf:about="&edukms;numeric">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en">numeric</skos:prefLabel>
+        <skos:definition xml:lang="en">--</skos:definition>
+        <skos:broader rdf:resource="&edukms;representationType"/>
+    </rdf:Description>
+    
+     <rdf:Description rdf:about="&edukms;symbolic">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en">symbolic</skos:prefLabel>
+        <skos:definition xml:lang="en">--</skos:definition>
+        <skos:broader rdf:resource="&edukms;representationType"/>
+    </rdf:Description>
+   
+</rdf:RDF>

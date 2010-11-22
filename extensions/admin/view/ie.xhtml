@@ -1,0 +1,235 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:m="http://code.google.com/p/gmaps4jsf/"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                template="/template/kiwi/template_2col.xhtml">
+
+    <ui:define name="stylesheet">
+        <style type="text/css">
+            .aname {
+                padding: 6px;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="sidebar">
+        <ui:include src="elements/sidebar.xhtml"/>
+    </ui:define>
+
+    <ui:define name="center">
+
+        <h1 class="title ui-widget-header ui-corner-all">Configure Information Extraction</h1>
+
+        <p:messages showDetail="false"/>
+
+        <p:tabView>
+            <p:tab title="General">
+                <h:form>
+                    <s:validateAll>
+                        <h3 class="subsection">Parameters</h3>
+                        <h:panelGrid columns="2" columnClasses="aname,avalue">
+
+                            <h:outputLabel for="enabledCheckbox">Enabled</h:outputLabel>
+                            <h:selectBooleanCheckbox
+                                value="#{kiwi.admin.ieConfigurationAction.enabled}"
+                                id="enabledCheckbox" />
+
+                            <h:outputLabel for="onlineCheckbox">Online</h:outputLabel>
+                            <h:selectBooleanCheckbox
+                                value="#{kiwi.admin.ieConfigurationAction.online}"
+                                id="onlineCheckbox" />
+
+                            <h:outputText value="GATE Path:" />
+                            <h:inputText value="#{kiwi.admin.ieConfigurationAction.gatePath}"
+                                         size="90" required="false" />
+
+                        </h:panelGrid>
+
+                    </s:validateAll>
+
+                    <div style="width:660px; text-align: center;margin-top:10px;">
+                        <p:commandButton
+                            action="#{kiwi.admin.ieConfigurationAction.submit()}" value="Save" ajax="false"/>
+                        <span style="margin-left:10px"/>
+                        <p:commandButton
+                            action="#{kiwi.admin.ieConfigurationAction.init()}" value="Re-Initialize GATE" ajax="false"/>
+                    </div>
+                </h:form>
+
+            </p:tab>
+            <p:tab title="Machine Learning">
+                <h:form>
+                    <div><p:commandButton
+                            action="#{kiwi.admin.ieConfigurationAction.initInstances()}"
+                            value="Init instances" ajax="false"/></div>
+
+                    <div style="margin-top:10px;"><rich:dataTable var="cls" columnClasses="aname,avalue"
+                                                                  value="#{kiwi.admin.ieConfigurationAction.classifiers}">
+                            <rich:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Resource" />
+                                </f:facet>
+                                <s:div render="#{cls.resource != null}">
+                                    <h:outputText value="#{cls.resource.contentItem.title}" />
+                                </s:div>
+                            </rich:column>
+
+                            <rich:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Extractlet" />
+                                </f:facet>
+                                <h:outputText value="#{cls.extractletName}" />
+                            </rich:column>
+
+                            <rich:column>
+                                <p:commandButton
+                                    action="#{kiwi.admin.ieConfigurationAction.deleteClassifier(cls)}"
+                                    value="Delete" ajax="false" />
+                            </rich:column>
+                        </rich:dataTable></div>
+                    <div style="margin-top:10px;">Tag: <h:inputText
+                            value="#{kiwi.admin.ieConfigurationAction.classifierTag}" />
+                        <h:outputText value="Type:" style="margin-left:10px;" /><h:selectOneMenu
+                            value="#{kiwi.admin.ieConfigurationAction.extractletName}">
+                            <s:selectItems
+                                value="#{kiwi.admin.ieConfigurationAction.extractletNames}"
+                                var="x" label="#{x}" />
+                        </h:selectOneMenu> <p:commandButton
+                            action="#{kiwi.admin.ieConfigurationAction.createClassifier}"
+                            value="Create" ajax="false" style="margin-left:10px;"/></div>
+                </h:form>
+            </p:tab>
+            <p:tab title="Entity and Term Recognition">
+
+                <h3 class="subsection">Labels</h3>
+                <h:form>
+                    <p>There are <h:outputText value=" #{kiwi.admin.ieConfigurationAction.labelCount} "/> labels.</p>
+                    <p><p:commandButton value="Init Labels" action="#{kiwi.admin.ieConfigurationAction.initLabels}" ajax="false"/></p>
+                </h:form>
+
+                <h3 class="subsection">Entity categories</h3>
+                <h:form>
+                    <rich:orderingList columnClasses="aname,avalue"
+                                       value="#{kiwi.admin.ieConfigurationAction.entityTypes}" var="type"
+                                       id="typeList" listHeight="300" listWidth="650">
+                        <s:convertEntity />
+                        <rich:column width="180">
+                            <f:facet name="header">
+                                <h:outputText value="Type" />
+                            </f:facet>
+                            <h:outputText value="#{type.label}" />
+                        </rich:column>
+                        <rich:column width="50">
+                            <f:facet name="header">
+                                <h:outputText value="Action" />
+                            </f:facet>
+                            <p:commandButton
+                                action="#{kiwi.admin.ieConfigurationAction.removeEntityType(type)}"
+                                value="Remove" update="typeList" />
+                        </rich:column>
+                    </rich:orderingList>
+                </h:form>
+                <h:form>
+                    <s:validateAll>
+                        <h:panelGrid columns="2" columnClasses="aname,avalue">
+                            <h:panelGroup>
+                                <h:selectOneMenu
+                                    value="#{kiwi.admin.ieConfigurationAction.selectedEntityType}"
+                                    required="true">
+                                    <s:selectItems
+                                        value="#{kiwi.admin.ieConfigurationAction.availableEntityTypes}"
+                                        var="type"
+                                        label="#{type.title} (#{type.resource.namespacePrefix})"
+                                        noSelectionLabel="Please select ..." />
+                                    <kiwi:convertEntity />
+                                </h:selectOneMenu>
+                            </h:panelGroup>
+                            <h:panelGroup>
+                                <p:commandButton
+                                    action="#{kiwi.admin.ieConfigurationAction.addEntityType()}"
+                                    value="Add" update="typeList" />
+                            </h:panelGroup>
+                        </h:panelGrid>
+                    </s:validateAll>
+                    <div style="width:660px;text-align: center;margin-top:10px;">
+                        <p:commandButton
+                            action="#{kiwi.admin.ieConfigurationAction.saveEntityTypes()}"
+                            value="Save" ajax="false"/>
+                    </div>
+                </h:form>
+            </p:tab>
+
+            <p:tab title="Sun Use Case">
+                <h:form>
+                    <rich:dataTable columnClasses="aname,avalue"
+                                    value="#{kiwi.admin.ieConfigurationAction.taxonomyConcepts}" var="c"
+                                    id="taxonomyConceptsList" listHeight="300" listWidth="650">
+                        <rich:column width="180">
+                            <f:facet name="header">
+                                <h:outputText value="Concept" />
+                            </f:facet>
+                            <h:outputText value="#{c.concept.label}" />
+                        </rich:column>
+                        <rich:column width="50">
+                            <f:facet name="header">
+                                <h:outputText value="Top Level Concept" />
+                            </f:facet>
+                            <h:outputText value="#{c.topLevelConcept.label}" />
+                        </rich:column>
+                        <rich:column width="50">
+                            <f:facet name="header">
+                                <h:outputText value="Level" />
+                            </f:facet>
+                            <h:outputText value="#{c.level}" />
+                        </rich:column>
+                    </rich:dataTable>
+
+                    <p:commandButton action="#{kiwi.admin.ieConfigurationAction.clearTaxonomyConcepts()}" value="Clear" update="taxonomyConceptsList"/>
+                </h:form>
+                <h:form>
+                    <s:validateAll>
+                        <h:panelGrid columns="3" columnClasses="aname,avalue">
+                            <h:panelGroup>
+                                <h:selectOneMenu
+                                    value="#{kiwi.admin.ieConfigurationAction.topLevelConcept}"
+                                    required="true">
+                                    <s:selectItems
+                                        value="#{kiwi.admin.ieConfigurationAction.topLevelConcepts}"
+                                        var="c"
+                                        label="#{c.title} (#{c.resource.namespacePrefix})"
+                                        noSelectionLabel="Please select ..." />
+                                    <kiwi:convertEntity />
+                                </h:selectOneMenu>
+                            </h:panelGroup>
+                            <h:panelGroup style="margin-left:10px;">
+                                <h:outputText value="Level:" /> <h:inputText value="#{kiwi.admin.ieConfigurationAction.conceptLevel}" required="true"/>
+                            </h:panelGroup>
+                            <h:panelGroup style="margin-left:10px;">
+                                <p:commandButton
+                                    action="#{kiwi.admin.ieConfigurationAction.addTopLevelConcept()}"
+                                    value="Add" update="taxonomyConceptsList" />
+                            </h:panelGroup>
+                        </h:panelGrid>
+                    </s:validateAll>
+                    <div style="width:600px;text-align: center;">
+                        <p:commandButton
+                            action="#{kiwi.admin.ieConfigurationAction.saveTaxonomyConcepts()}"
+                            value="Save" ajax="false"/>
+                    </div>
+                </h:form>
+            </p:tab>
+
+        </p:tabView>
+
+    </ui:define>
+
+</ui:composition>

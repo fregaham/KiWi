@@ -1,0 +1,55 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                template="/template/kiwi/template_2col.xhtml">
+
+    <ui:define name="sidebar">
+        <ui:include src="layout/sidebar.xhtml"/>
+    </ui:define>
+
+    <ui:define name="stylesheet">
+        <style type="text/css">
+            .aname {
+                padding: 12px;
+            }
+        </style>
+    </ui:define>
+
+
+    <ui:define name="center">
+
+        <h1 class="title ui-widget-header ui-corner-all">
+            KiWi Inspector - Current Content Item</h1>
+
+        <hr />
+
+        <h:panelGrid columns="2" columnClasses="name,inspector-value,aname">
+            <strong>Title</strong>
+            <s:div>#{currentContentItem.title}</s:div>
+
+            <strong>KiWi ID</strong>
+            <s:div>#{currentContentItem.resource.kiwiIdentifier}</s:div>
+
+            <strong>Author</strong>
+            <s:div>#{currentContentItem.author.login}</s:div>
+
+            <strong>Created</strong>
+            <s:div>#{currentContentItem.created}</s:div>
+
+            <strong>RDF</strong>
+            <s:div style="white-space:pre; font-family: monospace;">
+                <f:verbatim>#{inspectorAction.contentItemRDF}</f:verbatim>
+            </s:div>
+
+        </h:panelGrid>
+
+
+    </ui:define>
+</ui:composition>

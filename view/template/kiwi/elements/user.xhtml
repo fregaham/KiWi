@@ -1,0 +1,23 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:s="http://jboss.com/products/seam/taglib">
+	
+				<h:outputText value="#{messages['hdr.welcome']}, #{currentUser.firstName} #{currentUser.lastName}!"
+	                       rendered="#{not (currentUser.login eq 'anonymous') }" />
+            
+                <s:fragment rendered="#{currentUser.login eq 'anonymous'}">
+		            <s:link action="login" 
+		                     value="#{messages['hdr.login']}" />
+                </s:fragment>	
+                                    
+	            <h:outputText value=" - " />
+	
+	            <s:link action="register" 
+	                     value="#{messages['hdr.signup']}"
+	                  rendered="#{currentUser.login eq 'anonymous'}" />
+	        
+	            <s:link action="#{identityManagerService.logout}" 
+	                     value="#{messages['hdr.logout']}"
+	                  rendered="#{not (currentUser.login eq 'anonymous')}" />	    
+</ui:composition>

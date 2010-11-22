@@ -1,0 +1,9 @@
+<div xmlns="http://www.w3.org/1999/xhtml" xmlns:kiwi="http://www.kiwi-project.eu/kiwi/html/" kiwi:type="page">
+	<p>bla 
+		<a kiwi:kind="intlink" 
+				kiwi:target="uri::http://localhost:8080/KiWi/content/2b16d1af-5865-4ce9-a6ca-a1254ea04523">
+			tralalala
+		</a>
+		test1
+	</p>
+</div>

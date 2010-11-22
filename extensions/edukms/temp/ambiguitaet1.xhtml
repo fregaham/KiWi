@@ -1,0 +1,308 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	template="layout/main.xhtml">
+
+	<ui:define name="breadcrumps">
+		<ul>
+			<li class="first"><s:link
+				view="/dkms/authorInterface/home.xhtml" value="AI Startseite" /></li>
+			<li><s:link
+				view="/dkms/authorInterface/angabeChangeEditor.xhtml"
+				value="Inhalte Suchen" /></li>
+		</ul>
+	</ui:define>
+
+	<ui:define name="body">
+
+		<style>
+h1 {
+	color: #6f91c0;
+	font-size: 16px;
+	margin-left: 20px;
+	margin-right: 10px;
+	line-hight: 20px;
+}
+
+ul li {
+	list-style-image: url(../img/li.png);
+	color: #6f91c0;
+	font-size: 14px;
+	margin-left: 30px;
+	margin-top: 5px;
+}
+
+li img {
+	vertical-align: center;
+}
+
+h2 {
+	color: #6f91c0;
+	font-size: 14px;
+	margin-left: 20px;
+	margin-top: -15px;
+}
+
+h3 {
+	color: #6f91c0;
+	font-size: 12px;
+	margin-left: 20px;
+	margin-top: -15px;
+	font-weight: 400;
+}
+
+h4 {
+	color: #6f91c0;
+	font-size: 12px;
+	margin:3px;
+	font-weight: 500;
+}
+
+h5 {
+	font-size: 10px;
+	margin:3px;
+	font-weight: 300;
+}
+
+.column {
+	width: 600px;
+	vertical-align: top;
+}
+
+#cover {
+	margin: 10px 0 0 0;
+	width: 800px;
+}
+
+#arrows {
+	width: 630px;
+	margin: 20px;
+}
+
+#editor {
+	margin: 20px 20px 20px 20px;
+	
+}
+
+.buttonclass {
+
+	text-decoration: none;
+	margin-right: 5px;
+
+}
+
+#buttons {
+	
+	/*border-bottom: 1px solid #FFE8C3; */
+	padding:10px;
+
+}
+
+#trennlinie {
+	
+	border-bottom: 1px solid #FFE8C3; 
+	margin:20px;
+
+}
+
+#meaning, #spezial, #general {
+
+	width:145px; 
+	border:0; 
+	scrollbar-3dlight-color:#26221F;
+	scrollbar-arrow-color:#26221F;
+	scrollbar-base-color:#2C2925;
+	scrollbar-darkshadow-color:#26221F;
+	scrollbar-face-color:#26221F;
+	scrollbar-highlight-color:#2C2925;
+	scrollbar-shadow-color:#2C2925"
+
+}
+
+
+</style>
+		<h:form>
+		<div id="cover"><!-- start cover -->
+
+		<fieldset class="fieldsetborder" style="margin-left: -160px; margin-right: 10px; float:left; width:750px; height:670px">
+		
+		 
+		
+			<div><img style="margin: 12px 15px 0 15px; float: left;"
+				src="#{facesContext.externalContext.requestContextPath}/view/img/search_small.png" /><br />
+			<h2 style="margin-top: 1px;">Such-Assistent: Hier koennen Sie organisiert nach Inhalten suchen :</h2>
+			<br />		
+			
+			
+			<h3 style="margin: 0 0 0 22px">Schritt 1: Geben Sie einen entsprechenden Suchbegriff ein</h3>
+			<br/>
+			<h3 style="margin: 0 0 0 22px">Schritt 2: Waehlen Sie aus mehreren Dimensionen</h3>
+			</div>
+			
+			<div style="margin:15px 0 0 18px; width:700px; height:600px">
+			 <h:form>
+			 	<table><tr>
+			 	<td><!-- 1. Spalte -->
+			 	<table width="15%" border="0">
+				  <tr> 
+				    <td width="60%" style="border:1px solid #FFE8C3"><h4>Suchbegriff:</h4></td>
+				    <td width="40%" style="border:1px solid #FFE8C3"><img src="#{facesContext.externalContext.requestContextPath}/view/img/liste_verysmall.png" title="Begriff aus Liste waehlen" width="15" height="17" align="left" style="margin-right:3px"/><h4>Liste</h4> </td>
+				  </tr>
+				  <tr> 
+				    <td colspan="2" style="border:1px solid #FFE8C3"><h:inputText value="" />
+				    </td>
+				  </tr>
+				  <tr>
+				  	 <td colspan="2" style="border:1px solid #FFE8C3">
+				  	    <div style="display:block">
+				  	    <h4>Was meinen Sie?</h4>
+				  	    </div>
+				  	</td>
+				  </tr>
+				  <tr>
+				  	<td colspan="2" style="border:1px solid #FFE8C3">
+				  		<select id="meaning" size="5" name="select" >
+						    <option>Funktion (math.)</option>
+						    <option>Funktion (inf.)</option>
+				
+						</select>
+				  	</td>
+				  </tr>
+				 <tr>
+				  	<td colspan="2" style="border:1px solid #FFE8C3">
+				  		<h4>Synonyme</h4>
+				  	</td>
+				  </tr>
+				  <tr>
+				  	<td colspan="2" style="border:1px solid #FFE8C3">
+				  		<h5>&#160;</h5>
+				  		<h5>&#160;</h5>
+				  	</td>
+				  </tr>
+				</table>
+			 </td>
+			 <td> <!-- 2. Spalte -->
+			 	<table width="15%" border="0">
+				  <tr> 
+				    <td width="60%" style="border:1px solid #FFE8C3"><h4>Spezialisierung:</h4></td>
+				  </tr>
+				 
+				 
+				  <tr>
+				  	<td style="border:1px solid #FFE8C3">
+				  		<select id="spezial" size="5" name="select" >
+						 
+				
+						</select>
+				  	</td>
+				  </tr>
+				  <tr><td height="4px"></td>
+				  </tr>
+				  <tr><td></td>
+				  </tr>
+				  <tr>
+				  	<td style="border:1px solid #FFE8C3">
+				  		<h4>Generalisierung:</h4>
+				  	</td>
+				  </tr>
+				 <tr>
+				  	<td style="border:1px solid #FFE8C3">
+				  		<select id="general" size="5" name="select" >
+						  
+						   
+				
+						</select>
+				  	</td>
+				  </tr>
+				</table>
+			 </td>
+			  <td> <!-- 3. Spalte -->
+			 	<table width="15%" border="0">
+				  <tr> 
+				    <td width="60%" style="border:1px solid #FFE8C3"><h4>Repraesentation:</h4></td>
+				  </tr>
+				 
+				 
+				  <tr>
+				  	<td style="border:1px solid #FFE8C3">
+				  		<select id="spezial" size="5" multiple="multiple">
+						  
+				
+						</select>
+				  	</td>
+				  </tr>
+				  <tr><td height="4px"></td>
+				  </tr>
+				  <tr><td></td>
+				  </tr>
+				  <tr>
+				  	<td style="border:1px solid #FFE8C3">
+				  		<h4>Intention:</h4>
+				  	</td>
+				  </tr>
+				 <tr>
+				  	<td style="border:1px solid #FFE8C3">
+				  		<select id="general" size="5" multiple="multiple">
+						 
+						   
+				
+						</select>
+				  	</td>
+				  </tr>
+				</table>
+			 </td>
+			 <td> <!-- 4. Spalte -->
+			 	<table width="15%" border="0" >
+				  <tr> 
+				    <td width="60%" style="border:1px solid #FFE8C3; "><h4>Verwandte Themen:</h4></td>
+				  </tr>
+				 
+				 
+				  <tr>
+				  	<td style="border:1px solid #FFE8C3; height: 205px;">
+				  		<select id="spezial" size="5" multiple="multiple" style="height: 190px;">
+						  
+				
+						</select>
+				  	</td>
+				  </tr>
+				</table>
+			 </td>
+			 </tr></table>
+		
+			 </h:form>
+			</div>
+
+					
+			
+		
+		</fieldset>
+		<fieldset class="fieldsetborder" style="width: 270px; height: 700px; ">
+		<div id="buttons">
+		
+			<h:commandLink class="buttonclass"  action="#{dkmsStoreAction.preview()}" ><img src="#{facesContext.externalContext.requestContextPath}/view/img/vorschau_symbol.png" style="valign:center; vertical-align:middle; margin-right:5px; margin-top:5px"  /> Vorschau</h:commandLink>
+			<br/><br/>
+			<h:commandLink class="buttonclass"  action="jQuery('#uploadPic').fadeIn('fast')" style="margin-left:8px"><img src="#{facesContext.externalContext.requestContextPath}/view/img/upload_arrow.png" style="valign:center; vertical-align:middle; margin-right:8px; margin-top:5px"  /> Bilder hochladen </h:commandLink>
+			<br/><br/>
+			<h:commandLink	class="buttonclass" action="#{dkmsBasicAction.nextToSequenceController()}" >
+				<img title="Weiter"
+					src="#{facesContext.externalContext.requestContextPath}/view/img/arrowright_small.png" style="vertical-align:middle; margin-right: 5px; margin-left:8px"/>Weiter
+			</h:commandLink>
+		</div>
+		<div id="trennlinie"></div>
+		<div id="verzeichnis">
+			<img src="#{facesContext.externalContext.requestContextPath}/view/img/images_ordner_small.png" style="valign:center; vertical-align:middle; margin-right:3px; margin-left:14px"  /> Bild Adressen:
+		
+		</div>
+		<div id="trennlinie"></div>
+		</fieldset>
+		</div>
+		</h:form>
+		<!-- end cover -->
+		
+	</ui:define>
+</ui:composition>

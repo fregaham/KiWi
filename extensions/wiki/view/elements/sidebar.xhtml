@@ -1,0 +1,109 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:c="http://java.sun.com/jstl/core"
+      			xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:rich="http://richfaces.org/rich"
+     			xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:f="http://java.sun.com/jsf/core"
+      			xmlns:a="http://richfaces.org/a4j"
+               xmlns:s="http://jboss.com/products/seam/taglib">
+
+
+    <h2 class="box_title">Navigation</h2>
+    <ul class="box_content">
+        <li><a href="#{configurationService.baseUri}/home.seam?uri=#{kiwi.ui.utility.encodeURL(configurationService.startPage)}">home</a></li>
+        <c:forEach var="page" items="#{wikiPageLinkAction.entries}">
+            <li><a href="#{configurationService.baseUri}/home.seam?uri=#{kiwi.ui.utility.encodeURL(wikiPageLinkAction.getURI(page))}">#{page.linkname}</a></li>
+        </c:forEach>
+    </ul>
+
+
+   <rich:modalPanel id="paDlg" width="450" height="200">
+        <f:facet name="header">
+            <h:panelGroup>
+                <h:outputText value="#{kiwi.ui.pageActionsAction.dlgHeader}"></h:outputText>
+            </h:panelGroup>
+        </f:facet>
+        <f:facet name="controls">
+            <h:panelGroup>
+                <h:graphicImage value="/images/modal/close.png" styleClass="hidelink" id="hidelink"/>
+                <rich:componentControl for="paDlg" attachTo="hidelink" operation="hide" event="onclick"/>
+            </h:panelGroup>
+        </f:facet>
+		<center>
+			<h:form>
+		        <h:panelGrid columns="2" style="margin-bottom:10px">  
+			    	<h:outputText value="Title: " />
+					<h:inputText value="#{kiwi.ui.pageActionsAction.title}" />  
+		        </h:panelGrid>  
+		
+				<h:commandButton value="Submit" action="#{kiwi.ui.pageActionsAction.save()}" />
+			</h:form>
+		</center>
+    </rich:modalPanel>
+
+	<h2 class="box_title" style="margin-top: 10px;">Actions</h2>
+	<h:form>
+		<ul class="box_content">
+			<li>
+				<a:commandLink action="#{kiwi.ui.pageActionsAction.setMode('wikipage')}" oncomplete="#{rich:component('paDlg')}.show();" reRender="paDlg"><h:outputText value="Create Page" /></a:commandLink>
+			</li>
+			<li>
+				<a:commandLink action="#{kiwi.ui.pageActionsAction.setMode('media')}" oncomplete="#{rich:component('paDlg')}.show();" reRender="paDlg"><h:outputText value="Create Media" /></a:commandLink>
+			</li>
+			<li>
+				<a:commandLink action="#{kiwi.ui.pageActionsAction.setMode('event')}" oncomplete="#{rich:component('paDlg')}.show();" reRender="paDlg"><h:outputText value="Create Event" /></a:commandLink>
+			</li>
+			<li>
+				<a:commandLink action="#{kiwi.ui.pageActionsAction.setMode('location')}" oncomplete="#{rich:component('paDlg')}.show();" reRender="paDlg"><h:outputText value="Create Location" /></a:commandLink>
+			</li>
+			<li>
+				<a:commandLink action="#{kiwi.ui.pageActionsAction.setMode('person')}" oncomplete="#{rich:component('paDlg')}.show();" reRender="paDlg"><h:outputText value="Create Person" /></a:commandLink>
+			</li>
+			<li>
+				<a:commandLink action="#{kiwi.ui.pageActionsAction.setMode('concept')}" oncomplete="#{rich:component('paDlg')}.show();" reRender="paDlg"><h:outputText value="Create SKOS Concept" /></a:commandLink>
+			</li>
+			<li>
+				<a:commandLink action="#{kiwi.ui.pageActionsAction.setMode('class')}" oncomplete="#{rich:component('paDlg')}.show();" reRender="paDlg"><h:outputText value="Create OWL Class" /></a:commandLink>
+			</li>
+			<li>
+				<a:commandLink action="#{kiwi.ui.pageActionsAction.setMode('objectproperty')}" oncomplete="#{rich:component('paDlg')}.show();" reRender="paDlg"><h:outputText value="Create OWL Object Property" /></a:commandLink>
+			</li>
+			<li>
+				<a:commandLink action="#{kiwi.ui.pageActionsAction.setMode('dataproperty')}" oncomplete="#{rich:component('paDlg')}.show();" reRender="paDlg"><h:outputText value="Create OWL Datatype Property" /></a:commandLink>
+			</li>
+		</ul>
+	</h:form>
+
+
+<!--
+	<p:dialog header="#{kiwi.ui.pageActionsAction.dlgHeader}" id="dialog" widgetVar="dlg" modal="true" height="200">  
+		<h:form>
+	        <h:panelGrid columns="2" style="margin-bottom:10px">  
+		    	<h:outputText value="Title: " />
+				<h:inputText value="#{kiwi.ui.pageActionsAction.title}" />  
+	        </h:panelGrid>  
+	
+			<p:commandButton value="Submit" actionListener="#{kiwi.ui.pageActionsAction.save()}" ajax="false" oncomplete="dlg.hide();"/>
+		</h:form>
+	</p:dialog>   
+
+	<h2 class="box_title" style="margin-top: 10px;">Actions</h2>
+	<h:form>
+		<ul class="box_content">
+			<li><p:commandLink actionListener="#{kiwi.ui.pageActionsAction.setMode('wikipage')}" oncomplete="dlg.show();" update="dialog"><h:outputText value="Create Page" /></p:commandLink></li>
+		</ul>
+	</h:form>
+-->	
+	
+	
+    <!--
+    	<hr class="spacer10" />
+
+    	<h2 class="box_title">Left Side 2</h2>
+    	<ul class="box_content">
+    		<li><a href="#">Seite A</a></li>
+    		<li><a href="#">Eine Seite B</a></li>
+    	</ul>-->
+
+</ui:composition>

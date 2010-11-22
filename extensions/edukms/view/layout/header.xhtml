@@ -1,0 +1,139 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:rich="http://richfaces.org/rich"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+    xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+	<!-- start header -->
+	   
+    
+	    <div id="header">
+    	<!-- logo: -->
+	    <div id="logo">
+		    <a href="http://www.artaround.at/abcmaths" title="EduKMS Homepage">
+	            <img src="#{facesContext.externalContext.requestContextPath}/view/img/dkmslogo.jpg" 
+					alt="EduKMS Logo" 
+					title="EduKMS"/>
+	        </a>	    
+	    </div>
+		<!-- text in the center of the page -->
+	    <div id="mainnav">
+			<div id="dkmsHeaderText">					
+				<div class="top">
+					<h:outputText value="EduKMS"/>					
+				</div>
+		  
+				<div class="sub">
+					<h:outputText value="Educational" style="float:left;"/><br/>
+					<h:outputText value="Knowledge Management System" style="float:left;"/><br/>
+				</div>							
+			</div>		
+	    </div>
+		<!-- fast login -->
+		
+		<div id="headerRight">
+		
+			<div id="dkms_headerpic">			    
+		            <img src="#{facesContext.externalContext.requestContextPath}/view/img/dkmsheader.jpg" 
+						alt="EduKMS Logo" 
+						title="EduKMS"/>		        	    
+	    	</div>
+			<!-- 
+				<div id="fastLogin"  >
+					<h:form id="formLoginFast" rendered="#{not identity.loggedIn}">	
+						<h:inputText id="username" value="#{credentials.username}" />
+						<h:outputText value=" " />
+						<h:inputSecret id="password" value="#{credentials.password}" />			
+						<h:commandButton value="Platform Login" action="#{identity.login}" style="margin-left:5px;"/>
+						<div class="registerText" style="text-align:right;">
+							<h:outputText value="Register" />
+							<h:outputText value=" " />
+							<s:link view="/artaround/pages/login/register.xhtml" value="Register"/>
+						</div>					
+				    </h:form>
+				</div>
+		    -->
+			<div id="cap-kom-link">
+			   <!-- [start] cap-kom logo and link --> 
+			   
+			   <!--
+			   <a href="http://www.artaround.at/abcmaths" 
+			   		title="ABCMaths">
+			         <img src="#{facesContext.externalContext.requestContextPath}/view/img/abcmathslogo.jpg" 
+							alt="ABCMaths" 
+							title="ABCMaths" height="65"/>
+			   </a>		
+			   -->
+			   <!-- [start] cap-kom logo and link -->				
+			</div>	
+		</div>	
+    </div>
+	<!-- end header -->
+	
+	<!-- start main navigation bar -->
+    <div id="navbar">
+						
+			<!-- start login and register -->
+			
+			<div id="login">
+				<h:form id="formHdrNavigation">
+		
+				    <div id="user">
+				    
+				    	<s:link view="/edukms/epie/home.seam"
+			                     value="EPIE |  "
+			                   />
+			                   
+			            <s:link view="/edukms/abcmaths/home.seam" 
+			                     value="ABCMaths |  "
+			                   />
+			            <s:link view="/edukms/authorInterface/home.seam" 
+			                     value="Create Content |  "
+			                   />
+			                   
+			            <s:link view="/" 
+			                     value="Admin Vocabulary "
+			                   />
+			                   
+				    	<!-- 
+			            <h:outputText value="#{messages['artaround.welcome']}, #{identity.username}!"
+			                       rendered="#{identity.loggedIn}" />
+		            
+			            <s:link action="/artaround/pages/login/login.xhtml" 
+			                     value="#{messages['artaround.login']}"
+			                  rendered="#{not identity.loggedIn}" />
+			                    
+			            <h:outputText value=" | " />
+			
+			            <s:link action="/artaround/pages/login/register.xhtml" 
+			                     value="#{messages['artaround.login.registerFast']}"
+			                  rendered="#{not identity.loggedIn}" />
+			        
+			            <s:link action="#{identity.logout}" 
+			                     value="#{messages['artaround.logout']}"
+			                  rendered="#{identity.loggedIn}" />	
+			                  
+			             -->    
+			
+				    </div>
+			
+			    </h:form>
+			</div>
+		
+			
+			
+			
+			<!-- end login and register -->			
+			
+			<!-- searchbox: -->	 
+			    
+		    
+    </div>
+	<!-- end main navigation bar -->
+	
+</ui:composition>

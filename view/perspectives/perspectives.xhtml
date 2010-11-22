@@ -1,0 +1,81 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:p="http://primefaces.prime.com.tr/ui"
+    xmlns:a="http://richfaces.org/a4j">
+
+	<s:div id="perspectives">
+		<h:form>
+			<s:span id="pers_chooser">
+    		<ul id="pers_chooser_list">
+    			
+		    	<ui:repeat var="perspective" value="#{kiwi.ui.perspectiveAction.listPerspectives()}">
+		    		
+		    		<s:fragment rendered="#{kiwi.ui.perspectiveAction.currentPerspective.id != perspective.id}">
+		    			<li>
+							<p:commandLink 
+								action="#{kiwi.ui.perspectiveAction.setCurrentPerspective(perspective)}" 
+								ajax="false">
+									<em><h:outputText value="#{perspective.getName()}"/></em>
+							</p:commandLink>
+						</li>
+					</s:fragment>
+					
+					<s:fragment rendered="#{kiwi.ui.perspectiveAction.currentPerspective.id == perspective.id}">
+						<li class="selected">
+							<a title="currentPerspective">
+								<em><h:outputText value="#{perspective.getName()}"/></em>
+							</a>
+						</li>
+					</s:fragment>
+					
+		    	</ui:repeat>
+		    	
+		    	<ui:repeat var="perspective" value="#{kiwi.ui.perspectiveAction.listAutomaticPerspectives()}">
+		    		
+		    		<s:fragment rendered="#{kiwi.ui.perspectiveAction.currentPerspective.id != perspective.id}">
+		    			<li>
+							<p:commandLink 
+								action="#{kiwi.ui.perspectiveAction.setCurrentPerspective(perspective)}" 
+								ajax="false">
+									<em><h:outputText value="#{perspective.getName()}"/></em>
+							</p:commandLink>
+						</li>
+					</s:fragment>
+					
+					<s:fragment rendered="#{kiwi.ui.perspectiveAction.currentPerspective.id == perspective.id}">
+						<li class="selected">
+							<a title="currentPerspective">
+								<em><h:outputText value="#{perspective.getName()}"/></em>
+							</a>
+						</li>
+					</s:fragment>
+					
+		    	</ui:repeat>
+		    	
+		    	<li id="plus_perspectiv">
+	    			<a:commandLink oncomplete="#{rich:component('perspectivesDialog')}.show();">
+	    				<img src="images/kiwi/add.gif" />
+	    			</a:commandLink>
+				</li>
+    		</ul>
+    		</s:span>
+   		</h:form>
+
+		<s:div id="main_content">
+			<c:choose>
+			<c:when test="#{permissionAction.hasPermission('write') and edit eq true}">
+				<kiwi:editPerspective/>
+			</c:when>
+			<c:otherwise>
+				<kiwi:viewPerspective/>
+			</c:otherwise>
+			</c:choose>
+		</s:div>
+	</s:div>
+
+</ui:composition>

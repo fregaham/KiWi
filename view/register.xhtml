@@ -1,0 +1,52 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:fb="http://www.facebook.com/2008/fbml"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                template="/template/kiwi/template_1col.xhtml">
+
+<ui:define name="center">
+	<div class="box">
+	<p:messages id="msgs" showDetail="false"/>
+    
+	<h:form id="formSignup">
+
+       <center>
+        	<p:panel header="Please register here:" style="width:400px;">
+            <s:validateAll>
+               <h:panelGrid columns="2" rowClasses="prop" columnClasses="name,value">
+                  <h:outputLabel for="login">Login:<!--  <s:decorate id="loginDecoration" template="layout/edit.xhtml"> --></h:outputLabel>
+	              <h:inputText id="login" value="#{registerAction.login}" required="true"><!--     	<a:support event="onblur" reRender="loginDecoration" bypassUpdates="true"/> -->
+	              </h:inputText>
+                  <h:outputLabel for="fn">First Name:</h:outputLabel> 
+                  <h:inputText id="fn" value="#{registerAction.firstName}" required="true"/>
+                  <h:outputLabel for="ln">Last Name:</h:outputLabel> 
+                  <h:inputText id="ln" value="#{registerAction.lastName}" required="true"/>
+                  <h:outputLabel for="password">Password:</h:outputLabel> 
+                  <h:inputSecret id="password" value="#{registerAction.password}" required="true"/>
+                  <h:outputLabel for="validate">Validate:</h:outputLabel> 
+                  <h:inputSecret id="validate" value="#{registerAction.validatePassword}" required="true"/>
+                  <h:outputLabel for="email">E-Mail:</h:outputLabel> 
+                  <h:inputText id="email" value="#{registerAction.email}"  required="true"/>
+
+				  <h:graphicImage value="/seam/resource/captcha"/>
+				  <h:inputText id="verifyCaptcha" value="#{captcha.response}" required="true">
+ 							<s:validate />
+				  </h:inputText>             
+				</h:panelGrid>
+            </s:validateAll>
+            <p:commandButton value="Store" action="#{registerAction.register}" ajax="false"/>
+        	</p:panel>
+        </center>
+        
+     </h:form>
+     </div>
+
+</ui:define> 
+</ui:composition>
+

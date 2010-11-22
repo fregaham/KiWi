@@ -1,0 +1,49 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                             "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:m="http://code.google.com/p/gmaps4jsf/"
+			 	xmlns:c="http://java.sun.com/jstl/core"
+				xmlns:kiwi="http://www.kiwi-project.eu/jsf">
+				<h2>
+					<h:outputText value="#{currentContentItem.title}"/>
+				</h2>
+				
+				<b><h:outputText value="Beschreibung"/><br/></b>
+				<h:outputText value="#{ideaFacade.desc}"/><br/>
+				<br/>
+				<b><h:outputText value="Ist-Situation"/><br/></b>
+				<h:outputText value="#{ideaFacade.isDesc}"/><br/>
+				<br/>
+				<b><h:outputText value="Soll-Situation"/><br/></b>
+				<h:outputText value="#{ideaFacade.shouldDesc}"/><br/>
+				<br/>
+	
+				<b><h:outputText value="Co-Authors" rendered = "#{ideaFacade.coAuthors.size > 0}"/><br/></b>
+				<ui:repeat var="ca" value="#{ideaFacade.coAuthors}">
+					<h:outputText value="#{ca}"/>
+				</ui:repeat>
+		
+				
+				<h:form>
+				<c:forEach items="#{ideator.layoutAction.attachments}" var="attach">
+					<h:commandLink action="#{ideator.layoutAction.download(attach)}" value = "#{attach.fileName}"/>
+					<br/>
+				</c:forEach>
+				</h:form>
+		<!--  		<ui:repeat var="attach" value="#{ideator.layoutAction.attachments}">
+					<s:link action="#{ideator.layoutAction.download(attach)}" value = "#{attach.fileName}"/>-->
+					<!--  <h:outputText value="#{attach.fileName}"/> -->
+				<!--	<br/> -->
+			<!--	</ui:repeat> -->
+				
+		<!--  		<s:link action="#{ideator.layoutAction.download}" value = "download"/> -->
+				
+
+			<!--  	<kiwi:renderHtml contentItem="#{currentContentItem}"  user="#{currentUser}"/> -->
+</ui:composition>

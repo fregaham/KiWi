@@ -1,0 +1,34 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+		    	xmlns:rich="http://richfaces.org/rich"
+		    	xmlns:a="http://richfaces.org/a4j"
+	            xmlns:p="http://primefaces.prime.com.tr/ui" 
+    			xmlns:kiwi="http://www.kiwi-project.eu/jsf">
+	<p:tab title="References" id="references_tab">
+		<div id="dyn_ref">
+			Loading...
+		</div>
+		<script type="text/javascript">
+		/* <![CDATA[ */
+		
+		var dyn_ref_url = "#{facesContext.externalContext.requestContextPath}/panels/references.seam?cid=#{conversation.id}";
+		
+		jQuery(document).ready(function(){
+			jQuery.get(dyn_ref_url, function(data) {
+				  jQuery('#dyn_ref').html(data);
+				  jQuery(".referenceLink").mouseenter(function(event){
+						var text = jQuery(this).find(':first-child').find(':first-child').html();
+						jQuery('body').append("<div id='referencesToolTip' style='padding:5px;margin-left:-350px;margin-top:-50px;width:300px;position:absolute;top:"+event.pageY+"px;left:"+event.pageX+"px;z-index:1000;height:auto;border:1px solid #8BC53E;-moz-border-radius:5px;background-color:#fafafa;'>"+text+"</div>")
+				  }).mouseleave(function(){jQuery("#referencesToolTip").remove()});
+		    });
+		});
+
+		/*]]>*/
+		</script>
+	</p:tab>
+</ui:composition>

@@ -1,0 +1,130 @@
+<!--
+	Copyright © Rolf Sint, Michael Schneider, Christian Osterrieder, 2010
+ */
+ -->
+
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                             "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+                             	
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:m="http://code.google.com/p/gmaps4jsf/"
+			 	xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+                template="../../layout/template-2col.xhtml">
+                
+  <ui:define name="breadcrumps">
+		<ul>
+			<li class="first">				 			
+				<s:link view="/artaround/home.seam" 
+					value="#{messages['artaround.breadcrumps.home']}"/>
+			</li>
+			<li>				 			
+				<s:link view="/artaround/pages/profil/meinProfil.seam" 
+					value="#{messages['artaround.breadcrumps.myPage']}"/>
+			</li>
+			<li>				 			
+				<s:link view="/artaround/pages/contacts/acontacts.seam" 
+					value="meine Kontakte"/>
+			</li>	
+					
+		</ul>
+	</ui:define>
+    
+       
+    <ui:define name="body">
+   	<style>
+		#blogLine{
+			margin:5px;
+			border-bottom:1px solid #ddd;
+			color:#EB6D0E;
+			font-size:12px;
+			
+		}
+		
+		#lspace {
+			
+		margin-top:30px;	
+		
+		}
+		
+		h4 {
+		
+		color:888;
+		margin-left:10px;
+		
+		}
+		
+		#freundEintrag {
+		
+		margin:10px;
+		border-bottom: 1px solid #ddd;
+		height: 120px;
+		
+		}
+	</style>	
+    	    			
+     <a:outputPanel id="contactList" layout="block">
+    	
+            <h:form id="addContactForm">
+            	<h:messages/>
+                <div id="addContact">
+                    <h4>Freund hinzufuegen:</h4>
+					<br/>
+                    <h:panelGrid columns="2" style="margin-left:10px">
+	                    <rich:comboBox defaultLabel="Benutzername" value="#{kiwi.dashboard.contactsAction.selectedUser}" style="width: 200px;">
+	                        <s:selectItems value="#{kiwi.dashboard.contactsAction.allUsers}" var="contact" label="#{contact}"/>
+	                     </rich:comboBox>
+	                    <a:commandButton action="#{kiwi.dashboard.contactsAction.addFriend}" value="Hinzufuegen" reRender="contactList"/>
+                    </h:panelGrid>
+                </div>
+            </h:form>
+        	<br/>
+			<div id="blogLine"/>
+			<h4>Meine Freunde</h4>
+			<br/>
+			<h:form>
+			<c:forEach var="contact" items="#{kiwi.dashboard.contactsAction.friends}">
+          <!--    <ui:repeat var="contact" value="#{kiwi.dashboard.contactsAction.friends}"> -->
+             <div id="freundEintrag">
+               
+                   <div>
+                        <kiwi:mediaContent contentItem="#{contact.profilePhoto}">
+							<ui:define name="nomedia">
+								
+								<s:graphicImage style="padding: 3px; border: 1px solid black; height: 100px; float:left; margin-right:10px"
+	    					value="#{artaround.profileService.getDataFromUser(contact)}" 
+	    	                fileName="#{contact.contentItem.mediaContent.fileName}" alt = "no picture available"/>
+								
+								<!--<img src="#{contact.contentItem.mediaContent}" />-->
+							</ui:define>
+                        	<s:transformImageSize width="180" maintainRatio="true" />
+                        </kiwi:mediaContent>
+                    </div>
+                    
+                    <div>
+                        <h:outputText value="#{contact.firstName} #{contact.lastName}" />
+                    </div>
+                    
+                    <br/>
+                    
+                    <div class="contactActions">
+                        <h:form>
+                            <a:commandLink action="#{kiwi.dashboard.contactsAction.removeFriend(contact)}" value="Remove" reRender="contactList"/>
+                        </h:form>
+                    </div>
+                    
+                    
+            </div>  
+            </c:forEach>
+            </h:form>
+            <!--  </ui:repeat> -->
+
+    </a:outputPanel>
+    </ui:define>
+</ui:composition>

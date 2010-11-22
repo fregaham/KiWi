@@ -1,0 +1,66 @@
+/********** comments ***********/
+#formComments\:comments a {
+	color: #000000;
+}
+
+.comments {
+	cursor:pointer;
+	margin-top:10px;
+	padding:2px 0 1px 18px;
+	background:url("../img/arrowRight.gif") no-repeat scroll left top transparent;
+	color: #EE6523;
+}
+
+.comments a {
+	color: #EE6523 !important;
+	text-decoration: none;	
+}
+
+.commentsOpen {
+	background:url("../img/arrowDown.gif") no-repeat scroll left top transparent;
+}
+
+.commentButton:hover {
+	background: none repeat scroll 0 0 #C9E59F;
+}
+
+#formComments\:commentPanel\:newcomment {
+	margin: 5px;
+	margin-top: 15px;
+}
+
+#formComments\:commentPanel\:newcomment\:newCommentPanel {
+	border: 1px solid #ccc;
+}
+
+#formComments\:commentPanel\:newCommentPanel\:newcommentEditor {
+	margin: 10px 0;
+}
+
+#formComments\:commentPanel\:newCommentPanel\:newcommentEditorTextArea {
+	width: 98%;
+}
+
+.comment {
+	margin-bottom: 15px;
+	margin: 5px;
+	border: 1px solid #ccc;
+	background-color: #fefefe;
+}
+
+.comment-title {
+	font-size: 11pt;
+	font-weight: bold;
+	padding: 2px;
+	background-color: #eeeeee;
+}
+
+.comment-meta {
+	border-bottom: 1px solid #ccc;
+	padding: 2px;
+	background-color: #eeeeee;
+}
+
+.comment-body {
+	padding: 2px;
+}

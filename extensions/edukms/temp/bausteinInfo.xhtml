@@ -1,0 +1,128 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                             "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:m="http://code.google.com/p/gmaps4jsf/"
+			 	xmlns:c="http://java.sun.com/jstl/core"
+			 	xmlns:a4j="http://richfaces.org/a4j"			 	
+                xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+                template="layout/main.xhtml">               	
+		 
+	 <ui:define name="breadcrumps">
+	 	<ul>
+	 		<li class="first">				 			
+				<s:link view="/dkms/authorInterface/home.xhtml" value="AI Startseite"/>
+	 		</li>
+	 		<li>				 			
+				<s:link view="/dkms/authorInterface/startSequence.xhtml" value="Aufgaben/Lernsequenz"/>
+	 		</li>	 			 		
+	 	</ul>
+	 </ui:define>
+	 
+	 <ui:define name="body">
+	 
+	 <style>
+	 
+	 h1 {  
+	 	 	
+	 	color: #6f91c0;
+	 	font-size: 16px;
+	 	margin-left:20px;
+	 	margin-right: 10px;
+	 	line-hight:20px;	 	
+	 
+	 }
+	 
+	 ul li {
+		list-style-image:url(../img/li.png);
+		color: #6f91c0;
+	 	font-size: 14px;
+	 	margin-left: 30px;
+	 	margin-top: 5px;
+	}	
+	
+	li img {
+		vertical-align: center;	
+	}
+	
+	h2 {  
+	 	 	
+	 	color: #6f91c0;
+	 	font-size: 14px;
+	 	margin-left:20px;
+	 	margin-bottom: 5px;	 	
+	 
+	 }
+	 
+	 #cover {
+	 
+		 margin: 10px -40px 0 0;
+		 width: 500px;
+	 
+	 }	
+	 
+	 #arrows {
+	 	width: 500px;
+	 	margin: 20px;
+	 	
+	 } 
+	 
+	</style>
+	 
+	 <div id="cover">
+	 
+	 <fieldset class="fieldsetborder">
+			<legend>Information: Bausteine einer Aufgaben/Lernsequenz</legend>
+	 	<div>
+		 	<img style="margin:10px 15px 0 15px; float:left;" src="#{facesContext.externalContext.requestContextPath}/view/img/information.png"/><br/>
+		 	<h1>Bei der Erstellung einer Aufgaben- bzw. Lernsequenz ist eine bestimmte Grundstruktur vorgegeben. </h1><br/>
+		 	<h2>Es stehen Ihnen folgende Bausteine zur Verfuegung:</h2>
+		 	<ul>
+		 		<li>Angabe bzw. Lerninhalt</li>
+		 		<li>Zusaetzliche Information(en) zur Angabe bzw. Lerninhalt</li>
+		 		<li>Aufgabenstellung(en)</li>
+		 		<li>Zusatzinformation(en) zu jeder Aufgabenstellung</li>
+		 		<li>Loesungsweg</li>
+		 	</ul>
+		 	<h2>Jeder dieser Bausteine kann durch</h2>
+		 	<ul>
+		 		<li>die Eingabe von Text und Bild in einem einfachen Editor</li>
+		 		<li>das Hochladen von Praesentationsfolien</li>
+		 		<li>das Hochladen von Movie(Film)-Dateien</li>		 		
+		 	</ul>
+		 	<h2>erstellt werden.</h2>
+		</div>
+		<div id="arrows">
+			<table width="500px">
+				<tr>					
+					<td align="left">
+						<s:link view="/dkms/authorInterface/startSequence.xhtml">
+							<img title="Zurueck" src="#{facesContext.externalContext.requestContextPath}/view/img/arrowleft.png"/>
+						</s:link>
+					</td>
+					<td align="right">
+						<s:link view="/dkms/authorInterface/step1.xhtml">
+							<img title="Weiter" src="#{facesContext.externalContext.requestContextPath}/view/img/arrowright.png"/>
+						</s:link>
+					</td>
+				</tr>			
+			</table>
+			
+			
+		</div>
+	 
+	 
+	 </fieldset>	
+	 
+	 </div>
+	 
+	 
+	 
+	 
+  </ui:define>
+</ui:composition>

@@ -1,0 +1,130 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+    xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+    xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:p="http://primefaces.prime.com.tr/ui"
+	xmlns:a="http://richfaces.org/a4j">
+		
+		<style type="text/css">
+			.profile-name {
+				font-size: x-large;
+				font-weight: bold;
+			}
+			
+			.profile-label {
+				font-weight: bold;
+			}
+			
+			.colPhoto {
+				
+			}
+			
+			.colData {
+				vertical-align: top;
+			}
+			
+			td {
+				
+				padding: 5px;
+			}
+		</style>
+		
+
+		<p:panel header="Profile">
+			<h:panelGrid columns="2" cellpadding="10" columnClasses="colPhoto,colData">
+				<c:if test="#{kiwi.core.ui.personPerspectiveAction.hasProfilePhoto()}">
+					<s:graphicImage value="#{kiwi.core.ui.personPerspectiveAction.getProfilePhoto().mediaContent.data}"
+						             fileName="#{kiwi.core.ui.personPerspectiveAction.getProfilePhoto().mediaContent.fileName}_thumb" >
+						<s:transformImageSize width="200" maintainRatio="true"/>
+					</s:graphicImage>
+				</c:if>
+				<c:if test="#{not kiwi.core.ui.personPerspectiveAction.hasProfilePhoto()}">
+					<h:graphicImage value="#{configurationService.baseUri}/img/noProfilePicture.png" />
+				</c:if>
+				
+				<h:panelGroup>
+					<s:div styleClass="profile-name">
+						<h:outputText property="http://xmlns.com/foaf/0.1/title" />
+						<h:outputText value=" "  />
+						<h:outputText property="http://xmlns.com/foaf/0.1/firstName" />
+						<h:outputText value=" "  />
+						<h:outputText property="http://xmlns.com/foaf/0.1/lastName" />
+					</s:div>
+					<s:div styleClass="profile-email">
+						<h:outputText property="http://xmlns.com/foaf/0.1/email" />
+					</s:div>
+					<s:div styleClass="profile-homepage">
+						<h:outputText property="http://xmlns.com/foaf/0.1/homepage" />
+					</s:div>
+					<s:div styleClass="profile-phone">
+						<h:outputText property="http://xmlns.com/foaf/0.1/phone" />
+					</s:div>
+				</h:panelGroup>
+			</h:panelGrid>
+		</p:panel>		
+		
+		<p:panel header="Personal" toggleable="true">
+			<h:panelGrid columns="2" cellpadding="10">
+				<h:outputText value="Birthday" styleClass="profile-label" />
+				<h:outputText property="http://xmlns.com/foaf/0.1/birthday" />
+				
+				<h:outputText value="Interests" styleClass="profile-label" />
+				<h:panelGroup>
+					<ui:repeat rel="http://xmlns.com/foaf/0.1/interest"  var="interest">
+						<h:outputText property="http://www.kiwi-project.eu/kiwi/core/title" ctx="interest" />
+						<h:outputText value=", " />
+					</ui:repeat>
+				</h:panelGroup>
+
+				<h:outputText value="Friends" styleClass="profile-label" />
+				<h:panelGroup>
+					<ui:repeat rel="http://xmlns.com/foaf/0.1/knows" var="friend">
+						<h:outputText property="http://xmlns.com/foaf/0.1/firstName" ctx="friend"/>
+						<h:outputText value=" "  />
+						<h:outputText property="http://xmlns.com/foaf/0.1/lastName" ctx="friend"/>
+					</ui:repeat>
+				</h:panelGroup>
+
+				<h:outputText value="Groups" styleClass="profile-label" />
+				<h:panelGroup>
+					<ui:repeat rel="http://xmlns.com/foaf/0.1/member" var="group">
+						<h:outputText property="http://www.kiwi-project.eu/kiwi/core/title" ctx="group" />
+						<h:outputText value=", "  />
+					</ui:repeat>
+				</h:panelGroup>
+
+			</h:panelGrid>
+		</p:panel>
+		
+		<p:panel header="Work" toggleable="true">
+			<h:panelGrid columns="2" cellpadding="10">
+				<h:outputText value="Workplace Homepage" styleClass="profile-label" />
+				<h:outputText property="http://xmlns.com/foaf/0.1/workplaceHomepage" />
+
+				<h:outputText value="School Homepage" styleClass="profile-label" />
+				<h:outputText property="http://xmlns.com/foaf/0.1/schoolHomepage" />
+				
+				<h:outputText value="Current Projects" styleClass="profile-label" />
+				<h:panelGroup>
+					<ui:repeat rel="http://xmlns.com/foaf/0.1/currentProject" var="project">
+						<h:outputText property="http://www.kiwi-project.eu/kiwi/core/title"  ctx="project"/>
+						<h:outputText value=", "  />
+					</ui:repeat>
+				</h:panelGroup>
+				
+				<h:outputText value="Past Projects" styleClass="profile-label" />
+				<h:panelGroup>
+					<ui:repeat rel="http://xmlns.com/foaf/0.1/pastProject" var="project">
+						<h:outputText property="http://www.kiwi-project.eu/kiwi/core/title"  ctx="project"/>
+						<h:outputText value=", "  />
+					</ui:repeat>
+				</h:panelGroup>
+				
+			</h:panelGrid>
+		</p:panel>
+		
+</ui:composition>

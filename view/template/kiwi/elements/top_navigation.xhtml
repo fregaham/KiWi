@@ -1,0 +1,16 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+ 			<h:form>
+		        <ul>
+		            <ui:repeat value="#{kiwi.ui.headerAction.applications}" var="app">
+		            	<li class="#{kiwi.ui.headerAction.showActiveClass(app)}">
+		                    <h:commandLink action="#{kiwi.ui.headerAction.switchApplication(app)}" rendered="#{kiwi.ui.headerAction.isVisible(app)}">
+		                        <em><h:outputText value="#{app.name}" title="#{messages[fn:join(fn:join('app.',app.identifier),'.description')]}"/></em>
+		                    </h:commandLink>
+		                </li>
+		            </ui:repeat>
+		        </ul>   
+	        </h:form> 
+</ui:composition>

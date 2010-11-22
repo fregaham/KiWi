@@ -1,0 +1,22 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:c="http://java.sun.com/jstl/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    >
+    
+    <s:fragment rendered="#{permissionAction.hasPermission('write')}">
+	   	<ui:include  src="/perspectives/#{kiwi.ui.perspectiveAction.currentPerspective.editTemplate}">
+    		<ui:param name="contentItem" value="#{currentContentItem}" />
+	   		<ui:param name="ctx" value="#{rdf.getCurrentResource()}" />
+	   	</ui:include>
+   	</s:fragment>
+   	
+    <s:fragment rendered="#{not permissionAction.hasPermission('write')}">
+    	<h:outputText value="#{messages['permission.failed']}. "/>
+    </s:fragment>
+
+
+</ui:composition>

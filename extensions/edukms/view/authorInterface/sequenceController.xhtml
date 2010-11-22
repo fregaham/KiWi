@@ -1,0 +1,234 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core"
+	template="layout/main.xhtml"> 
+
+	<ui:define name="breadcrumps">
+		<ul>
+			<li class="first"><s:link
+				view="/edukms/authorInterface/home.xhtml" value="| Author Home" /></li>
+			<li><s:link
+				view="/edukms/authorInterface/sequenceController.xhtml"
+				value="Task Sequence" /></li>
+		</ul>
+	</ui:define>
+
+	<ui:define name="body">
+
+		<style>
+h1 {
+	color: #6f91c0;
+	font-size: 16px;
+	margin-left: 20px;
+	margin-right: 10px;
+	line-hight: 20px;
+}
+
+ul li {
+	list-style-image: url(../img/li.png);
+	color: red;
+	font-size: 14px;
+	margin-left: 30px;
+	margin-top: 5px;
+}
+
+li img {
+	vertical-align: center;
+}
+
+h2 {
+	color: #6f91c0;
+	font-size: 14px;
+	margin-left: 20px;
+	margin-top: -15px;
+}
+
+h3 {
+	color: #6f91c0;
+	font-size: 12px;
+	margin-left: 20px;
+	margin-top: -15px;
+	font-weight: 400;
+}
+
+h4 {
+	color: #6f91c0;
+	font-size: 12px;
+	margin-left: 20px;
+	margin-top: -15px;
+	
+}
+
+.column {
+	width: 600px;
+	vertical-align: top;
+}
+
+#cover {
+	margin: 10px 0 0 0;
+	width: 800px;
+}
+
+#arrows {
+	width: 630px;
+	margin: 20px;
+}
+
+#editor {
+	margin: 20px 20px 20px 20px;
+	
+}
+
+.buttonclass {
+
+	text-decoration: none;
+	margin-right: 5px;
+
+}
+
+#buttons {
+	
+	/*border-bottom: 1px solid #FFE8C3; */
+	padding:10px;
+
+}
+
+#trennlinie {
+	
+	border-bottom: 1px solid #FFE8C3; 
+	margin:20px;
+
+}
+
+
+</style>
+		<h:form>
+		<div id="cover"><!-- start cover -->
+
+		<fieldset class="fieldsetborder"
+			style="float:left; width:100%; height: 570px; margin-left: -170px; border:1px solid #FFE8C3">		
+		<!--  <legend>Editor fuer Uebungsblatt</legend> -->
+		 
+		
+			<div><img style="margin: 10px 15px 0 15px; float: left;"
+				src="#{facesContext.externalContext.requestContextPath}/view/img/dokumente_small.png" /><br />
+			<h2 style="margin-top: 5px;">Here you may create a structured online resource:</h2>
+			<br /><br/>
+
+			
+			<table border="0"><tr><td valign="center">
+			<h4 style="margin: -2px 0px 0 30px">Step 1: Insert a title for your new distribution:&#160;&#160; </h4></td><td valign="middle">
+			
+			<h:inputText id="dkmsContentItemName"
+				style="width:335px; margin:0 0 0 0px; vertical-align:top" required="true"
+				value="#{dkmsContentItemBean.dkmsContentItemName}" ><s:validate /><h:messages /></h:inputText>
+			</td></tr></table><br/><br/>
+			<h4 style="margin: -10px 0 0 32px">Step 2: Create, entitle and edit the relevant components for your distribution on the menu below: </h4>
+     		</div><br/>
+
+			<div style="height:550px; overflow:auto; margin-left:25px; margin-top:10px ">
+										<table cellspacing="1">
+						
+<!--						<c:if test="#{dci.trashState == true}">-->
+							<tr><!--Ueberschrift-->
+								<td style="border:1px solid #FFE8C3; width:200px; height:30px">
+									<h2 style="margin:5px">Task</h2>
+								</td >
+								<td style="border:1px solid #FFE8C3; width:30px">
+									<h2 style="margin:5px">Status</h2>
+								</td >
+								<td style="border:1px solid #FFE8C3; width:30px">
+									<h2 style="margin:5px">Action</h2></td>
+								<td style="border:1px solid #FFE8C3; width:250px">
+									<h2 style="margin:5px">Last modified</h2>
+								</td>	
+							</tr>
+							<c:forEach items="#{dkmsContentItemBean.dkmsSequenceComponentList}" var="item" id="itemList">
+							<tr><!--Content-->
+								<td style="border:1px solid #FFE8C3; width:200px">
+<!--									<h3 style="margin:5px">Indication</h3>-->
+										<h:inputText style="width:190px; margin:3px; vertical-align:middle"
+										value="#{item.taskTitle}" ></h:inputText>
+								</td >
+								<td align="center" style="border:1px solid #FFE8C3; width:30px">
+									<c:if test="#{empty item.sequenceContent}">
+										<img src="#{facesContext.externalContext.requestContextPath}/view/img/leer_circle_small.png" title="empty" style="margin:3px"/>
+									</c:if>
+									<c:if test="#{not empty item.sequenceContent}">
+										<img src="#{facesContext.externalContext.requestContextPath}/view/img/ok_circle_small.png" title="in process" style="margin:3px"/>
+									</c:if>
+								</td >
+								<td align="center" style="border:1px solid #FFE8C3; width:30px">
+									<c:if test="#{empty item.sequenceContent}">
+										<h:commandLink action="#{dkmsBasicAction.nextToSequenceEditor(item)}"><img src="#{facesContext.externalContext.requestContextPath}/view/img/newDocument_small.png" title="create" style="margin:3px"/></h:commandLink>
+									</c:if>
+									<c:if test="#{not empty item.sequenceContent}">
+										<h:commandLink action="#{dkmsBasicAction.nextToSequenceEditor(item)}"><img src="#{facesContext.externalContext.requestContextPath}/view/img/editor_verysmall.png" title="edit" style="margin:3px"/></h:commandLink>
+									</c:if>																	
+								</td>
+								<td style="border:1px solid #FFE8C3; width:250px">
+									<h3 style="margin:5px">#{item.taskId}: #{item.version}</h3>
+								</td>														
+							</tr>
+							</c:forEach>
+					</table>
+					<br/>
+					<h:commandLink	action="#{dkmsBasicAction.newSequenceTask()}" ><img title="Add Task" src="#{facesContext.externalContext.requestContextPath}/view/img/plus.png" 
+					style="vertical-align:middle; margin-right: 5px; margin-left:0"/>Add Task
+			</h:commandLink>				
+					</div>			
+			<h:commandLink	action="#{dkmsBasicAction.nextStepSequence()}" style="float:right; margin:-15px 20px 0 0; text-decoration:none">
+				Weiter&#160;&#160;<img title="Weiter"
+					src="#{facesContext.externalContext.requestContextPath}/view/img/arrowright_small.png" style="vertical-align:middle"/>
+			</h:commandLink>
+		
+		</fieldset>
+		<fieldset class="fieldsetborder" style="float:right; width: 200px; height: 570px; margin-right: -160px; border:1px solid #FFE8C3">
+		<div id="buttons">
+		
+			<h:commandLink	action="#{dkmsBasicAction.newSequenceTask()}" ><img title="Add Task" src="#{facesContext.externalContext.requestContextPath}/view/img/plus.png" 
+			style="vertical-align:middle; margin-right: 5px; margin-left:0px"/>Add Task
+			</h:commandLink><br/>
+			
+			<h:commandLink class="buttonclass"  action="#{dkmsReadModusAction.previewSequence()}" ><img src="#{facesContext.externalContext.requestContextPath}/view/img/vorschau_symbol.png" style="valign:center; vertical-align:middle; margin-right:5px; margin-top:5px"  />Preview</h:commandLink>
+			<br/>
+			<div id="trennlinie"></div>
+			<br/>
+			<h:commandLink class="buttonclass" 	action="#{dkmsBasicAction.goToHome()}">
+			<img
+				src="#{facesContext.externalContext.requestContextPath}/view/img/arrowleft_small.png"
+				style="vertical-align: middle; margin-right: 5px; margin-left:8px" />Cancel</h:commandLink>
+			<br /><br/>
+			<c:if test="#{dkmsContentItemBean.contentItemState == 'N'}">
+															 
+		    <h:commandLink				
+				action="#{dkmsBasicAction.nextStepSequence()}" >
+				<img title="Weiter"
+					src="#{facesContext.externalContext.requestContextPath}/view/img/arrowright_small.png" style="vertical-align:middle; margin-right: 5px; margin-left:8px"/>Proceed
+			</h:commandLink>
+			</c:if>
+			<c:if test="#{dkmsContentItemBean.contentItemState == 'C'}">
+															 
+		    <h:commandLink				
+				action="#{dkmsBasicAction.nextToContentItemChangeData()}" >
+				<img title="Weiter"
+					src="#{facesContext.externalContext.requestContextPath}/view/img/arrowright_small.png" style="vertical-align:middle; margin-right: 5px; margin-left:8px"/>Proceed
+			</h:commandLink>
+			</c:if>
+		
+		
+		</div>
+		
+		
+		</fieldset>
+		</div>
+		</h:form>
+		<!-- end cover -->
+		
+	</ui:define>
+</ui:composition>

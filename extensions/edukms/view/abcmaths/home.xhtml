@@ -1,0 +1,278 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                             "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:m="http://code.google.com/p/gmaps4jsf/"
+			 	xmlns:c="http://java.sun.com/jstl/core"
+			 	xmlns:a4j="http://richfaces.org/a4j"			 	
+                xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+                template="layout/main.xhtml">               	
+		 
+	 <ui:define name="breadcrumps">
+	 	<ul>
+	 		<li class="first">				 			
+				<s:link view="/edukms/abcmaths/home.xhtml" value="| Information Platform Home"/>
+	 		</li>
+	 	</ul>
+	 </ui:define>
+	 
+	<ui:define name="body">
+	
+	<script src="#{facesContext.externalContext.requestContextPath}/view/js/jQueryMain/jquery.tools.min.js"></script>
+	 
+	 <script>
+		
+		jQuery(document).ready(function() {
+		
+			// initialize tooltip
+			jQuery("#dyna img[title]").tooltip({
+			
+				// use single tooltip element for all tips
+				tip: '#dynatip', 
+				
+				// tweak the position
+				offset: [10, 2],
+				
+				// use "slide" effect
+				effect: 'slide'
+				
+			// add dynamic plugin 
+			}).dynamic( {
+			
+				// customized configuration on bottom edge
+				bottom: {
+				
+					// slide downwards
+					direction: 'down',
+					
+					// bounce back when closed
+					bounce: true
+				}
+			});
+			
+		});
+	 </script>
+		 
+		 <style>
+		 
+		 h1 {  
+		 	 	
+		 	color: #6f91c0;
+		 	font-size: 14px;
+		 	font-weight: 300;	 	
+		 
+		 }
+		 
+		 h2 {  
+	 	 	
+		 	color: #6f91c0;
+		 	font-size: 14px;
+		 	margin-left:15px;	 	
+		 
+		 }
+		 
+		 h3 {  
+		 	 	
+		 	color: #6f91c0;
+		 	font-size: 12px;
+		 	margin-left:15px;	 	
+		 
+		 }
+		 
+		 #cover {
+		 
+			 margin: 10px 0 0 -5px;
+			 width: 810px;
+		 
+		 }
+		 
+		 #trennlinie {
+		 
+			border-bottom: 1px solid #eee;
+			margin: 10px;
+		}
+		 
+		  #dyna {
+	 
+		margin-top:120px;
+		margin-left:30px;
+	
+		}
+		 
+		 #dynatip {
+		 
+		display:none;
+		background:transparent url(http://flowplayer.org/tools/img/tooltip/black_arrow.png);
+		font-size:12px;
+		height:70px;
+		width:160px;
+		padding:20px 25px 30px 25px;
+		color:#fff;	
+		margin-top:-170px;
+		margin-left:-200px;
+		
+		
+		}
+		
+		/* style the trigger elements */
+		
+		#dyna img {
+		
+			/*border-right:1px solid #ccc;*/
+			cursor:pointer;
+			margin:0 8px;
+			
+		}
+		
+		/* override the arrow image of the tooltip */
+		#dynatip.bottom {
+			background:url(http://flowplayer.org/tools/img/tooltip/black_arrow_bottom.png);	
+			padding-top:40px;
+			height:55px;
+		}
+		
+		#dynatip.bottom {
+			background:url(http://flowplayer.org/tools/img/tooltip/black_arrow_bottom.png);
+		}
+		 </style>
+		 
+		 <div id="cover">
+		 <h:form>
+		<fieldset class="fieldsetborder" style="float:left; width:100%; height: 570px; margin-left: -170px; border:1px solid #ddd">
+		 	<img style="margin: 5px 10px 0 5px; float: left;"
+				src="#{facesContext.externalContext.requestContextPath}/view/img/information.png" />
+		 	<h1>In addition to big ideas linked to mathematics itself, ABCmaths includes a focus on big ideas of mathematics teaching.<br/>
+		    The platform constitutes a tool for exchanging, sharing and communicating teaching and learning materials.</h1>
+		    <br/><br/>
+		 
+		
+			<div id="dyna">
+	 
+			    <h:commandLink action="#{dkmsBasicAction.goToSearchContentPage()}" style="text-decoration:none">
+			    
+			    	
+			 		<img  src="#{facesContext.externalContext.requestContextPath}/view/img/searchContentLogo.png" title="I'd like to find educational material and information"/> 
+			 	
+			 	</h:commandLink>
+			    <h:commandLink action="#{dkmsBasicAction.goToAuthorInterface()}" style="text-decoration:none">
+			    
+			 	
+			 		<img src="#{facesContext.externalContext.requestContextPath}/view/img/CreateContentLogo.png" title="I'd like to create content for the educational Knowledge Management System"/> 
+			 	
+				</h:commandLink>
+			    <c:if test="#{identity.loggedIn == true}">
+			    <h:commandLink action="#{dkmsBasicAction.newBlogEntry()}" style="text-decoration:none">
+			
+			 	<img src="#{facesContext.externalContext.requestContextPath}/view/img/BlogLogo.png" style="margin-right:0px" title="I'd like to create a blog entry to a specific subject area"/>
+			 	
+			 	</h:commandLink>
+			 	</c:if>
+			 	<c:if test="#{identity.loggedIn == false}">
+	   			<h:commandLink action="#" onclick="javascript:alert('Please login with your username and password!');" style="text-decoration:none">
+	    		
+	    		<img src="#{facesContext.externalContext.requestContextPath}/view/img/BlogLogo.png" style="margin-right:0px" title="I'd like to create a blog entry to a specific subject area"/>
+			 	
+			 	</h:commandLink>
+			 	</c:if>
+			 	
+			 	
+			 	<c:if test="#{identity.loggedIn == true}">
+			    <h:commandLink action="#{dkmsBasicAction.newWikiEntry()}" style="text-decoration:none">
+		
+			 	<img src="#{facesContext.externalContext.requestContextPath}/view/img/WikiLogo.png" title="I'd like to create a WIKI article. Each article can be worked on by any community member"/> 
+			 	
+			 	</h:commandLink>
+			 	</c:if>
+			 	<c:if test="#{identity.loggedIn == false}">
+	   			<h:commandLink action="#" onclick="javascript:alert('Please login with your username and password!');" style="text-decoration:none">
+	    		
+	    		<img src="#{facesContext.externalContext.requestContextPath}/view/img/WikiLogo.png" title="I'd like to create a WIKI article. Each article can be worked on by any community member"/> 
+			 	
+			 	</h:commandLink>
+			 	</c:if>		 	
+			 	
+			 </div>
+			 <div id="dynatip">&nbsp;</div>
+			
+		 </fieldset>
+		 
+
+		 
+		  <fieldset class="fieldsetborder" style="float:right; width: 200px; height: 570px; margin-right: -160px; border:1px solid #ddd">
+			 
+<!--	  [start] menue for logged in user -->
+		<c:if test="#{identity.loggedIn == true}">
+			<div class="buttons">
+			
+				<div style="margin-left:8px"><img
+					src="#{facesContext.externalContext.requestContextPath}/view/img/welcome.png"
+					style="valign: center; vertical-align: middle; margin-right: 10px; margin-top: 5px; margin-left:-3px"/><h:outputText style="color: #6f91c0; font-size: 12px; font-weight:bold; text-align:center" value="Hello #{identity.username}!" /></div>
+			    
+			    <div id="trennlinie"></div>
+				
+				<h:commandLink 
+				action = "#{identityManagerService.logout}" >
+				<img
+					src="#{facesContext.externalContext.requestContextPath}/view/img/logout_small.png"
+					style="valign: center; vertical-align: middle; margin-right: 5px;" />Logout</h:commandLink>
+			<br />
+			
+			</div>
+			<div id="trennlinie"></div>
+			
+		</c:if>
+<!--		 [end] menue for logged in user -->
+<!--		 [start] menue for not logged in user -->
+		<c:if test="#{identity.loggedIn == false}">
+			<div class="buttons">
+			
+	
+				<table>
+				<tr>
+				<td></td>
+				<td><br/>
+				
+				<div class="loginBox" style="margin-left: 10px" >
+				
+							<h:outputLabel for="username">Username</h:outputLabel><br/>
+							<h:inputText id="username" value="#{credentials.username}" /><br/><br/>
+							<h:outputLabel for="password">Password</h:outputLabel><br/>
+							<h:inputSecret id="password" value="#{credentials.password}" /><br/><br/>
+							<h:outputLabel for="rememberMe">remember&#160;</h:outputLabel>
+							<h:selectBooleanCheckbox id="rememberMe" value="#{rememberMe.enabled}" style="vertical-align:middle"/>
+							<h:outputLabel for="loginButton"></h:outputLabel>
+							<h:commandButton id="loginButton" value="Login" action="#{identity.login}" rendered="#{not identity.loggedIn}" style="float:right"/>
+			
+				</div>
+				
+				<br/>
+<!--				<div class="loginBox">-->
+<!--							<s:link view="/edukms/forgotPassword.xhtml" value="#{messages['artaround.login.forgotPassword']}"/>-->
+<!--						</div><br/>				-->
+<!--				        <div class="loginBox">-->
+<!--							<h:outputText value=" " /><s:link view="/edukms/register.xhtml" value="Noch nicht registriert?"/>-->
+<!--						</div>-->
+				</td>
+				</tr></table>
+			
+	
+				
+			
+			</div>
+			
+		</c:if>
+<!--		 [end] menue for not logged in user -->
+
+		 </fieldset>
+		 </h:form>
+		 </div>
+		 
+		 
+	</ui:define>
+		 	
+</ui:composition>

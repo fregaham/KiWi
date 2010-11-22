@@ -1,0 +1,95 @@
+@CHARSET "UTF-8";
+
+/* In general, any kind of link created by kiwirdfalink button (including datatype properties  */
+span.link {
+	background-color: #aaffaa;
+}
+
+/* a link with no semantic information */
+span.nonsemantic {
+	text-decoration: underline;
+}
+
+/* An object property*/
+span.object {
+	text-decoration: underline;
+} 
+			
+/* a datatype property */
+span.datatype {
+	padding: 3px;
+	border-radius: 3px;	
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+}
+
+/* Any kind of link that is currently selected. */
+span.selected {
+	background-color: #ff7636;
+}
+
+span.suggestion_accept {
+	background-image: url('img/type_add.png');
+	width: 10px;
+	height: 10px;
+	display: inline-block;
+	background-repeat: no-repeat;
+}
+
+span.suggestion_reject {
+	background-image: url('img/type_delete.png');
+	width: 10px;
+	height: 10px;
+	display: inline-block;
+	background-repeat: no-repeat;
+}
+
+div.rdfa_block_container {
+	background-color: #ccffcc;
+	padding: 3px;
+	border-radius: 3px;	
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+}
+
+div.rdfa_block_control {
+	background-color: #ccffcc;
+	padding: 3px;
+	border-radius: 3px;	
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+}
+
+div.selected {
+	background-color: #ffcc00;
+}
+
+div.selected > div.rdfa_block_control {
+	background-color: #ffcc00;
+}
+
+span.rdfa_block_modify {
+	background-image: url('img/properties.png');
+	width: 16px;
+	height: 16px;
+	display: inline-block;
+	background-repeat: no-repeat;
+}
+
+span.rdfa_block_delete {
+	background-image: url('img/type_delete.png');
+	width: 16px;
+	height: 16px;
+	display: inline-block;
+	background-repeat: no-repeat;
+	background-position: 4px 3px;
+}
+
+span.rdfa_block_enter {
+	background-image: url('img/enter.gif');
+	width: 16px;
+	height: 16px;
+	display: inline-block;
+	background-repeat: no-repeat;
+	background-position: 3px 0px;
+}

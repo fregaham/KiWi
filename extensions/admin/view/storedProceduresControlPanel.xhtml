@@ -1,0 +1,146 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                             "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:m="http://code.google.com/p/gmaps4jsf/"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                template="/template/kiwi/template_2col.xhtml">
+
+    <ui:define name="stylesheet">
+        <style type="text/css">
+            .aname {
+                padding: 6px;
+                vertical-align: text-top;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="sidebar">
+        <ui:include src="elements/sidebar.xhtml"/>
+    </ui:define>
+
+    <ui:define name="center">
+      <p:tabView>
+        <p:tab title="Configure Stored Procedures">
+
+                <h:form id="storedProcedurePanel">
+                    <h:panelGrid columns="2" columnClasses="aname,avalue">
+                        <h:outputText value="Name : "/>
+                        <h:inputText value="#{storedProcedureEditor.name}" size="115"/>
+        
+                        <h:outputText value="Action Type : "/>
+                        <h:selectOneMenu
+                                value="#{storedProcedureEditor.actionType}">
+                                <s:selectItems
+                                    value="#{storedProcedureEditor.actionTypes}"
+                                    var="x" 
+                                    label="#{x}" />
+                         </h:selectOneMenu>
+        
+                        <h:outputText value="Content : "/>
+                        <h:inputTextarea value="#{storedProcedureEditor.content}" rows="20" cols="100"/>
+        
+                        <h:outputText value="Description : "/>
+                        <h:inputTextarea value="#{storedProcedureEditor.description}" rows="3" cols="100"/>
+                        
+                        <h:outputText value="Active : "/>
+                        <h:selectBooleanCheckbox value="#{storedProcedureEditor.active}" />
+                    </h:panelGrid>
+
+                    <h:panelGrid columns="2" columnClasses="aname,avalue">
+                        <p:commandButton ajax="true" action="#{storedProcedureEditor.save()}" value="Store"
+                                         update="storedProcedurePanel"/>
+                        <p:commandButton ajax="true" action="#{storedProcedureEditor.setDefaultContent()}" value="Default"
+                                         update="storedProcedurePanel"/>
+                    </h:panelGrid>
+
+                    <h:panelGrid columns="2" columnClasses="aname,avalue">
+                        <h:outputText value="Actual Stored Procedures : "/>
+                        <h:selectOneListbox value="#{storedProcedureEditor.selectedStoredProcedure}" size="7">
+                            <s:selectItems
+                                value="#{storedProcedureEditor.storedProcedures}"
+                                var="x" 
+                                label="#{x.name}" />
+                           <s:convertEntity />
+                        </h:selectOneListbox>
+                    </h:panelGrid>
+                    
+                    
+                    <h:panelGrid columns="2" columnClasses="aname,avalue">
+                        <p:commandButton ajax="true" action="#{storedProcedureEditor.edit()}" value="Edit"
+                                         update="storedProcedurePanel" />
+                        <p:commandButton ajax="true" action="#{storedProcedureEditor.remove()}" value="Remove"
+                                         update="storedProcedurePanel" />
+                    </h:panelGrid>
+                    
+                </h:form>
+            </p:tab>
+
+            <p:tab title="CEQ Values">
+                <h3>Units (must between 0 and 100)</h3>
+                <h:panelGrid columns="2" columnClasses="aname,avalue">
+                    <h:outputText value="Add Tag:" />
+                    <h:inputText value="#{kiwi.admin.ceqConfigurationAction.addTag}" required="true">
+                        <f:validateDoubleRange minimum="0" maximum="100"/>
+                    </h:inputText>
+                    
+                    <h:outputText value="Remove Tag:" />
+                    <h:inputText value="#{kiwi.admin.ceqConfigurationAction.removeTag}" required="true">
+                        <f:validateDoubleRange minimum="0" maximum="100"/>
+                    </h:inputText>
+                    
+                    <h:outputText value="Add Content:" />
+                    <h:inputText value="#{kiwi.admin.ceqConfigurationAction.addContent}" required="true">
+                        <f:validateDoubleRange minimum="0" maximum="100"/>
+                    </h:inputText>
+                    
+                    <h:outputText value="Remove Content:" />
+                    <h:inputText value="#{kiwi.admin.ceqConfigurationAction.removeContent}" required="true">
+                        <f:validateDoubleRange minimum="0" maximum="100"/>
+                    </h:inputText>
+                    
+                    <h:outputText value="Edit Content:" />
+                    <h:inputText value="#{kiwi.admin.ceqConfigurationAction.editContent}" required="true">
+                        <f:validateDoubleRange minimum="0" maximum="100"/>
+                    </h:inputText>
+                    
+                    <h:outputText value="Edit Content:" />
+                    <h:inputText value="#{kiwi.admin.ceqConfigurationAction.editContent}" required="true">
+                        <f:validateDoubleRange minimum="0" maximum="100"/>
+                    </h:inputText>
+                    
+                    <h:outputText value="Share Content:" />
+                    <h:inputText value="#{kiwi.admin.ceqConfigurationAction.shareContent}" required="true">
+                        <f:validateDoubleRange minimum="0" maximum="100"/>
+                    </h:inputText>
+                    
+                    <h:outputText value="Visit Content:" />
+                    <h:inputText value="#{kiwi.admin.ceqConfigurationAction.visitContent}" required="true">
+                        <f:validateDoubleRange minimum="0" maximum="100"/>
+                    </h:inputText>
+                    
+                    <h:outputText value="Annotate Content:" />
+                    <h:inputText value="#{kiwi.admin.ceqConfigurationAction.annotateContent}" required="true">
+                        <f:validateDoubleRange minimum="0" maximum="100"/>
+                    </h:inputText>
+                </h:panelGrid>
+                <h:form>
+                <p:commandButton ajax="false" action="#{kiwi.admin.ceqConfigurationAction.save()}" value="Save" />
+                <p:commandButton ajax="false" action="#{kiwi.admin.ceqConfigurationAction.cancel()}" value="Cancel" />
+                <p:commandButton ajax="false" action="#{storedProcedureLoader.processStoredProcedures()}"
+                                 value="Reload Default Stored Procedures" />
+                </h:form>
+            </p:tab>
+
+        </p:tabView>
+    </ui:define>
+
+</ui:composition>

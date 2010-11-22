@@ -1,0 +1,34 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.prime.com.tr/ui">
+	
+		<h:form id="action_menu_form">
+		<ul id="action_menu">
+			<li>
+				<p:commandButton action="/wiki/edit.xhtml" ajax="false" value="#{messages['kiwi.action.edit_content']}" styleClass="edit_icon" rendered="#{permissionAction.hasPermission('write') and edit ne true}"/>
+				<p:commandButton  value="#{messages['kiwi.action.edit_content']}" styleClass="edit_icon" rendered="#{!permissionAction.hasPermission('write') and edit ne true}" disabled="true"/>
+				<p:commandButton action="/wiki/home.xhtml" ajax="false" value="#{messages['kiwi.action.view_content']}" rendered="#{edit eq true}"/>
+			</li>
+			
+			<!-- spacer -->
+			<li><span style="margin-left:5px;"/></li>
+			
+			<li>
+				<!--<p:menuButton value="Actions" styleClass="special_action_menu">-->
+				<p:commandButton value="Actions" styleClass="special_action_menu" onclick="dynaMenu.show();return false;" />
+				<p:menu widgetVar="dynaMenu" position="dynamic" style="width:100px;">
+					<p:submenu>
+        			<p:menuitem styleClass="p_actions" value="#{messages['wiki.menu.history']}" action="/wiki/history.xhtml" ajax="false"/>
+        			<p:menuitem styleClass="p_actions" value="#{messages['wiki.menu.edit_individualPermission']}" action="/wiki/individualPermissions.xhtml" rendered="#{permissionAction.hasRole('admin') or permissionAction.hasPermission('editPermissions')}" ajax="false"/>
+        			<p:menuitem styleClass="p_actions" value="RDF" url="#{configurationService.baseUri}/linkeddata.seam?uri=#{kiwi.ui.utility.encodeURL(currentContentItem.resource.uri)}" rendered="#{permissionAction.hasRole('admin') or permissionAction.hasPermission('read')}" ajax="false"/>
+        			<p:menuitem styleClass="p_actions" value="Delete" ajax="true" onclick="alert('not yet implemeted')"/>
+        			</p:submenu>
+   		 		</p:menu>
+			</li>
+		</ul>
+		</h:form>
+		
+</ui:composition>

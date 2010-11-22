@@ -1,0 +1,67 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:p="http://primefaces.prime.com.tr/ui"
+    xmlns:a="http://richfaces.org/a4j"
+    template="/template/kiwi/template_3col.xhtml">
+    
+    <ui:define name="stylesheet">
+    	<link rel="stylesheet" type="text/css" href="stylesheet/edit.css" />
+    </ui:define>
+    
+    <ui:define name="script">
+         <!-- load KiWi widgets -->
+        <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/widgets/activity/widget.activity.js"></script>
+        <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/widgets/recommendations/widget.recommendations.js"></script>
+   </ui:define>
+    
+    <ui:define name="sidebar">
+    	<h2 class="box_title">Special Actions</h2>
+    	<ul class="box_content">
+    		<li><a href="#">Add/Edit Tag</a></li>
+    		<li><a href="#">Add/Edit Title</a></li>
+    		<li><a href="#">Add/Edit ...</a></li>
+    	</ul>
+    </ui:define>
+    
+    <ui:define name="center">
+    	<s:div id="titleInplaceDiv">
+    	<p:inplace label="#{editorAction.title}" effect="slide" id="titleInplace">  
+            <h:form>
+            	<h:outputText escape="false" value="&#60;table width='70%'&#62;&#60;tr&#62;&#60;td&#62;" />
+            	<h:inputText styleClass="titleText" value="#{editorAction.title}" style="width:100%;"/>
+            	<h:outputText escape="false" value="&#60;/td&#62;&#60;td style='width:160px;text-align:right;'&#62;" />
+					<a:commandButton value="Save" action="#{editorAction.storeTitle()}" reRender="titleInplaceDiv" styleClass="primeFakeButton ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"/>
+            		<a:commandButton value="Cancel" action="#{editorAction.restoreTitle()}" reRender="titleInplaceDiv" styleClass="primeFakeButton ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"/>
+            	<h:outputText escape="false" value="&#60;/td&#62;&#60;/tr&#62;&#60;/table&#62;"/>
+        	</h:form>
+        </p:inplace>
+        </s:div>
+
+    	<p id="created_on">
+    	    <h:outputText value="#{messages['wiki.createdon']} "/><h:outputText value="#{currentContentItem.created}"><s:convertDateTime pattern="dd/MM/yyyy"/></h:outputText><h:outputText value=" - "/> 
+            <h:outputText value="#{messages['wiki.updateon']} "/><h:outputText value="#{currentContentItem.modified}"><s:convertDateTime pattern="dd/MM/yyyy"/></h:outputText><h:outputText value=" "/> 
+            <h:outputText value="#{messages['wiki.by']} "/><kiwi:link resource="#{currentContentItem.author.resource}" value=" #{currentContentItem.author.firstName} #{currentContentItem.author.lastName}"/>
+    	</p>
+    	
+    	<ui:include src="elements/action_menu.xhtml">
+    		<ui:param name="edit" value="#{true}" />
+    	</ui:include>
+    	
+    	<ui:include src="elements/rating.xhtml"/>
+    	
+    	<ui:include src="/perspectives/perspectives.xhtml" >
+    		<ui:param name="edit" value="#{true}" />
+    	</ui:include>
+    	
+    </ui:define>
+    
+    <ui:define name="right">
+    	<div style="width:90%;float:right">
+    		<kiwi:widgetPerspective />
+    	</div>
+    </ui:define>
+    
+</ui:composition>

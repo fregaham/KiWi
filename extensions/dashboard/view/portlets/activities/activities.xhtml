@@ -1,0 +1,66 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+                xmlns:p="http://primefaces.prime.com.tr/ui">
+                
+	<p:panel id="activities" header="Activities and Tweets" toggleable="true" closable="true" widgetVar="activitiesWidget" closeListener="#{dashboardAction.removePortlet}">
+		<s:div id="streamOfActivities">
+		<s:div styleClass="activity">
+
+          <s:div styleClass="activityContent">
+              <h:outputText style="font-weight:bold;" value="What is on your mind?" />
+              <s:div>
+                
+                    <h:panelGrid columns="2" columnClasses="activityMind, activityShare" style="width: 100%;">
+	                    <h:inputTextarea value="#{kiwi.dashboard.tweetAction.tweet}" rows="2" cols="40" style="width: 100%"/>
+	                    <p:commandButton action="#{kiwi.dashboard.tweetAction.submitTweet()}" value="Share" update="streamOfActivities"/>
+                    </h:panelGrid>
+                
+              </s:div>
+          </s:div>
+          
+         </s:div>
+        
+        <s:div>
+        	<h:outputText value="Show only my friend activities"/>
+	          <h:selectBooleanCheckbox title="Check to follow your friend activities" value="#{kiwi.dashboard.preferenceAction.showFriendActivity}" id="checkboxFriendsID" style="margin-left:5px;">
+	  		     <a:support id="checkboxSupport" event="onchange" reRender="streamOfActivities" action="#{kiwi.dashboard.preferenceAction.saveUserPreference()}" />
+              </h:selectBooleanCheckbox>
+		</s:div>	               
+    
+	    <ui:repeat value="#{kiwi.dashboard.streamOfActivitiesAction.activities}" var="activity">
+ 		  
+ 		  <s:span id="activitySpan" rendered="#{(kiwi.dashboard.preferenceAction.showFriendActivity and (currentUser.id != activity.user.id))||(!kiwi.dashboard.preferenceAction.showFriendActivity)}">	    
+		        <s:div styleClass="activity">
+		           
+		           <!-- TODO: should include personal image -->
+		           <!--
+	               <s:div styleClass="activityPhoto">
+	                  <h:graphicImage url="#{facesContext.externalContext.requestContextPath}/img/professor.png" />
+	               </s:div>
+	               -->
+	               
+		           <s:div styleClass="activityContent">
+		               <s:span style="font-weight:bold;">
+		               		<kiwi:link resource="#{activity.user.resource}" value=" #{activity.user.firstName} #{activity.user.lastName}"/>
+		               	</s:span>
+	                   <h:outputText escape="false" value=" #{kiwi.dashboard.streamOfActivitiesAction.getMessageIdentifier(activity)}" /> 
+		           </s:div>
+		        
+		           <s:div styleClass="activityFooter">
+		               <h:outputText value="on #{activity.created}" ><s:convertDateTime pattern="dd/MM/yyyy, HH:mm"/></h:outputText>
+		           </s:div>
+		           
+		           <s:div style="clear: left;"></s:div>
+		        </s:div>
+	        </s:span>
+	    </ui:repeat>
+		</s:div>
+		<s:div styleClass="moreActivities">
+			<a:commandLink action="#{kiwi.dashboard.streamOfActivitiesAction.showMore()}" value="show more >" reRender="streamOfActivities"/>
+		</s:div>
+	</p:panel>
+</ui:composition>

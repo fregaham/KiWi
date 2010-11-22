@@ -1,0 +1,57 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+    xmlns:c="http://java.sun.com/jstl/core"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:p="http://primefaces.prime.com.tr/ui">
+                
+	<p:panel id="history" header="History" toggleable="true" closable="true" widgetVar="historyWidget" closeListener="#{dashboardAction.removePortlet}">
+		<p:tabView>
+		
+			<p:tab title="Visits">
+	            <p:dataList value="#{kiwi.dashboard.userHistoryAction.listLastVisits()}" var="visit" itemType="disc">
+					<kiwi:link value="#{kiwi.dashboard.userHistoryAction.ellipse(visit.contentItem.title,25)}" contentItem="#{visit.contentItem}" />
+				</p:dataList>
+	        </p:tab>
+
+	        <p:tab title="Edits">
+            	<p:dataList value="#{kiwi.dashboard.userHistoryAction.listLastEdits()}" var="edit" itemType="disc">
+                	<kiwi:link value="#{kiwi.dashboard.userHistoryAction.ellipse(edit.contentItem.title,25)}" contentItem="#{edit.contentItem}" />
+                </p:dataList>
+	        </p:tab>
+	        <p:tab title="Tags">
+                <p:dataList value="#{kiwi.dashboard.userHistoryAction.listLastTags()}" var="tag" itemType="disc">
+                           <kiwi:link value="#{kiwi.dashboard.userHistoryAction.ellipse(tag.tag.taggedResource.title,10)}" contentItem="#{tag.tag.taggedResource}" />
+                           <h:outputText value=" with " />
+			               <s:link view="/search.xhtml" value="#{kiwi.dashboard.userHistoryAction.ellipse(tag.tag.taggingResource.title,10)}">
+			                    <f:param name="q" value="tag:&quot;#{tag.tag.taggingResource.title}&quot;"/>
+			               </s:link>
+                </p:dataList>
+	        </p:tab>
+	        <p:tab title="Comments">
+                <p:dataList value="#{kiwi.dashboard.userHistoryAction.listLastComments()}" var="comment" itemType="disc">
+                 
+                           <kiwi:link value="#{kiwi.dashboard.userHistoryAction.ellipse(comment.contentItem.title,10)}" contentItem="#{comment.contentItem}" />
+                           <h:outputText value=" with " />
+                           <kiwi:link value="#{kiwi.dashboard.userHistoryAction.ellipse(comment.comment.title,10)}" contentItem="#{comment.comment}" />
+             
+                   </p:dataList>
+	        </p:tab>
+	        <p:tab title="Searches">
+                <p:dataList value="#{kiwi.dashboard.userHistoryAction.listLastSearches()}" var="search" itemType="disc">
+                
+                           <s:link view="/search.xhtml" value="#{kiwi.dashboard.userHistoryAction.ellipse(search.searchString,25)}">
+                                <f:param name="q" value="#{search.searchString}"/>
+                           </s:link>
+       
+                </p:dataList>
+	        </p:tab>
+	        
+	    </p:tabView>
+	</p:panel>   
+</ui:composition>

@@ -1,0 +1,121 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+    xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+    xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:p="http://primefaces.prime.com.tr/ui"
+	xmlns:a="http://richfaces.org/a4j">
+
+
+		<style>
+	        .inplace{
+	            border: none;
+	            cursor:pointer; 
+	        }
+	        .hover {
+	            color: #{a4jSkin.generalTextColor};
+	            background-color :#{a4jSkin.tipBorderColor};
+	        }   
+		   
+		   .typelist td {
+		   		vertical-align: top;
+		   }
+	    </style> 
+		
+		<h1>Tag perspective for<h:outputText value=" "/><h:outputText property="http://www.kiwi-project.eu/kiwi/core/title"/></h1>
+		
+		<p style="margin-top: 20px; margin-left: 10px; margin-right: 10px;" class="help">
+		  The content item currently displayed is used for tagging some other resources. Using this perspective,
+		  you can get additional tag related information about the content item, i.e. tagged items, etc.
+		  When you switch to "edit" mode, some of this information can also be edited. In particular, you have the 
+		  option to turn a tag into a "semantic tag" by attaching it to a SKOS thesaurus.
+		</p>
+
+		<br/>
+
+		<style>
+			.labelColumn {
+				width: 20%;
+				vertical-align: top;
+			}
+			
+			.dataColumn {
+				width: 80%;
+				vertical-align: top;
+			}
+		</style>
+
+		<p:panel header="Semantic Context">
+			<c:if test="#{kiwi.core.ui.tagPerspectiveAction.isSemanticTag(contentItem)}">
+				<p class="help">
+				<em>The displayed tag is a so-called <strong>semantic tag</strong> and currently associated with a SKOS thesaurus. The following broader concepts are the context of the tag. 
+				    More information is given when you switch to the "concept" perspective.</em>
+				</p>
+				<p>
+					<h:panelGrid columns="2" columnClasses="labelColumn,dataColumn" width="100%">
+		    			<h:panelGroup><strong>Parent Concepts:</strong></h:panelGroup>
+						<h:panelGroup>
+							<c:forEach items="#{skosService.listBroader(contentItem.resource,false)}" var="sc" varStatus="status">
+					    		<h:outputLink value="#{configurationService.baseUri}/home.seam?kiwiid=#{kiwi.ui.utility.encodeURL(sc.kiwiIdentifier)}">
+									<h:outputText value="#{sc.label} (#{sc.namespacePrefix})" />
+								</h:outputLink>
+								<c:if test="#{not status.last}">,<h:outputText value=" "/></c:if>
+					    	</c:forEach>
+						</h:panelGroup>
+					</h:panelGrid>
+				</p>		
+				<p>
+					<h:panelGrid columns="2" columnClasses="labelColumn,dataColumn" width="100%">
+		    			<h:panelGroup><strong>Child Concepts:</strong></h:panelGroup>
+						<h:panelGroup>
+							<c:forEach items="#{skosService.listNarrower(contentItem.resource,false)}" var="sc" varStatus="status">
+					    		<h:outputLink value="#{configurationService.baseUri}/home.seam?kiwiid=#{kiwi.ui.utility.encodeURL(sc.kiwiIdentifier)}">
+									<h:outputText value="#{sc.label} (#{sc.namespacePrefix})" />
+								</h:outputLink>
+								<c:if test="#{not status.last}">,<h:outputText value=" "/></c:if>
+					    	</c:forEach>
+						</h:panelGroup>
+					</h:panelGrid>
+				</p>		
+			</c:if>		
+			<c:if test="#{not kiwi.core.ui.tagPerspectiveAction.isSemanticTag(contentItem)}">
+				<p class="help">
+				<em>The displayed tag is a so-called <strong>free tag</strong> and currently not embedded in a semantic context. To turn it into a <strong>semantic tag</strong>, click on "edit" 
+				    and associate it with a SKOS thesaurus.</em>
+				</p>
+			</c:if>
+		</p:panel>
+		
+		<br/>
+
+		<!-- list of tagged items (needs proper layouting) -->
+		<p:panel header="Tagged Items" footer="The currently displayed tag is used on the content items listed above.">
+	    	<strong>Items:</strong><br/>
+			<c:forEach items="#{taggingService.listTaggedItems(contentItem)}" var="sc" varStatus="status">
+	    		<h:outputLink value="#{configurationService.baseUri}/home.seam?kiwiid=#{kiwi.ui.utility.encodeURL(sc.resource.kiwiIdentifier)}">
+					<h:outputText value="#{sc.resource.label} (#{sc.resource.namespacePrefix})" />
+				</h:outputLink>
+				<c:if test="#{not status.last}">,<h:outputText value=" "/></c:if>
+	    	</c:forEach>
+		</p:panel>
+		
+		<br/>
+
+		<!-- list of users using tag (needs proper layouting) -->
+		<p:panel header="Users using the Tag" footer="The users listed above have used the tag.">
+	    	<strong>Users:</strong><br/>
+	    	<c:forEach items="#{taggingService.listTagUsers(contentItem)}" var="user" varStatus="status">
+	    		<h:outputLink value="#{configurationService.baseUri}/home.seam?kiwiid=#{kiwi.ui.utility.encodeURL(user.resource.kiwiIdentifier)}">
+					<h:outputText value="#{user.firstName} #{user.lastName}" />
+				</h:outputLink>
+				<c:if test="#{not status.last}">,<h:outputText value=" "/></c:if>
+	    	</c:forEach>
+		</p:panel>
+
+	        
+</ui:composition>

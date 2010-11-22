@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pages xmlns="http://jboss.com/products/seam/pages"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.0.xsd"
+	   login-view-id="/interedu/login.xhtml"
+       no-conversation-view-id="/home.xhtml">
+
+    <page view-id="/edukms/*">
+        <action execute="#{currentApplicationFactory.switchApplication('edukms')}"/>
+        <navigation from-action="#{identityManagerService.logout}">
+			 <redirect view-id="/edukms/home.xhtml"/>
+		</navigation>
+    </page>	
+    
+   <exception>
+        <redirect view-id="/edukms/error.xhtml">
+            <message>Unexpected error, please try again</message>
+        </redirect>
+    </exception>
+
+</pages>

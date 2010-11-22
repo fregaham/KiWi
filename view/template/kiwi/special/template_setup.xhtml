@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:s="http://jboss.com/products/seam/taglib"
+   	  xmlns:rich="http://richfaces.org/rich"
+ 	  xmlns:a="http://richfaces.org/a4j"
+ 	  xmlns:c="http://java.sun.com/jsp/jstl/core"
+ 	  xmlns:p="http://primefaces.prime.com.tr/ui"
+ 	  xmlns:kiwi="http://www.kiwi-project.eu/jsf">
+<head>
+	
+	<!-- scripts -->
+	<p:resources exclude="/jquery/jquery.js" />
+	<script type="text/javascript" src="js/lib/jQuery/jquery-1.3.2.js"></script>
+	<script type="text/javascript" src="js/lib/jQuery/jquery-ui-1.7.2.min.js"></script>
+	<script type="text/javascript" src="js/lib/jQuery/jquery.tools.min.js"></script>
+	<script type="text/javascript">
+		jQuery.noConflict();
+	</script>
+	
+	<!-- stylesheets -->
+	<link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.requestContextPath}/stylesheet/kiwi/style.css" />
+    <link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.requestContextPath}/stylesheet/kiwi/jquery-ui-1.8.4.custom.css" />
+	
+	<!-- other links -->
+	<link rel="shortcut icon" href="#{facesContext.externalContext.requestContextPath}/favicon.ico" type="image/x-icon" />
+	
+</head>
+
+<body>
+    <div id="breadcrumb">
+    	<h:outputText value="KiWi Basic Setup" />
+    </div>
+    
+    <p:ajaxStatus id="ajax_loader_prime">  
+    		<f:facet name="start">
+    			<h:graphicImage value="/images/kiwi/ajax-loader.gif"/>
+    		</f:facet>  
+      
+    		<f:facet name="complete">  
+        		<h:outputText value="" />  
+    		</f:facet>  
+	</p:ajaxStatus>
+	
+	<div id="ajax_loader_rich" style="display:none;">
+        <h:graphicImage value="/images/kiwi/ajax-loader.gif"/>
+    </div>
+    
+    
+    <a:status
+        onstart="jQuery('#ajax_loader_rich').show()"
+        onstop="jQuery('#ajax_loader_rich').hide()"
+    />
+    
+    <div id="header">
+
+        <h1>
+        	<s:link view="/home.xhtml">
+		        <f:param name="title" />
+	            <f:param name="uri" value="#{configurationService.startPage}"/>
+	            <f:param name="id" />
+	            <f:param name="kiwiid"/>
+	        	KiWi Logo
+	        </s:link>
+	    </h1>
+    </div>
+    <div id="body">
+        <div id="setup_links">
+        	<h:form id="formHdrApplications">
+		        <ul>		        	
+		              <li>
+		                  <h:commandLink action="/setup/setupUser.xhtml" styleClass="active" rendered="#{view.viewId == '/setup/setupUser.xhtml'}">
+		                      <span class="mainnav_title">1. User:</span>
+		                      <span class="mainnav_subtitle">Configure default users</span>
+		                      <span class="mainnav_subtitle" style="margin-left:20px;">></span>
+		                  </h:commandLink>
+		                  <h:commandLink action="/setup/setupUser.xhtml" rendered="#{view.viewId != '/setup/setupUser.xhtml'}">
+		                      <span class="mainnav_title">1. User:</span>
+		                      <span class="mainnav_subtitle">Configure default users</span>
+		                      <span class="mainnav_subtitle" style="margin-left:20px;">></span>
+		                  </h:commandLink>
+		              </li>
+		              <li>
+		                  <h:commandLink action="/setup/setupOntologies.xhtml" styleClass="active" rendered="#{view.viewId == '/setup/setupOntologies.xhtml'}">
+		                      <span class="mainnav_title">2. Ontologies:</span>
+		                      <span class="mainnav_subtitle">Load initial ontologies</span>
+		                      <span class="mainnav_subtitle" style="margin-left:20px;">></span>
+		                  </h:commandLink>
+		                  <h:commandLink action="/setup/setupOntologies.xhtml" rendered="#{view.viewId != '/setup/setupOntologies.xhtml'}">
+		                      <span class="mainnav_title">2. Ontologies:</span>
+		                      <span class="mainnav_subtitle">Load initial ontologies</span>
+		                      <span class="mainnav_subtitle" style="margin-left:20px;">></span>
+		                  </h:commandLink>
+		              </li>
+		              <li>
+		                  <h:commandLink action="/setup/setupData.xhtml" styleClass="active" rendered="#{view.viewId == '/setup/setupData.xhtml'}">
+		                      <span class="mainnav_title">3. Content:</span>
+		                      <span class="mainnav_subtitle">Load initial content</span>
+		                  </h:commandLink>
+		                  <h:commandLink action="/setup/setupData.xhtml" rendered="#{view.viewId != '/setup/setupData.xhtml'}">
+		                      <span class="mainnav_title">3. Content:</span>
+		                      <span class="mainnav_subtitle">Load initial content</span>
+		                  </h:commandLink>
+		              </li>
+		        </ul>   
+	        </h:form>
+        </div>
+        <div id="main">
+            <div id="content_full">
+            	<ui:insert name="center"/>
+            </div>
+        </div>
+    </div>
+    <div id="footer">
+    	Powered by KiWi
+    </div>
+     <ui:insert name="panels" />
+</body>
+
+</html>

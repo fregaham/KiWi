@@ -1,0 +1,18 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:c="http://java.sun.com/jstl/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.prime.com.tr/ui" 
+    >
+    <s:fragment rendered="#{kiwi.ui.perspectiveAction.currentPerspective.widget and permissionAction.hasPermission('read')}">
+		<p:accordionPanel autoHeight="false" dynamic="true" widgetVar="widg_acc">
+	    	<ui:include  src="/perspectives/#{kiwi.ui.perspectiveAction.currentPerspective.widgetTemplate}">
+	    		<ui:param name="contentItem" value="#{currentContentItem}" />
+	 				<ui:param name="ctx" value="#{rdf.getCurrentResource()}" />
+	    	</ui:include>
+	    </p:accordionPanel>
+   	</s:fragment>
+</ui:composition>

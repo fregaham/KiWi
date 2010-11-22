@@ -1,0 +1,190 @@
+
+
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+    xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+    xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:a="http://richfaces.org/a4j" 
+	template="layout/template-2col.xhtml">
+
+	<ui:define name="body">
+	
+	<fieldset class="fieldsetborder" style="width:800px">
+	<legend>Suchergebnis verfeinern:</legend>	       
+	<rich:messages styleClass="message" />    
+    
+    <div id="searchbar">
+		<h:form id="search_fulltext">
+		<div style="float:left; margin-left: 10px">
+				<h:commandButton type="submit" value="Start search" action="#{artSearchAction.searchAll}"  />
+		</div><br/>
+		</h:form>
+	</div>
+	<br/>
+	<div id="technique_chooser" style="width:300px; margin-left:10px; margin-top:5px; float:left">
+		<h3><h:outputText value="Waehle eine Technik aus" /></h3>
+			<h:form styleClass="box_facets">
+				<ui:repeat value="#{artSearchAction.techniqueFacets}" var="tech">
+					<h:commandLink value = "#{tech.content.contentItem.title} (#{tech.resultCount})" action="#{artSearchAction.setTechniqueResource(tech.content)}"/>
+					<!--  <h:commandLink value="#{ideator.searchAction.getStatusFacetString(stat.content)}(#{stat.resultCount})" action="#{ideator.searchAction.setStatus(stat.content)}"/> -->
+					<h:outputText value=" " />
+				</ui:repeat>
+				<h:outputText rendered="#{artSearchAction.statusFacet.size == 0}" value="#{messages['ideator.search.facets.none']}" />
+			</h:form>
+			<br/>
+			<h3><h:outputText value="Waehle einen Typ aus" /></h3>
+			<h:form styleClass="box_facets">
+				<ui:repeat value="#{artSearchAction.relevantTypes}" var="type">
+					<h:commandLink value = "#{type.content.label} (#{type.resultCount})"  action="#{artSearchAction.setType(type.content)}" />
+					<!--  <h:commandLink value="#{ideator.searchAction.getStatusFacetString(stat.content)}(#{stat.resultCount})" action="#{ideator.searchAction.setStatus(stat.content)}"/> -->
+					<h:outputText value=" " />
+				</ui:repeat>
+				<h:outputText rendered="#{artSearchAction.relevantTypes.size == 0}" value="#{messages['ideator.search.facets.none']}" />
+			</h:form>		
+	 </div>
+	 <br/>
+			
+	<!-- tag facettes -->
+		<h:form>
+			<div class="search_facets" style="margin-left:10px">
+		<!--  		<s:span styleClass="search_facets" rendered="#{ideator.searchAction.status != -1}" >
+					<h:outputText value="#{messages['ideator.search.hasstate']} #{ideator.searchAction.getStatusFacetString(ideator.searchAction.status)}" />
+					<h:commandLink action="#{ideator.searchAction.setStatus(-1)}">
+						<img src="stylesheet/images/icon_cancel.png" style="width:12px;margin-left:-3px" />
+					</h:commandLink>
+					</s:span> 
+		-->
+				<h:outputText value=" Gewaehlte Kategorien:" rendered="#{artSearchAction.selectedTechniques.size > 0}" /><br/><br/>
+				
+				<a:repeat value="#{artSearchAction.selectedTechniques}" var="technique" rowKeyVar="index">
+				<div style="margin-right:10px; margin-left:2px; float:left">
+					<h:outputText value=" #{technique.label}" style="float:left; margin-right:5px"/>
+					<h:commandLink action="#{artSearchAction.removeTechnique(technique)}">
+						<img src="stylesheet/images/icon_cancel.png" style="width:12px;margin-left:-3px; " />
+					</h:commandLink>
+				<!-- 	<h:commandLink action="#{ideator.searchAction.removeTag(tag)}">
+						<img src="stylesheet/images/icon_cancel.png" style="width:12px;margin-left:-3px" />
+					</h:commandLink>  -->
+				<!--  	<h:outputText value=", " rendered="#{ideator.searchAction.searchTags.size != index+1}" /> -->
+				</div>
+				</a:repeat>
+				
+				<a:repeat value="#{artSearchAction.selectedTypes}" var="type" rowKeyVar="index">
+				<div style="margin-right:10px; margin-left:2px; float:left">
+					<h:outputText value=" #{type.label}" style="float:left; margin-right:5px"/>
+				 	<h:commandLink action="#{artSearchAction.removeType(type)}">
+						<img src="stylesheet/images/icon_cancel.png" style="width:12px;margin-left:-3px; " />
+					</h:commandLink>  
+				<!--  	<h:outputText value=", " rendered="#{ideator.searchAction.searchTags.size != index+1}" /> -->
+				</div>
+				</a:repeat>
+				
+			</div>
+		</h:form>		
+	<br/>	
+	</fieldset>		
+    <br/>	    	
+	<fieldset class="fieldsetborder" style="width:800px">
+	<legend>Suchergebnisse:</legend>	    
+    <!-- result list -->
+    <!-- Geht leider nicht mit layout/template-2col.xhtml -->
+    	
+		<div class="search_size" style="margin-left:10px">
+			<h:form id="search_order" rendered="#{artSearchAction.resultCount > 0}">
+				<h:outputText value="#{artSearchAction.firstContentNumber} - #{artSearchAction.lastContentNumber} #{messages['ideator.search.oftotally']} #{artSearchAction.resultCount} #{messages['ideator.search.orderedby']} " />
+				<rich:inplaceSelect value="#{artSearchAction.sort}">
+					<f:selectItem itemValue="score" itemLabel="#{messages['ideator.search.ordering.relevance']}" />
+					<f:selectItem itemValue="modified" itemLabel="#{messages['ideator.search.ordering.modified']}" />
+					<f:selectItem itemValue="ceq" itemLabel="#{messages['ideator.search.ordering.ceq']}" />
+					<a:support event="onviewactivated" action="#{artSearchAction.search}" />
+				</rich:inplaceSelect>
+				<h:outputText value=" "/>
+				<rich:inplaceSelect value="#{artSearchAction.order}">
+					<f:selectItem itemValue="desc" itemLabel="#{messages['ideator.search.ordering.desc']}" />
+					<f:selectItem itemValue="asc" itemLabel="#{messages['ideator.search.ordering.asc']}" />
+					<a:support event="onviewactivated" action="#{artSearchAction.search}" />
+				</rich:inplaceSelect>
+			</h:form>
+			<s:span rendered="#{artSearchAction.resultCount == 0}">#{messages['ideator.search.noresults']}</s:span>
+		</div>
+		<br/>
+		<div class="search_results" style="margin-left:10px">
+			
+			<!--  <ui:repeat value="#{artSearchAction.searchResults}" var="r"> -->
+			<div>
+			<c:forEach items ="#{artSearchAction.searchResults}" var="r">
+				<h:form>
+
+			<!--  	  <h:commandButton value = "press" action = "#{artaround.layoutAction.getSearchResultItemTemplate(r.item)}"/> -->
+				    <table><tr><td> 
+					<ui:include src="#{artaround.layoutAction.getSearchResultItemTemplate(r.item)}" >
+						<ui:param name="ci" value="#{r.item}" />
+						<ui:param name="score" value="#{r.score} " />
+						<ui:param name="preview" value="#{r.highlightPreview} Hallo"/>
+					</ui:include>
+					</td><td>
+						 <div style="margin-left:30px">
+						 <h:outputText value = "Bewertung:"/> 
+						 <br/>
+						 <h:outputText value = "#{r.ceq}"/> 
+						 <br/>
+<!--						 <h:outputText value = "#{showArtWorkAction.getEquityValue(r.item)}"/>	-->
+						 </div>				
+					</td></tr></table>
+					<br/>
+			        <div style="border-bottom: 1px solid #ccc;"></div>
+			
+				</h:form>
+			</c:forEach>
+		</div>
+	  </div>
+	  
+	  <br/><br/>
+ 				
+		<div class="search_paging" align="center">
+		<h:form rendered="#{artSearchAction.resultCount > 0}">
+		<span class="back" style="margin-right:10px; font-size:14px; font-weight:normal">
+			<c:choose>
+			<c:when test="#{artSearchAction.hasPrevPage()}">
+				<h:commandLink value="#{messages['ideator.btn.back']}" action="#{artSearchAction.prevPage()}" />
+			</c:when>
+			<c:otherwise>
+    			<a href="#">#{messages['ideator.btn.back']}</a>
+			</c:otherwise>
+			</c:choose>
+		</span>
+		<c:forEach var="x" items="#{artSearchAction.pageArray}" varStatus="status">
+			<c:choose>
+				<c:when test="#{x}">
+					<span class="number selected" style="font-size:14px; font-weight:normal"><a href="#">#{status.index+1}</a></span>
+				</c:when>
+				<c:otherwise>
+					<span class="number" style="font-size:14px; font-weight:normal"><h:commandLink value="#{status.index+1}" action="#{artSearchAction.setPage(status.index)}"/></span>
+				</c:otherwise>
+			</c:choose>
+		</c:forEach>
+		<span class="next" style="margin-left:10px; font-size:14px; font-weight:normal">
+			<c:choose>
+			<c:when test="#{artSearchAction.hasNextPage()}">
+				<h:commandLink value="#{messages['ideator.btn.ahead']}" action="#{artSearchAction.nextPage()}" />
+			</c:when>
+			<c:otherwise>
+    			<a href="#">#{messages['ideator.btn.ahead']}</a>
+			</c:otherwise>
+			</c:choose>
+		</span>
+		</h:form>
+	</div>
+    </fieldset>
+    
+    	
+	  
+	</ui:define>
+</ui:composition>
+

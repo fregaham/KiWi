@@ -1,0 +1,63 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:p="http://primefaces.prime.com.tr/ui">
+                
+	<p:panel id="tagcloud" header="My Tagcloud" toggleable="true" closable="true" widgetVar="tagcloudWidget" closeListener="#{dashboardAction.removePortlet}">
+		<!--
+		<div style="min-height:30px;">
+	        <ui:repeat var="tag" value="#{tagCloudService.userTagCloud(currentUser)}" >
+	            <span style="font-size: #{tag.size}%;">
+	            <s:link view="/search.xhtml" value="#{tag.tagTitle}" style="color: rgb(100,#{tag.colorCode},100);">
+	                <f:param name="q" value="tag:&quot;#{tag.tagTitle}&quot;"/>
+	            </s:link>
+	            </span>
+	            <h:outputText value=", " /> 
+	        </ui:repeat>
+        </div>-->
+        <script type="text/javascript" src="portlets/tagcloud/swfobject.js"></script>
+		<style type="text/css">
+			#tagcloud_content { background-color: #eee; } 
+		</style>
+        <div id="tagcloud_content">Loading...</div>
+
+		<script type="text/javascript">
+			/* <![CDATA[ */
+			
+			var tagcloud_x = 300;
+			var tagcloud_y = 300;
+
+			var tagcloud_text = "#{tagCloudService.getCumulusTagCloudXML(currentUser)}";
+
+			function loadTagCloud() {
+				if(tagcloud_text != "<tags></tags>") {
+				var so = new SWFObject("portlets/tagcloud/tagcloud.swf", "tagcloud", tagcloud_x, tagcloud_y, "7", "#ffffff");
+				so.addParam("wmode", "transparent");
+				so.addVariable("tcolor", "0x333333");
+				so.addVariable("mode", "tags");
+				so.addVariable("distr", "true");
+				so.addVariable("tspeed", "100");
+				so.addVariable("tagcloud", tagcloud_text);
+				so.write("tagcloud_content");
+				} else {
+					jQuery("#tagcloud_content").html("<p style='padding:10px;'>You do not have personal tags. Tag something first!</p>")
+				}
+			}
+
+			jQuery(document).ready(function(){
+				tagcloud_x = jQuery("#tagcloud_content").width();
+				loadTagCloud();
+			});
+
+			jQuery(window).resize(function() {
+				tagcloud_x = jQuery("#tagcloud_content").width();
+				loadTagCloud();
+			});
+							
+			
+			/*]]>*/
+		</script>
+	</p:panel>              
+</ui:composition>

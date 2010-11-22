@@ -1,0 +1,9 @@
+<!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd" >
+
+<suite name="InformationExtractionTests" verbose="5" parallel="false">
+    <test name="InformationExtractionService" junit="false">
+        <classes>
+            <class name="kiwi.test.service.informationextraction.InformationExtractionTest"/>
+        </classes>
+    </test>
+</suite>

@@ -1,0 +1,61 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:m="http://code.google.com/p/gmaps4jsf/"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+                xmlns:p="http://primefaces.prime.com.tr/ui">
+		        
+		        
+		        <h:form id="addGroupForm">
+	                <s:div id="addGroup">
+		            	<h:outputText value="Create your own group:" style="font-weight:bold;"/>
+		            	<s:div>
+		            		<h:inputText  value="#{kiwi.dashboard.groupAction.name}" />
+							<h:commandButton action="#{kiwi.dashboard.groupAction.store}" value="Save" id="saveBtn" reRender="groupList" />
+						</s:div>
+					</s:div>
+	            </h:form>
+              
+				<c:forEach var="group" items="#{kiwi.dashboard.groupAction.allMyGroups}" id="mygroup">
+
+	             <h:form>
+		         <div id="addContact">
+		                        
+		         	<kiwi:link contentItem="#{group.resource.contentItem}" value="#{group.name}" style="font-weight:bold;"/>
+					<s:div>
+		                   <a:commandLink action="#{kiwi.dashboard.groupAction.addMeToGroup(group)}" value="Add me" reRender="groupList" rendered="#{!kiwi.dashboard.groupAction.isUserMemberOfGroup(group)}"/>
+		                   <h:outputText value=" " />
+		                   <a:commandLink action="#{kiwi.dashboard.groupAction.removeGroup(group)}" value="Remove" reRender="groupList"/>
+		                    
+					       <h:outputText value="Add a person to this group" style="font-weight:bild; font-size:16px;" />
+					                    
+					        <h:panelGrid columns="2">
+						           <rich:comboBox defaultLabel="Enter user name" value="#{kiwi.dashboard.groupAction.selectedUser}" style="width: 200px;">
+						                  <s:selectItems value="#{kiwi.dashboard.groupAction.allUsers}" var="selectedUser" label="#{user}"/>
+						          </rich:comboBox>
+						         <a:commandButton action="#{kiwi.dashboard.groupAction.addToGroup(group)}" value="Add" reRender="groupList"/>
+					       </h:panelGrid>
+					 </s:div>
+				</div>
+
+		  
+		                    <ul>
+		                    <s:span id="groupUsers" rendered="#{group.users != null}">
+								<ui:repeat var="user" value="#{groupAction.getUsersInGroup(group)}">
+									<li>
+									<h:outputText value="#{user.firstName} "/>
+									<a:commandLink action="#{kiwi.dashboard.groupAction.removeUserFromGroup(user,group)}"  value="remove" reRender="groupList"/>
+									</li>
+								</ui:repeat>
+							</s:span>
+							</ul>
+						
+						</h:form>
+
+			 </c:forEach>
+</ui:composition>

@@ -1,0 +1,69 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:p="http://primefaces.prime.com.tr/ui"
+    template="/template/kiwi/template_3col.xhtml">
+    
+    <ui:define name="stylesheet">
+    	<link rel="stylesheet" type="text/css" href="stylesheet/home.css" />
+    </ui:define>
+    
+    <ui:define name="script">
+        <!--  load JQuery Lightbox for slideshows -->
+<!--        <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/jquery-ui-1.8.4.custom.min.js"></script>-->
+        <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/jqueryplugins/jquery-lightbox-0.5/js/jquery.lightbox-0.5.pack.js"></script>
+        <link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.requestContextPath}/js/jqueryplugins/jquery-lightbox-0.5/css/jquery.lightbox-0.5.css" media="screen" />
+
+        <!-- load KiWi widgets -->
+        <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/widgets/activity/widget.activity.js"></script>
+        <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/widgets/recommendations/widget.recommendations.js"></script>
+        
+    </ui:define>
+    
+    <ui:define name="link">
+        <link href="#{facesContext.externalContext.requestContextPath}/feed.seam?mode=MOSTRECENT&amp;format=RSS20" type="application/rss+xml" rel="alternate" title="Most Recently Changed" />
+        <link href="#{facesContext.externalContext.requestContextPath}/feed.seam?mode=COMMENTS&amp;format=RSS20" type="application/rss+xml" rel="alternate" title="Comments for #{currentContentItem.title}" />
+        <link href="#{facesContext.externalContext.requestContextPath}/activity-feed.seam?mode=ACTIVITIES&amp;format=RSS20" type="application/rss+xml" rel="alternate" title="Stream of Activities for #{currentContentItem.title}" />
+    </ui:define>
+    
+    <ui:define name="sidebar">
+ 		<ui:include src="elements/sidebar.xhtml"/>
+ 	</ui:define>
+    
+    <ui:define name="center">
+    	<h2><h:outputText value="#{currentContentItem.title}" /></h2>
+    	<p id="created_on">
+    	    <h:outputText value="#{messages['wiki.createdon']} "/><h:outputText value="#{currentContentItem.created}"><s:convertDateTime pattern="dd/MM/yyyy"/></h:outputText><h:outputText value=" - "/> 
+            <h:outputText value="#{messages['wiki.updateon']} "/><h:outputText value="#{currentContentItem.modified}"><s:convertDateTime pattern="dd/MM/yyyy"/></h:outputText><h:outputText value=" "/> 
+            <h:outputText value="#{messages['wiki.by']} "/><kiwi:link resource="#{currentContentItem.author.resource}" value=" #{currentContentItem.author.firstName} #{currentContentItem.author.lastName}"/>
+    	</p>
+    	
+    	<ui:include src="elements/action_menu.xhtml">
+    		<ui:param name="edit" value="#{false}" />
+    	</ui:include>
+    	
+    	<ui:include src="elements/rating.xhtml"/>
+    	
+    	<ui:include src="/perspectives/perspectives.xhtml" >
+    		<ui:param name="edit" value="#{false}" />
+    	</ui:include>
+    	
+    	<ui:include src="elements/comments.xhtml">
+    		<ui:param name="editable" value="#{true}" />
+    	</ui:include>
+
+    </ui:define>
+    
+    <ui:define name="right">
+    	<div style="width:90%;float:right">
+    		<kiwi:widgetPerspective />
+    	</div>
+    </ui:define>
+    
+    <ui:define name="panels">
+    	<ui:include src="/dialogs/editperspectives.xhtml" />
+    </ui:define>
+     
+</ui:composition>

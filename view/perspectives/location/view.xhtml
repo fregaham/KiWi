@@ -1,0 +1,77 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+		    	xmlns:a4j="http://richfaces.org/a4j">
+
+		<script type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=#{tagit2.explorerAction.gmapkey}"></script>
+		<script type="text/javascript">
+			/* <![CDATA[ */
+			var kiwi_location_perspective_map;
+			var kiwi_location_perspective_marker;
+			var kiwi_location_perspective_geocoder;
+			
+			var kiwi_location_perspective_start;
+			
+			jQuery(document).ready( function() {
+				
+					var lat = jQuery("#lat").val();
+					var lng = jQuery("#lng").val();
+					kiwi_location_perspective_map = new GMap2(document.getElementById("kiwi_location_perspective_map"));
+					kiwi_location_perspective_geocoder = new GClientGeocoder();
+					kiwi_location_perspective_start = new GLatLng(45,12);
+
+					if( lat!="" && lng!="" ) {
+						setMarker(new GLatLng(lat, lng));	
+					} else {
+						jQuery("#no_lat_lng").show();
+						kiwi_location_perspective_map.setCenter(kiwi_location_perspective_start);
+					}
+					kiwi_location_perspective_map.setUIToDefault();
+				
+			});
+			
+			function setMarker(point) {
+				kiwi_location_perspective_map.setCenter(point, 12);
+				if( !kiwi_location_perspective_marker ) {
+					kiwi_location_perspective_marker = new GMarker(point);
+					kiwi_location_perspective_map.addOverlay(kiwi_location_perspective_marker);
+				} else  {
+					kiwi_location_perspective_marker.setLatLng(point);
+				}
+				jQuery("#lat").val(point.lat());
+				jQuery("#lng").val(point.lng());
+			}
+			
+			 /* ]]> */
+
+		</script>
+
+		<h1>Location for<h:outputText value=" "/><h:outputText property="http://www.kiwi-project.eu/kiwi/core/title"/></h1>
+		
+		<p style="margin-top: 20px; margin-left: 10px; margin-right: 10px;" class="help">
+		  In the following, you can browse the location data associated with the page 
+		  '#{currentContentItem.title}'. Click on "Edit" to modify the
+		  location.
+		</p>
+		
+		<table style="margin-left:10px;">
+
+			<tr><td style="font-weight:bold;padding:5px;">Street:</td><td><h:outputText property="http://www.w3.org/2000/10/swap/pim/contact#street"/></td></tr>
+			<tr><td style="font-weight:bold;padding:5px;">City:</td><td><h:outputText property="http://www.w3.org/2000/10/swap/pim/contact#city"/></td></tr>
+			<tr><td style="font-weight:bold;padding:5px;">PostalCode:</td><td><h:outputText property="http://www.w3.org/2000/10/swap/pim/contact#postalCode"/></td></tr>
+			<tr><td style="font-weight:bold;padding:5px;">Country:</td><td><h:outputText property="http://www.w3.org/2000/10/swap/pim/contact#country"/></td></tr>
+
+		</table>
+		<form style="margin-left:10px;height:210px;">
+			<input type="hidden" id="lat" property="http://www.w3.org/2003/01/geo/wgs84_pos#lat" value="47.9"/>
+			<input type="hidden" id="lng" property="http://www.w3.org/2003/01/geo/wgs84_pos#long" value="13.03" />
+			<div id="kiwi_location_perspective_map" style="width:400px;height:200px;border:1px solid black;margin-top:10px;" ></div>
+			<div id="no_lat_lng" style="color:red;display:none;font-size:16px;margin-left:120px;margin-top:-100px;position:relative;">page is not located yet</div>
+		</form>
+</ui:composition>

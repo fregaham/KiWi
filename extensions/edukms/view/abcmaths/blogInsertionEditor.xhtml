@@ -1,0 +1,184 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                             "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:m="http://code.google.com/p/gmaps4jsf/"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+	template="layout/main.xhtml">
+
+	<ui:define name="breadcrumps">
+		<ul>
+			<li class="first"><s:link view="/edukms/abcmaths/home.xhtml"
+				value="| Information Platform Home" /></li>
+			<li><s:link view="/edukms/abcmaths/searchKMS.xhtml"
+				value="Content Search" /></li>
+			<li><s:link view="/edukms/abcmaths/informationRetrievalResult.xhtml"
+				value="Search Result" /></li>
+			<li><s:link view="/edukms/abcmaths/blogPresentation.xhtml"
+				value="Blog" /></li>
+			<li><s:link view="/edukms/abcmaths/blogInsertionEditor.xhtml"
+				value="New Entry" /></li>
+		</ul>
+	</ui:define>
+
+	<ui:define name="body">
+
+		
+
+<style>
+
+#cover {
+	margin: 10px 0 0 0;
+	width: 800px;
+}
+
+h2 {
+	color: #6f91c0;
+	font-size: 14px;
+	margin-left: 5px;
+	margin-top: -15px;
+	font-weight: 300;
+}
+
+h1 {
+	color: #999;
+	font-size: 14px;
+	margin-left: 20px;
+	margin-top: -15px;
+	font-weight: 300;
+}
+
+
+.buttonclass {
+	text-decoration: none;
+	margin-right: 5px;
+}
+
+#buttons { /*border-bottom: 1px solid #FFE8C3; */
+	padding: 10px;
+}
+
+#trennlinie {
+	border-bottom: 1px solid #ddd;
+	margin: 10px;
+}
+
+#trennlinieSmall {
+	border-bottom: 1px solid #ddd;
+	margin: 10px;
+	width: 50px;
+}
+
+#versionCatalogue ul li{
+	list-style-image: none;
+	list-style: none;
+	margin-left: -5px;
+}
+
+</style>
+
+		 
+     
+		<div id="cover">
+		<h:form >
+		
+			<fieldset class="fieldsetborder"
+					style="float:left; width:100%; height: 570px; margin-left: -170px; border:1px solid #ddd">
+			
+			<br/>
+			<div style="height:680px; overflow:auto; margin-top:-8px">
+			<br/>
+			<ul ><li><h2>Insert text right here:</h2></li></ul>
+			<div id="editor" style="margin-left:20px">
+			
+			<rich:editor language="en" width="500"
+				height="200" value="#{dkmsContentItemBean.commentText}" theme="simple"
+				viewMode="visual">
+				
+			</rich:editor>
+			</div>	
+			
+			<br/>
+			<div id="trennlinie"></div>
+			<br/> 
+			<h2 style="margin-bottom:5px; margin-left:20px">Blog Title: #{dkmsContentItemBean.dkmsContentItemName}&#160;|&#160; created by #{dkmsContentItemBean.authorName}</h2>
+			<div id="editor" style="margin-left:20px">
+						<rich:editor id="editor1" language="de" width="500"
+								height="100" value="#{dkmsContentItemBean.taskContent}" theme="advanced"
+								viewMode="visual" readonly="true">
+						</rich:editor> 
+			</div>	
+			
+			<br/>
+			<div id="trennlinie"></div>
+			<br/>
+			
+			<ui:repeat value="#{dkmsContentItemBean.dkmsCommentList}" var="list" >
+			<br/>
+			<h2 style="margin-bottom:5px; margin-left:20px">Blog comment by #{list.commentAuthor}&#160;|&#160;#{list.version} </h2>
+			<div id="editor2" style="margin-left:20px">
+				<rich:editor id="editor1" language="de" width="500"
+						height="100" value="#{list.commentContent}" theme="advanced"
+						viewMode="visual" readonly="true">
+				</rich:editor> 
+			</div>	
+			<br/>
+			<div id="trennlinie"></div>
+			</ui:repeat> 
+			
+			
+                   
+      	          
+		   
+		</div>
+			</fieldset>
+
+			 <fieldset class="fieldsetborder" style="float:right; width: 200px; height: 570px; margin-right: -160px; border:1px solid #ddd">
+
+			
+			<div id="buttons">
+			
+			<h:commandLink class="buttonclass"
+			action="#{dkmsReadModusAction.goToResultList()}">
+			<img
+				src="#{facesContext.externalContext.requestContextPath}/view/img/arrowleft_small.png"
+				style="valign: center; vertical-align: middle; margin-right: 14px;" /> Back to Result List</h:commandLink>
+			<br /><br />
+			<h:commandLink class="buttonclass"
+			action="#{dkmsStoreAction.storeBlogComment()}">
+			<img
+				src="#{facesContext.externalContext.requestContextPath}/view/img/arrowright_small.png"
+				style="valign: center; vertical-align: middle; margin-right: 16px; margin-left:2px" />Proceed</h:commandLink>
+			<br /><br />
+			<div id="trennlinie"></div>
+		<br/>
+		
+<!--			<h:commandLink -->
+<!--				action="#{identity.logout()}">-->
+<!--				<img-->
+<!--					src="#{facesContext.externalContext.requestContextPath}/view/img/logout_small.png"-->
+<!--					style="valign: center; vertical-align: middle; margin-right: 5px; margin-left:-8px" /> Logout</h:commandLink>-->
+			</div>
+			</fieldset>
+		</h:form>
+		</div>
+		
+<!--		test:-->
+<!--		<c:forEach items="#{dkmsContentItemBean.dkmsMediaList}" var="item">    	    -->
+<!--      	   -->
+<!--      	    <img src="#{dkmsReadModusAction.getMiniMultimediaFilename(item)}" style="margin: 0px 15px 0 5px; float: left; " /><br/>-->
+<!--			pic-->
+<!--			<div id="trennlinie"></div>-->
+<!--		-->
+<!--		</c:forEach> -->
+
+
+	</ui:define>
+</ui:composition>

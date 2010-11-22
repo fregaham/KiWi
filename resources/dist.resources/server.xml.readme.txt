@@ -1,0 +1,6 @@
+The Mac OS X Distribution sores the certificates files in : "$JAVA_HOME/lib/security/cacerts"
+This path differs from the linux (and I tend to say) classical one $JAVA_HOME/jre/lib/security/cacerts.
+This is the reason why there are two different server.xml files (one for mac os x 
+and one for the rest). 
+
+

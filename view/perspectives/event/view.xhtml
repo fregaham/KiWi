@@ -1,0 +1,43 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+    xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+    xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:p="http://primefaces.prime.com.tr/ui"
+	xmlns:a="http://richfaces.org/a4j">
+
+
+		<style>
+		   .calLeft,.calRight {
+		   		width: 50%;
+		   }
+	    </style> 
+		
+		<h1>Event perspective for<h:outputText value=" "/><h:outputText property="http://www.kiwi-project.eu/kiwi/core/title"/></h1>
+		
+		<p style="margin-top: 20px; margin-left: 10px; margin-right: 10px;" class="help">
+		  The content item currently displayed represents an event in KiWi's event ontology. Below you can find a visual representation of the
+		  event in the form of a calendar. 
+		</p>
+
+		<br/>
+
+		<h:panelGrid columns="2" columnClasses="calLeft,calRight" width="100%">
+			<h:panelGroup>
+				<strong>Start Date:</strong><br />
+				<p:calendar property="http://www.kiwi-project.eu/kiwi/calendar/startTime" mode="inline"/>
+			</h:panelGroup>
+			
+			<h:panelGroup>
+				<strong>End Date:</strong><br />
+				<p:calendar property="http://www.kiwi-project.eu/kiwi/calendar/endTime" mode="inline"/>
+			</h:panelGroup>			
+		</h:panelGrid>
+
+	        
+</ui:composition>

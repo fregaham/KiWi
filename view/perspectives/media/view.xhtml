@@ -1,0 +1,71 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+    xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+    xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:p="http://primefaces.prime.com.tr/ui"
+	xmlns:a="http://richfaces.org/a4j">
+
+
+		<style>
+		   .calLeft,.calRight {
+		   		width: 50%;
+		   }
+	    </style> 
+		
+		<h1>Media perspective for<h:outputText value=" "/><h:outputText property="http://www.kiwi-project.eu/kiwi/core/title"/></h1>
+		
+		<p style="margin-top: 20px; margin-left: 10px; margin-right: 10px;" class="help">
+		  The content item currently displayed represents a media resource. Below you can find a visual representation of the
+		  resource. An appropriate player will be chosen depending on the type of the resource. 
+		</p>
+
+		<br/>
+
+		<p:panel header="Media Resource #{currentContentItem.title}">
+			<s:div style="text-align: center;">
+				<c:if test="#{kiwi.core.ui.mediaPerspectiveAction.isImage(currentContentItem)}">
+					<s:graphicImage value="#{currentContentItem.mediaContent.data}"
+					             fileName="#{contentItem.mediaContent.fileName}_thumb" >
+						<s:transformImageSize width="400" maintainRatio="true"/>
+					</s:graphicImage>
+				</c:if>
+				<c:if test="#{kiwi.core.ui.mediaPerspectiveAction.isMedia(currentContentItem)}">
+					<script type="text/javascript" src="#{configurationService.baseUri}/js/flowplayer/flowplayer-3.2.4.min.js"></script>
+					<center>
+						<a  
+							 href="#{configurationService.baseUri}/seam/resource/services/multimedia/get/#{currentContentItem.id}"  
+							 style="display:block;width:520px;height:330px"  
+							 id="player"> 
+						</a> 
+					</center>
+					<!-- this will install flowplayer inside previous A- tag. -->
+					<script>
+						flowplayer("player", "#{configurationService.baseUri}/js/flowplayer/flowplayer-3.2.5.swf");
+					</script>
+				</c:if>
+			</s:div>
+			
+			<s:div style="text-align: center;">
+				<c:if test="#{kiwi.core.ui.mediaPerspectiveAction.hasMediaContent(currentContentItem)}">
+					<h:form>
+						<p:commandButton value="Download" ajax="false">
+							<p:fileDownload value="#{kiwi.core.ui.mediaPerspectiveAction.getMedia(currentContentItem)}" />
+						</p:commandButton>
+					</h:form>
+				</c:if>
+			</s:div>
+			
+			<c:if test="#{not kiwi.core.ui.mediaPerspectiveAction.hasMediaContent(currentContentItem)}">
+				<p class="help">
+					This resource does not yet contain any media content. But you can upload it by switching to edit!
+				</p>
+			</c:if>
+		</p:panel>
+	        
+</ui:composition>

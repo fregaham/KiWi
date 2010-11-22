@@ -1,0 +1,94 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	template="layout/main.xhtml">
+
+	<ui:define name="breadcrumps">
+		<ul>
+			<li class="first"><s:link
+				view="/edukms/authorInterface/home.xhtml" value="Author Program Home" /></li>
+			<li><s:link view="/edukms/authorInterface/slidesUpload.xhtml"
+				value="Slides Upload" /></li>
+		</ul>
+	</ui:define>
+
+	<ui:define name="body">
+
+		<style>
+h1 {
+	color: #6f91c0;
+	font-size: 16px;
+	margin-left: 20px;
+	margin-right: 10px;
+	line-hight: 20px;
+}
+
+ul li {
+	list-style-image: url(../img/li.png);
+	color: #6f91c0;
+	font-size: 14px;
+	margin-left: 30px;
+	margin-top: 5px;
+}
+
+li img {
+	vertical-align: center;
+}
+
+h2 {
+	color: #6f91c0;
+	font-size: 14px;
+	margin-left: 20px;
+	margin-top: -15px;
+}
+
+.column {
+	width: 600px;
+	vertical-align: top;
+}
+
+#cover {
+	margin: 10px -40px 0 0;
+	width: 500px;
+}
+
+#arrows {
+	width: 630px;
+	margin: 20px;
+}
+
+#editor {
+	margin: 0 20px 20px 20px;
+}
+</style>
+
+		<div id="cover">
+		<fieldset class="fieldsetborder"><legend>Slides	Upload</legend> 
+		<h:form>
+			<rich:fileUpload fileUploadListener="#{artWorkMediaAction.listener}"
+				immediateUpload="false" maxFilesQuantity="20" listHeight="200pt"
+				listWidth="auto" allowFlash="true" acceptedTypes="jpg, gif, png"
+				addControlLabel="#{messages['artaround.addFile']}..."
+				clearAllControlLabel="#{messages['artaround.clearAll']}"
+				clearControlLabel="#{messages['artaround.clear']}"
+				stopEntryControlLabel="#{messages['artaround.stopProcess']}"
+				uploadControlLabel="#{messages['artaround.upload']}...">
+
+				<a4j:support event="onuploadcomplete" reRender="cover" />
+				<f:facet name="label">
+					<h:outputText value="#{messages['artaround.upload.state']}" />
+				</f:facet>
+			</rich:fileUpload>
+			<br />
+		</h:form></fieldset>
+		</div>
+	</ui:define>
+</ui:composition>
+
+
+
+

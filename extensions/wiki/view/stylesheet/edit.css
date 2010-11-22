@@ -1,0 +1,12 @@
+/*title edit*/
+#titleInplace_display {
+	font-size:18pt;
+	font-weight:normal;
+	color:#8BC53E;
+}
+
+#titleInplace_content input.titleText {
+	font-size:18pt;
+	font-weight:normal;
+	color:#8BC53E;
+}

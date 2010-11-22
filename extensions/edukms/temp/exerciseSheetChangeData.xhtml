@@ -1,0 +1,93 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                             "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:m="http://code.google.com/p/gmaps4jsf/"
+			 	xmlns:c="http://java.sun.com/jstl/core"
+			 	xmlns:a4j="http://richfaces.org/a4j"			 	
+                xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+                template="layout/main.xhtml">               	
+		 
+	 <ui:define name="breadcrumps">
+	 	<ul>
+	 		<li class="first">				 			
+				<s:link view="/edukms/authorInterface/home.xhtml" value="AI Startseite"/>
+	 		</li>
+	 		<li>				 			
+				<s:link view="/edukms/authorInterface/startSequence.xhtml" value="Aufgaben/Lernsequenz"/>
+	 		</li>
+	 	</ul>
+	 </ui:define>
+	 
+	 <ui:define name="body">
+	 
+	 <style>
+	 
+	 h1 {  
+	 	 	
+	 	color: #6f91c0;
+	 	font-size: 16px;
+	 	margin-left:20px;	 	
+	 
+	 }
+	 
+	 h2 {  
+	 	 	
+	 	color: #6f91c0;
+	 	font-size: 14px;
+	 	margin-left:20px;	 	
+	 
+	 }
+	 
+	 #cover {
+	 
+		 margin: 10px -40px 0 0;
+		 width: 500px;
+	 
+	 }	
+	 
+	 #arrows {
+	 	width: 500px;
+	 	margin: 20px;
+	 	
+	 } 
+	 
+	</style>
+	 
+	 <div id="cover">
+	 
+	 <fieldset class="fieldsetborder">
+			<legend>Allgemeine Information</legend>
+		<h:form>
+	 	<div>
+	 	Description:<br/>
+	 	#{dkmsContentItemBean.exerciseSheetContent}
+	 	<br/>
+	 	Name:<br/>
+	 	#{dkmsContentItemBean.dkmsContentItemName}
+		</div>
+		
+		<h:commandLink
+				
+				action="#{dkmsFileAction.storeDkmsContentItem()}" style="float:right; margin:-15px 20px 0 0; text-decoration:none">
+				Abschliessen&#160;&#160;<img title="Weiter"
+					src="#{facesContext.externalContext.requestContextPath}/view/img/arrowright_small.png" style="vertical-align:middle"/>
+		</h:commandLink>
+		</h:form>
+		
+	 
+	 
+	 </fieldset>	
+	 
+	 </div>
+	 
+	 
+	 
+	 
+  </ui:define>
+</ui:composition>

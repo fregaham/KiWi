@@ -1,0 +1,210 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                             "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:m="http://code.google.com/p/gmaps4jsf/"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+	template="layout/main.xhtml">
+
+	<ui:define name="breadcrumps">
+		<ul>
+			<li class="first"><s:link view="/edukms/authorInterface/home.xhtml"
+				value="| Author Home" /></li>
+			<li>				 			
+				<s:link view="/edukms/abcmaths/wikiItemChangeData.xhtml" value="Content Description"/>
+	 		</li>
+		</ul>
+	</ui:define>
+
+	<ui:define name="body">
+
+		<script
+			src="#{facesContext.externalContext.requestContextPath}/view/js/jQueryMain/jquery.tools.min.js"></script>
+
+		<script>
+		
+		jQuery(document).ready(function() {
+		
+			// initialize tooltip
+			jQuery("#dyna img[title]").tooltip({
+			
+				// use single tooltip element for all tips
+				tip: '#dynatip', 
+				
+				// tweak the position
+				offset: [10, 2],
+				
+				// use "slide" effect
+				effect: 'slide'
+				
+			// add dynamic plugin 
+			}).dynamic( {
+			
+				// customized configuration on bottom edge
+				bottom: {
+				
+					// slide downwards
+					direction: 'down',
+					
+					// bounce back when closed
+					bounce: true
+				}
+			});
+			
+		});
+	 </script>
+
+		<style>
+/* root element for vert_accordion. decorated with rounded borders and gradient background image */
+#vert_accordion {
+	/*background:#fff url(#{facesContext.externalContext.requestContextPath}/view/img/h300.png) ;*/
+	background: #fff;
+	width: 700px;
+	/*border:1px solid #eee;	*/
+	-background: #666;
+	margin-top: 10px;
+	margin-left: 10px;
+}
+
+/* vert_accordion header */
+#vert_accordion h2 {
+	/*background:#fff url(#{facesContext.externalContext.requestContextPath}/view/img/h30.png);*/
+	background: #fff;
+	margin: 0;
+	padding: 5px 15px;
+	font-size: 14px;
+	font-weight: normal;
+	/*border:1px solid #eee; */
+	border-bottom: 1px solid #ddd;
+	cursor: pointer;
+}
+
+/* currently active header */
+#vert_accordion h2.current {
+	cursor: default;
+	background-color: #eee;
+}
+
+/* vert_accordion pane */
+#vert_accordion div.pane { /*border:1px solid #eee;*/
+	border-width: 0 2px;
+	display: none;
+	height: 270px;
+	padding: 15px;
+	color: #aaa;
+	font-size: 12px;
+}
+
+#vert_accordion div.pane p {
+	margin: 0 0 5px 0;
+}
+
+#cover {
+	margin: 10px 0 0 0;
+	width: 800px;
+}
+
+h2 {
+	color: #6f91c0;
+	font-size: 14px;
+	margin-left: 20px;
+	margin-top: -15px;
+	font-weight: 300;
+}
+
+h1 {
+	color: #999;
+	font-size: 14px;
+	margin-left: 20px;
+	margin-top: -15px;
+	font-weight: 300;
+}
+
+#accordionTitle {
+	margin-bottom: 30px;
+	margin-top: 20px;
+}
+
+.buttonclass {
+	text-decoration: none;
+	margin-right: 5px;
+}
+
+#buttons { /*border-bottom: 1px solid #FFE8C3; */
+	padding: 10px;
+}
+
+#trennlinie {
+	border-bottom: 1px solid #ddd;
+	margin: 10px;
+}
+</style>
+
+		<script
+			src="#{facesContext.externalContext.requestContextPath}/view/js/jQueryMain/jquery.tools.min.js"></script>
+
+		<!-- activate tabs with JavaScript -->
+		<script>
+	
+			jQuery(function() { 
+		
+			jQuery("#vert_accordion").tabs("#vert_accordion div.pane", {tabs: 'h2', effect: 'slide', initialIndex: null});
+		});
+			
+		</script>
+
+		<div id="cover">
+		<h:form>
+		<fieldset class="fieldsetborder" style="float:left; width:100%; height: 570px; margin-left: -170px; border:1px solid #ddd">
+
+			<!-- vert_accordion -->
+		<div id="vert_accordion"><!--  Folder  -->
+		<div id="accordionTitle"><img
+			src="#{facesContext.externalContext.requestContextPath}/view/img/tagging.png"
+			style="margin: 0px 15px 0 5px; float: left; vertical-align: top" />
+		<h3>Description and Tagging of Content Object:</h3>
+		</div>
+
+		<h2>Simple Categorisation</h2>
+		<div class="pane">
+		<br/><br/>
+			<img src="#{facesContext.externalContext.requestContextPath}/view/img/menAtWork.gif" style="margin-left:100px"/>
+			
+		</div>
+		<h2>Tagging Assistent</h2>
+		<div class="pane">
+		<br/><br/>
+			<img src="#{facesContext.externalContext.requestContextPath}/view/img/menAtWork.gif" style="margin-left:100px"/>
+		</div>	
+		
+		
+
+		</div>
+			</fieldset>
+
+			 <fieldset class="fieldsetborder" style="float:right; width: 200px; height: 570px; margin-right: -160px; border:1px solid #ddd">
+
+			
+			<div id="buttons">
+			<h:commandLink 
+				action="#{dkmsWriteModusAction.changeWikiContentItem()}">
+				<img
+					src="#{facesContext.externalContext.requestContextPath}/view/img/arrowright_small.png"
+					style="valign: center; vertical-align: middle; margin-right: 11px; margin-left:2px" /> Proceed</h:commandLink>
+		
+	    	
+			</div>
+			</fieldset>
+		</h:form>
+		</div>
+
+
+	</ui:define>
+</ui:composition>

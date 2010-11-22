@@ -1,0 +1,69 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:fb="http://www.facebook.com/2008/fbml"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                template="/template/kiwi/special/template_setup.xhtml">
+
+<ui:define name="center">
+	<div class="box">
+	<p:messages id="msgs" showDetail="false"/>
+    
+	<a:form id="formSetup">
+	 <h2>3. Load Initial Content</h2>
+		<h:panelGrid columns="2" columnClasses="form,help" styleClass="setupPanel">
+		    <s:div styleClass="dialog" style="width: 400px;padding-left:20px;">
+		        <h3 class="subtitle_ds">Initialization Data</h3>
+		        
+		        <h:panelGrid columns="2" rowClasses="prop" columnClasses="name_ds,value_ds">
+		        	<h:selectBooleanCheckbox value="#{kiwi.setup.setupDataAction.loadHelp}" disabled="true" title="Load help content" /> <h:outputText value="Load content for help pages" />
+		        	<h:selectBooleanCheckbox value="#{kiwi.setup.setupDataAction.loadDemo}" disabled="true" title="Load demo content" /> <h:outputText value="Load content for KiWi demo setup" />
+				</h:panelGrid>
+		        
+		        <h3 class="subtitle_ds">Initialization Configuration</h3>
+
+		        <h:panelGrid columns="2" rowClasses="prop" columnClasses="name_ds,value_ds">
+		        	<h:selectBooleanCheckbox value="#{kiwi.setup.setupDataAction.informationExtraction}" title="Enable Information Extraction" /> <h:outputText value="Enable Information Extraction Service. Used for automatically suggesting annotations and links to other pages, but computationally expensive." />
+		        	<h:selectBooleanCheckbox value="#{kiwi.setup.setupDataAction.reasoning}" title="Enable Rule-Based Reasoner" /> <h:outputText value="Enable Rule-Based Reasoner. Runs in the background to infer new metadata based on configured rules, but computationally expensive." />
+		        </h:panelGrid>
+		        
+		        <h3 class="subtitle_ds">Initialization Processes</h3>
+
+		        <h:panelGrid columns="2" rowClasses="prop" columnClasses="name_ds,value_ds">
+		        	<h:selectBooleanCheckbox value="#{kiwi.setup.setupDataAction.runSemVector}" title="Create Semantic Vector Index" /> <h:outputText value="Create Semantic Vector Index (for tag and content recommendations)" />
+		        	<h:selectBooleanCheckbox value="#{kiwi.setup.setupDataAction.changePersistence}" title="Change Persistence Configuration from 'create' to 'validate'" /> <h:outputText value="Change persistence configuration from 'create' to 'validate' (allows persistence across restarts)" />
+		        </h:panelGrid>
+
+		     	<div class="setupActionButtons">
+			    	<h:commandButton value="Next" action="#{kiwi.setup.setupDataAction.loadData}" styleClass="primeFakeButton ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" style="margin-top:10px;"/>
+		     	</div>
+	         </s:div>
+	         
+	         
+	     
+		     <s:div styleClass="dialog">
+		     	<p>
+		     		Some KiWi components need preloaded data in addition to the core ontologies to work properly.
+		     		In this last setup step, you can select which data sets to preload in the KiWi system and which 
+		     		activities to carry out when the setup is complete.
+		     	</p>
+		     	<ul>
+		     		<li>Create Semantic Vector Index is required for parts of the recommendation system, e.g. tag recommendations or related
+		     		    pages; the Semantic Vector Index is otherwise rebuilt once a day; reindexing can also be triggered from the admin interface</li>
+		     	</ul>
+		     </s:div>
+	     
+     	</h:panelGrid>
+     	
+     </a:form>
+     </div>
+
+</ui:define> 
+</ui:composition>
+

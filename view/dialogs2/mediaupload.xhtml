@@ -1,0 +1,39 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:rich="http://richfaces.org/rich"
+  	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+  	xmlns:p="http://primefaces.prime.com.tr/ui">
+  	
+	<p:dialog header="Profile Image Upload" widgetVar="mediaUploadDialog" modal="true" width="670" height="500" onCloseUpdate="main_media_content">
+		<h:form prependId="false">
+			<s:div id="mediapanel">
+				<s:div styleClass="ui-messages-error ui-corner-all" rendered="#{kiwi.core.ui.mediaPerspectiveAction.unsaved}">
+					<s:div >
+						<h:outputText value="There are unsaved changes. Click on 'save' to make your updates persistent."/>
+					</s:div>
+	
+					<s:div style="text-align: center; margin-top: 2px;">
+						<p:commandButton value="Save" update="mediapanel,imageMetadataPanel" actionListener="#{kiwi.core.ui.mediaPerspectiveAction.save}" />
+					</s:div>
+				</s:div>
+				
+				<s:div style="text-align: center;">
+					<s:graphicImage value="#{kiwi.core.ui.mediaPerspectiveAction.getMediaContent(currentContentItem).data}" >
+						<s:transformImageSize width="400" maintainRatio="true"/>
+					</s:graphicImage>
+				</s:div>
+				
+				<s:div style="text-align: center; margin-top: 10px;">
+					<p:fileUpload fileUploadListener="#{kiwi.core.ui.mediaPerspectiveAction.listener}" 
+					              allowTypes="*.jpg;*.png;*.gif;"
+								  auto="true" update="mediapanel" />
+				</s:div>
+			</s:div>
+		</h:form>
+	</p:dialog>
+</ui:composition>

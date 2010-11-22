@@ -1,0 +1,125 @@
+<rich:modalPanel
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:s="http://jboss.com/products/seam/taglib"
+   	  xmlns:rich="http://richfaces.org/rich"
+ 	  xmlns:a4j="http://richfaces.org/a4j"
+ 	  width="700"
+ 	  height="250"
+      id="kiwirdfaLinkPanel"
+      autosized="true">
+        <f:facet name="header">
+            <h:panelGroup>
+                <h:outputText value="RDFa Link"></h:outputText>
+            </h:panelGroup>
+        </f:facet>
+        
+        <p style="margin-top: 20px; margin-left: 10px; margin-right: 10px;" class="help">
+        	Here you can define a semantic link.  
+        </p>
+        
+       	<a4j:region renderRegionOnly="true">
+       	    
+       	    <a4j:form id="kiwirdfaLinkForm">
+       	    	<rich:messages styleClass="message"/>
+       	    	
+       	    	<h:outputText value="#{kiwirdfaAction.currentContextLabel}"/>
+       	    	
+       	    	<style>
+					.vertTop {
+						vertical-align: top;
+					}
+				</style>
+       	    	
+       	    	<h:panelGrid id="kiwirdfaLinkFormPanel" columns="2" rowClasses="prop" columnClasses="vertTop">
+
+					<s:div>
+		            <h:selectOneMenu value="#{kiwirdfaAction.selectedLinkRelation}" id="rdfaLinkRelation">
+						<s:selectItems value="#{kiwirdfaAction.possibleLinkRelations}" var="item" label="#{item.label}" itemValue="#{item.value}" noSelectionLabel="Please select ..."/>
+						<a4j:support event="onchange" reRender="kiwirdfaLinkObject" />
+					</h:selectOneMenu>
+					
+					<s:div>
+						<ui:repeat var="s" value="#{kiwirdfaAction.propertySuggestions}">
+							<a4j:commandLink title="#{s.resource.uri}" reRender="kiwirdfaLinkFormPanel" action="#{kiwirdfaAction.acceptPropertySuggestion(s)}" value="#{s.title}"/>
+							<br/>
+						</ui:repeat>
+					</s:div>
+					</s:div>
+
+					<s:div>
+					<s:div id="kiwirdfaLinkObject">
+						<s:div rendered="#{kiwirdfaAction.linkObjectItem == null or kiwirdfaAction.selectedLinkRelationDatatypeProperty}">
+							<h:inputText id="kiwirdfaLinkObjectTitle" size="50" value="#{kiwirdfaAction.linkObject}"></h:inputText>
+							<rich:suggestionbox id="kiwirdfaLinkObjectTitleSuggest" for="kiwirdfaLinkObjectTitle" tokens=",[]"
+                        		suggestionAction="#{kiwirdfaAction.titlesAutocomplete}" 
+                        		var="result"
+                        		minChars="2"
+                        		shadowOpacity="4"
+                        		border="1"
+                        		height="300"
+                        		width="600"
+                        		shadowDepth="3"
+                        		cellpadding="2"
+                        		nothingLabel="No content items found" 
+                        		columnClasses="center"
+                        		usingSuggestObjects="true" reRender="suggestionBoxId">
+                        
+                        		<h:column>
+                            		<h:outputText value="#{result[0]}" /> (<h:outputText value="#{result[1]}"/>)
+                        		</h:column>
+                        		
+                        		<a4j:support event="onselect" action="#{kiwirdfaAction.setSuggestedObject(result[2])}" reRender="kiwirdfaLinkObject">
+         						</a4j:support>
+                        		
+                			</rich:suggestionbox>
+							
+						</s:div>
+						<s:div rendered="#{kiwirdfaAction.linkObjectItem != null and not kiwirdfaAction.selectedLinkRelationDatatypeProperty}">
+							<a4j:commandButton title="#{kiwirdfaAction.linkObjectItem.resource.uri}" reRender="kiwirdfaLinkObject" action="#{kiwirdfaAction.changeObject}" value="#{kiwirdfaAction.linkObjectItem.title} (change)"/>
+							<!--  <span title="#{kiwirdfaAction.linkObjectItem.resource.uri}"><h:outputText value="#{kiwirdfaAction.linkObjectItem.title}"/></span>
+							<rich:spacer width="5px"/>
+							<a4j:commandLink action="#{kiwirdfaAction.changeObject}" value="(change)" reRender="kiwirdfaLinkObject"/>-->
+						</s:div>
+					</s:div>		
+					
+					<s:div>
+						<ui:repeat var="s" value="#{kiwirdfaAction.objectSuggestions}">
+							<a4j:commandLink title="#{s.resource.uri}" reRender="kiwirdfaLinkObject" action="#{kiwirdfaAction.acceptObjectSuggestion(s)}" value="#{s.title}"/>
+							<br/>
+						</ui:repeat>
+					</s:div>
+						
+					</s:div>
+				
+		            
+		        </h:panelGrid>
+		
+		        <div class="actionButtons center">
+		            <a4j:commandButton value="Create/Update" id="btnCreateRdfaLink" 
+		            	action="#{kiwirdfaAction.createOrUpdateLink}"
+		            	data="#{kiwirdfaAction.linkJS}"
+		            	oncomplete="kiwirdfaJSLib.onCreateOrUpdateLink(data)" />
+		            	
+		            <a4j:commandButton value="Delete" id="btnDeleteRdfaLink" 
+		            	action="#{kiwirdfaAction.deleteLink}"
+		            	oncomplete="kiwirdfaJSLib.onDeleteLink()" />
+		            	
+		            <a4j:commandButton value="Cancel" id="btnKiwirdfaCancelLink"
+		            	action="#{kiwirdfaAction.cancelLink}" 
+		            	oncomplete="kiwirdfaJSLib.onCancelLink()" />
+		            	
+		            <a4j:jsFunction name="kiwirdfaSetLink" reRender="kiwirdfaLinkForm">
+		        		<a4j:actionparam name="Param1" assignTo="#{kiwirdfaAction.linkJS}"/>
+		        	</a4j:jsFunction>
+		        	
+		        	<!-- 
+		        	<rich:hotKey key="return" selector="#kiwirdfaLinkForm" handler="${rich:element('kiwirdfaLinkForm:btnCreateRdfaLink')}.click();" disableInInput="false"/>
+		        	-->
+		        </div>
+			</a4j:form>
+		</a4j:region>
+
+</rich:modalPanel>

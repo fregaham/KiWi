@@ -1,0 +1,16 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jstl/core"
+    xmlns:p="http://primefaces.prime.com.tr/ui">
+		
+		<h:form>
+		<h2 class="box_title">Add Widgets</h2>
+		<ul class="box_content">
+			<c:forEach items="#{dashboardService.getPortlets(currentUser)}"  var="name">
+				<li><p:commandLink value="add #{name}-widget" action="#{dashboardAction.addPortlet(name)}" ajax="false"/></li>
+			</c:forEach>
+		</ul>
+		</h:form>
+</ui:composition>

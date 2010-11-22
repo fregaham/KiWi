@@ -1,0 +1,177 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                             "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:m="http://code.google.com/p/gmaps4jsf/"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+	template="layout/main.xhtml">
+
+	<ui:define name="breadcrumps">
+		<ul>
+			<li class="first"><s:link
+				view="/edukms/authorInterface/home.xhtml" value="| Author Home" /></li>
+			<li><s:link
+				view="/edukms/authorInterface/sequenceController.xhtml"
+				value="Learning Sequence" /></li>
+			<li><s:link
+				view="/edukms/authorInterface/sequencePreview.xhtml"
+				value="Preview" /></li>
+		</ul>
+	</ui:define>
+
+	<ui:define name="body">
+
+		<style>
+h1 {
+	color: #6f91c0;
+	font-size: 16px;
+	margin-left: 20px;
+}
+
+h2 {
+	color: #6f91c0;
+	font-size: 14px;
+	margin-left: 5px;
+}
+
+#cover {
+	margin: 10px 0 0 0;
+	width: 800px;
+}
+
+#arrows {
+	width: 500px;
+	margin: 20px;
+}
+
+#editor, #editor2, #editor3, #editor4, #editor5, #editor6, #editor7 {
+	margin: 10px;
+	
+}
+
+.buttonclass {
+
+	text-decoration: none;
+	margin-right: 5px;
+
+}
+
+#buttons {
+	
+	/*border-bottom: 1px solid #FFE8C3;*/
+	padding:10px;
+
+}
+</style>
+
+
+		<h:form>
+		<div id="cover">
+
+		<fieldset class="fieldsetborder"
+			style="float:left; width:100%; height: 700px; margin-left: -170px; border:1px solid #FFE8C3">		
+		
+		<h2><img
+				src="#{facesContext.externalContext.requestContextPath}/view/img/vorschau_symbol.png"
+				style="valign: center; vertical-align: middle; margin-right: 10px; margin-top:-10px; margin-bottom:5px" />Preview: #{dkmsContentItemBean.dkmsContentItemName}</h2>
+		
+		<rich:tabPanel>
+<!--			<c:if test="#{not empty dkmsContentItemBean.angabe}">-->
+			<c:forEach items="#{dkmsContentItemBean.dkmsSequenceComponentList}" var="item" id="itemList">
+	        <rich:tab label="#{item.taskTitle}">
+	            <rich:editor style="margin: 10px;" language="de" width="740" height="630"
+			 value="#{item.sequenceContent}" theme="advanced"
+			viewMode="visual" readonly="true">
+
+				</rich:editor>
+	        </rich:tab>
+	        </c:forEach>
+<!--	        </c:if>-->
+<!--	        <c:if test="#{not empty dkmsContentItemBean.angabeZusatzInfo}">-->
+<!--	        <rich:tab label="Impulse text">-->
+<!--	       	    <rich:editor id="editor1" language="de" width="740" height="630"-->
+<!--			 value="#{dkmsContentItemBean.angabeZusatzInfo}" theme="advanced"-->
+<!--			viewMode="visual" readonly="true">-->
+<!--				</rich:editor>-->
+<!--	        </rich:tab>-->
+<!--	        </c:if>-->
+<!--	        <c:if test="#{not empty dkmsContentItemBean.aufgabe1}">-->
+<!--	        <rich:tab label="Assignment 1">-->
+<!--	            <rich:editor id="editor2" language="de" width="740" height="630"-->
+<!--			 value="#{dkmsContentItemBean.aufgabe1}" theme="advanced"-->
+<!--			viewMode="visual" readonly="true">-->
+<!--				</rich:editor>-->
+<!--	        </rich:tab>-->
+<!--	        </c:if>-->
+<!--	        <c:if test="#{not empty dkmsContentItemBean.loesung1}">-->
+<!--	        <rich:tab label="Approach 1">-->
+<!--	            <rich:editor id="editor3" language="de" width="740" height="630"-->
+<!--			 value="#{dkmsContentItemBean.loesung1}" theme="advanced"-->
+<!--			viewMode="visual" readonly="true">-->
+<!--				</rich:editor>-->
+<!--	        </rich:tab>-->
+<!--	        </c:if>-->
+<!--	        <c:if test="#{not empty dkmsContentItemBean.aufgabe2}">-->
+<!--	        <rich:tab label="Assignment 2">-->
+<!--	            <rich:editor id="editor4" language="de" width="740" height="630"-->
+<!--			 value="#{dkmsContentItemBean.aufgabe2}" theme="advanced"-->
+<!--			viewMode="visual" readonly="true">-->
+<!--				</rich:editor>-->
+<!--	        </rich:tab>-->
+<!--	        </c:if>-->
+<!--	        <c:if test="#{not empty dkmsContentItemBean.loesung2}">-->
+<!--	        <rich:tab label="Approach 2">-->
+<!--	            <rich:editor id="editor5" language="de" width="740" height="630"-->
+<!--			 value="#{dkmsContentItemBean.loesung2}" theme="advanced"-->
+<!--			viewMode="visual" readonly="true">-->
+<!--				</rich:editor>-->
+<!--	        </rich:tab>-->
+<!--	        </c:if>-->
+<!--	        <c:if test="#{not empty dkmsContentItemBean.aufgabe3}">-->
+<!--	        <rich:tab label="Assignment 3">-->
+<!--	            <rich:editor id="editor6" language="de" width="740" height="630"-->
+<!--			 value="#{dkmsContentItemBean.aufgabe3}" theme="advanced"-->
+<!--			viewMode="visual" readonly="true">-->
+<!--				</rich:editor>-->
+<!--	        </rich:tab>-->
+<!--	        </c:if>-->
+<!--	        <c:if test="#{not empty dkmsContentItemBean.loesung3}">-->
+<!--	        <rich:tab label="Approach 3">-->
+<!--	            <rich:editor id="editor7" language="de" width="740" height="630"-->
+<!--			 value="#{dkmsContentItemBean.loesung3}" theme="advanced"-->
+<!--			viewMode="visual" readonly="true">-->
+<!--				</rich:editor>-->
+<!--	        </rich:tab>-->
+<!--	        </c:if>-->
+  	    </rich:tabPanel>
+
+
+		</fieldset>
+		<fieldset class="fieldsetborder" style="float:right; width: 200px; height: 700px; margin-right: -160px; border:1px solid #FFE8C3">
+		<div id="buttons"><h:commandLink class="buttonclass"
+			action="#{dkmsReadModusAction.exitSequencePreview()}">
+			<img
+				src="#{facesContext.externalContext.requestContextPath}/view/img/arrowleft_small.png"
+				style="valign: center; vertical-align: middle; margin-right: 5px;" />Back</h:commandLink>
+		<br />
+		<br />
+
+		</div>
+		
+		</fieldset>
+
+		</div>
+		</h:form>
+
+
+
+
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,15 @@
+#history_content li.ui-state-default a {
+	padding: 7.5px;
+}
+
+#history div.ui-tabs-panel {
+	padding: 5px;
+}
+
+#history ul.ui-datalist-data {
+	padding: 5px;
+}
+
+#history div.ui-datalist a {
+	color: #EE6523;
+}

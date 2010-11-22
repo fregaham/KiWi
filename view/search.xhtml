@@ -1,0 +1,316 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:fb="http://www.facebook.com/2008/fbml"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:p="http://primefaces.prime.com.tr/ui"
+	xmlns:c="http://java.sun.com/jstl/core"
+	template="/template/kiwi/template_1col.xhtml">
+
+	<ui:define name="stylesheet">
+		<link rel="stylesheet" type="text/css" href="stylesheet/kiwi/elements/search.css" />
+	</ui:define>
+
+	<ui:define name="center">
+		<div class="box">
+		<p:messages id="msgs" showDetail="false" />
+		<h2 style="position:absolute">KiWi</h2>
+		<div id="article">
+			<div id="search_center">
+			<h:form prependId="false">
+			<div id="searchbar">
+				<h:inputText value="#{searchAction.searchQuery}" size="65" id="searchField" />
+				<a:commandButton action="#{searchAction.getSearchView()}"
+								 value="#{messages['hdr.search']}"
+								 style="margin-left:10px;margin-right:10px;">
+					<s:defaultAction />
+				</a:commandButton>
+				<a href="#" style="font-size:11px;" onclick="if(jQuery('#extSearch').is(':hidden')){jQuery('#extSearch').slideDown('slow');}else{jQuery('#extSearch').slideUp('slow');}">
+					<h:outputText value="Extended Search" />
+				</a>
+				
+				<!-- extended search -->
+				<div id="extSearch" style="display: none;margin-top:10px;">
+					<table style="width:100%;border:none;">
+						<tr>
+							<td width="165px;" style="color:#8BC53E;padding:2px;">
+								<h:outputText value="Search Engines:" />
+							</td>
+							<td>
+								<s:link view="/search.xhtml" value="KiWi">
+									<f:param name="q" value="#{searchAction.searchEngine.searchQuery}" />
+								</s:link>
+								<h:outputText value=" - " style="margin-left:5px;margin-right:5px;"/>
+								<s:link view="/exhibit.xhtml" value="Exhibit">
+									<f:param name="q" value="#{searchAction.searchEngine.searchQuery}" />
+								</s:link>
+								<h:outputText value="-" style="margin-left:5px;margin-right:5px;"/>
+								<s:link view="/kwql.xhtml" value="KWQL">
+									<f:param name="q" value="#{searchAction.searchEngine.searchQuery}" />
+								</s:link>
+							</td>
+						</tr>
+						<tr>
+							<td style="color:#8BC53E;padding:2px;">
+								<h:outputText value="Last Searches:" />
+							</td>
+							<td>
+								<c:forEach items="#{kiwi.dashboard.userHistoryAction.lastSearches}" var="search" varStatus="status">
+									<h:outputText value="-" style="margin-left:5px;margin-right:5px;" rendered="#{status.index != 0}" />
+									<s:link view="/search.xhtml" value="#{search.searchString}">
+										<f:param name="q" value="#{search.searchString}" />
+									</s:link>
+								</c:forEach>
+							</td>
+						</tr>
+						<tr>
+							<td style="color:#8BC53E;padding:2px;">
+								<h:outputText value="Personalized Search:" />
+							</td>
+							<td>
+								<h:selectBooleanCheckbox title="Sign in, tag and search" value="#{searchAction.searchEngine.personalSearch}" id="checkboxID">
+									<a:support id="checkboxSupport" event="onchange" reRender="#{searchAction.renderedSearchPageParts()}" />
+								</h:selectBooleanCheckbox>
+							</td>
+						</tr>
+					</table>
+					
+				</div>
+			</div>
+
+
+			<div id="search_size">
+				
+				<s:fragment rendered="#{searchAction.searchEngine.searchResults.resultCount > 0}">
+				
+				<!-- number of results -->
+				<s:span id="nrOfResults">
+					<h:outputText value="Results #{(searchAction.searchEngine.page-1) * searchAction.searchEngine.pageSize + 1} - #{searchAction.searchEngine.min(searchAction.searchEngine.searchResults.resultCount, (searchAction.searchEngine.page * searchAction.searchEngine.pageSize))} of totally #{searchAction.searchEngine.searchResults.resultCount} ordered by" />
+					<h:outputText value=" " />
+				</s:span>
+				
+				<!-- searchfield -->
+				<rich:inplaceSelect id="searchorderby" value="#{searchAction.searchEngine.orderBy}" defaultLabel="Click here to edit">
+					<a:support event="onviewactivated" action="#{searchAction.searchEngine.runFromInside()}" reRender="searchorderby,searchresults" />
+					<s:selectItems value="#{searchAction.searchEngine.orderBys}" var="orderBy" label="#{orderBy}" />
+				</rich:inplaceSelect>
+				
+				<h:outputText value=" " />
+				
+				<!-- order -->
+				<rich:inplaceSelect id="searchorder" value="#{searchAction.searchEngine.order}" defaultLabel="Click here to edit">
+					<a:support event="onviewactivated" action="#{searchAction.searchEngine.runFromInside()}" reRender="searchorder,searchresults" />
+					<s:selectItems value="#{searchAction.searchEngine.orders}" var="order" label="#{kiwi.messages.getProperty(order)}" />
+				</rich:inplaceSelect>
+					
+				<!--View:
+					
+					<rich:inplaceSelect id="searchviewmode"
+							value="#{kiwi.wiki.ui.layoutAction.viewMode}"
+							defaultLabel="Click here to edit">
+				<a:support event="onviewactivated"
+					actionListener="#{searchAction.searchEngine.runSearch}"
+					reRender="searchviewmode,searchresults" />
+				<s:selectItems value="#{kiwi.wiki.ui.layoutAction.viewModes}"
+					var="mode" label="#{mode}" />
+				
+			</rich:inplaceSelect>
+			
+			-->
+				</s:fragment>
+				
+				<s:fragment rendered="#{searchAction.searchEngine.searchResults.resultCount == 0}">
+					<h:outputText value="no Results" />
+				</s:fragment>
+			
+			</div>
+
+			<!--  the search results in the left column -->
+			<s:div id="searchresults" style="clear:left;min-height:350px;">
+				<ui:repeat
+					value="#{searchAction.searchEngine.searchResults.results}" var="r">
+					<hr style="clear: both;" />
+					<!-- include template to show one result item. -->
+					<ui:include
+						src="#{kiwi.wiki.ui.layoutAction.getSearchResultItemTemplate(r.item)}">
+						<ui:param name="ci" value="#{r.item}" />
+						<ui:param name="mode"
+							value="#{kiwi.wiki.ui.layoutAction.viewMode}" />
+						<ui:param name="score" value="#{r.score}" />
+						<ui:param name="ceq" value="#{r.ceq}" />
+						<ui:param name="preview" value="#{r.highlightPreview}" />
+					</ui:include>
+					<br />
+				</ui:repeat>
+			</s:div>
+
+			<s:div id="resultNavigation">
+				<s:fragment rendered="#{searchAction.searchEngine.pages.size > 1}">
+				<!-- result navigation -->
+				<span class="back">
+					<a:commandLink action="#{searchAction.searchEngine.prevPage()}" value="back" reRender="#{searchAction.renderedSearchPageParts()}" disabled="#{searchAction.searchEngine.page eq 1}" />
+				</span>
+							
+					<c:forEach items="#{searchAction.searchEngine.pages}" var="page">
+							<s:span rendered="#{ page eq 1 and searchAction.searchEngine.page > 5 }">
+								<a:commandLink action="#{searchAction.searchEngine.setPage(page)}"
+												value="#{page}"
+												reRender="#{searchAction.renderedSearchPageParts()}" />
+								<h:outputText value=" ... " />
+							</s:span>
+
+							<s:span styleClass="selected" rendered="#{page eq searchAction.searchEngine.page}">
+								<h:outputText value="#{page}" />
+							</s:span>
+
+							<s:span rendered="#{ (page eq searchAction.searchEngine.pages.size) and ((page-searchAction.searchEngine.page) > 5) }">
+								<h:outputText value=" ... " />
+								<a:commandLink
+									action="#{searchAction.searchEngine.setPage(page)}"
+									value="#{page}"
+									reRender="#{searchAction.renderedSearchPageParts()}" />
+							</s:span>
+
+							<s:span rendered="#{(page != searchAction.searchEngine.page) and (5 > page - searchAction.searchEngine.page) and (page - searchAction.searchEngine.page > -5) }">
+								<a:commandLink
+									action="#{searchAction.searchEngine.setPage(page)}"
+									value="#{page}"
+									reRender="#{searchAction.renderedSearchPageParts()}" />
+							</s:span>
+
+							<h:outputText value=" " />
+					</c:forEach>
+				<span class="next">
+					<a:commandLink action="#{searchAction.searchEngine.nextPage()}" value="next" reRender="#{searchAction.renderedSearchPageParts()}" disabled="#{searchAction.searchEngine.page eq searchAction.searchEngine.pages.size}" />
+				</span>
+				</s:fragment>
+			</s:div>
+
+		</h:form>
+		</div>
+		</div>
+		
+		<s:div id="articlemeta">
+			<div id="search_right">
+			<p:panel header="Refine your Search" style="padding:5px;">
+			
+			<div class="box">
+			<h3 class="facet_box_header">Tags</h3>
+			<a:form>
+				<c:forEach var="tagFacet"
+					items="#{searchAction.searchEngine.relevantTags}"
+					varStatus="status">
+
+					<a:commandLink
+						action="#{searchAction.searchEngine.addSearchTag(tagFacet.content.title)}"
+						value="#{tagFacet.content.title} (#{tagFacet.resultCount})"
+						reRender="#{searchAction.renderedSearchPageParts()}" />
+					<h:outputText value=", " rendered="#{not status.last}" />
+				</c:forEach>
+			</a:form>
+			</div>
+			
+			<hr class="spacer10" />
+			<div class="box">
+			<h3 class="facet_box_header">Types</h3>
+			<a:form>
+				<ul>
+					<c:forEach var="typeFacet"
+						items="#{searchAction.searchEngine.relevantTypes}">
+						<li><a:commandLink
+							action="#{searchAction.searchEngine.addSearchType(typeFacet.content)}"
+							value="#{typeFacet.content.label} (#{typeFacet.resultCount})"
+							reRender="#{searchAction.renderedSearchPageParts()}" /></li>
+					</c:forEach>
+				</ul>
+			</a:form>
+			</div>
+			
+			<s:span id="purposeList"
+				rendered="#{searchAction.searchEngine.relevantPurposes.size() &gt; 0}">
+				<hr class="spacer10" />
+				<div class="box">
+				<h3 class="facet_box_header">Tag Purpose</h3>
+				<a:form>
+					<c:forEach var="purposeFacet"
+						items="#{searchAction.searchEngine.relevantPurposes}"
+						varStatus="status">
+						<a:commandLink
+							action="#{searchAction.searchEngine.addSearchPurpose(purposeFacet.content)}"
+							value="#{purposeFacet.content} (#{purposeFacet.resultCount})"
+							reRender="#{searchAction.renderedSearchPageParts()}" />
+						<h:outputText value=", " rendered="#{not status.last}" />
+					</c:forEach>
+				</a:form>
+				</div>
+			</s:span>
+
+			<hr class="spacer10" />
+			<div class="box">
+			<h3 class="facet_box_header">Persons</h3>
+			<a:form>
+				<ul>
+					<c:forEach var="personFacet"
+						items="#{searchAction.searchEngine.relevantPersons}">
+						<li><a:commandLink
+							action="#{searchAction.searchEngine.addSearchPerson(personFacet.content.login)}"
+							value="#{personFacet.content.firstName} #{personFacet.content.lastName} (#{personFacet.resultCount})"
+							reRender="#{searchAction.renderedSearchPageParts()}" /></li>
+					</c:forEach>
+				</ul>
+			</a:form>
+			</div>
+			
+			<c:forEach items="#{searchAction.searchEngine.rdfFacets}" var="facet">
+				<hr class="spacer10" />
+				<div class="box">
+				<h3 class="facet_box_header"><h:outputText value="#{facet.label}" /></h3>
+				<a:form>
+					<ul>
+						<c:forEach
+							items="#{searchAction.searchEngine.getRdfFacetValues(facet)}"
+							var="rdfFacet">
+							<li><a:commandLink
+								action="#{searchAction.searchEngine.addRdfSearchProperty(facet,rdfFacet.content)}"
+								value="#{rdfFacet.content} (#{rdfFacet.resultCount})"
+								reRender="#{searchAction.renderedSearchPageParts()}" /></li>
+						</c:forEach>
+					</ul>
+				</a:form>
+				</div>
+			</c:forEach>
+
+			<c:forEach items="#{searchAction.searchEngine.objectPropertyFacets}"
+				var="facet">
+				<hr class="spacer10" />
+				<div class="box">
+				<h3 class="facet_box_header"><h:outputText value="#{facet.label}" /></h3>
+				<a:form>
+					<ul>
+						<c:forEach
+							items="#{searchAction.searchEngine.getObjectPropertyFacetValues(facet)}"
+							var="rdfFacet">
+							<li><a:commandLink
+								action="#{searchAction.searchEngine.addObjectPropertySearchProperty(facet,rdfFacet.content)}"
+								value="#{rdfFacet.content.label} (#{rdfFacet.resultCount})"
+								reRender="#{searchAction.renderedSearchPageParts()}" /></li>
+						</c:forEach>
+					</ul>
+				</a:form>
+				</div>
+			</c:forEach>
+			
+			</p:panel>
+			
+			</div>
+		</s:div>
+		<div style="clear: left;" />
+		</div>
+	</ui:define>
+</ui:composition>
+

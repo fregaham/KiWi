@@ -1,0 +1,28 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:c="http://java.sun.com/jstl/core">
+		
+	<div id="navigation">
+		<!-- [start] menue for logged in user -->
+		<c:if test="#{identity.loggedIn}">
+		    <ul>
+		    	<li>
+					<s:link view="/artaround/pages/profil/meinProfil.seam" 
+						value="Mein Profil" />							  
+		    	</li>				
+		    </ul>
+		</c:if>
+		<!-- [end] menue for logged in user -->
+		<!-- [start] menue for not logged in user -->
+		<c:if test="#{not identity.loggedIn}">
+		</c:if>
+		<!-- [end] menue for not logged in user -->
+			
+	</div> 
+	
+</ui:composition>

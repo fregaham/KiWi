@@ -1,0 +1,50 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                template="/template/kiwi/template_2col.xhtml">
+
+    <ui:define name="sidebar">
+        <ui:include src="layout/sidebar.xhtml"/>
+    </ui:define>
+
+    <ui:define name="stylesheet">
+        <style type="text/css">
+            .table {
+                border: 0px;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="center">
+
+        <h1 class="title ui-widget-header ui-corner-all">KiWi Inspector - Current Revisions</h1>
+
+        <hr />
+
+        <script src="styles.js" type="text/javascript">
+        </script>
+
+        <h:form id="formWikiHistory">
+            <h1>History: <!-- #{currentContentItem.title} --></h1> <br />
+
+            <s:div>
+                <p:dataTable value="#{inspectorRevisions}" var="rev" styleClass="table">
+                    <p:column>
+                        <p:commandLink ajax="false" value="Revision #{rev.title} created
+									on #{rev.prettyDate}
+									by #{rev.userlogin}"
+                                       action="#{kiwi.action.inspector.viewRevisionsAction.selectRevision(rev)}" />
+                    </p:column>
+                </p:dataTable>
+            </s:div>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

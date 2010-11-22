@@ -1,0 +1,69 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+		    	xmlns:rich="http://richfaces.org/rich"
+		    	xmlns:a="http://richfaces.org/a4j"
+	            xmlns:p="http://primefaces.prime.com.tr/ui" 
+	            xmlns:c="http://java.sun.com/jstl/core"
+    			xmlns:kiwi="http://www.kiwi-project.eu/jsf">
+	<p:tab title="Types">
+	
+			<ui:include src="/dialogs/addtype.xhtml" />
+	
+			
+        	<s:div id="pageTypes" style="padding-bottom: 5px; margin-top: 20px; margin-bottom: 10px;">
+        	<h:form id="types_widget">
+        	<a:region>
+	        <ui:repeat value="#{annotateAction.types}" var="type">
+                <s:link view="/home.xhtml" value="#{type.res.label} (#{type.res.namespacePrefix})" 
+                		rendered="#{not type.isInferred()}"
+                		style="font-weight: bold;"
+                		propagation="none">
+                    <f:param name="title"/>
+                    <f:param name="uri"/>
+                    <f:param name="id" />
+                    <f:param name="kiwiid" value="#{type.res.kiwiIdentifier}"/>
+                </s:link>
+                <s:link view="/home.xhtml" value="#{type.res.label} (#{type.res.namespacePrefix})"
+                		rendered="#{type.isInferred()}"
+                		style="font-weight: italic;"
+                		propagation="none">
+                    <f:param name="title"/>
+                    <f:param name="uri"/>
+                    <f:param name="id" />
+                    <f:param name="kiwiid" value="#{type.res.kiwiIdentifier}"/>
+                </s:link>
+	            <rich:spacer width="1px"/>
+	            <a:commandLink action="#{annotateAction.removeType(type.res)}" rendered="#{not type.isInferred()}" reRender="pageTypes,articlemeta">
+	                <h:graphicImage value="img/type_delete.png" style="border:0;padding:0 4px;"/>
+	            </a:commandLink>
+	            <rich:spacer width="5px"/>
+	        </ui:repeat>
+
+	        <h:outputLink value="#" render="true">
+	            <h:graphicImage value="img/type_add.png" style="border:0;padding:0 4px;"/>
+	            <rich:componentControl for="addTypeDialog" operation="show" event="onclick"/>
+	        </h:outputLink>	  
+	        
+	        <s:div id="extractedTypes">
+	        	<s:div rendered="#{!empty ie.suggestions.typeSuggestions}">
+	        		<h3>Recommended Types:</h3>
+	        		<ui:repeat var="s" value="#{ie.suggestions.typeSuggestions}" >
+	                	<h:outputText value="#{s.label} " />
+                    	<a:commandButton action="#{ie.suggestions.acceptSuggestion(s)}" image="img/type_add.png" reRender="pageTypes"/>
+                    	<a:commandButton action="#{ie.suggestions.rejectSuggestion(s)}" image="img/type_delete.png" reRender="pageTypes"/>
+	        		</ui:repeat>
+	        	</s:div>
+	        </s:div>
+	              
+	        </a:region>
+	        </h:form>
+	    	</s:div>
+	    	
+	    	
+	</p:tab>
+</ui:composition>

@@ -1,0 +1,11 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+    xmlns:c="http://java.sun.com/jstl/core">
+    	<h:outputText value="History: " />
+		<c:forEach items="#{kiwi.ui.historyAction.lastItems}" var="item" varStatus="status">
+			<h:outputText value=" - " rendered="#{not status.first}"/>
+		    <kiwi:link contentItem="#{item}" value="#{kiwi.ui.historyAction.ellipseString(item.title)}"/>
+		</c:forEach>
+</ui:composition>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<datasources>
+    <local-tx-datasource>
+        <jndi-name>KiWiDatasource</jndi-name>
+        <connection-url>jdbc:postgresql:kiwi</connection-url>
+        <driver-class>org.postgresql.Driver</driver-class>
+        <user-name>kiwi</user-name>
+        <password>kiwi</password>
+    </local-tx-datasource>
+</datasources>

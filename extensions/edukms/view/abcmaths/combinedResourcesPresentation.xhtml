@@ -1,0 +1,264 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                             "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:m="http://code.google.com/p/gmaps4jsf/"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+	template="layout/main.xhtml">
+
+	<ui:define name="breadcrumps">
+		<ul>
+			<li class="first"><s:link view="/edukms/abcmaths/home.xhtml"
+				value="| Information Platform Home" /></li>
+			<li><s:link view="/edukms/abcmaths/searchKMS.xhtml"
+				value="Content Search" /></li>
+			<li><s:link view="/edukms/abcmaths/combinedResourcesPresentation.xhtml"
+				value="Combined resources" /></li>
+		</ul>
+	</ui:define>
+
+	<ui:define name="body">
+
+		<style>
+h1 {
+	color: #6f91c0;
+	font-size: 16px;
+	margin-left: 20px;
+}
+
+h2 {
+	color: #6f91c0;
+	font-size: 14px;
+	margin-left: 5px;
+}
+
+h3 {
+	color: #6f91c0;
+	font-size: 12px;
+	margin-left: 5px;
+}
+
+h4 {
+	color: #6f91c0;
+	font-size: 12px;
+	margin-left: 5px;
+	font-weight: 200;
+}
+
+#cover {
+	margin: 10px 0 0 -5px;
+	width: 810px;
+}
+
+#arrows {
+	width: 500px;
+	margin: 20px;
+}
+
+#editor2, #editor1, #editor0 {
+	margin: 10px;
+	
+}
+
+.buttonclass {
+
+	text-decoration: none;
+	margin-right: 5px;
+
+}
+
+#trennlinie {
+	border-bottom: 1px solid #ddd;
+	margin: 10px;
+}
+
+#buttons {
+	
+	/*border-bottom: 1px solid #FFE8C3; */
+	padding:10px;
+
+}
+
+#resourceCatalogue ul li{
+	list-style-image: none;
+	list-style: none;
+	margin-left: -5px;
+}
+
+</style>
+
+
+		<h:form>
+		<div id="cover">
+
+		<fieldset class="fieldsetborder"
+			style="float:left; width:100%; height: 700px; margin-left: -170px; border:1px solid #ddd">	
+		
+		  
+            
+          <div style="height:650px; overflow:auto; ">
+          <h:panelGrid>
+           <rich:simpleTogglePanel  opened="false" switchType="client" label="Author's comment"  height="550" style="margin: 2px; width:720px">
+                     <rich:editor style="color:#537000" id="editor0" language="de" width="700" height="500"  value="#{dkmsContentItemBean.description}" theme="advanced" viewMode="visual" readonly="true">
+
+					</rich:editor>  
+            </rich:simpleTogglePanel>
+           </h:panelGrid>
+           <h:panelGrid>
+            <rich:simpleTogglePanel  opened="false" switchType="client" label="Guest comments"  height="550" style="margin: 2px; width:720px">
+             <div style="height:400px; overflow:auto; ">
+                  <rich:dataList var="col" value="#{dkmsContentItemBean.dkmsCommentList}">
+            
+			   		 <h:commandLink action="#" style="margin-left:-5px; font-size:10px">#{col.version} by #{col.commentAuthor}</h:commandLink>
+			   	
+			   		 <rich:editor id="editor2" language="de" width="650"
+								height="20" value="#{col.commentContent}" theme="advanced"
+								viewMode="visual" readonly="true">
+						</rich:editor> 
+					<br/>
+			
+			   		 
+		           
+        </rich:dataList>
+        </div>
+            </rich:simpleTogglePanel>
+            </h:panelGrid>     
+              
+      	    <br/> <br/>           
+		<div style="width:730px">
+		
+		<h2>This resource is a set of several composite resources. </h2><br/><br/>
+		<img src="#{facesContext.externalContext.requestContextPath}/view/img/li.png" style="vertical-align: middle; margin:5px; float:left" /><h3 style="margin-top:4px">Please choose the individual contributions from the menu:</h3>
+		<br/><br/>
+		<table cellspacing="1" style="margin-left:25px">
+		<tr>
+		<td colspan="2" style="border:1px solid #ddd" height="30px"><h3 align="center" >Resource Type</h3></td>
+		<td style="border:1px solid #ddd"><h3 align="center">Title</h3></td>
+		</tr>
+				<c:forEach items="#{dkmsContentItemBean.dkmsCombinedComponentList}" var="item" id="itemList">				
+				  <c:if test="#{item.combinedItemType == '1'}">					
+					 <tr>	
+					    <td style="border:1px solid #ddd; width:30px">					
+							<img src="#{facesContext.externalContext.requestContextPath}/view/img/angabe_verysmall.png" style="valign: center; vertical-align: middle; margin: 2px" title="Simple resource"/>
+						</td>
+						<td style="border:1px solid #ddd; width:120px; padding:5px">					
+							Simple Resource
+						</td>					   
+						<td style="border:1px solid #ddd; width:150px">
+							<h:commandLink action="#{dkmsReadModusAction.showCombinedSimpleResource(item.combinedItemId, dkmsContentItemBean.contentItemIdentifier)}"><h5 style="margin:5px">#{item.combinedItemTitle}</h5></h:commandLink>
+						</td >																											
+					</tr>				  
+			       </c:if>
+			        <c:if test="#{item.combinedItemType == '2'}">					
+					 <tr>	
+					    <td style="border:1px solid #ddd; width:30px">					
+							<img src="#{facesContext.externalContext.requestContextPath}/view/img/dokumente_verysmall.png" style="valign: center; vertical-align: middle; margin: 2px" title="Segmented resource"/>
+						</td>
+						<td style="border:1px solid #ddd; width:120px; padding:5px">					
+							Segmented Resource
+						</td>					   
+						<td style="border:1px solid #ddd; width:150px">
+							<h:commandLink action="#{dkmsReadModusAction.showCombinedSegmentedResource(item.combinedItemId, dkmsContentItemBean.contentItemIdentifier)}"><h5 style="margin:5px">#{item.combinedItemTitle}</h5></h:commandLink>
+						</td >																											
+					</tr>				  
+			       </c:if>
+			        <c:if test="#{item.combinedItemType == '3'}">					
+					 <tr>	
+					    <td style="border:1px solid #ddd; width:30px">					
+							<img src="#{facesContext.externalContext.requestContextPath}/view/img/pdf_dokument_verysmall.png" style="valign: center; vertical-align: middle; margin: 2px" title="Uploaded resource"/>
+						</td>
+						<td style="border:1px solid #ddd; width:120px; padding:5px">					
+							Uploaded Resource
+						</td>					   
+						<td style="border:1px solid #ddd; width:150px">
+							<h:commandLink action="#{dkmsReadModusAction.showCombinedUploadedResource(item.combinedItemId, dkmsContentItemBean.contentItemIdentifier)}"><h5 style="margin:5px">#{item.combinedItemTitle}</h5></h:commandLink>
+						</td >																											
+					</tr>				  
+			       </c:if>
+				</c:forEach>
+			</table>
+		
+		
+		
+  	    </div>
+	</div>	
+
+		</fieldset>
+		
+		<fieldset class="fieldsetborder" style="float:right; width: 200px; height: 700px; margin-right: -160px; border:1px solid #ddd">
+
+		<div id="buttons">
+		
+		<c:if test="#{identity.loggedIn == true}">
+		    
+			<h:commandLink 
+				action = "#{identityManagerService.logout}" >
+				<img
+					src="#{facesContext.externalContext.requestContextPath}/view/img/logout_small.png"
+					style="valign: center; vertical-align: middle; margin-right: 7px; margin-left:-7px"/>Logout</h:commandLink>    
+			<div id="trennlinie"></div> 
+			<br/>
+		</c:if>
+		
+				
+		<c:if test="#{identity.loggedIn == true}">
+			<h:commandLink  class="buttonclass"
+			action="#{dkmsReadModusAction.insertComment()}">
+			<img
+				src="#{facesContext.externalContext.requestContextPath}/view/img/plus.png"
+				style="valign: center; vertical-align: middle; margin-right: 10px; margin-left:-4px" />Add Comment</h:commandLink>
+			<br/><br/>
+			</c:if>
+			<c:if test="#{identity.loggedIn == false}">
+	   			<h:commandLink action="#" onclick="javascript:alert('Please go to platform home and login with your username and password!');" style="text-decoration:none">
+	    		
+	    	<img
+				src="#{facesContext.externalContext.requestContextPath}/view/img/plus.png"
+				style="valign: center; vertical-align: middle; margin-right: 10px; margin-left:-4px" />Add Comment</h:commandLink>
+			<br/><br/>
+			
+			</c:if>	
+			
+			<h:commandLink class="buttonclass"
+			action="#{dkmsReadModusAction.goToResultList()}">
+			<img
+				src="#{facesContext.externalContext.requestContextPath}/view/img/arrowleft_small.png"
+				style="valign: center; vertical-align: middle; margin-right: 14px;" /> Back to Result List</h:commandLink>
+			
+			<div id="trennlinie"></div> 
+			<br/>
+			
+			
+		<div id="comments" style="margin-left:4px">
+		<h3>Resource title:</h3>
+		<h4>#{dkmsContentItemBean.dkmsContentItemName}</h4>
+		<br/>
+		<h3>Author:</h3>
+		<h4>#{dkmsContentItemBean.authorName}</h4>
+		<br/>
+		<h3>Last update:</h3>
+		<h4>#{dkmsContentItemBean.lastUpdate}</h4>
+		<h3></h3>
+		</div>	
+		
+		
+
+		</div>
+
+		</fieldset>
+
+		</div>
+		</h:form>
+
+
+
+
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,25 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:m="http://code.google.com/p/gmaps4jsf/"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+                xmlns:p="http://primefaces.prime.com.tr/ui">
+                
+	<p:panel id="friends" header="Friends and Groups" toggleable="true" closable="true" widgetVar="friendsWidget" closeListener="#{dashboardAction.removePortlet}">
+	
+		<p:tabView>
+			<p:tab title="My Friends">
+				<ui:include src="contacts.xhtml" />
+			</p:tab>
+			<p:tab title="My Groups">
+				<ui:include src="groups.xhtml" />
+			</p:tab>
+		</p:tabView>
+		 
+	</p:panel>   
+</ui:composition>

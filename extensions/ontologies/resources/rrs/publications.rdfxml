@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+   xmlns:foaf="http://xmlns.com/foaf/0.1/"
+   xmlns:owl="http://www.w3.org/2002/07/owl#"
+   xmlns:pub="http://nlp.fit.vutbr.cz/2010/publications#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+   xmlns:xml="http://www.w3.org/XML/1998/namespace"
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+>
+  <rdf:Description rdf:about="http://nlp.fit.vutbr.cz/2010/publications#resultDataset">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:label>Result dataset</rdfs:label>
+    <rdfs:range rdf:resource="http://nlp.fit.vutbr.cz/2010/publications#Dataset"/>
+    <rdfs:domain rdf:resource="http://nlp.fit.vutbr.cz/2010/publications#Result"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://nlp.fit.vutbr.cz/2010/publications#resultScoreType">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:label>Result score type</rdfs:label>
+    <rdfs:domain rdf:resource="http://nlp.fit.vutbr.cz/2010/publications#Result"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://nlp.fit.vutbr.cz/2010/publications#resultScore">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:label>Result score</rdfs:label>
+    <rdfs:domain rdf:resource="http://nlp.fit.vutbr.cz/2010/publications#Result"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://nlp.fit.vutbr.cz/2010/publications#abstract">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:label>abstract</rdfs:label>
+    <rdfs:domain rdf:resource="http://nlp.fit.vutbr.cz/2010/publications#Publication"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://nlp.fit.vutbr.cz/2010/publications#Resource">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Resource</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://nlp.fit.vutbr.cz/2010/publications#cites">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:label>cites</rdfs:label>
+    <rdfs:range rdf:resource="http://nlp.fit.vutbr.cz/2010/publications#Publication"/>
+    <rdfs:domain rdf:resource="http://nlp.fit.vutbr.cz/2010/publications#Publication"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://nlp.fit.vutbr.cz/2010/publications#Result">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Result</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://nlp.fit.vutbr.cz/2010/publications#PublicationDescription"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://nlp.fit.vutbr.cz/2010/publications#usesMethod">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:label>uses method</rdfs:label>
+    <rdfs:range rdf:resource="http://nlp.fit.vutbr.cz/2010/publications#Method"/>
+    <rdfs:domain rdf:resource="http://nlp.fit.vutbr.cz/2010/publications#PublicationInterface"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://nlp.fit.vutbr.cz/2010/publications#PublicationInterface">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Publication interface</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://nlp.fit.vutbr.cz/2010/publications#aboutPublication">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:label>is about publication</rdfs:label>
+    <rdfs:range rdf:resource="http://nlp.fit.vutbr.cz/2010/publications#Publication"/>
+    <rdfs:domain rdf:resource="http://nlp.fit.vutbr.cz/2010/publications#PublicationDescription"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://nlp.fit.vutbr.cz/2010/publications#Dataset">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Dataset</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://nlp.fit.vutbr.cz/2010/publications#Resource"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://nlp.fit.vutbr.cz/2010/publications#Publication">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Publication</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://nlp.fit.vutbr.cz/2010/publications#PublicationInterface"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://nlp.fit.vutbr.cz/2010/publications#PublicationDescription">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Publication Description</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://nlp.fit.vutbr.cz/2010/publications#PublicationInterface"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://nlp.fit.vutbr.cz/2010/publications#usesResource">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:label>uses resource</rdfs:label>
+    <rdfs:range rdf:resource="http://nlp.fit.vutbr.cz/2010/publications#Resource"/>
+    <rdfs:domain rdf:resource="http://nlp.fit.vutbr.cz/2010/publications#PublicationInterface"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://nlp.fit.vutbr.cz/2010/publications#Method">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Method</rdfs:label>
+  </rdf:Description>
+</rdf:RDF>

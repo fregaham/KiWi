@@ -224,6 +224,13 @@ public class SetupDataAction implements Serializable {
     	p_equity.setSearch(false);
     	p_extraction.setDescription("Perspective for viewing the community equity analysis of a content item.");
     	perspectiveService.addPerspective(p_equity);
+    	
+    	Perspective p_publication = new Perspective("Publication", "publication");
+    	p_publication.setDescription("Perspective for Publications");
+    	
+    	ContentItem ci_publication = tripleStore.createUriResource("http://nlp.fit.vutbr.cz/2010/publications#Publication").getContentItem();
+    	p_publication.getTypes().add(ci_publication);
+    	perspectiveService.addPerspective(p_publication);
     }
 
     public void doInformationExtraction() {

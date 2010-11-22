@@ -1,0 +1,96 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix pub: <http://nlp.fit.vutbr.cz/2010/publications#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+
+pub:PublicationInterface a owl:Class.
+pub:PublicationInterface rdfs:label "Publication interface".
+
+pub:Publication a owl:Class.
+pub:Publication rdfs:label "Publication".
+pub:Publication rdfs:subClassOf pub:PublicationInterface.
+
+pub:cites a owl:ObjectProperty.
+pub:cites rdfs:domain pub:Publication.
+pub:cites rdfs:range pub:Publication.
+pub:cites rdfs:label "cites".
+
+pub:PublicationDescription a owl:Class.
+pub:PublicationDescription rdfs:label "Publication Description".
+pub:PublicationDescription rdfs:subClassOf pub:PublicationInterface.
+
+pub:aboutPublication a owl:ObjectProperty.
+pub:aboutPublication rdfs:domain pub:PublicationDescription.
+pub:aboutPublication rdfs:range pub:Publication.
+pub:aboutPublication rdfs:label "is about publication".
+
+pub:abstract a owl:DatatypeProperty.
+pub:abstract rdfs:domain pub:Publication.
+pub:abstract rdfs:label "abstract".
+
+pub:Resource a owl:Class.
+pub:Resource rdfs:label "Resource".
+
+pub:Dataset a owl:Class.
+pub:Dataset rdfs:subClassOf pub:Resource.
+pub:Dataset rdfs:label "Dataset".
+
+pub:Method a owl:Class.
+pub:Method rdfs:label "Method".
+
+# 
+
+# Result
+
+pub:Result a owl:Class.
+pub:Result rdfs:subClassOf pub:PublicationDescription.
+pub:Result rdfs:label "Result".
+
+pub:resultScore a owl:DatatypeProperty.
+pub:resultScore rdfs:label "Result score".
+pub:resultScore rdfs:domain pub:Result.
+
+pub:resultScoreType a owl:DatatypeProperty.
+pub:resultScoreType rdfs:label "Result score type".
+pub:resultScoreType rdfs:domain pub:Result.
+
+pub:resultDataset a owl:ObjectProperty.
+pub:resultDataset rdfs:label "Result dataset".
+pub:resultDataset rdfs:domain pub:Result.
+pub:resultDataset rdfs:range pub:Dataset.
+
+# UsesResource
+
+#pub:UsesResource a owl:Class.
+#pub:UsesResource rdfs:subClassOf pub:PublicationDescription.
+#pub:UsesResource rdfs:label "Uses Resource".
+
+pub:usesResource a owl:ObjectProperty.
+pub:usesResource rdfs:label "uses resource".
+pub:usesResource rdfs:domain pub:PublicationInterface.
+pub:usesResource rdfs:range pub:Resource.
+
+#pub:usesResourceResource a owl:ObjectProperty.
+#pub:usesResourceResource rdfs:label "resource".
+#pub:usesResourceResource rdfs:domain pub:UsesResource.
+#pub:usesResourceResource rdfs:range pub:Resource.
+
+# UsesMethod
+
+#pub:UsesMethod a owl:Class.
+#pub:UsesMethod rdfs:subClassOf pub:PublicationDescription.
+#pub:UsesMethod rdfs:label "Uses Method".
+
+#pub:usesMethodMethod a owl:ObjectProperty.
+#pub:usesMethodMethod rdfs:label "method".
+#pub:usesMethodMethod rdfs:domain pub:UsesMethod.
+#pub:usesMethodMethod rdfs:range pub:Method.
+
+pub:usesMethod a owl:ObjectProperty.
+pub:usesMethod rdfs:label "uses method".
+pub:usesMethod rdfs:domain pub:PublicationInterface.
+pub:usesMethod rdfs:range pub:Method.
+
+

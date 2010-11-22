@@ -13,8 +13,8 @@
 
    <module>
       <web>
-         <web-uri>KiWi.war</web-uri>
-         <context-root>/KiWi</context-root>
+         <web-uri>RRS.war</web-uri>
+         <context-root>/RRS</context-root>
       </web>
    </module>
 
@@ -35,7 +35,7 @@
    </module>-->
 
    <module>
-      <ejb>KiWi.jar</ejb>
+      <ejb>RRS.jar</ejb>
    </module>
 
    <!--  Quartz Dispatcher -->
@@ -130,8 +130,12 @@
    <module>
        <ejb>kiwiext-edukms.jar</ejb>
    </module>
-			    		
-	<!-- newExtensions here -->
+   
+   			    		
+   <!-- newExtensions here -->
+   <module>
+       <ejb>kiwiext-rrs.jar</ejb>
+   </module>
 
    <!--  <module>
        <ejb>kiwiext-swim.jar</ejb>

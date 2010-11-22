@@ -252,10 +252,13 @@ public class FragmentAction implements Serializable {
 
 		if(taggingItem == null) {
 			// create new Content Item of type "tag" if the tag does not yet exist
-			taggingItem = contentItemService.createContentItem("content/"+label.toLowerCase().replace(" ","_")+"/"+UUID.randomUUID().toString());
+			/*taggingItem = contentItemService.createContentItem("content/"+label.toLowerCase().replace(" ","_")+"/"+UUID.randomUUID().toString());
 			taggingItem.addType(tripleStore.createUriResource(Constants.NS_KIWI_CORE+"Tag"));
 			contentItemService.updateTitle(taggingItem, label);
-			contentItemService.saveContentItem(taggingItem);
+			contentItemService.saveContentItem(taggingItem);*/
+			
+			taggingItem = taggingService.parseTag(label);
+			
 			log.info("created new content item for non-existant tag");
 		}
 
@@ -267,7 +270,7 @@ public class FragmentAction implements Serializable {
 	public void addTag() {
 		log.info("adding new tags for input #0", tagLabel);
 		
-		String[] components = tagLabel.split(",");
+		/*String[] components = tagLabel.split(",");
 		
 		for(String component : components) {
 		
@@ -276,7 +279,10 @@ public class FragmentAction implements Serializable {
 			String label = component.trim();
 			
 			addTag(label);
-		}
+		}*/
+		
+		addTag(tagLabel.trim());
+		
 //		entityManager.flush();
 			
 		tagLabel = "";

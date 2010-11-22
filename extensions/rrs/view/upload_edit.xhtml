@@ -1,0 +1,49 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:c="http://java.sun.com/jstl/core"
+    xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+    xmlns:p="http://primefaces.prime.com.tr/ui"
+    template="layout/template.xhtml">
+
+    <ui:define name="links">
+        <link href="#{facesContext.externalContext.requestContextPath}/feed.seam?mode=MOSTRECENT&amp;format=RSS20" type="application/rss+xml" rel="alternate" title="Most Recently Changed" />
+        <link href="#{facesContext.externalContext.requestContextPath}/feed.seam?mode=COMMENTS&amp;format=RSS20" type="application/rss+xml" rel="alternate" title="Comments for #{currentContentItem.title}" />
+        <link href="#{facesContext.externalContext.requestContextPath}/activity-feed.seam?mode=ACTIVITIES&amp;format=RSS20" type="application/rss+xml" rel="alternate" title="Stream of Activities for #{currentContentItem.title}" />
+    </ui:define>
+
+
+<ui:define name="body">
+    <h1>ReReSearch Extension</h1>
+   
+    
+    <h:form id="rrs_import">
+    	<rich:panel id="filepanel">
+    		<div>
+    			<h:outputText value="#{rrs.importAction.contentType} "/>
+		    	<h:outputText value="#{rrs.importAction.name} "/>
+    			<h:outputText value="#{rrs.importAction.size} "/>
+    		</div>
+    		
+    		<div>
+    			<rich:editor id="rrsImportEditor" height="600" width="800" required="false"
+					theme="advanced" configuration="tinymce-small"
+					plugins="safari,pagebreak,style,layer,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,visualchars,nonbreaking,xhtmlxtras"
+					value="#{rrs.importAction.html}" autoResize="true">
+				</rich:editor>
+    		</div>
+    		
+    		<h:commandButton action="#{rrs.importAction.edit}" value="Proceed"/>
+    	</rich:panel>
+    	
+    	<!-- </p:panel>-->
+    </h:form>
+    
+</ui:define>
+</ui:composition>

@@ -331,14 +331,22 @@ public class ReasoningImpl implements ReasoningServiceLocal, ReasoningServiceRem
 	 */
 	public void runReasoner() {
 		ReasoningTask task = new RunReasoningTask();
-		enqueueTask(task);
-		
+		//enqueueTask(task);
+		/*
 		if (!isReasoningEnabled()) {
 			enableReasoning();
 			
 			runEnqueuedTasks();
 			
 			disableReasoning();
+		}*/
+
+		try {
+			reasonerLock.lock();
+			processTask(task);
+		}
+		finally {
+			reasonerLock.unlock();
 		}
 	}
 	

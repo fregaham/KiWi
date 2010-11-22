@@ -118,7 +118,7 @@ public class TriplestoreProgramLoader extends ProgramLoader {
 
 		if (!tripleExists) {
 			log.warn("Not loading program #3. Triplestore did not contain triple #0 #1 #2", program, property, object, name);
-			return "";			
+			return null;			
 		}
 		
 		List<String> namespaces = loadNamespacesOf(program);

@@ -328,7 +328,7 @@ public class EditorModel {
 
 	public List<KiWiTriple> getOutgoingTriples(KiWiResource id) {
 		
-		
+		assert id != null;
 		
 		if (!outgoingTriples.containsKey(id)) {
 			List<KiWiTriple> ret = new LinkedList<KiWiTriple>();
@@ -942,6 +942,8 @@ public class EditorModel {
 		for (ContentItem item : items) {
 			KiWiResource itemResource = item.getResource();
 			
+			assert itemResource != null;
+			
 			// We remember the title...
 			titles.put(itemResource, item.getTitle());
 
@@ -968,6 +970,7 @@ public class EditorModel {
 			// ...all the fragments...
 			Collection<FragmentFacade> ffs = fragmentService.getContentItemFragments(item, FragmentFacade.class);
 			for (FragmentFacade ff : ffs) {
+				assert ff.getResource() != null;
 				this.getFragments(itemResource).add(ff.getResource());
 				
 				// ...and their tags...
@@ -978,6 +981,14 @@ public class EditorModel {
 				for (ContentItem commentItem : commentService.listComments(ff.getDelegate())) {
 					String html = renderingService.renderHTML(commentItem);
 					fragmentComments.add(new Comment(commentItem.getTitle(), html, commentItem.getCreated(), commentItem.getAuthor(), false));
+				}
+				
+				outgoingTriples = this.getOutgoingTriples(ff.getResource());
+
+				for (KiWiTriple triple : ff.getResource().listOutgoing()) {
+					if (triple.isDeleted() != null && triple.isDeleted() != true) {
+						outgoingTriples.add(triple);
+					}
 				}
 			}
 		}
@@ -1087,12 +1098,14 @@ public class EditorModel {
 				// they may or may not be existing triples and if they do exist,
 				// they are almost surely detached...
 				
+				KiWiResource subject = ci.getResource();
+				
 				if (triple.isDeleted()) {
-					tripleStore.removeTriple(triple.getSubject(), triple.getProperty(), triple.getObject());
+					tripleStore.removeTriple(subject, triple.getProperty(), triple.getObject());
 				}
 				else {
-					if (!tripleStore.hasTriple(triple.getSubject(), triple.getProperty(), triple.getObject())) {
-						tripleStore.createTriple(triple.getSubject(), triple.getProperty(), triple.getObject());
+					if (!tripleStore.hasTriple(subject, triple.getProperty(), triple.getObject())) {
+						tripleStore.createTriple(subject, triple.getProperty(), triple.getObject());
 					}
 				}
 			}
@@ -1135,10 +1148,13 @@ public class EditorModel {
 			}
 			else {
 				// the taggingResoure is a virtual one, let's create the real thing.
-				taggingResource = contentItemService.createContentItem("content/"+label.toLowerCase().replace(" ","_")+"/"+UUID.randomUUID().toString());
+				/*taggingResource = contentItemService.createContentItem("content/"+label.toLowerCase().replace(" ","_")+"/"+UUID.randomUUID().toString());
 				taggingResource.addType(tripleStore.createUriResource(Constants.NS_KIWI_CORE+"Tag"));
 				contentItemService.updateTitle(taggingResource, label);
-				taggingResource = contentItemService.saveContentItem(taggingResource);
+				taggingResource = contentItemService.saveContentItem(taggingResource);*/
+				
+				taggingResource = taggingService.parseTag(label);
+				
 				contentItemsCache.put(taggingResource.getResource().getKiwiIdentifier(), taggingResource);
 			}
 						

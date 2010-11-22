@@ -1,8 +1,9 @@
 @prefix rdf : <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 @prefix holygoat: <http://www.holygoat.co.uk/owl/redwood/0.1/tags/>
+@prefix pub: <http://nlp.fit.vutbr.cz/2010/publications#>
 
 rdf-type: ($1 rdf:type $2), ($2 rdfs:subClassOf $3) ->	($1 rdf:type $3)
 rdf-subclass: ($1 rdfs:subClassOf $2), ($2 rdfs:subClassOf $3) -> ($1 rdfs:subClassOf $3)
-
+publication-description: ($1 rdf:type pub:PublicationDescription), ($1 pub:aboutPublication $2), ($2 rdf:type pub:Publication), ($1 $4 $5), ($4 rdfs:domain pub:PublicationInterface) -> ($2 $4 $5)
 

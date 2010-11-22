@@ -214,7 +214,7 @@ public class OntologyAction implements Serializable {
 			geo.setDescription("A vocabulary for representing latitude, longitude and altitude information in the WGS84 geodetic reference datum.");
 			geo.setUri("imports/geo.rdf");
 			geo.setFormat(KiWiDataFormat.RDFXML);
-			geo.setLoad(true);
+			geo.setLoad(false);
 			setupOntologyList.add(geo);
 
 			OntologyBean geonames = new OntologyBean();
@@ -230,7 +230,7 @@ public class OntologyAction implements Serializable {
 			artaround.setDescription("This is the artaround ontology.");
 			artaround.setUri("artaround/artaround.owl");
 			artaround.setFormat(KiWiDataFormat.RDFXML);
-			artaround.setLoad(true);
+			artaround.setLoad(false);
 			setupOntologyList.add(artaround);
 			
 			OntologyBean artaroundThesaurus = new OntologyBean();
@@ -238,7 +238,7 @@ public class OntologyAction implements Serializable {
 			artaroundThesaurus.setDescription("This is the artaround Thesaurus.");
 			artaroundThesaurus.setUri("artaround/artaround_thesaurus.owl");
 			artaroundThesaurus.setFormat(KiWiDataFormat.RDFXML);
-			artaroundThesaurus.setLoad(true);
+			artaroundThesaurus.setLoad(false);
 			setupOntologyList.add(artaroundThesaurus);
 			
 			OntologyBean ideator = new OntologyBean();
@@ -246,7 +246,7 @@ public class OntologyAction implements Serializable {
 			ideator.setDescription("This is the Ideator ontology.");
 			ideator.setUri("ideator/ideator.owl");
 			ideator.setFormat(KiWiDataFormat.RDFXML);
-			ideator.setLoad(true);
+			ideator.setLoad(false);
 			setupOntologyList.add(ideator);
 			
 			OntologyBean ideatorThesaurus = new OntologyBean();
@@ -254,7 +254,7 @@ public class OntologyAction implements Serializable {
 			ideatorThesaurus.setDescription("This is the Ideator Thesaurus.");
 			ideatorThesaurus.setUri("ideator/ideator_thesaurus.owl");
 			ideatorThesaurus.setFormat(KiWiDataFormat.RDFXML);
-			ideatorThesaurus.setLoad(true);
+			ideatorThesaurus.setLoad(false);
 			setupOntologyList.add(ideatorThesaurus);
 
 			OntologyBean icalCalendar = new OntologyBean();
@@ -347,6 +347,15 @@ public class OntologyAction implements Serializable {
 			demoThesaurus.setFormat(KiWiDataFormat.RDFXML);
 			demoThesaurus.setLoad(false);
 			setupOntologyList.add(demoThesaurus);
+			
+			
+			OntologyBean rrs = new OntologyBean();
+			rrs.setName("ReReSearch Ontology");
+			rrs.setDescription("ReReSearch Ontology.");
+			rrs.setUri("rrs/publications.rdfxml");
+			rrs.setFormat(KiWiDataFormat.RDFXML);
+			rrs.setLoad(true);
+			setupOntologyList.add(rrs);
 		}
 	}
 

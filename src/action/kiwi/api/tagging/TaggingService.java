@@ -224,5 +224,8 @@ public interface TaggingService {
 	 * @param amountOfTags
 	 * @return
 	 */
-	public float getTagFrequencyByContentItem(String tagLabel, ContentItem contentItem, Float amountOfTags);	
+	public float getTagFrequencyByContentItem(String tagLabel, ContentItem contentItem, Float amountOfTags);
+	
+	
+	public ContentItem parseTag(String tag);
 }

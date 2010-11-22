@@ -487,20 +487,35 @@ Annotations.prototype.insertAnnotation = function(annotation, sel, getControlEle
 
 	var f = this.firstTextNode(sel.startContainer);
 	var e = this.lastTextNode(sel.endContainer);
+	
+	var startOffset = sel.startOffset;
+	var endOffset = sel.endOffset;
+	
+	if (sel.startContainer.nodeType == 1) {
+		// element, offsets doesn't have valid values
+		startOffset = 0;
+	}
+	if (sel.endContainer.nodeType == 1) {
+		endOffset = 0;
+		if (e != null) {
+			// actually, as and end offset, it needs to be the length of the last text content
+			endOffset = e.nodeValue.length;
+		}
+	}
 
 	if (f != e) {
-		if (sel.startOffset != 0) {
-			f = this.splitTextNode(f, sel.startOffset)[1];
+		if (startOffset != 0) {
+			f = this.splitTextNode(f, startOffset)[1];
 		}
 
-		if (sel.endOffset != 0) {
-			e = this.splitTextNode(e, sel.endOffset)[0];
+		if (endOffset != 0) {
+			e = this.splitTextNode(e, endOffset)[0];
 		} else {
 			e = this.previousTextNode(this.getRoot(), e);
 		}
 	} else {
-		var diff = sel.endOffset - sel.startOffset;
-		rest = this.splitTextNode(f, sel.startOffset)[1];
+		var diff = endOffset - startOffset;
+		rest = this.splitTextNode(f, startOffset)[1];
 		e = f = this.splitTextNode(rest, diff)[0];
 	}
 
@@ -512,8 +527,6 @@ Annotations.prototype.insertAnnotation = function(annotation, sel, getControlEle
 		f = this.nextTextNode(this.getRoot(), f);
 	}
 	
-	
-
 	this.enableDOMEvents();
 };
 

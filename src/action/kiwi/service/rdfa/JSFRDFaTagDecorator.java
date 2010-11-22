@@ -86,6 +86,7 @@ public class JSFRDFaTagDecorator implements TagDecorator {
 		
 		TagAttribute property = tag.getAttributes().get("property");
 		TagAttribute rel      = tag.getAttributes().get("rel");
+		TagAttribute rev 	  = tag.getAttributes().get("rev");
 		
 		// TODO: variable "ctx" is currently passed as ui:param in the JSF including the different
 		// perspectives; it should rather be set depending on whether inside an iteration or not ...
@@ -160,6 +161,43 @@ public class JSFRDFaTagDecorator implements TagDecorator {
 				TagAttribute resource = new TagAttribute(tag.getLocation(),
 						  "","resource","resource",
 						  "#{"+contextEl+".getObject('"+rel.getValue()+"').value}");
+				attrs.add(value);
+				attrs.add(resource);
+			}
+			for(TagAttribute attr : tag.getAttributes().getAll()) {
+				if(!"value".equals(attr.getLocalName()) &&
+				   !"ctx".equals(attr.getLocalName()) &&
+				   !"resource".equals(attr.getLocalName()) &&
+				   !"var".equals(attr.getLocalName())) {
+					attrs.add(attr);
+				}
+			}
+			return new Tag(tag,new TagAttributes(attrs.toArray(new TagAttribute[0])));
+			
+		}
+		else if(rev != null && !isHtmlLinkType(rev.getValue())) {
+			// an object relation to another resource (non-property)
+			
+			ArrayList<TagAttribute> attrs = new ArrayList<TagAttribute>();
+			
+			if(isIterationConstruct(tag)) {
+				// for iteration constructs, add a new value attribute listing all literals and add a new variable construct with a fresh variable
+				TagAttribute value = new TagAttribute(tag.getLocation(),
+													  "","value","value",
+												      "#{"+contextEl+".listSubjects('"+rev.getValue()+"')}");
+				TagAttribute var   = new TagAttribute(tag.getLocation(), "", "var", "var", varEl);
+				
+				attrs.add(value);
+				attrs.add(var);
+				
+			} else {
+				// for non-iteration constructs, add a new value attribute 
+				TagAttribute value = new TagAttribute(tag.getLocation(),
+						  							  "","value","value",
+						  							  "#{"+contextEl+".getSubject('"+rev.getValue()+"').value}");
+				TagAttribute resource = new TagAttribute(tag.getLocation(),
+						  "","resource","resource",
+						  "#{"+contextEl+".getSubject('"+rev.getValue()+"').value}");
 				attrs.add(value);
 				attrs.add(resource);
 			}

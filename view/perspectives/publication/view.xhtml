@@ -1,0 +1,65 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+    xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+    xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:p="http://primefaces.prime.com.tr/ui"
+	xmlns:a="http://richfaces.org/a4j">
+
+
+		<style>
+	    </style> 
+		
+		<h1>Publication perspective for<h:outputText value=" "/><h:outputText property="http://www.kiwi-project.eu/kiwi/core/title"/></h1>
+		
+		<p style="margin-top: 20px; margin-left: 10px; margin-right: 10px;" class="help">
+		 
+		</p>
+
+		<br/>
+
+		<h:panelGrid columns="1" columnClasses="pubLeft" width="100%">
+			<h:panelGroup>
+				<strong>Title:</strong><br />
+				<h:outputText property="http://www.kiwi-project.eu/kiwi/core/title"/>
+			</h:panelGroup>
+			
+			<h:panelGroup>
+				<strong>Abstract</strong><br />
+				<h:outputText property="http://nlp.fit.vutbr.cz/2010/publications#abstract"/>
+			</h:panelGroup>		
+			
+			<!-- 
+			<h:panelGroup>
+				<strong>About</strong><br />
+				 <ui:repeat var="aboutCtx" rev="pub:aboutPublication">
+      				<li>
+      					<s:link view="/home.xhtml" value="#{rrs.annotationAction.getDescriptionText(aboutCtx.value)}" propagation="none">
+      						<f:param name="uri" value="#{aboutCtx.value}"/>
+      						<f:param name="kiwiid"/>
+      					</s:link>
+       				</li>
+   				</ui:repeat>
+			</h:panelGroup>
+			-->	
+			
+			<h:panelGroup>
+				<strong>Tags</strong>
+				<ui:repeat var="tag" value="#{rrs.annotationAction.tags}">
+				
+					<s:div rendered="#{(tag.taggedResource == currentContentItem)}">
+						<div><h:outputText value="#{tag.taggingResource.title}"/></div>
+					</s:div>
+					<s:div rendered="#{(tag.taggedResource != currentContentItem)}">
+						<div><h:outputText value="#{tag.taggingResource.title}"/>  [fragment]</div> 
+					</s:div>
+				
+				</ui:repeat>
+			</h:panelGroup>	
+		</h:panelGrid>
+</ui:composition>

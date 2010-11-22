@@ -300,6 +300,34 @@ public class JSFRDFaNode {
 		
 	}
 	
+	public JSFRDFaNode getSubject(String property_uri) throws JSFRDFaException {
+		if(kiwinode != null) {
+			if(kiwinode.isUriResource() || kiwinode.isAnonymousResource()) {
+				Iterator<KiWiTriple> objects;
+				try {
+					objects = ((KiWiResource)kiwinode).listIncoming(property_uri, 1).iterator();
+					if(objects.hasNext()) {
+						KiWiTriple t = objects.next();
+						if(! (t.getSubject().isUriResource() || t.getSubject().isAnonymousResource())) {
+							throw new JSFRDFaException("property does not point to a resource");
+						} else {				
+							return new JSFRDFaNode(t.getSubject());
+						}
+					} else {
+						return new JSFRDFaNewProperty(kiwinode,property_uri, URI);
+					}
+				} catch (NamespaceResolvingException e) {
+					throw new JSFRDFaException("could not resolve namespace",e);
+				}
+			} else {
+				throw new JSFRDFaException("getObject is only applicable to resources");
+			}
+		} else {
+			throw new JSFRDFaException("getObject must be called on existing resources");
+		}
+		
+	}
+	
 	/**
 	 * Return a new relation from this subject node to some other node using some other property.
 	 * The relation will be stored in the triple store upon setting of both its target object and property.
@@ -420,6 +448,41 @@ public class JSFRDFaNode {
 					for(KiWiTriple t : ((KiWiResource)kiwinode).listOutgoing(property_uri)) {
 						if(t.getObject().isUriResource() || t.getObject().isAnonymousResource()) {
 							result.add(new JSFRDFaProperty(t));
+						}
+						
+					}
+					return result;
+					
+				} catch (NamespaceResolvingException e) {
+					throw new JSFRDFaException("could not resolve namespace",e);
+				}
+			} else {
+				throw new JSFRDFaException("listObjects is only applicable to resources");
+			}
+		} else {
+			throw new JSFRDFaException("listObjects must be called on existing resources");			
+		}
+	}
+	
+	
+	public List<JSFRDFaNode> listSubjects() throws JSFRDFaException {
+		return listSubjects(null);
+	}
+
+	/**
+	 * Return an iterable list of JSFRDFaProperty wrappers around the literals inversely reachable from the current node
+	 * via the relation identified by property_uri.
+	 */
+	public List<JSFRDFaNode> listSubjects(String property_uri) throws JSFRDFaException {
+		if(kiwinode != null) {
+			if(kiwinode.isUriResource() || kiwinode.isAnonymousResource()) {
+				try {
+					
+					LinkedList<JSFRDFaNode> result = new LinkedList<JSFRDFaNode>();
+					
+					for(KiWiTriple t : ((KiWiResource)kiwinode).listIncoming(property_uri)) {
+						if(t.getSubject().isUriResource() || t.getSubject().isAnonymousResource()) {
+							result.add(new JSFRDFaNode(t.getSubject()));
 						}
 						
 					}

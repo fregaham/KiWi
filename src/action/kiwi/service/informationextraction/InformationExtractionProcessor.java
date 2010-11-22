@@ -147,8 +147,9 @@ public class InformationExtractionProcessor implements Serializable {
 			extractlets.add("kiwi.informationextraction.documentTagExtractlet");
 			extractlets.add("kiwi.informationextraction.documentTypeExtractlet");
 			extractlets.add("kiwi.informationextraction.numberExtractlet");
-			extractlets.add("kiwi.informationextraction.actionItemExtractlet");
+			// extractlets.add("kiwi.informationextraction.actionItemExtractlet");
 			extractlets.add("kiwi.informationextraction.sequenceExtractlet");
+			extractlets.add("rrs.extractlet.articleToMetaExtractlet");
 			configurationService.setListConfiguration("kiwi.informationextraction.extractlets", extractlets);
 		}
 		
@@ -492,6 +493,11 @@ items:
 	 * @param newSuggestions
 	 */
 	private void _mergeOldExamples(ContentItem item, Collection<Suggestion> newSuggestions) {
+		
+		if (item == null || item.getResource() == null || item.getTextContent() == null) {
+			return;
+		}
+		
 		Query q = entityManager.createNamedQuery("kiwi.informationextraction.informationExtractionService.listOldExamplesByInstanceSourceResource");
 		q.setParameter("resourceid", item.getResource().getId());
 		q.setParameter("contentid", item.getTextContent().getId());
@@ -569,6 +575,11 @@ items:
 	 */
 	@SuppressWarnings("unchecked")
 	public void _extractInformation(ContentItem item) {
+		
+		if (item.getTextContent() == null) {
+			return;
+		}
+		
 		SystemStatus status = new SystemStatus("initialization of instances for Information Extraction on CI " + item.getTitle());
 		status.setProgress(0);
 		statusService.addSystemStatus(status);

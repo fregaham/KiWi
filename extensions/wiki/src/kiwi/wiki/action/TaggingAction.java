@@ -131,16 +131,19 @@ public class TaggingAction implements Serializable {
 		currentUser = entityManager.merge(currentUser);
 		currentContentItem = entityManager.merge(currentContentItem);
 		
-		String[] components = tagLabel.split(",");
+		//String[] components = tagLabel.split(",");
 		
-		for(String component : components) {
+		/*for(String component : components) {
 		
 			log.info("adding tag #0",component);
 			
 			String label = component.trim();
 			
 			addTag(label);
-		}
+		}*/
+		
+		addTag(tagLabel.trim());
+		
 //		entityManager.flush();
 		
 		entityManager.refresh(currentContentItem);
@@ -184,11 +187,14 @@ public class TaggingAction implements Serializable {
 
 		if(taggingItem == null) {
 			// create new Content Item of type "tag" if the tag does not yet exist
-			taggingItem = contentItemService.createContentItem("content/"+label.toLowerCase().replace(" ","_")+"/"+UUID.randomUUID().toString());
+			/*taggingItem = contentItemService.createContentItem("content/"+label.toLowerCase().replace(" ","_")+"/"+UUID.randomUUID().toString());
 			taggingItem.addType(tripleStore.createUriResource(Constants.NS_KIWI_CORE+"Tag"));
 			contentItemService.updateTitle(taggingItem, label.toLowerCase());
 			kiwiEntityManager.persist(taggingItem);
-			log.info("created new content item for non-existant tag");
+			log.info("created new content item for non-existant tag");*/
+			
+			taggingItem = taggingService.parseTag(label);
+			
 		}
 
 
@@ -357,5 +363,5 @@ public class TaggingAction implements Serializable {
 		}
 
 		return "success";
-	}	
+	}
 }

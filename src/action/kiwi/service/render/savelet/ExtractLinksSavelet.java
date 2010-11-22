@@ -226,11 +226,11 @@ public class ExtractLinksSavelet implements SourceSavelet {
 		html = m_emptylink.replaceAll("");
 
 		// find links enclosed in [ ] and make an external link out of them
-		Matcher m_wikilink_3 = p_wikilink_3.matcher(html);
-		html = m_wikilink_3.replaceAll("<a kiwi:kind=\"extlink\" kiwi:target=\"$1\" href=\"$1\">$2</a>");
+//		Matcher m_wikilink_3 = p_wikilink_3.matcher(html);
+//		html = m_wikilink_3.replaceAll("<a kiwi:kind=\"extlink\" kiwi:target=\"$1\" href=\"$1\">$2</a>");
 
-		Matcher m_wikilink_4 = p_wikilink_4.matcher(html);
-		html = m_wikilink_4.replaceAll("<a kiwi:kind=\"extlink\" kiwi:target=\"$1\" href=\"$1\">$1</a>");
+//		Matcher m_wikilink_4 = p_wikilink_4.matcher(html);
+//		html = m_wikilink_4.replaceAll("<a kiwi:kind=\"extlink\" kiwi:target=\"$1\" href=\"$1\">$1</a>");
 
 		
 		// TODO how about factoring this out into separate savelets executed after this one? --christoph.lange

@@ -1,0 +1,132 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+    xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+    xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:p="http://primefaces.prime.com.tr/ui"
+	xmlns:a="http://richfaces.org/a4j">
+
+
+		<style>
+		   
+	    </style> 
+		
+		<h1>Publication perspective for<h:outputText value=" "/><h:outputText property="http://www.kiwi-project.eu/kiwi/core/title"/></h1>
+		
+		<p style="margin-top: 20px; margin-left: 10px; margin-right: 10px;" class="help">
+		</p>
+
+		<br/>
+
+		<a:form id="publicationForm">
+		<h:panelGrid columns="1" columnClasses="pubLeft" width="100%">
+			<h:panelGroup>
+				<strong>Title:</strong><br />
+				<h:inputText size="80" value="#{editorAction.title}" required="true"/>
+			</h:panelGroup>
+			
+			<h:panelGroup>
+				<strong>Abstract:</strong><br />
+				<h:inputTextarea cols="80" rows="25" property="http://nlp.fit.vutbr.cz/2010/publications#abstract"/>
+			</h:panelGroup>		
+			
+			<!-- 
+			<h:panelGroup>
+				<strong>Annotations</strong><br />
+				 <ui:repeat var="aboutCtx" rev="pub:aboutPublication">
+      				<li>
+      					<s:link view="/home.xhtml" value="#{rrs.annotationAction.getDescriptionText(aboutCtx.value)}" propagation="none">
+      						<f:param name="uri" value="#{aboutCtx.value}"/>
+      						<f:param name="kiwiid"/>
+      					</s:link> 
+      					      					
+      					<h:commandButton action="#{rrs.descriptionAction.removeDescription(aboutCtx.value)}" value="Remove"/>
+      			 	</li>
+   				</ui:repeat>
+   				
+   				<div>
+   					<strong>Add Annotation</strong>
+   					<h:selectOneMenu value="#{rrs.annotationAction.annotationType}" id="annotationType">
+						<s:selectItems value="#{rrs.annotationAction.annotationTypes}" var="type"
+							label="#{type.resource.label} (#{type.resource.namespacePrefix})" noSelectionLabel="Please select ..." />
+						<a:support event="onchange" reRender="annotation" action="#{rrs.annotationAction.updateType}"/>
+						<kiwi:convertEntity />
+					</h:selectOneMenu>
+					
+					<s:div id="annotation">
+						<s:div rendered="#{not empty rrs.annotationAction.annotationType}">
+							<a:repeat value="#{rrs.annotationAction.properties}" var="p">
+								<div>
+									<h:outputLabel value="#{p.triple.property.namespacePrefix}:#{p.triple.property.label}"/>
+								
+									<s:div rendered="#{empty p.triple.object}">
+										<s:div rendered="#{p.isDatatype()}">
+											<h:inputText value="#{p.label}"/> (datatype)
+										</s:div>
+										<s:div rendered="#{p.isObject()}">
+											<h:inputText id="annotationObjectLabel" value="#{p.label}"/> (object)
+											<rich:suggestionbox id="annotationObjectLabelSuggest" for="annotationObjectLabel" tokens=",[]"
+                        						suggestionAction="#{kiwirdfaAction.titlesAutocomplete}" 
+                        						var="result"
+                        						minChars="2"
+                        						shadowOpacity="4"
+                        						border="1"
+                        						height="300"
+                        						width="600"
+                        						shadowDepth="3"
+                        						cellpadding="2"
+                        						nothingLabel="No content items found" 
+                        						columnClasses="center"
+                        						usingSuggestObjects="true">
+                        						<h:column>
+				                            		<h:outputText value="#{result[0]}" /> (<h:outputText value="#{result[1]}"/>)
+                        						</h:column>
+	                        		
+                        						<a:support event="onselect" action="#{p.setSuggestedObject(result[2])}" reRender="annotation">
+         										</a:support>
+                        		
+                								</rich:suggestionbox>
+										</s:div>
+									</s:div>
+									<s:div rendered="#{not empty p.triple.object}">
+										<s:div rendered="#{p.isDatatype()}">
+											<h:inputText value="#{p.label}"/>
+										</s:div>
+										<s:div rendered="#{p.isObject()}">
+											<h:outputText value="#{p.triple.object.label}"/> <a:commandButton value="Clear" action="#{p.clear()}" reRender="annotation"/>
+										</s:div>
+									</s:div>
+								</div>
+							</a:repeat>
+							
+							<h:commandButton action="#{rrs.annotationAction.annotate}" value="Add annotation"/>
+						</s:div>
+					</s:div>
+   				</div>
+			</h:panelGroup> -->
+			</h:panelGrid> 
+			
+			<h:panelGroup>
+				<strong>Tags</strong>
+				<ui:repeat var="tag" value="#{rrs.annotationAction.tags}">
+				
+					<s:div rendered="#{(tag.taggedResource == currentContentItem)}">
+						<div><h:outputText value="#{tag.taggingResource.title}"/></div>
+					</s:div>
+					<s:div rendered="#{(tag.taggedResource != currentContentItem)}">
+						<div><h:outputText value="#{tag.taggingResource.title}"/>  [fragment]</div> 
+					</s:div>
+					
+				</ui:repeat>
+				<h:inputText value="#{rrs.annotationAction.tag}"/> <h:commandButton action="#{rrs.annotationAction.addTag}" value="Add"/>
+			</h:panelGroup>	
+			
+			<p:commandButton action="#{editorAction.storeContentItem}" value="Save" />
+		</a:form>
+	        
+</ui:composition>

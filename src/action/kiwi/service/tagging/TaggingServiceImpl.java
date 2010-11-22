@@ -33,8 +33,12 @@
  */
 package kiwi.service.tagging;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -620,8 +624,141 @@ public class TaggingServiceImpl implements TaggingServiceLocal, TaggingServiceRe
 	    	  }
 	    }
 		return tagFrequency.floatValue();
-	}	
+	}
+
+	public ContentItem parseBasicTag(String tag) {
+		ContentItem item = contentItemService.getContentItemByTitle(tag);
+		if (item == null) {			
+			item = contentItemService.createContentItem("content/"+tag.toLowerCase().replace(" ","_")+"/"+UUID.randomUUID().toString());
+			item.addType(tripleStore.createUriResource(Constants.NS_KIWI_CORE+"Tag"));
+			contentItemService.updateTitle(item, tag);
+			item = contentItemService.saveContentItem(item);
+			log.info("created new content item for non-existant tag");
+		}
+		
+		return item;
+	}
 	
+	private ContentItem _createStructuredTagFromList(List<ContentItem> list) {
+		if (list.size() == 0) {
+			return tripleStore.createUriResource(Constants.NS_RDF + "nil").getContentItem();
+		}
+		else {
+			
+			// does exist already?
+			StringBuilder sb = new StringBuilder();
+			sb.append('(');
+			for (ContentItem subTag : list) {
+				String title = subTag.getTitle();
+				if (sb.length() > 1) {
+					sb.append(',');
+				}
+				sb.append(title);
+			}
+			sb.append(')');
+			
+			ContentItem ret = contentItemService.getContentItemByTitle(sb.toString());
+			
+			if (ret != null) {
+				return ret;
+			}
+			else {
+			
+				List<ContentItem> restList = new LinkedList<ContentItem>();
+			
+				Iterator<ContentItem> i = list.iterator();
+				ContentItem first = i.next();
+				while(i.hasNext()) {
+					restList.add(i.next());
+				}
+			
+				ContentItem restItem = _createStructuredTagFromList(restList);
+				
+				ret = contentItemService.createContentItem();
+				ret.addType(tripleStore.createUriResource(Constants.NS_KIWI_CORE + "StructuredTag"));
+				ret.addType(tripleStore.createUriResource(Constants.NS_RDF + "List"));
+				contentItemService.updateTitle(ret, sb.toString());
+				
+				ret = contentItemService.saveContentItem(ret);
+				
+				tripleStore.createTriple(ret.getResource(), tripleStore.createUriResource(Constants.NS_RDF + "first"), first.getResource());
+				tripleStore.createTriple(ret.getResource(), tripleStore.createUriResource(Constants.NS_RDF + "rest"), restItem.getResource());
+				
+				return ret;
+			}
+		}
+	}
 	
-	
+	public ContentItem parseStructuredTag(Reader r) throws IOException {
+		
+		List<ContentItem> list = new LinkedList<ContentItem>();
+		
+		ContentItem ret = null;
+		int c;
+		
+		StringBuilder sb = new StringBuilder();
+		
+		while(true) {
+			c = r.read();
+			char cc = (char)c;
+			if (cc == ')' || c == -1) {
+				String label = sb.toString().trim();
+				if (label.length() > 0) {
+					list.add(parseBasicTag(label));
+				}
+				break;
+			}
+			else if (cc == ',') {
+				String label = sb.toString().trim();
+				if (label.length() > 0) {
+					list.add(parseBasicTag(label));
+				}
+				
+				sb = new StringBuilder();
+			}
+			else if (cc == '('){
+				ContentItem subItem = parseStructuredTag(r);
+				list.add(subItem);
+			}
+			else {
+				sb.append(cc);
+			}
+		}
+
+		ret = _createStructuredTagFromList(list);
+		
+/*		sb = new StringBuilder();
+		sb.append('(');
+		for (ContentItem subTag : list) {
+			String title = subTag.getTitle();
+			if (sb.length() > 1) {
+				sb.append(',');
+			}
+			sb.append(title);
+		}
+		sb.append(')');*/
+		
+		
+		return ret;
+	}
+	 
+	public ContentItem parseTag(String label) {		
+		try {
+			label = label.trim();
+			if (label.startsWith("(")) {
+				label = label.substring(1);
+				Reader r = new StringReader(label);
+				return parseStructuredTag(r);
+			}
+			else {
+				return parseBasicTag(label);
+			}
+		}
+		catch(IOException x) {
+			// should never happen
+			assert false;
+		}
+		
+		return null;
+	}
 }

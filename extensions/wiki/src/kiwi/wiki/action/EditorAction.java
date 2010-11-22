@@ -418,6 +418,12 @@ public class EditorAction implements Serializable {
     }
     
     private EditorModel getModel() {
+    	
+    	/*(if (state != null && state.getCurrentResource().getKiwiIdentifier() != currentContentItem.getKiwiIdentifier()) {
+    		state = null;
+    		initialized = false;
+    	}*/
+    	
     	if (state != null && initialized) {
     		return state;
     	}
@@ -703,6 +709,14 @@ public class EditorAction implements Serializable {
 		tagCloud = null;
 	}
 	
+	public KiWiResource getTaggedResource() {
+		return taggedResource;
+	}
+	
+	public List<KiWiTriple> getOutgoingTriples(KiWiResource resource) {
+		return getModel().getOutgoingTriples(resource);
+	}
+	
 	public void fragmentCreate() {
 		//TODO: parse the tags.
 		/*if (fragment != null) {
@@ -790,11 +804,13 @@ public class EditorAction implements Serializable {
 	public void addTag() {
 		if (taggedResource != null) {
 			updated = true;
-			String[] components = tagLabel.split(",");
+			/*String[] components = tagLabel.split(",");
 			for(String component : components) {
 				String label = component.trim();
 				addTag(label);
-			}
+			}*/
+			
+			addTag(tagLabel.trim());
 			
 			tagCloud = null;
 		}

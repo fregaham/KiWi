@@ -1,0 +1,59 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:c="http://java.sun.com/jstl/core"
+    xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+    xmlns:p="http://primefaces.prime.com.tr/ui"
+    template="layout/template.xhtml">
+
+    <ui:define name="links">
+        <link href="#{facesContext.externalContext.requestContextPath}/feed.seam?mode=MOSTRECENT&amp;format=RSS20" type="application/rss+xml" rel="alternate" title="Most Recently Changed" />
+        <link href="#{facesContext.externalContext.requestContextPath}/feed.seam?mode=COMMENTS&amp;format=RSS20" type="application/rss+xml" rel="alternate" title="Comments for #{currentContentItem.title}" />
+        <link href="#{facesContext.externalContext.requestContextPath}/activity-feed.seam?mode=ACTIVITIES&amp;format=RSS20" type="application/rss+xml" rel="alternate" title="Stream of Activities for #{currentContentItem.title}" />
+    </ui:define>
+
+
+<ui:define name="body">
+    <h1>ReReSearch Extension</h1>
+   
+   <!--  
+    <h:form id="rrs_search">
+    	<div>
+    		<h:inputText value="#{rrs.rrsDbSearchAction.query}"/>
+    		<h:commandButton action="#{rrs.rrsDbSearchAction.search}" value="Search"/>
+    	</div>
+    	
+    	<div>
+    		<ui:repeat value="#{rrs.rrsDbSearchAction.results}" var="p">
+    			<div><h:commandLink value="#{p.id} #{p.title}" action="#{rrs.displayAction.display(p.id)}"/></div>
+    		</ui:repeat>
+    	</div>
+    	
+    </h:form>-->
+    
+    <h:form id="rrs_home">
+    	<h:commandLink value="Upload PDF" action="upload"/> | 
+    	<!-- <h:commandLink value="Annotate" action="annotate"/> -->
+    	
+    	<h3>My Collection</h3>
+    	<ui:repeat value="#{rrs.importAction.listMyPublications()}" var="pub">
+    		<div>
+    			<h:commandLink value="#{pub.title}" action="#{rrs.importAction.goTo(pub)}">
+    				<s:conversationPropagation type="none"/>
+    			</h:commandLink>
+    			<!-- <s:link view="/home.xhtml" value="#{pub.title}" propagation="none">
+      				<f:param name="kiwiid" value="#{pub.kiwiIdentifier}"/>
+      			</s:link>-->
+      			imported by <h:outputText value="#{pub.author.login}"/>
+    		</div>
+    	</ui:repeat>
+    </h:form>
+    
+</ui:define>
+</ui:composition>

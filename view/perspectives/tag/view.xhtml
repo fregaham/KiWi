@@ -49,6 +49,25 @@
 				vertical-align: top;
 			}
 		</style>
+		
+		<p:panel header="RRS Contexts">
+		
+			<h3><h:outputText value="#{contentItem.title}"/></h3>
+			<ui:repeat var="tagged" value="#{rrs.annotationAction.listTaggedItems(contentItem)}">
+				<s:link view="/home.xhtml" value="#{tagged.title" propagation="none">
+      				<f:param name="kiwiid" value="#{tagged.kiwiIdentifier}"/>
+      			</s:link>
+			</ui:repeat>
+		
+			<ui:repeat var="tag" value="#{rrs.annotationAction.listRelatedStructuredTags(contentItem)}">
+				<h3><h:outputText value="#{tag.title}"/></h3>
+				<ui:repeat var="tagged" value="#{rrs.annotationAction.listTaggedItems(tag)}">
+					<s:link view="/home.xhtml" value="#{tagged.title" propagation="none">
+      					<f:param name="kiwiid" value="#{tagged.kiwiIdentifier}"/>
+      				</s:link>
+				</ui:repeat>
+			</ui:repeat>
+		</p:panel>
 
 		<p:panel header="Semantic Context">
 			<c:if test="#{kiwi.core.ui.tagPerspectiveAction.isSemanticTag(contentItem)}">

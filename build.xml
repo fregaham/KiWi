@@ -44,7 +44,7 @@
 
     <!-- set global properties for this build -->
     <property name="project.domain" value="default" />
-    <property name="project.name" value="KiWi" />
+    <property name="project.name" value="RRS" />
     <property name="project.version" value="1.0" />
     <property name="dist.dir" value="dist" />
     <property name="src.model.dir" value="src/model" />

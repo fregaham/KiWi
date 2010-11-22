@@ -331,7 +331,14 @@ public class SetupOntologiesAction implements Serializable {
 			demoThesaurus.setFormat(KiWiDataFormat.RDFXML);
 			demoThesaurus.setLoad(false);
 			setupOntologyList.add(demoThesaurus);
-
+			
+			OntologyBean rrs = new OntologyBean();
+			rrs.setName("ReReSearch Ontology");
+			rrs.setDescription("ReReSearch Ontology.");
+			rrs.setUri("rrs/publications.rdfxml");
+			rrs.setFormat(KiWiDataFormat.RDFXML);
+			rrs.setLoad(true);
+			setupOntologyList.add(rrs);
 		}
 	}
 

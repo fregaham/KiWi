@@ -114,11 +114,11 @@
     <pdf:document-store use-extensions="true" />
     
 
-
+<!--
     <web:multipart-filter create-temp-files="false" 
                           max-request-size="10000000" 
                           url-pattern="*.seam"/>   
-
+-->
     <!-- 
 	<cache:jboss-cache-provider configuration="META-INF/treecache.xml" />
 	-->

@@ -1,0 +1,14 @@
+
+KiWi -- Knowledge in a Wiki
+
+This is my clone of upstream SVN trunk.
+
+The lib/ and docs/ directories are not included, get them from
+http://code.google.com/p/kiwi/
+
+* Showcase: http://showcase.kiwi-project.eu/KiWi/wiki ; the latest demo setup of the KiWi system (optimised for firefox)
+* Issue tracking system: http://devel.kiwi-project.eu/jira
+* continuous integration server: http://devel.kiwi-project.eu/bamboo
+* source repository: http://fisheye.kiwi-project.eu
+* Code repository: http://code.google.com/p/kiwi/
+

@@ -39,9 +39,11 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.ejb.Stateless;
@@ -402,6 +404,32 @@ public class TaggingServiceImpl implements TaggingServiceLocal, TaggingServiceRe
 	}
 
 	@Override
+	public Set<ContentItem> addTagsByLabel(ContentItem item, Set<String> labels) {
+	    
+	    final Set<ContentItem> result = new HashSet<ContentItem>();
+        for(String label:labels){
+            label = label.trim();
+            ContentItem taggingItem = contentItemService.getContentItemByTitle(label);
+            if(taggingItem == null) {
+                // create new Content Item of type "tag" if the tag does not yet exist
+                taggingItem = contentItemService.createContentItem("content/"+label.toLowerCase().replace(" ","_")+"/"+UUID.randomUUID().toString());
+                taggingItem.addType(tripleStore.createUriResource(Constants.NS_KIWI_CORE+"Tag"));
+                contentItemService.updateTitle(taggingItem, label);
+                kiwiEntityManager.persist(taggingItem);
+                log.info("created new content item for non-existant tag");
+                result.add(taggingItem);
+            }
+
+            createTagging(label, item, taggingItem, currentUser);
+        }
+        entityManager.refresh(item);
+
+        Events.instance().raiseEvent("tagUpdate");
+        
+        return result;
+	}
+	
+	@Override
 	public void addTags(ContentItem item, String[] labels) {
 		for(String label:labels){
 			label = label.trim();
@@ -420,6 +448,29 @@ public class TaggingServiceImpl implements TaggingServiceLocal, TaggingServiceRe
 		entityManager.refresh(item);
 
 		Events.instance().raiseEvent("tagUpdate");
+	}
+	
+	@Override
+	public void addTagsByURI(ContentItem item, Set<String> uris) {
+        
+	    for(String uri:uris){
+            ContentItem taggingItem = contentItemService.getContentItemByUri(uri);
+            final String title = taggingItem.getTitle();
+            final String label = title == null ? "label" :  title;
+            if(taggingItem == null) {
+                // create new Content Item of type "tag" if the tag does not yet exist
+                taggingItem = contentItemService.createContentItem("content/"+label.toLowerCase().replace(" ","_")+"/"+UUID.randomUUID().toString());
+                taggingItem.addType(tripleStore.createUriResource(Constants.NS_KIWI_CORE+"Tag"));
+                contentItemService.updateTitle(taggingItem, label);
+                kiwiEntityManager.persist(taggingItem);
+                log.info("created new content item for non-existant tag");
+            }
+
+            createTagging(label, item, taggingItem, currentUser);
+        }
+        entityManager.refresh(item);
+
+        Events.instance().raiseEvent("tagUpdate");
 	}
 
 	@Override

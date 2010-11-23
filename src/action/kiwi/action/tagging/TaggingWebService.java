@@ -11,6 +11,7 @@ import java.util.StringTokenizer;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -47,7 +48,10 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.openrdf.query.algebra.Str;
+
+import sun.nio.cs.ext.SJIS;
 
 /**
  * WebService endpoint for tagging Path to the methods: [TaggingWS] =
@@ -198,7 +202,7 @@ public class TaggingWebService {
      * @param tags
      * @return
      */
-    @GET
+    @POST
     @Path("/addTags")
     @Produces("application/json")
     public Response addTags(@QueryParam("resource") String docUri,
@@ -218,13 +222,45 @@ public class TaggingWebService {
             return Response.status(Status.BAD_REQUEST).build();
         }
 
-        String[] tagLabels = tags.split(",");
+        final StringBuilder jsons = new StringBuilder(tags);
+        // removes the '[' 
+        jsons.deleteCharAt(0);
+        // removes the ']'
+        jsons.deleteCharAt(jsons.length() - 1);
+        
+        final Set<String> jsonURIS = new HashSet<String>();
+        final Set<String> jsonLabel = new HashSet<String>();
+        for (final StringTokenizer stk = new StringTokenizer(jsons.toString(), ","); 
+                stk.hasMoreElements(); ) {
+            final String next = stk.nextToken();
+            try {
+                final JSONObject jsonObject = new JSONObject(next);
+                final Object uri = jsonObject.get("uri");
+                if (uri != null) {
+                    jsonURIS.add(uri.toString().trim());
+                }
 
-        taggingService.addTags(item, tagLabels);
+                final Object label = jsonObject.get("label");
+                if (label != null) {
+                    jsonURIS.add(label.toString().trim());
+                }
+
+            } catch (JSONException e) {
+                log.error(e.getMessage(), e);
+            }
+        }
+
+        final Set<ContentItem> tagsByLabel =
+                taggingService.addTagsByLabel(item, jsonLabel);
+
+        taggingService.addTagsByURI(item, jsonLabel);
 
         final JSONTAddTagsListResults result = new JSONTAddTagsListResults();
         try {
-            result.addTags("200", null);
+            final String newTags = tagsByLabel.isEmpty()
+                ? null
+                : tagsByLabel.toString();
+            result.addTags("200", null, newTags);
         } catch (JSONException jException) {
             log.error(jException.getMessage(), jException);
         }
@@ -268,7 +304,7 @@ public class TaggingWebService {
 
         final JSONTAddTagsListResults result = new JSONTAddTagsListResults();
         try {
-            result.addTags("200", null);
+            result.addTags("200", null, null);
         } catch (JSONException jException) {
             log.error(jException.getMessage(), jException);
         }
@@ -322,20 +358,11 @@ public class TaggingWebService {
     @Produces("application/json")
     public Response searchTags(@QueryParam("q") String q) {
 
-        if (!q.contains(":")) {
-            final String msg = "The query " + q
-                    + " does not follow the syntax prefix:query.";
-            final IllegalArgumentException ex = new IllegalArgumentException(
-                    msg);
-            log.error(msg, ex);
-            throw ex;
-        }
+        final int indexOf = q.indexOf(":"); 
+        final String prefix = q.substring(0, indexOf).trim();
 
-        final String prefix = q.substring(0, q.indexOf(":")).trim();
-        final String query = q.substring(q.indexOf(":") + 1, q.length()).trim();
-        log.debug("Try to process #0:#1", prefix, query);
-
-        final boolean noQuery = query.length() == 0;
+        log.debug("Try to process #0", q);
+        final boolean noQuery = indexOf == -1;
         final Set<SKOSConcept> concepts;
         if (noQuery) {
             // this block if the search quiery looks like this : 
@@ -357,6 +384,7 @@ public class TaggingWebService {
                 concepts.addAll(allConcepts);
             }
         } else {
+            final String query = q.substring(indexOf + 1, q.length()).trim();
             // This pattern matches all the string that starts with the given
             // prefix.
             final String jpqlLikePattern = query + "%";

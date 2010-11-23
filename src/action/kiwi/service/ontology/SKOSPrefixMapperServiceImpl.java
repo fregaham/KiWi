@@ -102,9 +102,12 @@ public class SKOSPrefixMapperServiceImpl implements
                 ((KiWiUriResource) delegateTopConcept.getResource()).getUri();
 
         final boolean mapExists = getPrefix(uri) != null;
+        final String title = concept.getTitle();
         if (!mapExists) {
-            final String title = concept.getTitle();
             entityManager.persist(new SKOSToPrefixMapper(uri, topConceptURI,
+                    prefix, title, level));
+        } else {
+            entityManager.merge(new SKOSToPrefixMapper(uri, topConceptURI,
                     prefix, title, level));
         }
     }
@@ -241,6 +244,45 @@ public class SKOSPrefixMapperServiceImpl implements
     }
 
     @Override
+    public List<SKOSToPrefixMapper> getAllMappings(String topConceptUri, String prefix, int nestLevel) {
+        final Query query =
+            entityManager.createNamedQuery("select.skosMapForTopConceptPrefixAndLevel");
+        query.setParameter("parentURI", topConceptUri);
+        query.setParameter("level", nestLevel);
+        query.setParameter("prefix", prefix);
+        final List<SKOSToPrefixMapper> resultList = query.getResultList();
+
+        return resultList;
+    }
+    
+    @Override
+    public Set<SKOSConcept> getAllConcepts(String topConceptUri, String prefix, int nestLevel) {
+        final List<SKOSToPrefixMapper> prefixMappers =
+                getAllMappings(topConceptUri, prefix, nestLevel);
+        
+        final Set<SKOSConcept> result = new HashSet<SKOSConcept>();
+        for (SKOSToPrefixMapper mapper : prefixMappers) {
+            final String uri = mapper.getUri();
+            final ContentItem item =
+                    contentItemService.getContentItemByUri(uri);
+            final SKOSConcept facade =
+                    kiwiEntityManager.createFacade(item, SKOSConcept.class);
+            result.add(facade);
+        }
+
+        return result;
+    }
+
+
+    @Override
+    public List<SKOSToPrefixMapper> getAllMappings(SKOSConcept topConcept, String prefix, int nestLevel) {
+        final ContentItem delegate = topConcept.getDelegate();
+        final String uri = ((KiWiUriResource) delegate.getResource()).getUri();
+
+        return getAllMappings(uri, prefix,nestLevel);
+    }
+
+    @Override
     public void removeAllMapping() {
         final Query query =
                 entityManager.createNamedQuery("delete.allSkosMaps");
@@ -256,11 +298,11 @@ public class SKOSPrefixMapperServiceImpl implements
                 entityManager.createNamedQuery("select.skosTopConceptLevel");
             query.setParameter("parentURI", uri);
             final Integer singleResult = (Integer) query.getSingleResult();
-            return singleResult.intValue();
+            // FIXME : document this, I mean the -1.
+            return singleResult == null ? -1 : singleResult.intValue();
         } catch (NoResultException e) {
-            // FIXME : document this. 
+            // FIXME : document this, I mean the -1. 
             return -1;
         }
     }
-
 }

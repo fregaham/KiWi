@@ -49,13 +49,11 @@ import java.util.Map;
 
 import kiwi.api.content.ContentItemService;
 import kiwi.api.entity.KiWiEntityManager;
-import kiwi.api.informationextraction.Extractlet;
 import kiwi.api.informationextraction.KiWiGATEService;
 import kiwi.api.informationextraction.LabelService;
 import kiwi.api.triplestore.TripleStore;
 import kiwi.api.user.UserService;
 import kiwi.model.Constants;
-import kiwi.model.content.ContentItem;
 import kiwi.model.content.TextContent;
 import kiwi.model.informationextraction.Context;
 import kiwi.model.informationextraction.InstanceEntity;
@@ -71,6 +69,14 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 
+/**
+ * German extractlet. It uses the annotation created by the GATE Durm plugin. 
+ * If the durm plugin is not installed, no annotations will be produced for 
+ * german texts. 
+ * 
+ * @author Marek Schmidt
+ *
+ */
 @Name("kiwi.informationextraction.deutschGateEntityExtractlet")
 @Scope(ScopeType.STATELESS)
 public class DeutschGateEntityExtractlet extends AbstractExtractlet {
@@ -300,7 +306,6 @@ public class DeutschGateEntityExtractlet extends AbstractExtractlet {
 	}
 	
 	private Collection<Suggestion> extractContentItemsTitles (KiWiResource context, TextContent tc, gate.Document gateDoc) {
-		ContentItemService contentItemService = (ContentItemService)Component.getInstance("contentItemService");
 		gate.AnnotationSet tokenAS = gateDoc.getAnnotations().get("Token");
 		List<Annotation> lookups = sortAS (gateDoc.getAnnotations().get("Lookup"));
 		gate.AnnotationSet lemmaAS = gateDoc.getAnnotations().get("Lemma");

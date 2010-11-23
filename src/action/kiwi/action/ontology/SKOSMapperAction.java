@@ -56,9 +56,6 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
-import org.jboss.seam.security.crypto.PRF;
-import org.jboss.seam.transaction.Transaction;
-import org.jboss.seam.transaction.UserTransaction;
 
 
 /**

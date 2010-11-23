@@ -34,6 +34,7 @@
 package kiwi.api.tagging;
 
 import java.util.List;
+import java.util.Set;
 
 import kiwi.model.content.ContentItem;
 import kiwi.model.kbase.KiWiResource;
@@ -228,4 +229,10 @@ public interface TaggingService {
 	
 	
 	public ContentItem parseTag(String tag);
+
+
+    void addTagsByURI(ContentItem item, Set<String> uris);
+
+
+    Set<ContentItem> addTagsByLabel(ContentItem item, Set<String> labels);	
 }

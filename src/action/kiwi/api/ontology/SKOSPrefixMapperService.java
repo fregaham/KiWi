@@ -78,4 +78,13 @@ public interface SKOSPrefixMapperService {
     int getSKOSNestigLevel(SKOSConcept concept);
 
     List<SKOSToPrefixMapper> getAllMappings(int nestLevel);
+
+    List<SKOSToPrefixMapper> getAllMappings(SKOSConcept topConcept,
+            String prefix, int nestLevel);
+
+    List<SKOSToPrefixMapper> getAllMappings(String topConceptUri,
+            String prefix, int nestLevel);
+
+    Set<SKOSConcept> getAllConcepts(String topConceptUri, String prefix,
+            int nestLevel);
 }

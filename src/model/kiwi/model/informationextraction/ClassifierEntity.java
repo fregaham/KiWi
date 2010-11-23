@@ -53,16 +53,19 @@ import org.hibernate.annotations.Index;
 import org.hibernate.annotations.OptimisticLockType;
 
 
+/**
+ * Stores the trained classifier.  A ClassifierEntity is associated with a 
+ * resource and an Extractlet.
+ * 
+ * @author Marek Schmidt
+ *
+ */
 @Entity
 @org.hibernate.annotations.Entity(optimisticLock=OptimisticLockType.VERSION)
 @NamedQueries({	
 	@NamedQuery(name  = "kiwi.informationextraction.informationExtractionService.listClassifiers",
 				query = "select c " +
 						"from kiwi.model.informationextraction.ClassifierEntity c "),
-/*	@NamedQuery(name  = "kiwi.informationextraction.informationExtractionService.listClassifiersByInstanceType",
-						query = "select c " +
-						"from kiwi.model.informationextraction.ClassifierEntity c " +
-						"where c.instanceType = :type"),*/
 	@NamedQuery(name  = "kiwi.informationextraction.informationExtractionService.listClassifiersByExtractletName",
 						query = "select c " +
 						"from kiwi.model.informationextraction.ClassifierEntity c " +
@@ -80,40 +83,14 @@ public class ClassifierEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 	
-	/*
-	@Deprecated
-	private Classifier malletClassifier;
-	*/
-	
+	/**
+	 * Serialized trained Mallet classifier  
+	 */
 	private Serializable mallet;
 	
-	/*
-	@Deprecated
-	private Alphabet alphabet;
-	
-	@Deprecated
-	private LabelAlphabet labelAlphabet;
-	*/
-	
-	// NOTE: experiment only
-	// private NaiveBayesClassifier nbClassifier;
-
-	/*
-	public NaiveBayesClassifier getNaiveBayesClassifier() {
-		return nbClassifier;
-	}
-	
-	public void setNaiveBayesClassifier(NaiveBayesClassifier nbClassifier) {
-		this.nbClassifier = nbClassifier;
-	}
-	*/
-	
-	/*
-	@Deprecated
-	@ManyToOne(cascade = {CascadeType.REFRESH}, fetch=FetchType.LAZY)
-	private InstanceExtractorEntity instanceType;
-	*/
-	
+	/**
+	 * The component name of the associated extractlet.
+	 */
 	@Basic
 	@Index(name="ie_classifierentity_extractletname")
 	private String extractletName;
@@ -130,8 +107,8 @@ public class ClassifierEntity implements Serializable {
 	private Long version;
 	
 	/**
-	 * The resource that is somehow related to this classifier (it can be tag, type, ...)
-	 * */
+	 * The resource that is somehow related to this classifier (it can be a tag, type, etc.)
+	 */
 	@ManyToOne(cascade = {CascadeType.REFRESH}, fetch=FetchType.LAZY)
     @Index(name="ie_classifierentity_resource")
     private KiWiResource resource;
@@ -143,44 +120,6 @@ public class ClassifierEntity implements Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-
-	/*
-	public Classifier getMalletClassifier() {
-		return malletClassifier;
-	}
-
-	public void setMalletClassifier(Classifier malletClassifier) {
-		this.malletClassifier = malletClassifier;
-	}
-	
-	public Alphabet getMalletAlphabet() {
-		return alphabet;
-	}
-	
-	public void setMalletAlphabet(Alphabet alphabet) {
-		this.alphabet = alphabet;
-	}*
-
-	@Deprecated
-	public LabelAlphabet getMalletLabelAlphabet() {
-		return labelAlphabet;
-	}
-	
-	@Deprecated
-	public void setMalletLabelAlphabet(LabelAlphabet labelAlphabet) {
-		this.labelAlphabet = labelAlphabet;
-	}
-
-	
-	@Deprecated
-	public void setInstanceType(InstanceExtractorEntity type) {
-		this.instanceType = type;
-	}
-
-	@Deprecated
-	public InstanceExtractorEntity getInstanceType() {
-		return instanceType;
-	}*/
 
 	public void setResource(KiWiResource resource) {
 		this.resource = resource;

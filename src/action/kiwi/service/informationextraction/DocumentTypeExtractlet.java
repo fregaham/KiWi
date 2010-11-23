@@ -1,3 +1,37 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * Copyright (c) 2008-2009, The KiWi Project (http://www.kiwi-project.eu)
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without 
+ * modification, are permitted provided that the following conditions are met:
+ * - Redistributions of source code must retain the above copyright notice, 
+ *   this list of conditions and the following disclaimer.
+ * - Redistributions in binary form must reproduce the above copyright notice, 
+ *   this list of conditions and the following disclaimer in the documentation 
+ *   and/or other materials provided with the distribution.
+ * - Neither the name of the KiWi Project nor the names of its contributors 
+ *   may be used to endorse or promote products derived from this software 
+ *   without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+ * POSSIBILITY OF SUCH DAMAGE.
+ * 
+ * Contributor(s):
+ * 
+ * 
+ */
+
 package kiwi.service.informationextraction;
 
 import gate.Annotation;
@@ -6,28 +40,22 @@ import gate.Document;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import kiwi.api.tagging.TaggingService;
 import kiwi.api.triplestore.TripleStore;
 import kiwi.exception.NamespaceResolvingException;
 import kiwi.model.Constants;
-import kiwi.model.content.ContentItem;
 import kiwi.model.content.TextContent;
 import kiwi.model.informationextraction.ClassifierEntity;
 import kiwi.model.informationextraction.Context;
 import kiwi.model.informationextraction.Example;
 import kiwi.model.informationextraction.InstanceEntity;
 import kiwi.model.informationextraction.Suggestion;
-import kiwi.model.kbase.KiWiNode;
 import kiwi.model.kbase.KiWiResource;
-import kiwi.model.tagging.Tag;
-import kiwi.model.user.User;
 
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
@@ -35,12 +63,17 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.log.Log;
 
+/**
+ * Exactly the same as the DocumentTagExtractlet, except this one suggest types, instead of tags.
+ * 
+ * @see DocumentTagExtractlet
+ * @author Marek Schmidt
+ *
+ */
 @Name("kiwi.informationextraction.documentTypeExtractlet")
 @Scope(ScopeType.STATELESS)
-//@Transactional
 public class DocumentTypeExtractlet extends AbstractMLExtractlet {
 
 	@Logger
@@ -93,6 +126,7 @@ public class DocumentTypeExtractlet extends AbstractMLExtractlet {
 		Query q = entityManager.createNamedQuery("kiwi.informationextraction.informationExtractionService.listInstancesByExtractletName");
 		q.setParameter("name", name);
 			
+		@SuppressWarnings("unchecked")
 		Collection<InstanceEntity> instances = q.getResultList();
 		for (InstanceEntity instance : instances) {
 			
@@ -114,20 +148,6 @@ public class DocumentTypeExtractlet extends AbstractMLExtractlet {
 				Example example = new Example();
 				example.setSuggestion(suggestion);
 				example.setType(Example.POSITIVE);
-				
-				/*TaggingService taggingService = (TaggingService)Component.getInstance("taggingService");
-				
-				User user = null;
-				List<Tag> tags = taggingService.getTags(instance.getSourceResource().getContentItem());
-				for (Tag tag : tags) {
-					if (tag.getTaggingResource().getId().equals(taggingResourceContentItemId)) {
-						user = tag.getTaggedBy();
-					}
-				}
-				
-				if (user == null) {
-					log.warn("No author found for tagging for instance #0", instance.getId());
-				}*/
 				
 				example.setUser(instance.getSourceResource().getContentItem().getAuthor());
 				

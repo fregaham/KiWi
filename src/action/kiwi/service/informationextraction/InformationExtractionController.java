@@ -54,7 +54,6 @@ import org.jboss.seam.security.Identity;
 @Scope(ScopeType.STATELESS)
 public class InformationExtractionController {
 	
-//	@Transactional
 	@Asynchronous
 	@Observer(value=KiWiEvents.CONTENT_UPDATED+"AsyncIE")
 	public void onContentUpdatedAsyncIE(ContentItem item, User currentUser, Identity identity) {
@@ -69,48 +68,16 @@ public class InformationExtractionController {
 		}
 	}
 	
-//	@Transactional
 	@Asynchronous
 	@Observer(value=KiWiEvents.ACTIVITY_ADDTAG+"AsyncIE")
 	public void onAddTagAsyncIE(User taggingUser, Tag tag, User currentUser, Identity identity) {
-		/*
-		CurrentUserFactory currentUserFactory = 
-			(CurrentUserFactory) Component.getInstance("currentUserFactory");
-		currentUserFactory.setCurrentUser(currentUser);
-		
-		InformationExtractionService service = (InformationExtractionService)Component.getInstance("kiwi.informationextraction.informationExtractionService");
-		service.createPositiveExampleForTagging(tag);
-		
-		if (tag.getTaggingResource() == null) {
-			return;
-		}
-			
-		Collection<ClassifierEntity> classifiers = service.getClassifiersForResource(tag.getTaggingResource().getResource());
-		for (ClassifierEntity classifier : classifiers) {
-			service.trainAndSuggest(classifier);
-		}*/
+		// TODO 
 	}
 	
-//	@Transactional
 	@Asynchronous
 	@Observer(value=KiWiEvents.ACTIVITY_REMOVETAG+"AsyncIE")
 	public void onRemoveTagAsyncIE(User taggingUser, Tag tag, User currentUser, Identity identity) {
-		/*
-		CurrentUserFactory currentUserFactory = 
-			(CurrentUserFactory) Component.getInstance("currentUserFactory");
-		currentUserFactory.setCurrentUser(currentUser);
-		
-		InformationExtractionService service = (InformationExtractionService)Component.getInstance("kiwi.informationextraction.informationExtractionService");
-		service.createNegativeExampleForTagging(tag);
-		
-		if (tag.getTaggingResource() == null) {
-			return;
-		}
-		
-		Collection<ClassifierEntity> classifiers = service.getClassifiersForResource(tag.getTaggingResource().getResource());
-		for (ClassifierEntity classifier : classifiers) {
-			service.trainAndSuggest(classifier);
-		}*/
+		// TODO
 	}
 	
 	
@@ -151,15 +118,5 @@ public class InformationExtractionController {
 		KiWiGATEService kiwiGateService = (KiWiGATEService)Component.getInstance("kiwi.informationextraction.gateService");
 	
 		kiwiGateService.addEntity(ci);
-		
-		/*if (!enabled) return;
-		
-		for(Label label : labelService.getLabels(ci)) {
-			
-			Long id = ci.getResource().getId();
-			Lookup l = new Lookup("terms", "ontology", Long.toHexString(id), "english");
-			
-			contentItemTitlesGazetteer.add(label.getString(), l);
-		}*/
 	}
 }

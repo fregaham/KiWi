@@ -359,7 +359,9 @@ public class TaggingWebService {
     public Response searchTags(@QueryParam("q") String q) {
 
         final int indexOf = q.indexOf(":"); 
-        final String prefix = q.substring(0, indexOf).trim();
+        final String prefix = indexOf == -1 
+            ? q.trim()
+            : q.substring(0, indexOf).trim();
 
         log.debug("Try to process #0", q);
         final boolean noQuery = indexOf == -1;

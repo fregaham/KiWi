@@ -62,24 +62,27 @@ import kiwi.service.transaction.KiWiSynchronizationImpl;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.async.Asynchronous;
 import org.jboss.seam.core.Events;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.transaction.Transaction;
 
+/**
+ * Stores and indexes content item labels. Its purpose is to also index those 
+ * labels that would not be otherwise indexed (such as alternative labels for 
+ * SKOS concepts, or, potentially, link titles from the incoming links, etc.)
+ * 
+ * @author Marek Schmidt
+ *
+ */
 @Stateless
 @Name("kiwi.informationextraction.labelService")
 @Scope(ScopeType.STATELESS)
 @TransactionManagement(TransactionManagementType.BEAN)
 public class LabelServiceImpl implements LabelService {
 
-	@Logger
-	private Log log;
-	
 	@In
 	EntityManager entityManager;
 	
@@ -128,7 +131,6 @@ public class LabelServiceImpl implements LabelService {
 	
 	@Override
 	public void createLabels(ContentItem ci) {
-		List<Label> ret = new LinkedList<Label>();
 		try {
 			if(Transaction.instance().isActive()) {
 				Transaction.instance().commit();
@@ -201,8 +203,6 @@ public class LabelServiceImpl implements LabelService {
 	
 	@Asynchronous
 	@Observer(value=KiWiEvents.TITLE_UPDATED+"Async")
-//	@Transactional
-//	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void onTitleEvent(ContentItem item) {
 		deleteLabels(item);
 		createLabels(item);			

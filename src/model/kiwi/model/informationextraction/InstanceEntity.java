@@ -88,10 +88,6 @@ import org.hibernate.annotations.OptimisticLockType;
 		@NamedQuery(name  = "kiwi.informationextraction.informationExtractionService.deleteInstancesBySourceTextContent",
 					query = "delete from kiwi.model.informationextraction.InstanceEntity i " +
 							"where i.sourceTextContent.id = :contentid"),
-		/*@NamedQuery(name  = "kiwi.informationextraction.informationExtractionService.listInstancesBySourceResourceAndInstanceType",
-					query = "select i from kiwi.model.informationextraction.InstanceEntity i " +
-							"where i.sourceResource.id = :resourceid " +
-							"  and i.instanceType = :type"),*/
 		@NamedQuery(name  = "kiwi.informationextraction.informationExtractionService.listInstancesBySourceResourceAndExtractletName",
 					query = "select i from kiwi.model.informationextraction.InstanceEntity i " +
 							"where i.sourceResource.id = :resourceid " +
@@ -100,9 +96,6 @@ import org.hibernate.annotations.OptimisticLockType;
 					query = "select i from kiwi.model.informationextraction.InstanceEntity i " +
 							"where i.sourceTextContent.id = :contentid " +
 							"  and i.extractletName = :name"),
-		/*@NamedQuery(name  = "kiwi.informationextraction.informationExtractionService.listInstancesByInstanceType",
-					query = "select i from kiwi.model.informationextraction.InstanceEntity i " +
-						    "where  i.instanceType = :type"),*/
 		@NamedQuery(name  = "kiwi.informationextraction.informationExtractionService.listInstancesByExtractletName",
 					query = "select i from kiwi.model.informationextraction.InstanceEntity i " +
 						    "where  i.extractletName = :name")
@@ -115,10 +108,6 @@ public class InstanceEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-	/*@Deprecated
-	@Lob
-	private cc.mallet.types.Instance malletInstance;*/
-	
 	@Transient
 	private Collection<String> features;
 	
@@ -143,11 +132,6 @@ public class InstanceEntity implements Serializable {
 	@ManyToOne(cascade = {CascadeType.REFRESH}, fetch=FetchType.LAZY)
 	@Index(name="ie_instanceentity_sourcetextcontent")
 	private TextContent sourceTextContent;
-	
-	/*
-	@Deprecated
-	@ManyToOne(cascade = {CascadeType.REFRESH}, fetch=FetchType.LAZY)
-	private InstanceExtractorEntity instanceType;*/
 	
 	@Basic
 	@Index(name="ie_instanceentity_extractletname")
@@ -188,18 +172,6 @@ public class InstanceEntity implements Serializable {
 		this.id = id;
 	}
 
-	/*
-	@Deprecated
-	public cc.mallet.types.Instance getMalletInstance() {
-		return malletInstance;
-	}
-
-	@Deprecated
-	public void setMalletInstance(cc.mallet.types.Instance malletInstance) {
-		this.malletInstance = malletInstance;
-	}
-	*/
-
 	public Context getContext() {
 		return context;
 	}
@@ -210,7 +182,7 @@ public class InstanceEntity implements Serializable {
 	}
 	
 	/**
-	 * Whatever the extractlet wants (such as, canonical representation of a literal value for datatype extractlets...)
+	 * Whatever the extractlet wants (such as, canonical representation of a literal value for datatype extractlets)
 	 */
 	private String value;
 	
@@ -237,17 +209,6 @@ public class InstanceEntity implements Serializable {
 	public void setSourceTextContent(TextContent sourceTextContent) {
 		this.sourceTextContent = sourceTextContent;
 	}
-
-	/*
-	@Deprecated
-	public void setInstanceType(InstanceExtractorEntity type) {
-		this.instanceType = type;
-	}
-
-	@Deprecated
-	public InstanceExtractorEntity getInstanceType() {
-		return instanceType;
-	}*/
 
 	/**
 	 * @param version the version to set

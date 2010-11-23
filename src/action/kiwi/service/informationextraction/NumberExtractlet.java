@@ -79,6 +79,10 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 
 /**
+ * This ML extractlet extracts integer datatype properties. It produces instances 
+ * for all the numbers in the text, and assigns features from a small window 
+ * around the instance. You can assign this extractlet to integer datatype
+ * properties, such as dollar figures, year dates, measures, and so on.
  * 
  * @author Marek Schmidt
  *

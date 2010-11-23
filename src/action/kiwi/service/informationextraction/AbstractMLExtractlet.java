@@ -115,16 +115,6 @@ public abstract class AbstractMLExtractlet extends AbstractExtractlet {
 			ret.addAll(suggestions);
 		}
 		
-		/*for (InstanceEntity instance : instances) {
-			for (ClassifierEntity classifier : classifiers) {
-				
-				 Suggestion suggestion = classifyInstance(classifier, instance);
-				 if (suggestion != null) {
-					 ret.add(suggestion);
-				 }
-			}
-		}*/
-		
 		return ret;
 	}
 	
@@ -149,7 +139,6 @@ public abstract class AbstractMLExtractlet extends AbstractExtractlet {
 		Logger log = Logger.getLogger("AbstractMLExtractlet");
 		log.info("updateSuggestions");
 		
-		// EntityManager entityManager = (EntityManager)Component.getInstance("entityManager");
 		entityManager.setFlushMode(FlushModeType.COMMIT);
 
 		if (classifier.getMallet() == null) {
@@ -157,7 +146,6 @@ public abstract class AbstractMLExtractlet extends AbstractExtractlet {
 			return;
 		}
 		
-		//NaiveBayesClassifier nbc = classifier.getNaiveBayesClassifier();
 		Classifier malletClassifier = (Classifier)classifier.getMallet();
 		Pipe instancePipe = malletClassifier.getInstancePipe();
 		
@@ -168,13 +156,6 @@ public abstract class AbstractMLExtractlet extends AbstractExtractlet {
 		assert alphabet != null;
 		assert labelAlphabet != null;
 		assert malletClassifier != null;
-		/*
-		ArrayList<Pipe> featurePipeList = new ArrayList<Pipe>();
-		featurePipeList.add(new TokenSequence2FeatureSequence(alphabet));
-		featurePipeList.add(new FeatureSequence2FeatureVector());
-		 
-		Pipe featurePipe = new SerialPipes(featurePipeList);
-		featurePipe.setTargetProcessing(false);*/
 		
 		Label posLabel = labelAlphabet.lookupLabel("+");
 		
@@ -190,11 +171,6 @@ public abstract class AbstractMLExtractlet extends AbstractExtractlet {
 				tokens.add(new Token(feature));
 			}
 			
-			//Instance malletInstance = new Instance(tokens, null, null, null);
-			//malletInstance = featurePipe.instanceFrom(malletInstance);
-			//malletInstance = instancePipe.instanceFrom(malletInstance);
-			
-			// float nbcScore = (float)nbc.classify(features, 0);
 			Classification malletClassification = malletClassifier.classify(tokens);
 			Labeling malletLabeling = malletClassification.getLabeling();
 			float malletScore = (float)malletLabeling.value(posLabel);
@@ -205,7 +181,6 @@ public abstract class AbstractMLExtractlet extends AbstractExtractlet {
 		}
 		
 		log.info("updateSuggestions close");
-//		entityManager.flush();
 	}
 	
 	@Override
@@ -222,42 +197,8 @@ public abstract class AbstractMLExtractlet extends AbstractExtractlet {
 		updateSuggestions(classifier, ret);
 		
 		return ret;
-		
-		// printClassifier(classifier);
-		
-		// class 0 is always the "true" one.
-		/*float score = (float)classifier.getNaiveBayesClassifier().classify(getInstanceFeatures(instance), 0);
-		
-		Suggestion suggestion = generateSuggestion (instance, classifier);
-		suggestion.setScore(score);
-		
-		return suggestion;*/
 	}
-	
-/*	private void printClassifier(ClassifierEntity classifier) {
-		Logger log = Logger.getLogger("AbstractMLExtractlet");
-		log.info("classifier:");
-		log.info("  naiveBayesClassifier:");
-		if (classifier.getNaiveBayesClassifier() != null) {
-			
-			
-			for (Integer klass : classifier.getNaiveBayesClassifier().features.keySet()) {
-				log.info("    klass " + klass);
-				log.info("      logprior " + classifier.getNaiveBayesClassifier().logpriors.get(klass));
-				log.info("      features:");
-				for (String feature : classifier.getNaiveBayesClassifier().features.get(klass)) {
-					log.info("        " + feature);
-				}
-				log.info("      loglikelihoods:");
-				for (Map.Entry<String, Double> entry : classifier.getNaiveBayesClassifier().loglikelihoods.get(klass).entrySet()) {
-					log.info("        " + entry.getKey() + " " + entry.getValue());
-				}
-			}			
-		}
-		else {
-			log.info("    null");
-		}
-	}*/
+
 	
 	@Override
 	public void trainClassifier(ClassifierEntity classifier) {
@@ -273,16 +214,8 @@ public abstract class AbstractMLExtractlet extends AbstractExtractlet {
 		LabelAlphabet labelAlphabet = new LabelAlphabet();
 		labelAlphabet.lookupLabel("+", true);
 		labelAlphabet.lookupLabel("-", true);
-					
-		//ArrayList<Pipe> labelPipeList = new ArrayList<Pipe>();
-		//labelPipeList.add(new Target2Label(labelAlphabet));
-		
-		//Pipe labelPipe = new SerialPipes(labelPipeList);
 		
 		ArrayList<Pipe> featurePipeList = new ArrayList<Pipe>();
-		//Pattern tokenPattern =
-        //    Pattern.compile("\\S+");
-		// featurePipeList.add(new CharSequence2TokenSequence(tokenPattern));
 		featurePipeList.add(new TokenSequence2FeatureSequence(instanceAlphabet));
 		featurePipeList.add(new FeatureSequence2FeatureVector());
 		featurePipeList.add(new Target2Label(labelAlphabet));
@@ -301,14 +234,9 @@ public abstract class AbstractMLExtractlet extends AbstractExtractlet {
 		@SuppressWarnings("unchecked")
 		Collection<Example> examples = q.getResultList();
 		for (Example x : examples) {
-			
-			// Only examples of same instance type as the classifier can be considered... 
-			//if (x.getInstance().getInstanceType().equals(classifier.getInstanceType())) {
-			
+						
 			InstanceEntity instanceEntity = x.getSuggestion().getInstance();
 			Collection<String> features = featureStore.get(instanceEntity.getExtractletName(), instanceEntity.getId());
-			
-			
 			
 			TokenSequence tokens = new TokenSequence();
 			for (String feature : features) {
@@ -316,7 +244,6 @@ public abstract class AbstractMLExtractlet extends AbstractExtractlet {
 			}
 			
 			Instance malletInstance = new Instance(tokens, null, null, null);
-			//malletInstance = featurePipe.instanceFrom(malletInstance);
 			
 			if (x.getType() == Example.POSITIVE) {
 				malletInstance.setTarget("+");
@@ -339,40 +266,7 @@ public abstract class AbstractMLExtractlet extends AbstractExtractlet {
 		NaiveBayes malletClassifier = trainer.train(ilist);
 
 		classifier.setMallet(malletClassifier);
-		//classifier.setMalletAlphabet(instanceAlphabet);
-		//classifier.setMalletLabelAlphabet(labelAlphabet);
-		
-		/*
-		NaiveBayesClassifier nbc = new NaiveBayesClassifier();
-				
-		for (int i = 0; i <= 1; ++i) {
-			List<String> features = new LinkedList<String>();
-			Map<String, Double> loglikelihoods = new HashMap<String, Double> ();
-			double logprior = malletClassifier.getPriors().logProbability(i);
-			
-			Multinomial.Logged multinomial = malletClassifier.getMultinomials()[i];
-			
-			for (int j = 0; j < multinomial.size(); ++j) {
-				int location = multinomial.location(j);
-				double value = multinomial.value(j);
-				
-				String t = (String)instanceAlphabet.lookupObject(location);
-				loglikelihoods.put(t, value);
-				features.add(t);
-			}
-			
-			
-			nbc.features.put(i, features);
-			nbc.loglikelihoods.put(i, loglikelihoods);
-			nbc.logpriors.put(i, logprior);
-		}
-		*/
-		
-		// classifier.setNaiveBayesClassifier(nbc);
 		
 		log.info("trainClassifier end");
-		
-//		entityManager.flush();
-		// printClassifier(classifier);
 	}
 }

@@ -64,8 +64,10 @@ public class DkmsContentRetrievalAction implements Serializable {
 	private static final int PAGE_SIZE = 10;
 
 	private KiWiUriResource bigIdeaResource;
+	private KiWiUriResource representationTypeResource;
 	
 	private List<KiWiFacet<KiWiResource>> bigIdeaFacets;
+	private List<KiWiFacet<KiWiResource>> representationTypeFacets;
 	
 	private List<KiWiFacet<KiWiResource>> relevantTypes;
 	
@@ -85,8 +87,10 @@ public class DkmsContentRetrievalAction implements Serializable {
 	private OntologyService ontologyService;
 	
 	private Map<String, Set<String>> bigIdeaMap; 
+	private Map<String, Set<String>> representationTypeMap; 
 		
 	private Set<KiWiUriResource> selectedBigIdeas;
+	private Set<KiWiUriResource> selectedRepresentationTypes;
 	
 	private Set<KiWiUriResource> selectedTypes;
 		
@@ -98,24 +102,36 @@ public class DkmsContentRetrievalAction implements Serializable {
 		order = "desc";
 		searchResults = new KiWiSearchResults();
 		
-		List<KiWiProperty> res = ontologyService.listDatatypePropertiesByName("Big Idea");
-		//List<KiWiProperty> res = ontologyService.listDatatypePropertiesByName("Representation Type");
+		List<KiWiProperty> resBI = ontologyService.listDatatypePropertiesByName("Big Idea");
+		List<KiWiProperty> resRT = ontologyService.listDatatypePropertiesByName("Representation Type");
 		
-		log.info(res == null?"facet is null":"facet is not null");
+		log.info(resBI == null?"facet is null":"facet is not null");
+		log.info(resRT == null?"facet is null":"facet is not null");
 		
-		if( res.isEmpty() ) bigIdeaResource = null;
-		else bigIdeaResource = ((KiWiUriResource)res.get(0).getResource());
+		if( resBI.isEmpty() ) bigIdeaResource = null;
+		else bigIdeaResource = ((KiWiUriResource)resBI.get(0).getResource());
+		
+		if( resRT.isEmpty() ) representationTypeResource = null;
+		else representationTypeResource = ((KiWiUriResource)resRT.get(0).getResource());
 		
 		log.info(bigIdeaResource.getLabel());
 		log.info(bigIdeaResource == null?"bigIdeaResource is null":"bigIdeaResource is not null");
-		log.info(res == null || res.isEmpty()?"res is null":"res is not null");
+		
+		log.info(representationTypeResource.getLabel());
+		log.info(representationTypeResource == null?"representationTypeResource is null":"representationTypeResource is not null");
+		
+		log.info(resBI == null || resBI.isEmpty()?"res is null":"res is not null");
+		log.info(resRT == null || resRT.isEmpty()?"res is null":"res is not null");
 		
 		bigIdeaFacets = new LinkedList<KiWiFacet<KiWiResource>>();
+		representationTypeFacets = new LinkedList<KiWiFacet<KiWiResource>>();
 		relevantTypes = new LinkedList<KiWiFacet<KiWiResource>>();
 		
 		bigIdeaMap = new HashMap<String, Set<String>>();
+		representationTypeMap = new HashMap<String, Set<String>>();
 		
 		selectedBigIdeas = new HashSet<KiWiUriResource>();
+		selectedRepresentationTypes = new HashSet<KiWiUriResource>();
 		selectedTypes = new HashSet<KiWiUriResource>();
 		
 		return "search";
@@ -125,14 +141,18 @@ public class DkmsContentRetrievalAction implements Serializable {
 	public String search() {
 		log.info(fullquery);
 		clear();
-		return run(null);
+		runBigIdeas(null);
+		runRepresentationTypes(null);
+		return "search";
 	}
 	
 	public String searchAll() {
 		fullquery = "*";
 		log.info(fullquery);
 		clear();
-		return run(null);
+		runBigIdeas(null);
+		runRepresentationTypes(null);
+		return "search";
 	}
 	
 	
@@ -174,13 +194,15 @@ public class DkmsContentRetrievalAction implements Serializable {
 	}
 
 
-	private String run(Map<String, Set<String>> bigIdeaMap) {
+	private String runBigIdeas(Map<String, Set<String>> bigIdeaMap) {
 		try {			
-			KiWiSearchCriteria ksc = getCriteria();
+			KiWiSearchCriteria ksc = getBigIdeasCriteria();
 			
 			//bigIdea
 			if(bigIdeaMap != null)
 				ksc.setRdfObjectProperties(bigIdeaMap);
+			
+			
 			//type
 		//	if(type != null){
 				
@@ -211,6 +233,7 @@ public class DkmsContentRetrievalAction implements Serializable {
 			//set status facets
 			if(searchResults != null) {
 				bigIdeaFacets = buildBigIdeaFacet();
+				
 				relevantTypes = buildRelevantTypes();
 			}
 			else Collections.emptyList();
@@ -221,16 +244,63 @@ public class DkmsContentRetrievalAction implements Serializable {
 		return "search";
 	}
 	
+	
+	private String runRepresentationTypes(Map<String, Set<String>> representationTypeMap) {
+		try {			
+			KiWiSearchCriteria ksc = getRepresentationTypesCriteria();
+			
+			
+			if(representationTypeMap != null)
+				ksc.setRdfObjectProperties(representationTypeMap);
+			//type
+		//	if(type != null){
+				
+				Set<String> ts = ksc.getTypes();
 
+				for (Iterator iterator = selectedTypes.iterator(); iterator.hasNext();) {
+					KiWiUriResource type = (KiWiUriResource) iterator.next();
+					ts.add(type.getKiwiIdentifier());
+				}				
+				ksc.setTypes(ts);
+				
+				//String kiwiIdentifier = type.getKiwiIdentifier();
 
-	private KiWiSearchCriteria getCriteria() throws DkmsContentRetrievalException {
+				
+				//String crit = ksc.getSolrSearchString();
+				
+//				log.info(crit);
+//				crit = crit+" and type:\""+kiwiIdentifier+"\"";
+//				log.info(crit);
+//				ksc.setSolrSearchString(crit);
+		//	}
+			
+			
+			searchResults = solrService.search(ksc);
+			
+			log.info(searchResults.getResults().size());
+			
+			//set status facets
+			if(searchResults != null) {
+				
+				representationTypeFacets = buildRepresentationTypeFacet();
+				relevantTypes = buildRelevantTypes();
+			}
+			else Collections.emptyList();
+			
+		} catch(DkmsContentRetrievalException e) {
+			searchResults = new KiWiSearchResults();
+		}
+		return "search";
+	}
+
+	private KiWiSearchCriteria getBigIdeasCriteria() throws DkmsContentRetrievalException {
 		KiWiSearchCriteria criteria = new KiWiSearchCriteria();
 		//set full search query string
 		if(fullquery != null && !fullquery.equals("")) {
 			if("*".equals(fullquery)){
 				//criteria = solrService.parseSearchString("");
 				//criteria.setSolrSearchString("type:\"uri::http://www.artaround.at/ArtWork\" OR type:\"uri::http://www.artaround.at/ArtAroundUser\"");
-				
+				criteria.setSolrSearchString("type:\"uri::http://www.dkms.at/DkmsContentItem\"");
 				//criteria = solrService.parseSearchString("type:artaround:ArtWork");
 				//criteria.getTypes().add(tripleStore.createUriResource(Constants.ART_AROUND_CORE + "ArtWork").getKiwiIdentifier());
 				//criteria.getTypes().add(tripleStore.createUriResource(Constants.NS_FOAF+"Person").getKiwiIdentifier());
@@ -243,7 +313,7 @@ public class DkmsContentRetrievalAction implements Serializable {
 		} else {
 			throw new DkmsContentRetrievalException("no query defined");
 		}
-		criteria.setSolrSearchString("type:\"uri::http://www.dkms.at/DkmsContentItem\"");
+		
 		
 		log.info("order #0",order);
 		log.info("sort #0",sort);
@@ -255,7 +325,48 @@ public class DkmsContentRetrievalAction implements Serializable {
 		
 		Set<String> s = new HashSet<String>();
 		s.add("http://www.dkms.at/bigIdeas");
-		//s.add("http://www.dkms.at/representationType");
+		criteria.setRdfObjectFacets(s);
+			
+		
+		if( order.equals("asc") ) criteria.setSortOrder(ORDER.asc);
+		else criteria.setSortOrder(ORDER.desc);
+		
+		
+		return criteria;
+	}
+	
+	private KiWiSearchCriteria getRepresentationTypesCriteria() throws DkmsContentRetrievalException {
+		KiWiSearchCriteria criteria = new KiWiSearchCriteria();
+		//set full search query string
+		if(fullquery != null && !fullquery.equals("")) {
+			if("*".equals(fullquery)){
+				//criteria = solrService.parseSearchString("");
+				//criteria.setSolrSearchString("type:\"uri::http://www.artaround.at/ArtWork\" OR type:\"uri::http://www.artaround.at/ArtAroundUser\"");
+				criteria.setSolrSearchString("type:\"uri::http://www.dkms.at/DkmsContentItem\"");
+				//criteria = solrService.parseSearchString("type:artaround:ArtWork");
+				//criteria.getTypes().add(tripleStore.createUriResource(Constants.ART_AROUND_CORE + "ArtWork").getKiwiIdentifier());
+				//criteria.getTypes().add(tripleStore.createUriResource(Constants.NS_FOAF+"Person").getKiwiIdentifier());
+			}else{
+				criteria = solrService.parseSearchString(fullquery);
+				//criteria.setSolrSearchString("(type:\"uri::http://www.artaround.at/ArtWork\" OR type:\"uri::http://www.artaround.at/ArtAroundUser\")");
+				criteria.setSolrSearchString("type:\"uri::http://www.dkms.at/DkmsContentItem\"");
+				//criteria = solrService.parseSearchString(fullquery + " type:artaround:ArtWork");
+				}
+		} else {
+			throw new DkmsContentRetrievalException("no query defined");
+		}
+		
+		
+		log.info("order #0",order);
+		log.info("sort #0",sort);
+		
+		//set pages,limit etc.
+		criteria.setOffset(page*PAGE_SIZE);
+		criteria.setLimit(PAGE_SIZE);
+		criteria.setSortField(sort);
+		
+		Set<String> s = new HashSet<String>();
+		s.add("http://www.dkms.at/representationType");
 		criteria.setRdfObjectFacets(s);
 			
 		
@@ -269,8 +380,10 @@ public class DkmsContentRetrievalAction implements Serializable {
 	private void clear() {
 		//reset the search (pages etc.)
 		bigIdeaMap = new HashMap<String, Set<String>>();
+		representationTypeMap = new HashMap<String, Set<String>>();
 		
 		selectedBigIdeas = new HashSet<KiWiUriResource>();
+		selectedRepresentationTypes = new HashSet<KiWiUriResource>();
 		selectedTypes = new HashSet<KiWiUriResource>();
 		page = 0;
 	}
@@ -308,14 +421,49 @@ public class DkmsContentRetrievalAction implements Serializable {
 	
 	// facets for facetted search
 	
-	public List<KiWiFacet<KiWiResource>> getStatusFacet() {
+	public List<KiWiFacet<KiWiResource>> getBigIdeaStatusFacet() {
 		if( searchResults.getResultCount() == 0 ) return Collections.emptyList();
 		else return bigIdeaFacets;
 	}
 	
+	public List<KiWiFacet<KiWiResource>> getRepresentationTypeStatusFacet() {
+		if( searchResults.getResultCount() == 0 ) return Collections.emptyList();
+		else return representationTypeFacets;
+	}
+	
 	private List<KiWiFacet<KiWiResource>> buildBigIdeaFacet() {
 						
-		if( bigIdeaResource == null ) return Collections.emptyList();
+		if( bigIdeaResource == null ) return Collections.emptyList(); 
+		
+		List<KiWiFacet<KiWiResource>> result = new LinkedList<KiWiFacet<KiWiResource>>();
+		log.info(searchResults.getObjectPropertyFacets().size());
+		
+		
+		Map<KiWiUriResource, Set<KiWiFacet<KiWiResource>>> m = searchResults.getObjectPropertyFacets(); 
+		Collection<Set<KiWiFacet<KiWiResource>>> hh = m.values(); 
+		
+		for(Set<KiWiFacet<KiWiResource>> kur : hh){
+			for(KiWiFacet<KiWiResource> f: kur){
+				result.add(f);
+				log.info(f.getContent().getContentItem().getTitle());
+				
+				log.info(f.getQuery());
+				log.info(hh);
+				log.info(f.getContent().getTypes());
+			}
+	
+		}
+		
+			
+		log.info(searchResults.getObjectPropertyFacets().get(bigIdeaResource) == null?"opf are null":"opf are not null");
+		
+		
+		return result;
+	}
+	
+	private List<KiWiFacet<KiWiResource>> buildRepresentationTypeFacet() {
+		
+		if( representationTypeResource == null ) return Collections.emptyList();
 		
 		List<KiWiFacet<KiWiResource>> result = new LinkedList<KiWiFacet<KiWiResource>>();
 		log.info(searchResults.getObjectPropertyFacets().size());
@@ -333,7 +481,7 @@ public class DkmsContentRetrievalAction implements Serializable {
 		}
 		
 			
-		log.info(searchResults.getObjectPropertyFacets().get(bigIdeaResource) == null?"opf are null":"opf are not null");
+		log.info(searchResults.getObjectPropertyFacets().get(representationTypeResource) == null?"opf are null":"opf are not null");
 		
 		
 		return result;
@@ -344,6 +492,11 @@ public class DkmsContentRetrievalAction implements Serializable {
 	public List<KiWiFacet<KiWiResource>> getBigIdeaFacets() {
 		if( searchResults.getResultCount() == 0 ) return Collections.emptyList();
 		else return bigIdeaFacets;
+	}
+	
+	public List<KiWiFacet<KiWiResource>> getRepresentationTypeFacets() {
+		if( searchResults.getResultCount() == 0 ) return Collections.emptyList();
+		else return representationTypeFacets;
 	}
 	
 	// ------ Paging
@@ -372,17 +525,23 @@ public class DkmsContentRetrievalAction implements Serializable {
 	
 	public String setPage(int i) {
 		this.page = i;
-		return run(null);
+		runBigIdeas(null);
+		runRepresentationTypes(null);
+		return "search";
 	}
 	
 	public String nextPage() {
 		this.page++;
-		return run(null);
+		runBigIdeas(null);
+		runRepresentationTypes(null);
+		return "search";
 	}
 	
 	public String prevPage() {
 		this.page--;
-		return run(null);
+		runBigIdeas(null);
+		runRepresentationTypes(null);
+		return "search";
 	}
 	
 	public boolean hasNextPage() {
@@ -405,6 +564,11 @@ public class DkmsContentRetrievalAction implements Serializable {
 	public KiWiUriResource getBigIdeaResource() {
 		return bigIdeaResource;
 	}
+	
+	// representationType
+	public KiWiUriResource getRepresentationTypeResource() {
+		return representationTypeResource;
+	}
 
 	//convert set to list
 	public List<KiWiUriResource> getSelectedBigIdeas() {
@@ -415,9 +579,19 @@ public class DkmsContentRetrievalAction implements Serializable {
 		return l;
 	}
 	
+	public List<KiWiUriResource> getSelectedRepresentationTypes() {
+		LinkedList<KiWiUriResource> l = new LinkedList<KiWiUriResource>();
+		for(KiWiUriResource s: selectedRepresentationTypes){
+			l.add(s);
+		}		
+		return l;
+	}
+	
 	public String setType(KiWiUriResource type){
 		selectedTypes.add(type);
-		return run(null);
+		runBigIdeas(null);
+		runRepresentationTypes(null);
+		return "search";
 	}
 	
 	public List<KiWiUriResource> getSelectedTypes(){
@@ -441,7 +615,27 @@ public class DkmsContentRetrievalAction implements Serializable {
 		bigIdeaMap.put("http://www.dkms.at/bigIdeas", kiwiResource2Uri(selectedBigIdeas));
 		//representationTypeMap.put("http://www.dkms.at/representationType", kiwiResource2Uri(selectedRepresentationTypes));
 
-		return run(bigIdeaMap);
+		runBigIdeas(bigIdeaMap);
+		runRepresentationTypes(representationTypeMap);
+		return "search";
+				
+	}
+	
+	public String setRepresentationTypeResource(KiWiUriResource representationTypeResource) {						
+		selectedRepresentationTypes.add(representationTypeResource);
+		log.info(representationTypeResource.getUri());
+		
+		if(representationTypeMap == null){ 
+			 representationTypeMap = new HashMap<String, Set<String>>();
+		}
+		
+		
+		
+		representationTypeMap.put("http://www.dkms.at/representationType", kiwiResource2Uri(selectedRepresentationTypes));
+
+		runBigIdeas(bigIdeaMap);
+		runRepresentationTypes(representationTypeMap);
+		return "search";
 	}
 	
 	public String removeBigIdea(KiWiUriResource bigIdeaResource){
@@ -454,12 +648,31 @@ public class DkmsContentRetrievalAction implements Serializable {
 		{
 			bigIdeaMap = null;
 		}
-		return run(bigIdeaMap);
+		runBigIdeas(bigIdeaMap);
+		runRepresentationTypes(representationTypeMap);
+		return "search";
+	}
+	
+	public String removeRepresentationType(KiWiUriResource representationTypeResource){
+		selectedRepresentationTypes.remove(representationTypeResource);
+		if(selectedRepresentationTypes.size() >0){
+			
+			representationTypeMap.put("http://www.dkms.at/representationType", kiwiResource2Uri(selectedRepresentationTypes));
+		}
+		else
+		{
+			representationTypeMap = null;
+		}
+		runBigIdeas(bigIdeaMap);
+		runRepresentationTypes(representationTypeMap);
+		return "search";
 	}
 	
 	public String removeType(KiWiUriResource typeResource){
 		selectedTypes.remove(typeResource);
-		return run(bigIdeaMap);
+		runBigIdeas(bigIdeaMap);
+		runRepresentationTypes(representationTypeMap);
+		return "search";
 	}
 	
 	

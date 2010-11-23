@@ -57,6 +57,11 @@ import javax.persistence.*;
         @NamedQuery(name = "select.allSkosMaps", query = "SELECT skos_map from SKOSToPrefixMapper AS skos_map"),
         @NamedQuery(name = "select.skosMapForLevel", query = "SELECT skos_map from SKOSToPrefixMapper AS skos_map WHERE skos_map.level=:level"),
         @NamedQuery(name = "select.skosMapForLevelAndParent", query = "SELECT skos_map from SKOSToPrefixMapper AS skos_map WHERE skos_map.level=:level AND skos_map.parentURI=:parentURI"),
+        @NamedQuery(name = "select.skosMapForTopConceptPrefixAndLevel", 
+                    query = "SELECT skos_map from SKOSToPrefixMapper AS skos_map " +
+        		            " WHERE skos_map.parentURI=:parentURI " +
+        		            " AND skos_map.level=:level " +
+                            " AND skos_map.prefix=:prefix"),
         @NamedQuery(name = "select.skosTopConceptLevel", query = "SELECT MAX(skos_map.level) from SKOSToPrefixMapper AS skos_map WHERE skos_map.parentURI=:parentURI"),
         @NamedQuery(name = "update.skosConceptsForParentAndLevel", query = 
                   "UPDATE SKOSToPrefixMapper skos_map " +

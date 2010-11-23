@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
@@ -78,10 +76,15 @@
 h2 {
 	color: #6f91c0;
 	font-size: 14px;
-	
-	
-	
 }
+
+h4 {
+	color: #6f91c0;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+
 
 h3 {
 	color: #6f91c0;
@@ -148,27 +151,37 @@ h1 {
 		</h:form>
 	
 	
-	<br/><br/>
-	<div id="bigIdea_chooser" style="width:350px; margin-left:10px; margin-top:5px; float:left">
-		<h2><h:outputText value="Spezialise search result:" /></h2>
+	<br/>
+	<div id="categories_chooser" style="width:600px; margin-left:10px; margin-top:5px">
+		<h2><h:outputText value="Spezialise search result:" /></h2><br/>
 			<h:form styleClass="box_facets">
-				<ui:repeat value="#{dkmsContentRetrievalAction.bigIdeaFacets}" var="tech">
-					<h:commandLink value = "#{tech.content.contentItem.title} (#{tech.resultCount})" action="#{dkmsContentRetrievalAction.setBigIdeaResource(tech.content)}"/>
+			<h4>Big Ideas:</h4>
+				<ui:repeat value="#{dkmsContentRetrievalAction.bigIdeaFacets}" var="bif">
+					<h:commandLink value = "#{bif.content.contentItem.title} (#{bif.resultCount}) &#160;&#160;" action="#{dkmsContentRetrievalAction.setBigIdeaResource(bif.content)}"/>
 					<!--  <h:commandLink value="#{ideator.searchAction.getStatusFacetString(stat.content)}(#{stat.resultCount})" action="#{ideator.searchAction.setStatus(stat.content)}"/> -->
-					<h:outputText value=" " />
+					
 				</ui:repeat>
-				<h:outputText rendered="#{dkmsContentRetrievalAction.statusFacet.size == 0}" value="#{messages['ideator.search.facets.none']}" />
+				<h:outputText rendered="#{dkmsContentRetrievalAction.bigIdeaStatusFacet.size == 0}" value="#{messages['ideator.search.facets.none']}" />
 			</h:form>
-			<br/>
-			<h2><h:outputText value="Waehle einen Typ aus" /></h2>
 			<h:form styleClass="box_facets">
-				<ui:repeat value="#{dkmsContentRetrievalAction.relevantTypes}" var="type">
-					<h:commandLink value = "#{type.content.label} (#{type.resultCount})"  action="#{dkmsContentRetrievalAction.setType(type.content)}" />
+			<h4>Representation Types:</h4>
+				<ui:repeat value="#{dkmsContentRetrievalAction.representationTypeFacets}" var="rtf">
+					<h:commandLink value = "#{rtf.content.contentItem.title} (#{rtf.resultCount}) &#160;&#160;" action="#{dkmsContentRetrievalAction.setRepresentationTypeResource(rtf.content)}"/>
 					<!--  <h:commandLink value="#{ideator.searchAction.getStatusFacetString(stat.content)}(#{stat.resultCount})" action="#{ideator.searchAction.setStatus(stat.content)}"/> -->
-					<h:outputText value=" " />
+					
 				</ui:repeat>
-				<h:outputText rendered="#{dkmsContentRetrievalAction.relevantTypes.size == 0}" value="#{messages['ideator.search.facets.none']}" />
-			</h:form>		
+				<h:outputText rendered="#{dkmsContentRetrievalAction.representationTypeStatusFacet.size == 0}" value="#{messages['ideator.search.facets.none']}" />
+			</h:form>
+<!--			<br/>-->
+<!--			<h2><h:outputText value="Waehle einen Typ aus" /></h2>-->
+<!--			<h:form styleClass="box_facets">-->
+<!--				<ui:repeat value="#{dkmsContentRetrievalAction.relevantTypes}" var="type">-->
+<!--					<h:commandLink value = "#{type.content.label} (#{type.resultCount})"  action="#{dkmsContentRetrievalAction.setType(type.content)}" />-->
+<!--					  <h:commandLink value="#{ideator.searchAction.getStatusFacetString(stat.content)}(#{stat.resultCount})" action="#{ideator.searchAction.setStatus(stat.content)}"/> -->
+<!--					<h:outputText value=" " />-->
+<!--				</ui:repeat>-->
+<!--				<h:outputText rendered="#{dkmsContentRetrievalAction.relevantTypes.size == 0}" value="#{messages['ideator.search.facets.none']}" />-->
+<!--			</h:form>		-->
 	 </div>
 	 <br/>
 	 <!-- tag facettes -->
@@ -181,9 +194,20 @@ h1 {
 					</h:commandLink>
 					</s:span> 
 		-->
-				<h2 ><h:outputText value=" Search result categorised by:" rendered="#{dkmsContentRetrievalAction.selectedBigIdeas.size > 0}" /></h2><br/><br/>
+<!--				<h2 ><h:outputText value=" Search result categorised by:" rendered="#{dkmsContentRetrievalAction.selectedBigIdeas.size > 0}" /></h2><br/><br/>-->
+<!--					<h2 ><h:outputText value=" Search result categorised by:"  /></h2><br/><br/>-->
 				
-				<a:repeat value="#{dkmsContentRetrievalAction.selectedBigIdeas}" var="bigIdea" rowKeyVar="index">
+				
+				
+			</div>
+		</h:form>		
+	<br/>
+		    	
+	<div>
+	<h2 style="margin-left:10px">Search result spezialised by following categories:</h2>	
+	<div style="margin-left:10px; margin-top:10px">
+	<h:form>
+	<a:repeat value="#{dkmsContentRetrievalAction.selectedBigIdeas}" var="bigIdea" rowKeyVar="index">
 				<div style="margin-right:10px; margin-left:2px; float:left">
 					<h:outputText value=" #{bigIdea.label}" style="float:left; margin-right:5px; color:#FE2E2E"/>
 					<h:commandLink action="#{dkmsContentRetrievalAction.removeBigIdea(bigIdea)}">
@@ -196,22 +220,21 @@ h1 {
 				</div>
 				</a:repeat>
 				
-				<a:repeat value="#{dkmsContentRetrievalAction.selectedTypes}" var="type" rowKeyVar="index">
+				<a:repeat value="#{dkmsContentRetrievalAction.selectedRepresentationTypes}" var="repType" rowKeyVar="index">
 				<div style="margin-right:10px; margin-left:2px; float:left">
-					<h:outputText value=" #{type.label}" style="float:left; margin-right:5px; color:#FE2E2E"/>
-				 	<h:commandLink action="#{dkmsContentRetrievalAction.removeType(type)}">
-						<img src="#{facesContext.externalContext.requestContextPath}/view/img/close_icon.gif"  style="width:12px;margin-left:-3px; " />
-					</h:commandLink>  
+					<h:outputText value=" #{repType.label}" style="float:left; margin-right:5px; color:#FE2E2E"/>
+					<h:commandLink action="#{dkmsContentRetrievalAction.removeRepresentationType(repType)}">
+						<img src="#{facesContext.externalContext.requestContextPath}/view/img/close_small.png" style="width:12px;margin-left:-3px; " />
+					</h:commandLink>
+				<!-- 	<h:commandLink action="#{ideator.searchAction.removeTag(tag)}">
+						<img src="stylesheet/images/icon_cancel.png" style="width:12px;margin-left:-3px" />
+					</h:commandLink>  -->
 				<!--  	<h:outputText value=", " rendered="#{ideator.searchAction.searchTags.size != index+1}" /> -->
 				</div>
 				</a:repeat>
-				
-			</div>
-		</h:form>		
-	<br/>
-	 <br/>	    	
-	<div ><br/>
-	<h2 style="margin-left:10px; margin-top:15px">Search result:</h2>	    
+	</h:form>    
+	</div>
+	<br/><br/>
     <!-- result list -->
     <!-- Geht leider nicht mit layout/template-2col.xhtml -->
     	
@@ -235,6 +258,61 @@ h1 {
 		</div>
 		<br/>
 		<div class="search_results" style="margin-left:10px">
+		
+<!--		<div style="height:150px; overflow:auto; margin-left:25px; margin-top:10px ">-->
+<!--			<table cellspacing="1">-->
+<!--				<c:forEach items ="#{dkmsContentRetrievalAction.searchResults}" var="r">-->
+<!--					<c:if test="#{r.item.dkmsContentItemType == '1'}">-->
+<!--								-->
+<!--					<tr>-->
+<!--						<td style="border:1px solid #FFE8C3; width:200px">-->
+<!--						<h5 style="margin:5px">#{r.item.title}</h5>-->
+<!--						</td >-->
+<!--						<td style="border:1px solid #FFE8C3; width:30px">-->
+<!--						<img src="#{facesContext.externalContext.requestContextPath}/view/img/angabe_verysmall.png" style="valign: center; vertical-align: middle; margin: 2px" title="Simple resource"/>-->
+<!--						</td>-->
+<!--						-->
+<!--						<td style="border:1px solid #FFE8C3; width:100px">-->
+<!--						#{r.item.itemId}-->
+<!--						</td>-->
+<!--					</tr>-->
+<!--					-->
+<!--					</c:if>-->
+<!--					<c:if test="#{r.item.dkmsContentItemType == '2'}">-->
+<!--					-->
+<!--					<tr>-->
+<!--						<td style="border:1px solid #FFE8C3; width:200px">-->
+<!--						<h5 style="margin:5px">#{r.item.title}</h5>-->
+<!--						</td >-->
+<!--						<td style="border:1px solid #FFE8C3; width:30px">-->
+<!--						<img src="#{facesContext.externalContext.requestContextPath}/view/img/dokumente_verysmall.png" style="valign: center; vertical-align: middle; margin: 2px" title="Segmented resource"/>-->
+<!--						</td>-->
+<!--						-->
+<!--						<td style="border:1px solid #FFE8C3; width:100px">-->
+<!--						#{r.item.itemId}-->
+<!--						</td>																	-->
+<!--					</tr>-->
+<!--			-->
+<!--				</c:if>-->
+<!--				<c:if test="#{r.item.dkmsContentItemType == '3'}">-->
+<!--				-->
+<!--					<tr>-->
+<!--						<td style="border:1px solid #FFE8C3; width:200px">-->
+<!--						<h5 style="margin:5px">#{r.item.title}</h5>-->
+<!--						</td >-->
+<!--						<td style="border:1px solid #FFE8C3; width:30px">-->
+<!--						<img src="#{facesContext.externalContext.requestContextPath}/view/img/pdf_dokument_verysmall.png" style="valign: center; vertical-align: middle; margin: 2px" title="Uploaded resource"/>-->
+<!--						</td>-->
+<!--						-->
+<!--						<td style="border:1px solid #FFE8C3; width:100px">-->
+<!--						#{r.item.itemId}-->
+<!--						</td>											-->
+<!--					</tr>-->
+<!--			-->
+<!--				</c:if>-->
+<!--				</c:forEach>-->
+<!--			</table>-->
+<!--			</div>-->
 			
 			<!--  <ui:repeat value="#{dkmsContentRetrievalAction.searchResults}" var="r"> -->
 			<div>
@@ -313,4 +391,5 @@ h1 {
 	</div>  
 	</ui:define>
 </ui:composition>
+
 

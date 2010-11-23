@@ -1,9 +1,13 @@
 package kiwi.action.tagging;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -15,8 +19,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import kiwi.action.tagging.pojo.JSONGetPrefiexesListResults;
+import kiwi.action.tagging.pojo.JSONTAddTagsListResults;
 import kiwi.action.tagging.pojo.JSONTagListResults;
 import kiwi.action.tagging.pojo.JSONTaxonomiesListResults;
+import kiwi.api.config.ConfigurationService;
 import kiwi.api.content.ContentItemService;
 import kiwi.api.equity.EquityService;
 import kiwi.api.ontology.SKOSPrefixMapperService;
@@ -30,6 +36,8 @@ import kiwi.model.ontology.SKOSConcept;
 import kiwi.model.ontology.SKOSToPrefixMapper;
 import kiwi.model.tagging.Tag;
 import kiwi.model.user.User;
+
+import net.sf.saxon.expr.StringTokenIterator;
 
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
@@ -60,7 +68,7 @@ public class TaggingWebService {
     private static Log log;
 
     @In(create = true)
-    TaggingService taggingService;
+    private TaggingService taggingService;
 
     @In(create = true)
     private User currentUser;
@@ -73,6 +81,9 @@ public class TaggingWebService {
 
     @In(create = true)
     private SKOSService skosService;
+    
+    @In
+    private ConfigurationService configurationService;
 
     public enum OrderTypes {
         ALPHA, USAGE, EQUITY
@@ -197,18 +208,28 @@ public class TaggingWebService {
                 .getInstance("contentItemService");
         ContentItem item = ciService.getContentItemByUri(docUri);
 
-        if (item == null)
+        if (item == null) {
+            final JSONTAddTagsListResults result = new JSONTAddTagsListResults();
             return Response.status(Status.NOT_FOUND).build();
-        if (tags == null || "".equals(tags.trim()))
-            throw new WebApplicationException(Response
-                    .status(Status.BAD_REQUEST).
-                    // header(HttpHeaders.WWW_AUTHENTICATE, "what comes here?").
-                    entity("400 - Required parameter tags was empty.").build());
+        }
+
+        if (tags == null || "".equals(tags.trim())) {
+            final JSONTAddTagsListResults result = new JSONTAddTagsListResults();
+            return Response.status(Status.BAD_REQUEST).build();
+        }
 
         String[] tagLabels = tags.split(",");
 
         taggingService.addTags(item, tagLabels);
-        return Response.ok("{}").build();
+
+        final JSONTAddTagsListResults result = new JSONTAddTagsListResults();
+        try {
+            result.addTags("200", null);
+        } catch (JSONException jException) {
+            log.error(jException.getMessage(), jException);
+        }
+
+        return Response.ok(result.toString()).build();
     }
 
     /**
@@ -233,20 +254,26 @@ public class TaggingWebService {
                 .getInstance("contentItemService");
         ContentItem item = ciService.getContentItemByUri(docUri);
 
-        if (item == null)
+        if (item == null) {
             return Response.status(Status.NOT_FOUND).build();
+        }
 
-        if (tags == null || "".equals(tags.trim()))
-            throw new WebApplicationException(Response
-                    .status(Status.BAD_REQUEST).
-                    // header(HttpHeaders.WWW_AUTHENTICATE, "what comes here?").
-                    entity("Required parameter tags was empty.").build());
+        if (tags == null || "".equals(tags.trim())) {
+            return Response.status(Status.BAD_REQUEST).build();
+        }
 
         String[] tagUris = tags.split(",");
         taggingService.removeTaggings(item, tagUris,
                 (mode.toLowerCase() != "private" ? true : false));
 
-        return Response.ok("{}").build();
+        final JSONTAddTagsListResults result = new JSONTAddTagsListResults();
+        try {
+            result.addTags("200", null);
+        } catch (JSONException jException) {
+            log.error(jException.getMessage(), jException);
+        }
+
+        return Response.ok(result.toString()).build();
     }
 
     @GET
@@ -308,13 +335,35 @@ public class TaggingWebService {
         final String query = q.substring(q.indexOf(":") + 1, q.length()).trim();
         log.debug("Try to process #0:#1", prefix, query);
 
-        // This pattern matches all the string that starts with the given
-        // prefix.
-        final String jpqlLikePattern = query + "%";
-        final Set<SKOSConcept> concepts = skosPrefixMapperService.getConcepts(
-                prefix, jpqlLikePattern);
+        final boolean noQuery = query.length() == 0;
+        final Set<SKOSConcept> concepts;
+        if (noQuery) {
+            // this block if the search quiery looks like this : 
+            // 'prefix:', in this case the label is missing.
+            // according with the specification the Information Extraction
+            // configuration is used to define pairs top level concept level.
+            // the search care about this mapping and it searches for all
+            // concepts with :
+            // 1.a specified top level concept (specified in the IE Config)
+            // 2.a given nesting level (specified in the IE Config)
+            // 3.a certain prefix specified in the search query.
+            final Map<String, Integer> noQueryParam = getNoQueryParam();
 
-        // FIXME : skos concepts sunt si tags :)
+            concepts = new HashSet<SKOSConcept>();
+            for (Entry<String, Integer> conf :  noQueryParam.entrySet()) {
+                final String uri = conf.getKey();
+                final Integer level = conf.getValue();
+                final Set<SKOSConcept> allConcepts = skosPrefixMapperService.getAllConcepts(uri, prefix, level);
+                concepts.addAll(allConcepts);
+            }
+        } else {
+            // This pattern matches all the string that starts with the given
+            // prefix.
+            final String jpqlLikePattern = query + "%";
+            concepts = skosPrefixMapperService.getConcepts(prefix, jpqlLikePattern);
+        }
+
+        // FIXME : skos concepts are also tags :)
         final JSONTagListResults jsonRes = new JSONTagListResults();
         for (SKOSConcept concept : concepts) {
             final String uri = ((KiWiUriResource) concept.getResource())
@@ -342,5 +391,31 @@ public class TaggingWebService {
         }
 
         return Response.ok(jsonRes.toString()).build();
+    }
+    
+    
+
+    /**
+     * Returns a map that contains like key a top concept 
+     * URI and like value the nesting level. This setting was 
+     * done in the IEConfigurationAction. 
+     *  
+     * @return a map that contains like key a top concept 
+     * URI and like value the nesting level. If this map is 
+     *  empty then no configuration was done.
+     */
+    private Map<String, Integer> getNoQueryParam() {
+        final Map<String, Integer> result = new HashMap<String, Integer>();
+        final String key = "kiwi.informationextraction.taxonomyConcepts";
+        final List<String> listConfiguration = configurationService.getListConfiguration(key);
+        for (String conf : listConfiguration) {
+            final StringTokenizer tokenizer = new StringTokenizer(conf);
+            final String concept = tokenizer.nextToken();
+            final String topConcept = tokenizer.nextToken();
+            final String nestingLevel = tokenizer.nextToken();
+            result.put(topConcept, Integer.parseInt(nestingLevel));
+        }
+
+        return result;
     }
 }

@@ -14,12 +14,12 @@
      
    <persistence-unit name="KiWi">
       <provider>org.hibernate.ejb.HibernatePersistence</provider>
-      <jta-data-source>java:/KiWiDS</jta-data-source>
+      <jta-data-source>java:/KiWiDatasource</jta-data-source>
       <properties>
          <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
          
          <!-- valid values are validate, update, create, create-drop -->
-         <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+         <property name="hibernate.hbm2ddl.auto" value="update"/>
          <property name="hibernate.show_sql" value="false"/>
          <property name="hibernate.format_sql" value="true"/>
          <property name="jboss.entity.manager.factory.jndi.name" value="java:/KiWiEntityManagerFactory"/>
@@ -32,29 +32,29 @@
          <property name="hibernate.connection.release_mode" value="after_statement" />
 
          <!-- KiWi work directory; used as base for all other directories -->
-         <property name="kiwi.work.dir" value="kiwi-test"/>
+         <property name="kiwi.work.dir" value="/home/marcho/java/kiwi/"/>
 
          <!-- directory where the Sesame TripleStore will be stored -->
          <property name="kiwi.triplestore.dir" 
-                  value="kiwi-test/triples"/>
+                  value="/home/marcho/java/kiwi//triples"/>
 
          <!-- directory where the SOLR home will be stored -->
          <property name="kiwi.solr.home" 
-                  value="kiwi-test/solr"/>
+                  value="/home/marcho/java/kiwi//solr"/>
 
         <!-- path to an existing lucene index for generating a semanticvectors index  -->
          <property name="kiwi.semanticvectors"
-                   value="kiwi-test/solr" />
+                   value="/home/marcho/java/kiwi//solr" />
 
          <!-- path to where GATE is installed, also, where the information extraction feature storage will store its data -->
          <property name="kiwi.gate.home" 
-                  value="kiwi-test/gate"/>
+                  value="/home/marcho/java/kiwi//gate"/>
                  
          <!--  caching -->
    		 <property name="hibernate.cache.region.factory_class" 
                    value="net.sf.ehcache.hibernate.EhCacheRegionFactory"/>
          <property name="hibernate.cache.use_query_cache" value="true" />
-         <property name="hibernate.cache.use_second_level_cache" value="false"/>
+         <property name="hibernate.cache.use_second_level_cache" value="true"/>
          <property name="hibernate.cache.region_prefix" value=""/>
        </properties>
    </persistence-unit>

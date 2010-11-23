@@ -293,7 +293,7 @@ public class TaggingServiceImpl implements TaggingServiceLocal, TaggingServiceRe
 			StringBuilder qString = new StringBuilder();
 			
 			// add prefix to query string
-			qString.append("title:"+prefix+"*");
+			qString.append("title:"+prefix.replace("(","\\(").replace(")", "\\)")+"*");
 			qString.append(" ");
 			
 			// add (type:kiwi:Tag OR type:skos:Concept)
@@ -676,6 +676,7 @@ public class TaggingServiceImpl implements TaggingServiceLocal, TaggingServiceRe
 				
 				ret = contentItemService.createContentItem();
 				ret.addType(tripleStore.createUriResource(Constants.NS_KIWI_CORE + "StructuredTag"));
+				ret.addType(tripleStore.createUriResource(Constants.NS_KIWI_CORE + "Tag"));
 				ret.addType(tripleStore.createUriResource(Constants.NS_RDF + "List"));
 				contentItemService.updateTitle(ret, sb.toString());
 				

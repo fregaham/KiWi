@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" output="classes/model" path="src/model"/>
+	<classpathentry kind="src" path="extensions/rrs/src"/>
 	<classpathentry kind="src" path="extensions/ideator/src"/>
 	<classpathentry kind="src" path="extensions/artaround/src"/>
 	<classpathentry kind="src" path="extensions/ontologies/src"/>

@@ -2,8 +2,11 @@ package rrs.action;
 
 import static kiwi.model.kbase.KiWiQueryLanguage.SPARQL;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+import java.util.Set;
 
 import javax.persistence.Query;
 
@@ -95,17 +98,37 @@ public class AnnotationAction {
 	 * @throws NamespaceResolvingException 
 	 */
 	public List<ContentItem> listRelatedStructuredTags(ContentItem tag) throws NamespaceResolvingException {
-		List<KiWiTriple> firstTriples = tag.getResource().listIncoming("rdf:first");
-		List<KiWiTriple> restTriples = tag.getResource().listIncoming("rdf:rest");
 		
+		Set<ContentItem> done = new HashSet<ContentItem> ();
 		List<ContentItem> ret = new LinkedList<ContentItem> ();
-		
-		for (KiWiTriple triple : firstTriples) {
-			ret.add(triple.getSubject().getContentItem());
-		}
-		
-		for (KiWiTriple triple : restTriples) {
-			ret.add(triple.getSubject().getContentItem());
+		Queue<ContentItem> todo = new LinkedList<ContentItem>();
+		todo.add(tag);
+		ret.add(tag);
+		done.add(tag);
+
+		while (!todo.isEmpty()) {
+			ContentItem ci = todo.poll();
+			
+			List<KiWiTriple> firstTriples = ci.getResource().listIncoming("rdf:first");
+			List<KiWiTriple> restTriples = ci.getResource().listIncoming("rdf:rest");
+			
+			for (KiWiTriple triple : firstTriples) {
+				ContentItem next = triple.getSubject().getContentItem();
+				if (!done.contains(next)) {
+					ret.add(next);
+					done.add(next);
+					todo.add(next);
+				}
+			}
+			
+			for (KiWiTriple triple : restTriples) {
+				ContentItem next = triple.getSubject().getContentItem();
+				if (!done.contains(next)) {
+					ret.add(next);
+					done.add(next);
+					todo.add(next);
+				}
+			}
 		}
 		
 		return ret;

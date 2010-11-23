@@ -352,21 +352,12 @@ public class ImportAction {
 	
 	
 	public void listenerXml(UploadEvent event) throws IOException {
-		// UploadedFile item = event.getFile();
 
 		log.info("listenerXml here");
 		
 		UploadItem item = event.getUploadItem();
 		data = item.getData();
 		size = data.length;
-	/*	UploadItem item = event.getUploadItem();
-		
-        name = FilenameUtils.getName(item.getFileName()).toLowerCase();
-        data = item.getData();
-        contentType = multimediaService.getMimeType(name, data);
-        size = data.length;
-        
-        log.info("File: '#0', size '#1' with type '#2' was uploaded", name, size, contentType);*/
 	}
 	
 	public void doImportXml() throws ValidityException, ParsingException, IOException {

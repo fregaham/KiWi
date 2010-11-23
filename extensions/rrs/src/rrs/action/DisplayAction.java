@@ -29,8 +29,4 @@ public class DisplayAction {
 		}
 		return publication;
 	}
-	
-	
-
-	
 }

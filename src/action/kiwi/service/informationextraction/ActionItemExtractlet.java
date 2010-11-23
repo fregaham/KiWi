@@ -40,22 +40,17 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Locale;
 
-import kiwi.api.informationextraction.Extractlet;
 import kiwi.api.triplestore.TripleStore;
-import kiwi.model.content.ContentItem;
 import kiwi.model.content.TextContent;
 import kiwi.model.informationextraction.Context;
 import kiwi.model.informationextraction.InstanceEntity;
 import kiwi.model.informationextraction.Suggestion;
 import kiwi.model.kbase.KiWiResource;
-import kiwi.model.user.User;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
 
 /**
  * This is an example of a custom extractlet. 
@@ -74,9 +69,6 @@ public class ActionItemExtractlet extends AbstractExtractlet {
 
 	@In(create=true)
 	TripleStore tripleStore;
-	
-	@Logger
-	private Log log;
 
 	@Override
 	public Collection<Suggestion> extract(KiWiResource context,
@@ -84,7 +76,6 @@ public class ActionItemExtractlet extends AbstractExtractlet {
 		Collection<Suggestion> ret = new LinkedList<Suggestion> ();
 		
 		String plain = (String)gateDoc.getFeatures().get(Document.DOCUMENT_STRING_CONTENT_PARAMETER_NAME);
-		// log.info("extracting actionitems from: #0", plain);
 		
 		if (plain == null) {
 			return ret;

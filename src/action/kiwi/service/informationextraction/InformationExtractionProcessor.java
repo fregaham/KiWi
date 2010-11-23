@@ -85,6 +85,15 @@ import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.transaction.Transaction;
 
+/**
+ * Service that processes documents in the background.
+ * 
+ * it periodically checks if any tasks are in the task queue and
+ * then runs each task in a transaction.
+ * 
+ * @author Marek Schmidt
+ *
+ */
 @Name("kiwi.informationextraction.informationExtractionProcessor")
 @Scope(ScopeType.APPLICATION)
 @TransactionManagement(TransactionManagementType.BEAN)

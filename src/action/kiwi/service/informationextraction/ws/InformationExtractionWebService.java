@@ -77,6 +77,12 @@ import org.openrdf.rio.RDFWriter;
 import org.openrdf.rio.rdfxml.RDFXMLWriterFactory;
 import org.openrdf.sail.memory.MemoryStore;
 
+/**
+ * Simple web service to annotate arbitrary valid XHTML document.  
+ * 
+ * @author Marek Schmidt
+ *
+ */
 @Name("kiwi.informationextraction.ws.informationExtractionWebService")
 @Scope(ScopeType.APPLICATION)
 @Path("/ie")

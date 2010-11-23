@@ -35,7 +35,6 @@
 package kiwi.service.informationextraction;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.StringReader;
 import java.util.Collection;
 import java.util.HashMap;
@@ -47,7 +46,6 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermEnum;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.solr.core.SolrConfig;
@@ -63,6 +61,12 @@ import org.jboss.seam.log.Log;
 import kiwi.api.config.ConfigurationService;
 import kiwi.api.informationextraction.TermRecognitionServiceLocal;
 
+/**
+ * Computes term relevancy scores, based on the data in the KiWi solr index.
+ * 
+ * @author Marek Schmidt
+ *
+ */
 @Name("kiwi.informationextraction.termRecognitionService")
 @Scope(ScopeType.APPLICATION)
 public class TermRecognitionServiceImpl implements TermRecognitionServiceLocal {

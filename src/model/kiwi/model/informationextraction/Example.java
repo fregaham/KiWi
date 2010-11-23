@@ -158,45 +158,6 @@ public class Example implements Serializable {
 		return this.suggestion;
 	}
 	
-/*
-	@ManyToOne(cascade = {CascadeType.REFRESH}, fetch=FetchType.LAZY)
-    @Index(name="ie_example_classifier")
-    private ClassifierEntity classifier;
-	
-	@ManyToOne(cascade = {CascadeType.REFRESH}, fetch=FetchType.EAGER)
-	@Index(name="ie_example_instance")
-	private InstanceEntity instance;
-	*/
-	/*
-	@Basic
-	@Index(name="ie_example_extractletname")
-	private String extractletName;
-	
-	public String getExtractletName() {
-		return extractletName;
-	}
-	
-	public void setExtractletName(String extractletName) {
-		this.extractletName = extractletName;
-	}*/
-	
-	// This is a copy of the instance context hash, for efficiency reasons it is also
-	// stored directly here.
-	/*@Basic
-	@Index(name="ie_example_contexthash")
-	private Integer contextHash;
-	
-	public Integer getContextHash() {
-		if (contextHash == null) { 
-			contextHash = instance.getContextHash();
-		}
-		return contextHash;
-	}
-	
-	public void setContextHash(Integer contextHash) {
-		this.contextHash = contextHash;
-	}*/
-	
 	/**
 	 * Type of the example. So far, can be POSITIVE (1) or NEGATIVE (0). 
 	 */
@@ -210,14 +171,6 @@ public class Example implements Serializable {
 		this.user = user;
 	}
 
-	/*public ClassifierEntity getClassifier() {
-		return classifier;
-	}
-
-	public void setClassifier(ClassifierEntity classifier) {
-		this.classifier = classifier;
-	}*/
-
 	public int getType() {
 		return type;
 	}
@@ -226,16 +179,6 @@ public class Example implements Serializable {
 		this.type = type;
 	}
 	
-	
-
-	/*public void setInstance(InstanceEntity instance) {
-		this.instance = instance;
-	}
-
-	public InstanceEntity getInstance() {
-		return instance;
-	}*/
-
 	/**
 	 * @param version the version to set
 	 */

@@ -85,7 +85,7 @@ import org.json.JSONObject;
 /**
  * A RESTful web service primarily designed for the Sun Use Case (Tagging)
  * 
- * It exposes the tag suggesting funcionality of the information extraction service.
+ * It exposes the tag suggesting functionality of the information extraction service.
  * 
  *  TODO:
  *  	accepting/rejecting suggestions

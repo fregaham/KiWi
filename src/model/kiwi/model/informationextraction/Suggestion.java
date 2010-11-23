@@ -57,8 +57,7 @@ import org.hibernate.annotations.OptimisticLockType;
 
 /**
  * 
- * Represents a suggestion for a 
- * tagged fragment, tagged item, link, datatype propery or object property.
+ * Represents a suggestion for a tagged fragment, tagged item, link, datatype propery or object property.
  * 
  * This class tries to represent all kinds of annotation suggestion, so not all
  * properties are used for every suggestion. 
@@ -134,14 +133,6 @@ import org.hibernate.annotations.OptimisticLockType;
 						"from kiwi.model.informationextraction.Suggestion s " +
 						"where s.instance.id in (select i.id from kiwi.model.informationextraction.InstanceEntity i where i.sourceTextContent.id = :contentid)" +
 						" order by s.score desc"),
-
-	/*@NamedQuery(name  = "kiwi.informationextraction.informationExtractionService.deleteSuggestionsByClassifier",
-				query = "delete from kiwi.model.informationextraction.Suggestion s " +
-						"where s.classifier = :classifier"),
-	@NamedQuery(name  = "kiwi.informationextraction.informationExtractionService.deleteSuggestionsByInstanceSourceItem",
-				query = "delete from kiwi.model.informationextraction.Suggestion s " +
-						"where s.instance.id in (select i.id from kiwi.model.informationextraction.InstanceEntity i where i.sourceContentItem.id = :itemid)"),
-	*/
 	@NamedQuery(name  = "kiwi.informationextraction.informationExtractionService.deleteSuggestions",
 				query = "delete from kiwi.model.informationextraction.Suggestion s"),
 	@NamedQuery(name  = "kiwi.informationextraction.informationExtractionService.deleteSuggestionsByClassifier",

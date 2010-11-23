@@ -53,10 +53,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.ejb.Remove;
-import javax.persistence.EntityManager;
 
 import kiwi.api.config.ConfigurationService;
-import kiwi.api.event.KiWiEvents;
 import kiwi.api.informationextraction.KiWiGATEServiceLocal;
 import kiwi.api.informationextraction.LabelService;
 import kiwi.model.content.ContentItem;
@@ -72,13 +70,18 @@ import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.async.Asynchronous;
-import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
 
 /**
+ * Manages the GATE natural language processing pipelines. 
+ * 
+ * Currently, english and german (with the Durm plugin) are supported.
+ * 
+ * To enable german, download and install the Durm plugin to the gate-home/plugins directory
+ * 
+ * @see http://www.semanticsoftware.info/durm-german-lemmatizer
+ * 
  * @author Marek Schmidt
  * 
  */
@@ -311,23 +314,6 @@ public class KiWiGATEServiceImpl implements KiWiGATEServiceLocal {
 			
 			params.put(gate.creole.gazetteer.DefaultGazetteer.DEF_GAZ_CASE_SENSITIVE_PARAMETER_NAME, false);
 			contentItemTitlesGazetteer = (gate.creole.gazetteer.Gazetteer) Factory.createResource("gate.creole.gazetteer.DefaultGazetteer", params);
-
-			// Sebastian: implemented a more efficient listing of content item title and uri than 
-			// contentItemService.getContentItems(); see ContentItem for named query
-			/*Query q = entityManager.createNamedQuery("kiwiGATEService.listContentItems");
-			for (Object[] item : (List<Object[]>)q.getResultList()) {
-				
-				if(item[0] != null && item[1] != null) {
-					String uri = (String)item[1];
-					Lookup l = new Lookup("terms", "ontology", uri, "english");
-					
-					// log.info("adding lookup #0 #1", ((String)item[0]).toLowerCase(), uri);
-	
-					contentItemTitlesGazetteer.add(((String)item[0]).toLowerCase(), l);
-				} else {
-					log.debug("content item with uri #1 and title #0 was not added to gazetteer",item[0],item[1]);
-				}
-			}*/
 			
 			for (Object[] item : labelService.getLabels()) {
 				Long resourceId = (Long)item[1];
@@ -448,11 +434,6 @@ public class KiWiGATEServiceImpl implements KiWiGATEServiceLocal {
 		} catch(Exception e) {
 			log.info("error in GATE execution", e);
 		}
-		
-		/*AnnotationSet as = doc.getAnnotations();
-		for (Annotation a : as) {
-			log.info("annotation: #0", a.toString());
-		}*/
 	}
 
 	@Deprecated
@@ -488,14 +469,6 @@ public class KiWiGATEServiceImpl implements KiWiGATEServiceLocal {
 		}
 	}
 	
-	/*
-	@Observer(value=KiWiEvents.TITLE_UPDATED)
-	public void onTitleUpdated(ContentItem ci) {
-		Events.instance().raiseAsynchronousEvent(KiWiEvents.TITLE_UPDATED+"Async", ci);
-	}*/
-	
-	//@Asynchronous
-	//@Observer(value=KiWiEvents.TITLE_UPDATED+"Async")
 	
 	@Override
 	public void addEntity(ContentItem ci) {

@@ -34,6 +34,7 @@
 package kiwi.api.tagging;
 
 import java.util.List;
+import java.util.Set;
 
 import kiwi.model.content.ContentItem;
 import kiwi.model.kbase.KiWiResource;
@@ -224,5 +225,11 @@ public interface TaggingService {
 	 * @param amountOfTags
 	 * @return
 	 */
-	public float getTagFrequencyByContentItem(String tagLabel, ContentItem contentItem, Float amountOfTags);	
+	public float getTagFrequencyByContentItem(String tagLabel, ContentItem contentItem, Float amountOfTags);
+
+
+    void addTagsByURI(ContentItem item, Set<String> uris);
+
+
+    Set<ContentItem> addTagsByLabel(ContentItem item, Set<String> labels);	
 }

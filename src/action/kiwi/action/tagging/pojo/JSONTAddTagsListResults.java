@@ -15,7 +15,7 @@ public class JSONTAddTagsListResults {
 		taxonomies = new ArrayList<JSONObject>();
 	}
 
-	public void addTags(String success, String error) throws JSONException {
+	public void addTags(String success, String error, String newItems) throws JSONException {
 		final JSONObject jsonObject = new JSONObject();
 		if (success != null) {
 		    jsonObject.put("Success ", success);    
@@ -25,6 +25,9 @@ public class JSONTAddTagsListResults {
 		    jsonObject.put("Error", error);    
 		}
 		
+		if (newItems == null) {
+		    jsonObject.put("newItems", newItems);
+		}
 
 		taxonomies.add(jsonObject);
 	}

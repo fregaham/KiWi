@@ -42,6 +42,10 @@ import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.log.Log;
 
 
+import dkms.action.dkmsContentItem.DkmsContentItemBean;
+import dkms.datamodel.dkmsContentItem.DkmsContentItemFacade;
+
+
 
 @Scope(ScopeType.SESSION)
 @Name("dkmsContentRetrievalAction")
@@ -52,6 +56,8 @@ public class DkmsContentRetrievalAction implements Serializable {
 	
 	@Logger
 	private Log log;
+	
+	private String contentItemTypeName;
 	
 	private String fullquery;
 	
@@ -78,6 +84,10 @@ public class DkmsContentRetrievalAction implements Serializable {
     private KiWiEntityManager kiwiEntityManager;
 	
 	private KiWiSearchResults searchResults;
+	
+	@In(create = true)
+	private DkmsContentItemBean dkmsContentItemBean;
+	
 	
 	
 	@In(create=true)
@@ -164,7 +174,7 @@ public class DkmsContentRetrievalAction implements Serializable {
 		if(searchResults != null) {
 			
 			for (Iterator iterator = searchResults.getTypeFacets().iterator(); iterator.hasNext();) {
-				KiWiFacet<KiWiResource> kiWiFacet = (KiWiFacet<KiWiResource>) iterator.next();
+				KiWiFacet<KiWiResource> kiWiFacet = (KiWiFacet<KiWiResource>) iterator.next(); 
 				log.info(kiWiFacet.getContent().getLabel());
 				//if(kiWiFacet.getContent().getLabel().contains("ArtWork") || kiWiFacet.getContent().getLabel().contains("ArtAroundUser")){
 				if(kiWiFacet.getContent().getLabel().contains("DkmsContentItem")){
@@ -444,8 +454,8 @@ public class DkmsContentRetrievalAction implements Serializable {
 		
 		for(Set<KiWiFacet<KiWiResource>> kur : hh){
 			for(KiWiFacet<KiWiResource> f: kur){
-				result.add(f);
-				log.info(f.getContent().getContentItem().getTitle());
+				result.add(f); 
+				log.info(f.getContent().getContentItem().getTitle()); f.getContent().getKiwiIdentifier();
 				
 				log.info(f.getQuery());
 				log.info(hh);
@@ -684,5 +694,51 @@ public class DkmsContentRetrievalAction implements Serializable {
 		return ls;
 	}
 	
+	public String getContentItemTypeName() {
+		return contentItemTypeName;
+	}
+
+
+	public void setContentItemTypeName(String contentItemTypeName) {
+		this.contentItemTypeName = contentItemTypeName;
+	}
 	
-}
+	public String showContentItemPresentation(ContentItem ci){		
+		
+		 DkmsContentItemFacade contentItemFacade = kiwiEntityManager.createFacade(ci, DkmsContentItemFacade.class);		
+		 dkmsContentItemBean.init(contentItemFacade);
+		 
+		 
+		 if (contentItemFacade.getDkmsContentItemType().equals("1")){
+			 setContentItemTypeName("Simple Resource");
+			 return "/edukms/abcmaths/exerciseSheetPresentation.xhtml";
+			}
+		 else if (contentItemFacade.getDkmsContentItemType().equals("2")){
+			 setContentItemTypeName("Segmented Resource");
+			 return "/edukms/abcmaths/sequencePresentation.xhtml";
+			}
+		 else if (contentItemFacade.getDkmsContentItemType().equals("3")){
+			 setContentItemTypeName("Uploaded Resource");
+			 return "/edukms/abcmaths/documentPresentation.xhtml";
+			}
+		 else if (contentItemFacade.getDkmsContentItemType().equals("4")){
+			 setContentItemTypeName("Wiki Resource");
+			 return "/edukms/abcmaths/wikiPresentation.xhtml";
+			}
+		 else if (contentItemFacade.getDkmsContentItemType().equals("5")){
+			 setContentItemTypeName("Blog");
+			 return "/edukms/abcmaths/blogPresentation.xhtml";
+			}
+		 else if (contentItemFacade.getDkmsContentItemType().equals("6")){
+			 setContentItemTypeName("Combined Resource");
+			 return "/edukms/abcmaths/combinedResourcesPresentation.xhtml";
+			}
+		 else return "";
+		 
+	}
+				
+}	
+	
+	
+	
+	

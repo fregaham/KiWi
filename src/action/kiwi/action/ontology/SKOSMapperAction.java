@@ -45,6 +45,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import kiwi.api.config.ConfigurationService;
 import kiwi.api.ontology.SKOSPrefixMapperService;
 import kiwi.api.ontology.SKOSService;
 import kiwi.model.ontology.SKOSConcept;
@@ -76,6 +77,9 @@ public class SKOSMapperAction {
     @In
     private SKOSPrefixMapperService skosPrefixMapperService;
 
+    @In
+    private ConfigurationService configurationService;
+
     private SKOSConceptUIHelper[] conceptHelpers;
 
     private int conceptLevel;
@@ -91,7 +95,8 @@ public class SKOSMapperAction {
     public void init() {
         conceptLevel = 1;
         final List<SKOSConcept> topConcepts = skosService.getTopConcepts();
-        conceptHelpers = new SKOSConceptUIHelper[topConcepts.size()];
+        final int size = topConcepts.size();
+        conceptHelpers = new SKOSConceptUIHelper[size];
         int coneptIdex = 0;
         for (SKOSConcept concept : topConcepts) {
             // mihai : I am not sure about the title, this can be
@@ -210,11 +215,12 @@ public class SKOSMapperAction {
     public void commitAll() {
         for (SKOSConceptUIHelper helper : conceptHelpers) {
             log.debug("Do #0 mapping.", helper);
+            final boolean required = helper.isRequired();
             final String conceptURI = helper.getPatrentConceptURI();
-            final String[] prefixes = helper.getPrefixes();
+            final String[] prefixes = helper.getPrefixes(); 
             int level = 0;
             for (String prefix : prefixes) {
-                skosPrefixMapperService.assingAllSKOSToPrefix(conceptURI, prefix, level);
+                skosPrefixMapperService.assingAllSKOSToPrefix(conceptURI, prefix, level, required);
                 level++;
             }
         }

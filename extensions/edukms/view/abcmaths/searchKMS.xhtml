@@ -259,90 +259,16 @@ h1 {
 		<br/>
 		<div class="search_results" style="margin-left:10px">
 		
-<!--		<div style="height:150px; overflow:auto; margin-left:25px; margin-top:10px ">-->
-<!--			<table cellspacing="1">-->
-<!--				<c:forEach items ="#{dkmsContentRetrievalAction.searchResults}" var="r">-->
-<!--					<c:if test="#{r.item.dkmsContentItemType == '1'}">-->
-<!--								-->
-<!--					<tr>-->
-<!--						<td style="border:1px solid #FFE8C3; width:200px">-->
-<!--						<h5 style="margin:5px">#{r.item.title}</h5>-->
-<!--						</td >-->
-<!--						<td style="border:1px solid #FFE8C3; width:30px">-->
-<!--						<img src="#{facesContext.externalContext.requestContextPath}/view/img/angabe_verysmall.png" style="valign: center; vertical-align: middle; margin: 2px" title="Simple resource"/>-->
-<!--						</td>-->
-<!--						-->
-<!--						<td style="border:1px solid #FFE8C3; width:100px">-->
-<!--						#{r.item.itemId}-->
-<!--						</td>-->
-<!--					</tr>-->
-<!--					-->
-<!--					</c:if>-->
-<!--					<c:if test="#{r.item.dkmsContentItemType == '2'}">-->
-<!--					-->
-<!--					<tr>-->
-<!--						<td style="border:1px solid #FFE8C3; width:200px">-->
-<!--						<h5 style="margin:5px">#{r.item.title}</h5>-->
-<!--						</td >-->
-<!--						<td style="border:1px solid #FFE8C3; width:30px">-->
-<!--						<img src="#{facesContext.externalContext.requestContextPath}/view/img/dokumente_verysmall.png" style="valign: center; vertical-align: middle; margin: 2px" title="Segmented resource"/>-->
-<!--						</td>-->
-<!--						-->
-<!--						<td style="border:1px solid #FFE8C3; width:100px">-->
-<!--						#{r.item.itemId}-->
-<!--						</td>																	-->
-<!--					</tr>-->
-<!--			-->
-<!--				</c:if>-->
-<!--				<c:if test="#{r.item.dkmsContentItemType == '3'}">-->
-<!--				-->
-<!--					<tr>-->
-<!--						<td style="border:1px solid #FFE8C3; width:200px">-->
-<!--						<h5 style="margin:5px">#{r.item.title}</h5>-->
-<!--						</td >-->
-<!--						<td style="border:1px solid #FFE8C3; width:30px">-->
-<!--						<img src="#{facesContext.externalContext.requestContextPath}/view/img/pdf_dokument_verysmall.png" style="valign: center; vertical-align: middle; margin: 2px" title="Uploaded resource"/>-->
-<!--						</td>-->
-<!--						-->
-<!--						<td style="border:1px solid #FFE8C3; width:100px">-->
-<!--						#{r.item.itemId}-->
-<!--						</td>											-->
-<!--					</tr>-->
-<!--			-->
-<!--				</c:if>-->
-<!--				</c:forEach>-->
-<!--			</table>-->
-<!--			</div>-->
-			
-			<!--  <ui:repeat value="#{dkmsContentRetrievalAction.searchResults}" var="r"> -->
-			<div>
+		<div style="height:400px; overflow:auto; margin-left:0px; margin-top:10px ">
+		
 			<c:forEach items ="#{dkmsContentRetrievalAction.searchResults}" var="r">
-				<h:form>
-					#{r.item.title} / #{r.ceq} / #{r.score} /
-					
-<!--					#{r.getContent().getContentItem().getTitle()}-->
-			<!--  	  <h:commandButton value = "press" action = "#{artaround.layoutAction.getSearchResultItemTemplate(r.item)}"/> -->
-<!--				    <table><tr><td> -->
-<!--					<ui:include src="#{artaround.layoutAction.getSearchResultItemTemplate(r.item)}" >-->
-<!--						<ui:param name="ci" value="#{r.item}" />-->
-<!--						<ui:param name="score" value="#{r.score} " />-->
-<!--						<ui:param name="preview" value="#{r.highlightPreview} Hallo"/>-->
-<!--					</ui:include>-->
-<!--					</td><td>-->
-<!--						 <div style="margin-left:30px">-->
-<!--						 <h:outputText value = "Bewertung:"/> -->
-<!--						 <br/>-->
-<!--						 <h:outputText value = "#{r.ceq}"/> -->
-<!--						 <br/>-->
-<!--						 <h:outputText value = "#{showArtWorkAction.getEquityValue(r.item)}"/>	-->
-<!--						 </div>				-->
-<!--					</td></tr></table>-->
-					<br/>
-			        <div style="border-bottom: 1px solid #ccc;"></div>
-			
-				</h:form>
+
+				<ui:include src="#{dkmsSearchResultAction.getSearchResultItemTemplate(r.item)}" >				
+						<ui:param name="ci" value="#{r.item}" />
+				</ui:include>
 			</c:forEach>
-		</div>
+			
+		</div>		
 	  </div>
 	  
 	  <br/><br/>

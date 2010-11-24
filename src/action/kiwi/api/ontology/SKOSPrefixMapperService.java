@@ -56,10 +56,13 @@ import kiwi.model.ontology.SKOSToPrefixMapper;
 public interface SKOSPrefixMapperService {
 
     void assingSKOSToPrefix(SKOSConcept concept, String prefix, int level);
-    
+    void assingSKOSToPrefix(SKOSConcept concept, String prefix, int level, boolean required);
+
     void assingAllSKOSToPrefix(SKOSConcept concept, String prefix, int level);
+    void assingAllSKOSToPrefix(SKOSConcept concept, String prefix, int level, boolean required);
     
     void assingAllSKOSToPrefix(String conceptURI, String prefix, int level);
+    void assingAllSKOSToPrefix(String conceptURI, String prefix, int level, boolean required);
 
     String getTopConceptPrefix(SKOSConcept concept);
 

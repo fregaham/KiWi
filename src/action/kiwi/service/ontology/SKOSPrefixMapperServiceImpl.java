@@ -93,9 +93,13 @@ public class SKOSPrefixMapperServiceImpl implements
 
     @Override
     public void assingSKOSToPrefix(SKOSConcept concept, String prefix, int level) {
-        final ContentItem delegate = concept.getDelegate();
-        final String uri = ((KiWiUriResource) delegate.getResource()).getUri();
+        assingSKOSToPrefix(concept, prefix, level, false);
+    }
 
+    
+    @Override
+    public void assingSKOSToPrefix(SKOSConcept concept, String prefix, int level, boolean required) {
+        final String uri = getURI(concept);
         final SKOSConcept topConcept = getTopConcept(concept);
         final ContentItem delegateTopConcept = topConcept.getDelegate();
         final String topConceptURI =
@@ -105,28 +109,63 @@ public class SKOSPrefixMapperServiceImpl implements
         final String title = concept.getTitle();
         if (!mapExists) {
             entityManager.persist(new SKOSToPrefixMapper(uri, topConceptURI,
-                    prefix, title, level));
+                    prefix, title, level, required));
         } else {
             entityManager.merge(new SKOSToPrefixMapper(uri, topConceptURI,
-                    prefix, title, level));
+                    prefix, title, level, required));
         }
     }
 
+    private String getURI(SKOSConcept concept) {
+        final ContentItem delegate = concept.getDelegate();
+        final String uri = ((KiWiUriResource) delegate.getResource()).getUri();
+
+        return uri;
+    }
+
     public void assingAllSKOSToPrefix(String conceptURI, String prefix, int level) {
-        final Query query = entityManager.createNamedQuery("update.skosConceptsForParentAndLevel");
-        
+        final Query query =
+                entityManager.createNamedQuery("update.skosConceptsForParentAndLevel");
+
         query.setParameter("parentURI", conceptURI);
         query.setParameter("prefix", prefix);
         query.setParameter("level", level);
-        
-        final int executeUpdate = query.executeUpdate();
-        System.out.println("executeUpdate : " + executeUpdate);
-        
-    }
-    
-    public void assingAllSKOSToPrefix(SKOSConcept concept, String prefix, int level) {
+
+        query.executeUpdate();
     }
 
+    @Override
+    public void assingAllSKOSToPrefix(String conceptURI, String prefix,
+            int level, boolean required) {
+        final Query query =
+            entityManager.createNamedQuery("update.skosConceptsAndRequiredForParentAndLevel");
+
+        query.setParameter("parentURI", conceptURI);
+        query.setParameter("prefix", prefix);
+        query.setParameter("level", level);
+        query.setParameter("required", required);
+
+        query.executeUpdate();
+    }
+
+    public void assingAllSKOSToPrefix(SKOSConcept concept, String prefix, int level) {
+        final String conceptURI = getURI(concept);
+        final Query query =
+            entityManager.createNamedQuery("update.skosConceptsForParentAndLevel");
+
+        query.setParameter("parentURI", conceptURI);
+        query.setParameter("prefix", prefix);
+        query.setParameter("level", level);
+
+        query.executeUpdate();
+    }
+
+    @Override
+    public void assingAllSKOSToPrefix(SKOSConcept concept, String prefix,
+            int level, boolean required) {
+        final String uri = getURI(concept);
+        assingAllSKOSToPrefix(uri, prefix, level, required);
+    }
 
     private SKOSConcept getTopConcept(SKOSConcept nextConcept) {
         SKOSConcept top = nextConcept;
@@ -254,12 +293,12 @@ public class SKOSPrefixMapperServiceImpl implements
 
         return resultList;
     }
-    
+
     @Override
     public Set<SKOSConcept> getAllConcepts(String topConceptUri, String prefix, int nestLevel) {
         final List<SKOSToPrefixMapper> prefixMappers =
                 getAllMappings(topConceptUri, prefix, nestLevel);
-        
+
         final Set<SKOSConcept> result = new HashSet<SKOSConcept>();
         for (SKOSToPrefixMapper mapper : prefixMappers) {
             final String uri = mapper.getUri();

@@ -359,6 +359,23 @@ public class TaggingServiceImpl implements TaggingServiceLocal, TaggingServiceRe
 		return q.getResultList();
 	}	
 	
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<Tag> getTagsByLabelPrefix(String labelPrefix) {
+
+	    if (labelPrefix == null) {
+	        final NullPointerException exception = 
+	                new NullPointerException("The label prefix argument can not be null.");
+	        log.error(exception.getMessage(), exception);
+            throw exception;
+	    }
+	    
+	    Query q = entityManager.createNamedQuery("taggingService.listTagsByPrefix");
+	    q.setParameter("pattern", labelPrefix + "%");
+	    final List result = q.getResultList();
+        return result;
+	}	
+	
 	@SuppressWarnings("unchecked")
 	public List<Tag> getAllTags() {
 		Query q = entityManager.createNamedQuery("taggingService.listAllTags");

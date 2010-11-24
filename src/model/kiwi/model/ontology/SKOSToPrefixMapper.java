@@ -67,6 +67,11 @@ import javax.persistence.*;
                   "UPDATE SKOSToPrefixMapper skos_map " +
          		  " SET skos_map.prefix=:prefix " +
                   " WHERE skos_map.parentURI=:parentURI AND skos_map.level=:level"),
+       @NamedQuery(name = "update.skosConceptsAndRequiredForParentAndLevel", query = 
+                      "UPDATE SKOSToPrefixMapper skos_map " +
+                      " SET skos_map.prefix=:prefix, " +
+                      " skos_map.required=:required " +
+                  " WHERE skos_map.parentURI=:parentURI AND skos_map.level=:level"),
         @NamedQuery(name = "delete.allSkosMaps", query = "DELETE FROM SKOSToPrefixMapper")})
 @Entity
 public class SKOSToPrefixMapper implements Serializable {
@@ -84,14 +89,17 @@ public class SKOSToPrefixMapper implements Serializable {
     private String prefix;
 
     private int level;
+    
+    private boolean required;
 
     public SKOSToPrefixMapper(String uri, String parentURI, String prefix,
-            String label, int level) {
+            String label, int level, boolean required) {
         this.uri = uri;
         this.parentURI = parentURI;
         this.prefix = prefix;
         this.label = label;
         this.level = level;
+        this.required = required;
     }
 
     public SKOSToPrefixMapper() {
@@ -170,6 +178,20 @@ public class SKOSToPrefixMapper implements Serializable {
 
     public void setParentURI(String parentURI) {
         this.parentURI = parentURI;
+    }
+
+    /**
+     * @return the required
+     */
+    public boolean isRequired() {
+        return required;
+    }
+
+    /**
+     * @param required the required to set
+     */
+    public void setRequired(boolean required) {
+        this.required = required;
     }
 
     @Override

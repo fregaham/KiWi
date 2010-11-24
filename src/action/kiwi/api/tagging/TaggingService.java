@@ -231,5 +231,14 @@ public interface TaggingService {
     void addTagsByURI(ContentItem item, Set<String> uris);
 
 
-    Set<ContentItem> addTagsByLabel(ContentItem item, Set<String> labels);	
+    Set<ContentItem> addTagsByLabel(ContentItem item, Set<String> labels);
+
+    /**
+     * Returns all the tags where the tag label starts with a given prefix.
+     *
+     * @param labelPrefix the prefix.
+     * @return a list with all all the tags where the tag label starts with
+     * a given prefix.
+     */
+    List<Tag> getTagsByLabelPrefix(String labelPrefix);	
 }

@@ -59,6 +59,8 @@ public class SKOSConceptUIHelper implements Serializable {
 
     private String patrentConceptURI;
     
+    private boolean required;
+    
     private String title;
 
     private String [] prefixes;
@@ -69,6 +71,7 @@ public class SKOSConceptUIHelper implements Serializable {
         final String uri = ((KiWiUriResource) delegate.getResource()).getUri();
         this.patrentConceptURI = uri;
         this.prefixes = new String[prefixexCount];
+        this.required = true;
         for (int i = 0; i < prefixexCount; i++) {
             prefixes[i] = prefix;
         }
@@ -116,7 +119,13 @@ public class SKOSConceptUIHelper implements Serializable {
         this.patrentConceptURI = patrentConceptURI;
     }
     
-    
+    public boolean isRequired() {
+        return required;
+    }
+
+    public void setRequired(boolean required) {
+        this.required = required;
+    }
 
     /* (non-Javadoc)
      * @see java.lang.Object#toString()

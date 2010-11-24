@@ -33,7 +33,7 @@ public class DkmsReadModusAction {
 
 	@In(create = true)
 	private DkmsImageService dkmsImageService;
-
+	
 	@In(required = false)
 	private DkmsContentItemService dkmsContentItemService;
 

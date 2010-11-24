@@ -9,12 +9,14 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -56,12 +58,11 @@ import sun.nio.cs.ext.SJIS;
 /**
  * WebService endpoint for tagging Path to the methods: [TaggingWS] =
  * http://localhost:8080/KiWi/seam/resource/services/widgets/tagging
- * 
+ *
  * [TaggingWS]/listTags.json?docUri=http://
  * query.json?q=StartPage&jsonpCallback=cb123
  * 
  * @author Szaby Grünwald
- * 
  */
 @Name("kiwi.webservice.TaggingWebService")
 @Scope(ScopeType.STATELESS)
@@ -75,17 +76,11 @@ public class TaggingWebService {
     private TaggingService taggingService;
 
     @In(create = true)
-    private User currentUser;
-
-    @In(create = true)
     private EquityService equityService;
 
     @In(create = true)
     private SKOSPrefixMapperService skosPrefixMapperService;
 
-    @In(create = true)
-    private SKOSService skosService;
-    
     @In
     private ConfigurationService configurationService;
 
@@ -197,16 +192,16 @@ public class TaggingWebService {
     /**
      * Webservice for creating tags for a resource
      * 
-     * @param docUri
-     *            WS URI parameter "resource=" resource uri
+     * @param docUri WS URI parameter "resource=" resource uri.
      * @param tags
      * @return
      */
     @POST
+    @Consumes("application/x-www-form-urlencoded")
     @Path("/addTags")
     @Produces("application/json")
-    public Response addTags(@QueryParam("resource") String docUri,
-            @QueryParam("tags") String tags) {
+    public Response addTags(@FormParam("resource") String docUri,
+            @FormParam("tags") String tags) {
 
         ContentItemService ciService = (ContentItemService) Component
                 .getInstance("contentItemService");
@@ -223,15 +218,15 @@ public class TaggingWebService {
         }
 
         final StringBuilder jsons = new StringBuilder(tags);
-        // removes the '[' 
+        // removes the '['
         jsons.deleteCharAt(0);
         // removes the ']'
         jsons.deleteCharAt(jsons.length() - 1);
-        
+
         final Set<String> jsonURIS = new HashSet<String>();
         final Set<String> jsonLabel = new HashSet<String>();
-        for (final StringTokenizer stk = new StringTokenizer(jsons.toString(), ","); 
-                stk.hasMoreElements(); ) {
+        for (final StringTokenizer stk = new StringTokenizer(jsons.toString(),
+                ","); stk.hasMoreElements();) {
             final String next = stk.nextToken();
             try {
                 final JSONObject jsonObject = new JSONObject(next);
@@ -250,16 +245,15 @@ public class TaggingWebService {
             }
         }
 
-        final Set<ContentItem> tagsByLabel =
-                taggingService.addTagsByLabel(item, jsonLabel);
+        final Set<ContentItem> tagsByLabel = taggingService.addTagsByLabel(
+                item, jsonLabel);
 
         taggingService.addTagsByURI(item, jsonLabel);
 
         final JSONTAddTagsListResults result = new JSONTAddTagsListResults();
         try {
-            final String newTags = tagsByLabel.isEmpty()
-                ? null
-                : tagsByLabel.toString();
+            final String newTags = tagsByLabel.isEmpty() ? null : tagsByLabel
+                    .toString();
             result.addTags("200", null, newTags);
         } catch (JSONException jException) {
             log.error(jException.getMessage(), jException);
@@ -279,12 +273,11 @@ public class TaggingWebService {
      *            can be private of shared
      * @return
      */
-    @GET
+    @POST
     @Path("/removeTags")
     @Produces("application/json")
-    public Response removeTags(@QueryParam("resource") String docUri,
-            @QueryParam("tags") String tags,
-            @QueryParam("mode") @DefaultValue("private") String mode) {
+    public Response removeTags(@FormParam("resource") String docUri,
+            @FormParam("tags") String tagURI ) {
 
         ContentItemService ciService = (ContentItemService) Component
                 .getInstance("contentItemService");
@@ -294,13 +287,12 @@ public class TaggingWebService {
             return Response.status(Status.NOT_FOUND).build();
         }
 
-        if (tags == null || "".equals(tags.trim())) {
+        if (tagURI == null || "".equals(tagURI.trim())) {
             return Response.status(Status.BAD_REQUEST).build();
         }
 
-        String[] tagUris = tags.split(",");
-        taggingService.removeTaggings(item, tagUris,
-                (mode.toLowerCase() != "private" ? true : false));
+        String[] tagUris = new String[] {};
+        taggingService.removeTaggings(item, tagUris, false);
 
         final JSONTAddTagsListResults result = new JSONTAddTagsListResults();
         try {
@@ -343,71 +335,33 @@ public class TaggingWebService {
         for (SKOSToPrefixMapper mapper : allMappings) {
             final String label = mapper.getLabel();
             final String prefix = mapper.getPrefix();
+            final boolean required = mapper.isRequired();
             try {
-                results.addTaxonomies(label, prefix, false);
+                results.addTaxonomies(label, prefix, required);
             } catch (JSONException jException) {
                 log.error(jException.getMessage(), jException);
             }
         }
-        
+
         return Response.ok(results.toString()).build();
     }
 
-    @GET
-    @Path("/searchTags")
-    @Produces("application/json")
-    public Response searchTags(@QueryParam("q") String q) {
+    private Response searchTagsForLabelPrefix(String prefix) {
+        final List<Tag> tags = taggingService.getTagsByLabelPrefix(prefix);
 
-        final int indexOf = q.indexOf(":"); 
-        final String prefix = indexOf == -1 
-            ? q.trim()
-            : q.substring(0, indexOf).trim();
-
-        log.debug("Try to process #0", q);
-        final boolean noQuery = indexOf == -1;
-        final Set<SKOSConcept> concepts;
-        if (noQuery) {
-            // this block if the search quiery looks like this : 
-            // 'prefix:', in this case the label is missing.
-            // according with the specification the Information Extraction
-            // configuration is used to define pairs top level concept level.
-            // the search care about this mapping and it searches for all
-            // concepts with :
-            // 1.a specified top level concept (specified in the IE Config)
-            // 2.a given nesting level (specified in the IE Config)
-            // 3.a certain prefix specified in the search query.
-            final Map<String, Integer> noQueryParam = getNoQueryParam();
-
-            concepts = new HashSet<SKOSConcept>();
-            for (Entry<String, Integer> conf :  noQueryParam.entrySet()) {
-                final String uri = conf.getKey();
-                final Integer level = conf.getValue();
-                final Set<SKOSConcept> allConcepts = skosPrefixMapperService.getAllConcepts(uri, prefix, level);
-                concepts.addAll(allConcepts);
-            }
-        } else {
-            final String query = q.substring(indexOf + 1, q.length()).trim();
-            // This pattern matches all the string that starts with the given
-            // prefix.
-            final String jpqlLikePattern = query + "%";
-            concepts = skosPrefixMapperService.getConcepts(prefix, jpqlLikePattern);
-        }
-
-        // FIXME : skos concepts are also tags :)
         final JSONTagListResults jsonRes = new JSONTagListResults();
-        for (SKOSConcept concept : concepts) {
-            final String uri = ((KiWiUriResource) concept.getResource())
+        for (Tag tag : tags) {
+            final String uri = ((KiWiUriResource) tag.getResource())
                     .getUri();
-            final ContentItem item = concept.getDelegate();
+            // FIXME : care about usage.
             final Long usage = 0l;
 
-            double tq = equityService.getTagEquity(item);
+            double tq = equityService.getTagEquity(tag);
 
-            final String label = item.getTitle();
+            final String label = tag.getLabel();
             // mihai : I am not sure if this is the right way to obtain the
             // controlled attribute.
-            boolean controlled = taggingService.isControlled(concept
-                    .getResource());
+            boolean controlled = taggingService.isControlled(tag.getResource());
             // FIXME : this is wrong, obtian the isOwnTag from somewhere
             // FIXME : I am not sure if I need this attribute.
             boolean isOwnTag = false;
@@ -420,24 +374,109 @@ public class TaggingWebService {
             }
         }
 
+        final Response result = Response.ok(jsonRes.toString()).build();
+
+        return result;
+    }
+
+    @GET
+    @Path("/searchTags")
+    @Produces("application/json")
+    public Response searchTags(@QueryParam("q") String q) {
+        log.debug("Try to process #0", q);
+        final int indexOf = q.indexOf(":");
+        final boolean noSeparator = indexOf == -1;
+        final String prefix = noSeparator
+                ? q.trim()
+                : q.substring(0, indexOf).trim();
+
+        if (noSeparator) {
+            // /there is no ':'
+            // all tags (both free and controlled ones)
+            // with labels starting with prefix
+            final Response searchTagsForPrefix =
+                    searchTagsForLabelPrefix(prefix);
+            return searchTagsForPrefix;
+        }
+
+        final Set<SKOSConcept> concepts;
+        final String label = q.substring(indexOf + 1, q.length()).trim();
+        if (label.isEmpty()) {
+            // empty label
+            // this if block the searchs quiery looks like this :
+            // 'prefix:', in this case the label is missing.
+            // according with the specification the Information Extraction
+            // configuration is used to define pairs top level concept level.
+            // the search care about this mapping and it searches for all
+            // concepts with :
+            // 1.a specified top level concept (specified in the IE Config)
+            // 2.a given nesting level (specified in the IE Config)
+            // 3.a certain prefix specified in the search query.
+
+            final Map<String, Integer> noQueryParam = getNoQueryParam();
+
+            concepts = new HashSet<SKOSConcept>();
+            for (Entry<String, Integer> conf : noQueryParam.entrySet()) {
+                final String uri = conf.getKey();
+                final Integer level = conf.getValue();
+                final Set<SKOSConcept> allConcepts = skosPrefixMapperService
+                        .getAllConcepts(uri, prefix, level);
+                concepts.addAll(allConcepts);
+            }
+
+        } else {
+            // label and prefix are present.
+            final String query = q.substring(indexOf + 1, q.length()).trim();
+            // This pattern matches all the string that starts with the given
+            // prefix.
+            final String jpqlLikePattern = query + "%";
+            concepts = skosPrefixMapperService.getConcepts(prefix,
+                    jpqlLikePattern);
+        }
+
+        final JSONTagListResults jsonRes = new JSONTagListResults();
+        for (SKOSConcept concept : concepts) {
+            final String uri = ((KiWiUriResource) concept.getResource())
+                    .getUri();
+            final ContentItem item = concept.getDelegate();
+            // FIXME : care about usage.
+            final Long usage = 0l;
+
+            double tq = equityService.getTagEquity(item);
+
+            final String tagLabel = item.getTitle();
+            // mihai : I am not sure if this is the right way to obtain the
+            // controlled attribute.
+            boolean controlled = taggingService.isControlled(concept
+                    .getResource());
+            // FIXME : this is wrong, obtian the isOwnTag from somewhere
+            // FIXME : I am not sure if I need this attribute.
+            boolean isOwnTag = false;
+            log.info("tag label: #0, uri: #1, tq: #2", tagLabel, uri, tq);
+
+            try {
+                jsonRes.addTag(uri, usage, tagLabel, tq, controlled, isOwnTag);
+            } catch (JSONException e) {
+                log.error(e.getMessage(), e);
+            }
+        }
+
         return Response.ok(jsonRes.toString()).build();
     }
-    
-    
 
     /**
-     * Returns a map that contains like key a top concept 
-     * URI and like value the nesting level. This setting was 
-     * done in the IEConfigurationAction. 
-     *  
-     * @return a map that contains like key a top concept 
-     * URI and like value the nesting level. If this map is 
-     *  empty then no configuration was done.
+     * Returns a map that contains like key a top concept URI and like value the
+     * nesting level. This setting was done in the IEConfigurationAction.
+     *
+     * @return a map that contains like key a top concept URI and like value the
+     *         nesting level. If this map is empty then no configuration was
+     *         done.
      */
     private Map<String, Integer> getNoQueryParam() {
         final Map<String, Integer> result = new HashMap<String, Integer>();
         final String key = "kiwi.informationextraction.taxonomyConcepts";
-        final List<String> listConfiguration = configurationService.getListConfiguration(key);
+        final List<String> listConfiguration = configurationService
+                .getListConfiguration(key);
         for (String conf : listConfiguration) {
             final StringTokenizer tokenizer = new StringTokenizer(conf);
             final String concept = tokenizer.nextToken();

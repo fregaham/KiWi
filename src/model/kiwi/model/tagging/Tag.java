@@ -107,6 +107,11 @@ import org.hibernate.validator.NotNull;
 				  "from kiwi.model.tagging.Tag t " +
 				  "where t.taggingResource.title = :label " +
 				  "  and t.deleted = false"),
+	@NamedQuery(name="taggingService.listTagsByPrefix",
+				          query="SELECT t " +
+				          "FROM kiwi.model.tagging.Tag AS t " +
+				          "WHERE t.taggingResource.title LIKE :pattern " +
+				          " AND t.deleted = false"),
 	@NamedQuery(name="taggingService.listTaggedItems",
 			query="select t.taggedResource " +
 				  "from kiwi.model.tagging.Tag t " +

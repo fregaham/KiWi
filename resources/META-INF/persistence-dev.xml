@@ -49,7 +49,6 @@
          <!-- path to where GATE is installed, also, where the information extraction feature storage will store its data -->
          <property name="kiwi.gate.home" 
                   value="/home/marcho/java/rrs/gate"/>
-
          <!--  caching -->
    		 <property name="hibernate.cache.region.factory_class" 
                    value="net.sf.ehcache.hibernate.EhCacheRegionFactory"/>

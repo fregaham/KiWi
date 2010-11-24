@@ -1,0 +1,146 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+    xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+    xmlns:c="http://java.sun.com/jstl/core"
+    xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:a="http://richfaces.org/a4j">
+		
+		<div class="sr_contentItem">
+		   <h:form>
+		   
+
+				<table cellspacing="1">
+				<tr>
+				<td style="border:1px solid #ddd; width:200px">
+					<h:commandLink action="#{dkmsContentRetrievalAction.showContentItemPresentation(ci)}"><h4 style="margin:5px">#{ci.title}</h4></h:commandLink>			
+				</td>
+				<td style="border:1px solid #ddd; width:100px">
+<!--				<h4 style="margin:5px">#{ci.dkmsContentItemType}</h4>-->
+				</td>
+				<td style="border:1px solid #ddd; width:100px">
+					<h:commandLink action="#{dkmsContentRetrievalAction.showContentItemPresentation(ci)}"><h2 style="margin:5px">Details</h2></h:commandLink>
+				</td>
+				</tr>
+				</table>
+
+				
+<!--				<c:if test="#{ci.dkmsContentItemType == '2'}">			  -->
+<!--				<table cellspacing="1">-->
+<!--				<tr>-->
+<!--				<td style="border:1px solid #ddd; width:200px">-->
+<!--					<h:commandLink action="#{dkmsContentRetrievalAction.showSequencePresentation(ci)}"><h4 style="margin:5px">#{ci.title}</h4></h:commandLink>				-->
+<!--				</td>-->
+<!--				<td style="border:1px solid #ddd; width:30px">-->
+<!--					<img src="#{facesContext.externalContext.requestContextPath}/view/img/dokumente_verysmall.png" style="valign: center; vertical-align: middle; margin: 2px" title="Simple resource"/>-->
+<!--				</td>-->
+<!--				<td style="border:1px solid #ddd; width:100px">-->
+<!--				<h4 style="margin:5px">Segmented Resource</h4>-->
+<!--				</td>-->
+<!--				<td style="border:1px solid #ddd; width:100px">-->
+<!--					<h:commandLink action="#{dkmsContentRetrievalAction.showSequencePresentation(ci)}"><h2 style="margin:5px">Details</h2></h:commandLink>-->
+<!--				</td>-->
+<!--				</tr>-->
+<!--				</table>-->
+<!--				</c:if>-->
+<!--				-->
+<!--				<c:if test="#{ci.dkmsContentItemType == '3'}">			  -->
+<!--				<table cellspacing="1">-->
+<!--				<tr>-->
+<!--				<td style="border:1px solid #ddd; width:200px">-->
+<!--					<h:commandLink action="#{dkmsContentRetrievalAction.showDocumentPresentation(ci)}"><h4 style="margin:5px">#{ci.title}</h4></h:commandLink>				-->
+<!--				</td>-->
+<!--				<td style="border:1px solid #ddd; width:30px">-->
+<!--					<img src="#{facesContext.externalContext.requestContextPath}/view/img/pdf_dokument_verysmall.png" style="valign: center; vertical-align: middle; margin: 2px" title="Simple resource"/>-->
+<!--				</td>-->
+<!--				<td style="border:1px solid #ddd; width:100px">-->
+<!--				<h4 style="margin:5px">Uploaded Resource</h4>-->
+<!--				</td>-->
+<!--				<td style="border:1px solid #ddd; width:100px">-->
+<!--					<h:commandLink action="#{dkmsContentRetrievalAction.showDocumentPresentation(ci)}"><h2 style="margin:5px">Details</h2></h:commandLink>-->
+<!--				</td>-->
+<!--				</tr>-->
+<!--				</table>-->
+<!--				</c:if>-->
+<!--				-->
+<!--				<c:if test="#{ci.dkmsContentItemType == '4'}">			  -->
+<!--				<table cellspacing="1">-->
+<!--				<tr>-->
+<!--				<td style="border:1px solid #ddd; width:200px">-->
+<!--					<h:commandLink action="#{dkmsContentRetrievalAction.showWikiPresentation(ci)}"><h4 style="margin:5px">#{ci.title}</h4></h:commandLink>				-->
+<!--				</td>-->
+<!--				<td style="border:1px solid #ddd; width:30px">-->
+<!--					<img src="#{facesContext.externalContext.requestContextPath}/view/img/network_small.png" style="valign: center; vertical-align: middle; margin: 2px" title="Simple resource"/>-->
+<!--				</td>-->
+<!--				<td style="border:1px solid #ddd; width:100px">-->
+<!--				<h4 style="margin:5px">Wiki Resource</h4>-->
+<!--				</td>-->
+<!--				<td style="border:1px solid #ddd; width:100px">-->
+<!--					<h:commandLink action="#{dkmsContentRetrievalAction.showWikiPresentation(ci)}"><h2 style="margin:5px">Details</h2></h:commandLink>-->
+<!--				</td>-->
+<!--				</tr>-->
+<!--				</table>-->
+<!--				</c:if>-->
+<!--				-->
+<!--				<c:if test="#{ci.dkmsContentItemType == '5'}">			  -->
+<!--				<table cellspacing="1">-->
+<!--				<tr>-->
+<!--				<td style="border:1px solid #ddd; width:200px">-->
+<!--					<h:commandLink action="#{dkmsContentRetrievalAction.showBlogPresentation(ci)}"><h4 style="margin:5px">#{ci.title}</h4></h:commandLink>				-->
+<!--				</td>-->
+<!--				<td style="border:1px solid #ddd; width:30px">-->
+<!--					<img src="#{facesContext.externalContext.requestContextPath}/view/img/blog_small.png" style="valign: center; vertical-align: middle; margin: 2px" title="Simple resource"/>-->
+<!--				</td>-->
+<!--				<td style="border:1px solid #ddd; width:100px">-->
+<!--				<h4 style="margin:5px">Blog entry</h4>-->
+<!--				</td>-->
+<!--				<td style="border:1px solid #ddd; width:100px">-->
+<!--					<h:commandLink action="#{dkmsContentRetrievalAction.showBlogPresentation(ci)}"><h2 style="margin:5px">Details</h2></h:commandLink>-->
+<!--				</td>-->
+<!--				</tr>-->
+<!--				</table>-->
+<!--				</c:if>-->
+<!--				-->
+<!--				<c:if test="#{ci.dkmsContentItemType == '6'}">			  -->
+<!--				<table cellspacing="1">-->
+<!--				<tr>-->
+<!--				<td style="border:1px solid #ddd; width:200px">-->
+<!--					<h:commandLink action="#{dkmsContentRetrievalAction.showCombinedResourcesPresentation(ci)}"><h4 style="margin:5px">#{ci.title}</h4></h:commandLink>				-->
+<!--				</td>-->
+<!--				<td style="border:1px solid #ddd; width:30px">-->
+<!--					<img src="#{facesContext.externalContext.requestContextPath}/view/img/chain_small.PNG" style="valign: center; vertical-align: middle; margin: 2px" title="Simple resource"/>-->
+<!--				</td>-->
+<!--				<td style="border:1px solid #ddd; width:100px">-->
+<!--				<h4 style="margin:5px">Combined Resource</h4>-->
+<!--				</td>-->
+<!--				<td style="border:1px solid #ddd; width:100px">-->
+<!--					<h:commandLink action="#{dkmsContentRetrievalAction.showCombinedResourcesPresentation(ci)}"><h2 style="margin:5px">Details</h2></h:commandLink>-->
+<!--				</td>-->
+<!--				</tr>-->
+<!--				</table>-->
+<!--				</c:if>-->
+<!--				-->
+				
+				
+				
+				
+			</h:form>
+								
+<!--				<h:outputText value="Typ: #{ci.dkmsContentItemType}"/>-->
+		                           <!--
+								   <a:commandLink 
+		                               action="#{searchAction.searchEngine.addSearchPerson(ci.author.login)}" 
+		                               styleClass="searchAddTag" 
+		                               value="#{ci.author.login}" 
+		                               reRender="searchresults,search-keyword,articlemeta"/>
+									-->
+				
+				
+				
+				
+			
+		</div>
+</ui:composition>

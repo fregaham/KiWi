@@ -463,25 +463,27 @@ public class ProfileAction implements Serializable {
 	 * is not add to the inferredInterests (suggested interests) 
 	 * */
 	public List<String> getInferredInterests() {
-		
 		if (inferredInterests == null){
 			UserSkill userSkills = skillService.getSkillsByUserLogin(currentUser.getLogin(),0.0);
 			inferredInterests	 = new ArrayList<String>();
-			if (interests.isEmpty())
-			{
-				inferredInterests.addAll(userSkills.getSkills().keySet());
-			}
-			else
-			{	
-				for (String skill:userSkills.getSkills().keySet()){
-					if (interests.indexOf(skill)==-1){
-						inferredInterests.add(skill);
+			if (userSkills!=null && userSkills.getSkills()!=null && !userSkills.getSkills().isEmpty()){
+				if (interests.isEmpty()){
+					inferredInterests.addAll(userSkills.getSkills().keySet());
+				}else{	
+					for (String skill:userSkills.getSkills().keySet()){
+						if (!interests.contains(skill)){
+							inferredInterests.add(skill);
+						}
 					}
-				}
-			}	
+				}	
+			}
 		}
 		return inferredInterests;
 	}
+	
+	/**
+	 * @param inferredInterests
+	 */
 	public void setInferredInterests(List<String> inferredInterests){
 		this.inferredInterests = inferredInterests;
 	}

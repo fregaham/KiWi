@@ -164,7 +164,7 @@ public class RecommendationServiceImpl implements RecommendationServiceLocal, Re
 	public List<ContentItem> getRecommendations(ContentItem currentItem, User currentUser) {
 		log.info("Calculating similar recommendations");
 
-		Collection<Tag> tags = taggingService.getTags(currentItem);
+		Collection<Tag> tags = taggingService.getTaggings(currentItem);
 
 		
 		List<ContentItem> result = new LinkedList<ContentItem>();
@@ -339,7 +339,7 @@ public class RecommendationServiceImpl implements RecommendationServiceLocal, Re
 	public List<Map.Entry<ContentItem,List<ContentItem>>> getTagGroupedRecommendations(ContentItem currentItem, User currentUser) {
 		log.info("Calculating grouped recommendations");
 
-		Collection<Tag> tags = taggingService.getTags(currentItem);
+		Collection<Tag> tags = taggingService.getTaggings(currentItem);
 
 		List<Tag> qresult = new LinkedList<Tag>();
 
@@ -888,7 +888,7 @@ public class RecommendationServiceImpl implements RecommendationServiceLocal, Re
 		long tagWeight = 0l;
 		for (ContentItem resultItem : result) {
 			ds = calculateCosineSimilarity(resultItem, currentItem);
-			for (Tag tag : taggingService.getTags(currentItem)) {
+			for (Tag tag : taggingService.getTaggings(currentItem)) {
 					String tagLabel = tag.getTaggingResource().getTitle();
 					if (!tagSet.contains(tagLabel)) {
 						userAffinity = calculateTagUserAffinity(tagLabel, currentUser);

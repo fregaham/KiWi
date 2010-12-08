@@ -137,7 +137,7 @@ import org.hibernate.validator.NotNull;
 				  "  and t.deleted = false " +
 				  "group by t.taggingResource.title " +
 				  "order by t.taggingResource.title"),
-	@NamedQuery(name="taggingService.listTagsByContentItem",
+	@NamedQuery(name="taggingService.listTaggingsByContentItem",
 			query="select t " +
 				  "from kiwi.model.tagging.Tag t " +
 				  "where t.taggedResource = :ci " +
@@ -147,14 +147,33 @@ import org.hibernate.validator.NotNull;
 				  "from kiwi.model.tagging.Tag t " +
 				  "where t.taggedBy = :cu " +
 				  "  and t.deleted = false "),
-	@NamedQuery(name="taggingService.listAllTags",
-			query="select t " +
-				  "from kiwi.model.tagging.Tag t " +
-				  "where t.deleted = false "),	
-		@NamedQuery(name="taggingService.listAllDistinctTags",
-				query="select distinct t " +
+	@NamedQuery(name="taggingService.listTaggingResources",
+				query="select t.taggingResource " +
 					  "from kiwi.model.tagging.Tag t " +
-					  "where t.deleted = false "),					  
+					  "where t.deleted = false " +
+					  "group by t.taggingResource.title " +
+					  "order by t.taggingResource.title"),
+	@NamedQuery(name="taggingService.listAllTags",
+				query="select t from kiwi.model.tagging.Tag t" +
+						" where t.deleted = false "),
+    @NamedQuery(name="taggingService.listDistinctTagLabels",
+	    		query="select distinct(t.taggingResource.title)" +
+	    				" from kiwi.model.tagging.Tag t" +
+	    				" where t.deleted = false"),				
+// Mihai : 
+// GROUP BY construct rquires : 
+// The requirements for the SELECT clause when GROUP BY is used follow those of SQL: namely, any
+// item that appears in the SELECT clause (other than as an argument to an aggregate function) must also
+// appear in the GROUP BY clause. In forming the groups, null values are treated as the same for grouping
+// purposes.
+// See the JSR 220, page 98-99.
+// this is the reason why I remove the group by.
+    @NamedQuery(name="taggingService.listTagsByContentItem",
+				query="select t.taggingResource " +
+					  "from kiwi.model.tagging.Tag t " +
+					  "where t.taggedResource = :ci " +
+					  "  and t.deleted = false " +
+					  " order by t.taggingResource.title"),
 //	@NamedQuery(name="taggingService.listTagsByUser",
 //			query="select t " +
 //				  "from kiwi.model.tagging.Tag t " +

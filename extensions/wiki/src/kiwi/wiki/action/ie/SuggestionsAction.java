@@ -212,7 +212,7 @@ public class SuggestionsAction implements Serializable {
 		iterateSuggestions: for (Suggestion suggestion : getSuggestions()) {
 			if (suggestion.getKind() == Suggestion.TAG) {
 				
-				for (Tag t : taggingService.getTags(currentContentItem)) {
+				for (Tag t : taggingService.getTaggings(currentContentItem)) {
 					if (suggestion.getLabel().equals(t.getTaggingResource().getTitle())) {
 						continue iterateSuggestions;
 					}

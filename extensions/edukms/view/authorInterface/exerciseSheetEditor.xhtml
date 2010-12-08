@@ -56,6 +56,14 @@ h3 {
 	margin-top: -15px;
 }
 
+h4 {
+	color: #6f91c0;
+	font-size: 11px;
+	margin-left: 20px;
+	margin-top: -15px;
+}
+
+
 .column {
 	width: 600px;
 	vertical-align: top;
@@ -101,35 +109,221 @@ h3 {
 	src: url("../../img/close.png");
 }
 
+.rich-stglpanel-header {
+background-color:#eee;
+border-color:#eee;
+height:15px;
+color:#666;
+font-size:12px;
+font-weight:bold;
+
+}
+
+.rich-stglpanel {
+background-color:#eee;
+border-color:#C0C0C0;
+}
+
+.rich-stglpanel-body {
+
+padding:0px;
+
+}
+
+
+
 
 </style>
 
+
+
+
 	<h:form>
 		<div id="cover"><!-- start cover -->
+		
 
+		 <rich:simpleTogglePanel  style="margin-left:-170px; margin-bottom: 10px; border-color: #FFE8C3; width:101% " opened="true" switchType="client"  >
+			<ui:include src="./menu/menu.xhtml" ></ui:include>
+		 </rich:simpleTogglePanel>
+
+		
 		<fieldset class="fieldsetborder"
-			style="float:left; width:100%; height: 700px; margin-left: -170px; border:1px solid #FFE8C3">
+			style="float:left; width:100%; height: 650px; margin-left: -170px; border:1px solid #FFE8C3">
 		<!--  <legend>Editor fuer Uebungsblatt</legend> -->
 		 
 		
-			<div><img style="margin: 10px 15px 0 15px; float: left;"
-				src="#{facesContext.externalContext.requestContextPath}/view/img/editor.png" /><br />
-			<h2 style="margin-top: 5px;">Here you may create an exercise or learning sheet:</h2>
-			<br />
+			<div>
+			
+<!--			<img style="margin: 10px 15px 0 15px; float: left;"-->
+<!--				src="#{facesContext.externalContext.requestContextPath}/view/img/editor.png" /><br />-->
+<!--			<h2 style="margin-top: 5px;">Here you may create an exercise or learning sheet:</h2>-->
+<!--			<br />-->
 
 			
 			<table border="0"><tr><td valign="middle">
-			<h3 style="margin: -2px 0px 0 20px">Step 1: Insert a title for your new share:&#160;&#160;  </h3></td><td valign="middle">
+			<h3 style="margin: -2px 0px 0 20px">Step 1: Insert a title for your new resource:&#160;&#160;  </h3></td><td valign="middle">
 			
 			<h:inputText id="dkmsContentItemName"
 				style="width:343px; margin:0 0 0 0px; vertical-align:top" required="true"
 				value="#{dkmsContentItemBean.dkmsContentItemName}" ><s:validate /><h:messages /></h:inputText>
-			</td></tr></table><br/>
-			<h3 style="margin: -10px 0 0 22px">Step 2: Before inserting images into your sheet please use the 'Images wizard'</h3>
-			<br />
-			<h3 style="margin: 0 0 0 22px">Step 3: Edit the content for your exercise sheet below:</h3>
+			</td></tr></table>
+		
+			<h3 style="margin: 0 0 0 22px">Step 2: Use the editor below for creating and formatting text:</h3>
+	   <br/>
+	   
+	
+<table><tr>
+<td><h3 style="margin: -10px 0 0 22px">Note: Use wizards for inserting images or movies into your resource:</h3>
+	</td>
+<td>			
+<f:subview xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich"> 
+    <rich:modalPanel id="panel" width="400" height="650">
+    
+        <f:facet name="header" style="height:20px">
+            <h:panelGroup>
+                <h:outputText value="Upload Images"></h:outputText>
+            </h:panelGroup>
+        </f:facet>
+        
+        <f:facet name="controls">
+            <h:panelGroup>
+                <h:graphicImage value="../img/close.png" styleClass="hidelink" id="hidelink" style="padding-top:7px"/>
+<!--                <img src="#{facesContext.externalContext.requestContextPath}/view/img/close.png" style="margin-top:1px" class="hidelink" id="hidelink"/>-->
+                <rich:componentControl for="panel" attachTo="hidelink" operation="hide" event="onclick"/>
+            </h:panelGroup>
+        </f:facet>
+        <br/>
+       <h2 style="float:left">Step 1: Upload one or more images:</h2>
+        <br/>
+        <div style="margin-left:10px">
+        <rich:fileUpload 
+						fileUploadListener="#{dkmsFileAction.picListener}"
+						immediateUpload="false"
+						maxFilesQuantity="30"
+						listHeight="130pt"
+						listWidth="240"
+				        allowFlash="true"
+				        acceptedTypes="jpg, gif, png" 
+						addControlLabel="Add File" 
+						clearAllControlLabel="Clear All" 
+						clearControlLabel="Clear"
+                        stopEntryControlLabel="Stop" 
+						uploadControlLabel="Upload">
+				        	
+<!--			        <a:support event="onuploadcomplete"  reRender="panel" actionListener="#{dkmsBasicAction.reloadWikiChangeEditor()}"/>-->
+		            <f:facet name="label">
+		                <h:outputText value="Upload State" />
+		        	</f:facet>					
+		   		</rich:fileUpload>	  
+		   		</div> 
+		   		<br/> <br/>
+		   		<div id="picCatalogue" style="height:200px; overflow:auto; margin-left:-10px;  ">
+	    <br/>
+		<h2 >Image-List:</h2>
+		<table cellspacing="10" cellpadding="10">		
+		<c:forEach items="#{dkmsContentItemBean.dkmsMediaList}" var="item">    	    
+      	<tr><td >   
+      	    <img src="#{dkmsReadModusAction.getMiniMultimediaPicname(item)}" style="margin: 0px 15px 0 15px; border: 1px solid #ddd "  />
+      	    </td><td><h:commandLink value="Insert" action="#{dkmsBasicAction.insertPicIntoSheet(dkmsReadModusAction.getOriginalMultimediaFilename(item))}"/>
+			<a:support event="onClick" />
+			
+		</td></tr>
+		</c:forEach> 
+		</table>
+		
+		</div>	
+		   		
+		   		<br/>
+       <h2 style="float:left">Step 2:&#160;&#160; <h:commandLink style="font-size:14px;" value="Update pic-list" action="#{dkmsBasicAction.reloadExerciseSheetEditor()}"/>
+			<a:support event="onClick" /></h2>
+       <br/>
+       
+       
+      
+    </rich:modalPanel>
 
 
+	
+  
+    
+    <h:outputLink value="#" id="link">
+        <img title="Pic Upload"
+					src="#{facesContext.externalContext.requestContextPath}/view/img/upload_images.png" style="vertical-align:middle; margin-right: 8px; margin-left:15px"/>Image Wizard
+		
+     
+        
+        <rich:componentControl for="panel" attachTo="link" operation="show" event="onclick"/>
+    </h:outputLink>
+   
+</f:subview>&#160;&#160;&#160;
+</td>
+<td>
+<f:subview xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich"> 
+    <rich:modalPanel id="panel" width="400" height="350">
+        <f:facet name="header" style="height:20px">
+            <h:panelGroup>
+                <h:outputText value="Insert Movie"></h:outputText>
+            </h:panelGroup>
+        </f:facet>
+        <f:facet name="controls">
+            <h:panelGroup>
+                <h:graphicImage value="../img/close.png" styleClass="hidelink" id="hidelink" style="padding-top:7px"/>
+<!--                <img src="#{facesContext.externalContext.requestContextPath}/view/img/close.png" style="margin-top:1px" class="hidelink" id="hidelink"/>-->
+                <rich:componentControl for="panel" attachTo="hidelink" operation="hide" event="onclick"/>
+            </h:panelGroup>
+        </f:facet>
+        <br/>
+       <h2 style="float:left">Step 1: Upload movie file:</h2>
+        <br/>
+        <div style="margin-left:0px">
+        <rich:fileUpload 
+						fileUploadListener="#{dkmsFileAction.movieListener}"
+						immediateUpload="false"
+						maxFilesQuantity="1"
+						listHeight="100pt"
+						listWidth="240"
+				        allowFlash="true"
+				        acceptedTypes="swf" 
+						addControlLabel="Add File" 
+						clearAllControlLabel="Clear All" 
+						clearControlLabel="Clear"
+                        stopEntryControlLabel="Stop" 
+						uploadControlLabel="Upload">
+				        style="float:left"	
+			        <a:support event="onuploadcomplete"  actionListener="#"/>
+		            <f:facet name="label">
+		                <h:outputText value="Upload State" />
+		        	</f:facet>					
+		   		</rich:fileUpload>	
+		   		</div> 
+		   		<br/> <br/><br/>
+       <h2 style="float:left">Step 2:&#160;&#160; <h:commandLink style="font-size:14px;" value="Insert Movie" action="#{dkmsBasicAction.insertMovieIntoSheet()}"/>
+			<a:support event="onClick" /></h2>
+       <br/>
+       
+       
+      <br/> <br/>
+    </rich:modalPanel>
+    <h:outputLink value="#" id="link">
+        <img title="Insert Movie"
+					src="#{facesContext.externalContext.requestContextPath}/view/img/video_small.png" style="vertical-align:middle; margin-right: 4px; margin-left:2px"/>Insert Movie
+		
+        <rich:componentControl for="panel" attachTo="link" operation="show" event="onclick"/>
+    </h:outputLink>
+</f:subview>
+</td>
+</tr>
+</table>
 			</div>
 			<div style="height:530px; overflow:auto; ">
 			<div id="editor"><rich:editor language="en" width="700"
@@ -154,8 +348,10 @@ h3 {
 			
 			<br/>
 			<h:panelGrid >
-           <rich:simpleTogglePanel  opened="false" switchType="client" label="Stepwise Solution"  height="300">
-           <br/>         
+           <rich:simpleTogglePanel  opened="false" switchType="client" label="Stepwise Solution"  height="300" style="width:695px">
+           <br/>    
+           
+             
           
           
           <f:subview xmlns="http://www.w3.org/1999/xhtml"
@@ -228,185 +424,20 @@ h3 {
 			         
                       
             </rich:simpleTogglePanel>
-            </h:panelGrid>  
-			
+            </h:panelGrid>
+            <br/>
+           
 			   
 
 			</div>				
 			</div>
 		
 		</fieldset>
-		
-		<fieldset class="fieldsetborder" style="float:right; width: 200px; height: 700px; margin-right: -160px; border:1px solid #FFE8C3">
-		
-		<div id="buttons">
-				
-   		    <f:subview xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:a4j="http://richfaces.org/a4j"
-      xmlns:rich="http://richfaces.org/rich"> 
-    <rich:modalPanel id="panel" width="400" height="350">
-        <f:facet name="header" style="height:20px">
-            <h:panelGroup>
-                <h:outputText value="Insert Movie"></h:outputText>
-            </h:panelGroup>
-        </f:facet>
-        <f:facet name="controls">
-            <h:panelGroup>
-                <h:graphicImage value="../img/close.png" styleClass="hidelink" id="hidelink" style="padding-top:7px"/>
-<!--                <img src="#{facesContext.externalContext.requestContextPath}/view/img/close.png" style="margin-top:1px" class="hidelink" id="hidelink"/>-->
-                <rich:componentControl for="panel" attachTo="hidelink" operation="hide" event="onclick"/>
-            </h:panelGroup>
-        </f:facet>
-        <br/>
-       <h2 style="float:left">Step 1: Upload movie file:</h2>
-        <br/>
-        <div style="margin-left:0px">
-        <rich:fileUpload 
-						fileUploadListener="#{dkmsFileAction.movieListener}"
-						immediateUpload="false"
-						maxFilesQuantity="1"
-						listHeight="100pt"
-						listWidth="240"
-				        allowFlash="true"
-				        acceptedTypes="swf" 
-						addControlLabel="Add File" 
-						clearAllControlLabel="Clear All" 
-						clearControlLabel="Clear"
-                        stopEntryControlLabel="Stop" 
-						uploadControlLabel="Upload">
-				        style="float:left"	
-			        <a:support event="onuploadcomplete"  actionListener="#"/>
-		            <f:facet name="label">
-		                <h:outputText value="Upload State" />
-		        	</f:facet>					
-		   		</rich:fileUpload>	
-		   		</div> 
-		   		<br/> <br/><br/>
-       <h2 style="float:left">Step 2:&#160;&#160; <h:commandLink style="font-size:14px;" value="Insert Movie" action="#{dkmsBasicAction.insertMovieIntoSheet()}"/>
-			<a:support event="onClick" /></h2>
-       <br/>
-       
-       
-      <br/> <br/>
-    </rich:modalPanel>
-    <h:outputLink value="#" id="link">
-        <img title="Insert Movie"
-					src="#{facesContext.externalContext.requestContextPath}/view/img/video_small.png" style="vertical-align:middle; margin-right: 4px; margin-left:2px"/>Insert Movie
-		
-        <rich:componentControl for="panel" attachTo="link" operation="show" event="onclick"/>
-    </h:outputLink>
-</f:subview>
 
-
-			<br />
-			
-			
-<!--			<h:commandLink				-->
-<!--				action="#" >-->
-<!--				<img title="Insert Slide-Show"-->
-<!--					src="#{facesContext.externalContext.requestContextPath}/view/img/slideshow.PNG" style="vertical-align:middle; margin-right: 3px; margin-left:-1px"/>Insert Slide-Show-->
-<!--			</h:commandLink>-->
-		    <div id="trennlinie"></div>
+		 <rich:simpleTogglePanel  style="float:left; margin-left:-170px; margin-top: 10px; margin-bottom: 10px; border-color: #FFE8C3; width:101% " opened="true" switchType="client"  >
+			<ui:include src="./menu/menu.xhtml" ></ui:include>
+		 </rich:simpleTogglePanel>   
 		
-			<h:commandLink class="buttonclass"  action="#{dkmsReadModusAction.previewExerciseSheet()}" ><img src="#{facesContext.externalContext.requestContextPath}/view/img/vorschau_symbol.png" style="valign:center; vertical-align:middle; margin-right:5px; margin-top:5px"  /> Preview</h:commandLink>
-			<br/><br/>
-			<h:commandLink class="buttonclass" 	action="#{dkmsBasicAction.goToHome()}">
-			<img
-				src="#{facesContext.externalContext.requestContextPath}/view/img/arrowleft_small.png"
-				style="vertical-align: middle; margin-right: 5px; margin-left:8px" /> Cancel</h:commandLink>
-			<br /><br/>
-		    <h:commandLink				
-				action="#{dkmsBasicAction.nextStepSheet()}" >
-				<img title="Proceed"
-					src="#{facesContext.externalContext.requestContextPath}/view/img/arrowright_small.png" style="vertical-align:middle; margin-right: 7px; margin-left:8px"/>Proceed
-			</h:commandLink>
-		
-		</div>
-		<div id="trennlinie"></div>
-		<br/>
-				 <f:subview xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:a4j="http://richfaces.org/a4j"
-      xmlns:rich="http://richfaces.org/rich"> 
-    <rich:modalPanel id="panel" width="400" height="350">
-        <f:facet name="header" style="height:20px">
-            <h:panelGroup>
-                <h:outputText value="Upload Images"></h:outputText>
-            </h:panelGroup>
-        </f:facet>
-        <f:facet name="controls">
-            <h:panelGroup>
-                <h:graphicImage value="../img/close.png" styleClass="hidelink" id="hidelink" style="padding-top:7px"/>
-<!--                <img src="#{facesContext.externalContext.requestContextPath}/view/img/close.png" style="margin-top:1px" class="hidelink" id="hidelink"/>-->
-                <rich:componentControl for="panel" attachTo="hidelink" operation="hide" event="onclick"/>
-            </h:panelGroup>
-        </f:facet>
-        <br/>
-       <h2 style="float:left">Step 1: Upload one or more images:</h2>
-        <br/>
-        <div style="margin-left:10px">
-        <rich:fileUpload 
-						fileUploadListener="#{dkmsFileAction.picListener}"
-						immediateUpload="false"
-						maxFilesQuantity="30"
-						listHeight="130pt"
-						listWidth="240"
-				        allowFlash="true"
-				        acceptedTypes="jpg, gif, png" 
-						addControlLabel="Add File" 
-						clearAllControlLabel="Clear All" 
-						clearControlLabel="Clear"
-                        stopEntryControlLabel="Stop" 
-						uploadControlLabel="Upload">
-				        	
-<!--			        <a:support event="onuploadcomplete"  reRender="panel" actionListener="#{dkmsBasicAction.reloadWikiChangeEditor()}"/>-->
-		            <f:facet name="label">
-		                <h:outputText value="Upload State" />
-		        	</f:facet>					
-		   		</rich:fileUpload>	  
-		   		</div> 
-		   		<br/> <br/><br/>
-       <h2 style="float:left">Step 2:&#160;&#160; <h:commandLink style="font-size:14px;" value="Update pic-list" action="#{dkmsBasicAction.reloadExerciseSheetEditor()}"/>
-			<a:support event="onClick" /></h2>
-       <br/>
-       
-       
-      
-    </rich:modalPanel>
-    <h:outputLink value="#" id="link">
-        <img title="Pic Upload"
-					src="#{facesContext.externalContext.requestContextPath}/view/img/picUpload_small.png" style="vertical-align:middle; margin-right: 8px; margin-left:15px"/>Image Wizard
-		
-        <rich:componentControl for="panel" attachTo="link" operation="show" event="onclick"/>
-    </h:outputLink>
-</f:subview>
-            
-	    <div id="trennlinie"></div>
-	    
-	    <div id="picCatalogue" style="height:520px; overflow:auto; margin-left:-10px;  ">
-	    <br/>
-		<h2 style="margin-left:25px">Image-List:</h2>
-		<table cellspacing="10" cellpadding="10">		
-		<c:forEach items="#{dkmsContentItemBean.dkmsMediaList}" var="item">    	    
-      	<tr><td >   
-      	    <img src="#{dkmsReadModusAction.getMiniMultimediaPicname(item)}" style="margin: 0px 15px 0 15px; border: 1px solid #ddd "  />
-      	    </td><td><h:commandLink value="Insert" action="#{dkmsBasicAction.insertPicIntoSheet(dkmsReadModusAction.getOriginalMultimediaFilename(item))}"/>
-			<a:support event="onClick" />
-			
-		</td></tr>
-		</c:forEach> 
-		</table>
-		
-		</div>		
-		
-		
-		
-		</fieldset>
 		</div>
 		</h:form>
 		<!-- end cover -->

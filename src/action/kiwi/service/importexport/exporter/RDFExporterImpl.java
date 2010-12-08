@@ -435,7 +435,7 @@ public class RDFExporterImpl implements ExporterLocal, ExporterRemote {
 				myCon.add(TripleStoreUtil.transformKiWiToSesame(f, t));
 			}
 			
-			for(Tag t : taggingService.getTags(item)) {
+			for(Tag t : taggingService.getTaggings(item)) {
 				for(KiWiTriple triple : t.getResource().listOutgoing()) {
 					myCon.add(TripleStoreUtil.transformKiWiToSesame(f, triple));
 				}

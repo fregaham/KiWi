@@ -1,143 +1,158 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:s="http://jboss.com/products/seam/taglib"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:rich="http://richfaces.org/rich"
-                xmlns:a="http://richfaces.org/a4j"
-                xmlns:m="http://code.google.com/p/gmaps4jsf/"
-                xmlns:c="http://java.sun.com/jstl/core"
-                xmlns:kiwi="http://www.kiwi-project.eu/jsf"
-                xmlns:p="http://primefaces.prime.com.tr/ui"
-                template="/template/kiwi/template_2col.xhtml">
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:m="http://code.google.com/p/gmaps4jsf/"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+	xmlns:p="http://primefaces.prime.com.tr/ui"
+	template="/template/kiwi/template_2col.xhtml">
 
-    <ui:define name="sidebar">
-        <ui:include src="elements/sidebar.xhtml"/>
-    </ui:define>
+	<ui:define name="stylesheet">
+		<style type="text/css">
+.aname {
+	padding: 6px;
+}
+</style>
+	</ui:define>
 
-    <ui:define name="center">
-
-        <a:outputPanel id="userSkillsPanel" >
-            <h:form>
-
-                <h1 class="title ui-widget-header ui-corner-all">Compute User Skills</h1>
+	<ui:define name="sidebar">
+		<ui:include src="elements/sidebar.xhtml" />
+	</ui:define>
 
 
-                <p:messages />
-				<s:decorate>
-                <p:commandButton ajax="false" value="index and compute" action="#{userSkillAction.indexAndComputeUserSkills()}"/>
+	<ui:define name="center">
+		<h:form>
 
-                <p:commandButton ajax="false" value="only compute" action="#{userSkillAction.computeUserSkills()}"/>
+			<h1 class="title ui-widget-header ui-corner-all">Compute User Skills</h1>
 
-                <p:commandButton ajax="false" value="clean" action="#{userSkillAction.deleteUserSkills()}"/>
+			<p:messages />
+			<s:decorate>
+				<p:commandButton ajax="false" value="index and compute"
+					action="#{userSkillAction.indexAndComputeUserSkills()}" />
 
-                <p:commandButton ajax="false" value="load fake skills" action="#{userSkillAction.loadFakeSkillList()}"/>
-                
-                <s:validateAll>
-	                <h:outputText value="Skill treshold"/>
-					<h:inputText value="#{userSkillAction.skillTreshold}" size="4" required="true">
-	                	<a:support event="onblur" reRender="invalidTreshold"/>
-	                </h:inputText>
-	                <a:outputPanel id="invalidTreshold"><s:message/></a:outputPanel>
-                </s:validateAll>
-                </s:decorate>
-               <br/><br/>
-               <div id="showUsersBySkill">
-                    <h4>List users according to a given skill</h4>
-                    <h:panelGrid columns="2">
-	                    <rich:comboBox defaultLabel="Select skill" value="#{userSkillAction.selectedSkill}" style="width: 200px;">
-	                        <s:selectItems value="#{userSkillAction.allSkills}"  var="allSkills" label="#{allSkills}" />
-	                     </rich:comboBox>
-	                    <a:commandButton action="#{userSkillAction.getUsersBySkill()}" reRender="userListTable" value="Show skills"/>
-                    </h:panelGrid>
-                </div>
-                <h2>Users </h2>
+				<p:commandButton ajax="false" value="only compute"
+					action="#{userSkillAction.computeUserSkills()}" />
 
-                <!-- <s:span id="userListTable" rendered="#{userList.getRowCount() &gt; 0}">  -->
-                <s:span id="userListTable">
-                    <rich:dataTable id = "userPanel" value="#{userList}" var="user">
+				<p:commandButton ajax="false" value="clean"
+					action="#{userSkillAction.deleteUserSkills()}" />
 
-                        <h:column>
-                            <f:facet name="header">Login</f:facet>
-                            <h:outputText value="#{user.login}"/>
-                        </h:column>
-                        <h:column>
-                            <f:facet name="header">Name</f:facet>
-                            <h:outputText value="#{user.firstName}"/>
-                        </h:column>
-                        <h:column>
-                            <f:facet name="header">Surname</f:facet>
-                            <h:outputText value="#{user.lastName}"/>
-                        </h:column>
-                    </rich:dataTable>
-                </s:span>
-                                
-                <div id="showSkills">
-                    <h4>List person's skills</h4>
-                    <h:panelGrid columns="2">
-	                    <rich:comboBox defaultLabel="Enter user name" value="#{userSkillAction.selectedUser}" style="width: 200px;">
-	                        <s:selectItems value="#{userSkillAction.allUsers}" var="contact" label="#{contact}"/>
-	                     </rich:comboBox>
-	                    <a:commandButton action="#{userSkillAction.getUserSkillsByUserLogin()}" reRender="skillListTest,noSkillListTest,showUsersBySkill" value="Show skills"/>
-                    </h:panelGrid>
-                </div>
-                <h2>User Skills</h2>
+				<p:commandButton ajax="false" value="load fake skills"
+					action="#{userSkillAction.loadFakeSkillList()}" />
 
-                <!-- <s:span id="skillListTest" rendered="#{skillList.getRowCount() &gt; 0}">  -->
-                <s:span id="skillListTest">
-                    <rich:dataTable id = "skillPanel" value="#{skillList}" var="skillEntry">
-
-                        <h:column>
-                            <f:facet name="header">User</f:facet>
-                            <h:outputText value="#{skillEntry.user.login}"/>
-                        </h:column>
-
-                        <h:column>
-                            <f:facet name="header">Skill</f:facet>
-                            <h:outputText value="#{skillEntry.skill}"/>
-                            <a:commandButton action="#{userSkillAction.removeSkill(skillEntry.skill)}" image="img/type_delete.png" reRender="skillListTest"/>
-                        </h:column>
-                        <h:column>
-                            <f:facet name="header">Fake</f:facet>
-                            <a:commandButton action="#{userSkillAction.removeSkillByUser(skillEntry)}" value="FakeSkill" reRender="skillListTest,showUsersBySkill"/>
-                        </h:column>
-
-                        <h:column>
-                            <f:facet name="header">Value</f:facet>
-                            <h:outputText value="#{skillEntry.value}"/>
-                        </h:column>
-
-                    </rich:dataTable>
-                </s:span>
-                <s:span id="noSkillListTest" rendered="#{skillList.getRowCount() &lt;= 0}">
-                    <h:outputText value="No user skills computed"/>
-                </s:span><!--
+				<s:validateAll>
+					<h:outputText value="Skill treshold" />
+					<h:inputText value="#{userSkillAction.skillTreshold}" size="4"
+						required="true">
+						<a:support event="onblur" reRender="invalidTreshold" />
+					</h:inputText>
+					<a:outputPanel id="invalidTreshold">
+						<s:message />
+					</a:outputPanel>
+				</s:validateAll>
+			</s:decorate>
 
 
 
-           <s:span id="userSkillSpan" rendered="#{userSkillAction.getUserSkills().size() &gt; 0}">
-               <div><ul>
-                    <ui:repeat var="userSkill" value="#{userSkillAction.getUserSkills()}" >
-						<li><b><h:outputText value="User:"/><h:outputText value="#{userSkill.user.firstName}"/></b>	</li>				
-			                    <ui:repeat var="skillMap" value="#{userSkill.skills}" >
-				                    <ui:repeat var="skillEntry" value="#{skillMap.entrySet()}" >
-				                      <h:outputText value="Skill/Level:"/>
-										<h:outputText value="#{skillEntry.key}"/>
-				                      <h:outputText value="#{skillEntry.value}"/>
-										<a:commandButton action="#{userSkillAction.removeSkill(skillEntry.getKey())}" image="img/type_delete.png" reRender="userSkillSpan"/>
-				                    </ui:repeat>			                    
-			                    </ui:repeat>
-	                    </ui:repeat>			                    
-                      </ul><br/>
-                </div>
-            </s:span>
-            <s:span id="noSkills" rendered="#{userSkillAction.getUserSkills().size() &lt;= 0}">
-                        <h:outputText value="No user skills computed"/>
-            </s:span>
-                --></h:form>
-        </a:outputPanel>
-    </ui:define>
+			<br/><br/>
+
+
+			<h4>Select Users by Skill</h4>
+	
+			<h:panelGrid columns="2">
+				<rich:comboBox defaultLabel="Select skill" value="#{userSkillAction.selectedSkill}" style="width: 200px;">
+					<s:selectItems value="#{userSkillAction.allSkills}" var="allSkills"
+						label="#{allSkills}" />
+				</rich:comboBox>
+				<a:commandButton action="#{userSkillAction.getUsersBySkill()}" reRender="userListTable" value="Show users" ajax="false"/>
+			</h:panelGrid>
+
+		
+			<s:span id="userListTable">
+				<rich:dataTable id="userPanel" value="#{userList}" var="user">
+					<h:column>
+						<f:facet name="header">Login</f:facet>
+						<h:outputText value="#{user.login}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">Name</f:facet>
+						<h:outputText value="#{user.firstName}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">Surname</f:facet>
+						<h:outputText value="#{user.lastName}" />
+					</h:column>
+				</rich:dataTable>
+			</s:span>
+	
+			<s:span id="nonselectUSkill" rendered="#{userList.getRowCount() &lt;= 0}">	
+				<h:outputText value="No users selected by skills." />
+			</s:span>				
+			
+			
+			
+			<br/><br/>
+			
+			
+			<div id="showSkills">
+			<h4>List person's skills</h4>
+			<h:panelGrid columns="2">
+				<rich:comboBox defaultLabel="Enter user name"
+					value="#{userSkillAction.selectedUser}" style="width: 200px;">
+					<s:selectItems value="#{userSkillAction.allUsers}" var="contact"
+						label="#{contact}" />
+				</rich:comboBox>
+				<a:commandButton
+					action="#{userSkillAction.getUserSkillsByUserLogin()}"
+					reRender="skillListTest,noSkillListTest,showUsersBySkill"
+					value="Show skills" />
+			</h:panelGrid></div>
+
+			<s:span id="skillListTest" rendered="#{skillList.getRowCount() &gt; 0}">
+				<rich:dataTable id="skillPanel" value="#{skillList}"
+					var="skillEntry">
+
+					<h:column>
+						<f:facet name="header">User</f:facet>
+						<h:outputText value="#{skillEntry.user.login}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">Skill</f:facet>
+						<h:outputText value="#{skillEntry.skill}" />
+						<h:outputText value=" " />
+						<a:commandButton
+							action="#{userSkillAction.removeSkill(skillEntry.skill)}"
+							image="img/type_delete.png" reRender="skillListTest" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">Fake</f:facet>
+						<a:commandButton
+							action="#{userSkillAction.removeSkillByUser(skillEntry)}"
+							value="FakeSkill" reRender="skillListTest,showUsersBySkill" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">Value</f:facet>
+						<h:outputText value="#{skillEntry.value}" />
+					</h:column>
+
+				</rich:dataTable>
+			</s:span>
+			<s:span id="noSkillListTest"
+				rendered="#{skillList.getRowCount() &lt;= 0}">
+				<h:outputText value="No user skills computed" />
+			</s:span>
+
+		</h:form>
+	</ui:define>
+
+
+
 
 </ui:composition>

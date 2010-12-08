@@ -25,22 +25,27 @@
 (function( $ ) {
 
 //    $.SimpleListing = function(container_id){
-  $.TagsEditor = function(CS, RESOURCE_URI){
+  $.TagsEditor = function(CS, inlineTagsViewEl, RESOURCE_URI){
 //--------CONSTANTS
 
-	this.ENDPOINT_TAGGING = "http://kiwi.pec-lab.cz:8080/KiWi/seam/resource/services/widgets/tagging/";
+	this.ENDPOINT_TAGGING = document.location.protocol + "//" + document.location.host
+            + "/KiWi/seam/resource/services/widgets/tagging/";
+        
 	this.FUNC_ADDTAGS = "addTags";
 	this.FUNC_GETTAGS = "listTags.json";
 	this.FUNC_REMTAGS = "removeTags";
+        this.FUNC_GETTAXONOMIES = "getTaxonomies";
 	
-	this.ENDPOINT_TAG_EXTRACT = "http://kiwi.sunsolutioncenter.de/KiWi/seam/resource/services/ie/tagExtraction/";
+	this.ENDPOINT_TAG_EXTRACT = document.location.protocol + "//" + document.location.host
+            + "/KiWi/seam/resource/services/ie/tagExtraction/";
+
 	this.FUNC_GET_LIST_REQ = "listOfRequiredTags";
 	this.FUNC_EXTRACT_TAX_TAGS = "extractTaxonomyTags";
 
 	this.MAX_SCORE				= 300.0;
 
 	// Tags with MAX_SCORE get this size in "em"
-    this.MAX_TAG_FONT_SIZE      = 6;
+        this.MAX_TAG_FONT_SIZE      = 4.5;
 
 	// Tags with low score resulting with display size lower than specified
 	// below are not shown in the UI (again, in "em")
@@ -48,10 +53,7 @@
 	
 //--------MEMBER VARS
 	this.CS = CS; //container selector
-//	this.RESOURCE_URI = "http://localhost/content/7e366380-b147-455e-b2ab-5f8f1cd99b6c";//uri of the resource to be tagged...
-//        this.RESOURCE_URI = "http://localhost/content/0b5ae249-b42a-4e99-9c9f-ad9dd1fccd23";
-//        this.RESOURCE_URI = "http://kiwi.sunsolutioncenter.de/KiWi/content/65834035-935c-4d78-9fe2-e544190d1bff";
-	//this.RESOURCE_URI = "http://kiwi.sunsolutioncenter.de/KiWi/content/4bc5290e-1062-4264-b198-c9f364a3baae";
+        this.inlineTagsViewEl = inlineTagsViewEl;
 	this.RESOURCE_URI = RESOURCE_URI;
 	// templates
 	this.template_widget = $.template(TEMPLATE_TAGS_EDITOR_WIDGET);
@@ -108,7 +110,7 @@
 	this.ajaxDone = function(){
 		this.hideProgress();
 		
-//		console.log("Ajax done");
+		//console.log("Ajax done");
 		// Remove current function from the queue; and ...
 		this.ajaxQueue.shift();
 
@@ -135,6 +137,8 @@
 	this.showProgress = function(){
 		$(this.CS).find("div.tagsEditor_loading").show();
 		this.progressSemaphor++;
+
+                //console.log("showProgress:" + this.progressSemaphor);
 	}
 
 	/**
@@ -142,8 +146,11 @@
 	 */
 	this.hideProgress = function(){
 		this.progressSemaphor--;
-		if (this.progressSemaphor == 0)
-			$(this.CS).find("div.tagsEditor_loading").hide();
+		if (this.progressSemaphor <= 0) {
+                    $(this.CS).find("div.tagsEditor_loading").hide();
+                    this.progressSemaphor = 0;
+                }
+                    //console.log("hideProgress:" + this.progressSemaphor);
 	}
 
 //------------------------------------------------------------------------------
@@ -160,9 +167,11 @@
 		var self = this;
 		if (!this.testData) {
 			$.ajax({
-						url: self.ENDPOINT_TAGGING + self.FUNC_GETTAGS + "?resource=" + self.RESOURCE_URI,
-						dataType: "jsonp",
-						jsonp: "jsonpCallback",
+						url: self.ENDPOINT_TAGGING + self.FUNC_GETTAGS,
+                                                data: {
+                                                    "resource" : self.RESOURCE_URI
+                                                },
+						type: "GET",
 						success: function(data){
 							self.onSuccessFetchTags(data);
 						},
@@ -187,13 +196,13 @@
 	this.onSuccessFetchTags = function(data){
 		this.hideProgress();
 
-		this.dataGetTags = data;
+		this.dataGetTags = data.items;
 		
 		// Only when we got both - tags assigned to this document and
 		// data for the required categories, we can populate the UI
 		if (this.dataGetTags && this.requiredCategoryOptions) {
 			//this.buildCategoryOptions();
-			this.buildTags(this.dataGetTags.items);
+			this.buildTags(this.dataGetTags);
 
 			// After we're done, drop this data, we won't need it anymore
 			this.dataGetTags = null;
@@ -207,8 +216,10 @@
 	 */
 	this.checkEmptyCategories = function(parent){
 
+
+
 		// If category is empty, show "none" label
-		if(parent.children().length<3){
+		if(parent.find("span.tag").length == 0){
 			parent.addClass("empty");
 			//parent.children(".none").css("display","inline");
 			return true;
@@ -224,7 +235,9 @@
 	
 	this.onFailureFetchTags = function(xhr, textStatus, errorThrown){
 		this.ajaxDone();
-		alert("Error getting tags:" + xhr.responseText);
+                if (typeof console != "undefined") {
+                    console.log("Error getting tags:" + xhr.responseText);
+                }
 	}
 
 	/**
@@ -245,13 +258,17 @@
 
 		this.safeInvoke(function(){
 			// If we are not in test mode, invoke a web service
-			if (!self.testAddRemove) {
+			if (!self.testAddRemove) { 
 				$.ajax({
-					url: self.ENDPOINT_TAGGING + self.FUNC_ADDTAGS + "?resource=" + self.RESOURCE_URI + "&tagURI=" + tag.uri,
-					dataType: "jsonp",
-					jsonp: "jsonpCallback",
+					url: self.ENDPOINT_TAGGING + self.FUNC_ADDTAGS,
+					type: "POST",
+                                        data: {
+                                            "resource" : self.RESOURCE_URI,
+                                            // Note: $.toJSON is broken on arrays
+                                            "tags" : tinymce.util.JSON.serialize([{uri:tag.uri}])
+                                        },
 					success: function(data){
-						self.onSuccessAddTag(data);
+						self.onSuccessAddTag(data.items);
 					},
 					error: function(xhr, textStatus, errorThrown){
 						self.onFailureAddTag(xhr, textStatus, errorThrown);
@@ -260,7 +277,7 @@
 			}
 			// otherwise, just dummy deferred
 			else {
-				console.log("TODO:Would invoke AddTag webservice with tags=" + tag.uri);
+				//console.log("TODO:Would invoke AddTag webservice with tags=" + tag.uri);
 				window.setTimeout(function(){
 					self.onSuccessAddTag();
 				},500);
@@ -279,9 +296,12 @@
 			// If we are not in test mode, invoke a web service
 			if (!self.testAddRemove) {
 				$.ajax({
-					url: self.ENDPOINT_TAGGING + self.FUNC_REMTAGS + "?resource=" + self.RESOURCE_URI + "&tags=" + tagsString,
-					dataType: "jsonp",
-					jsonp: "jsonpCallback",
+					url: self.ENDPOINT_TAGGING + self.FUNC_REMTAGS,
+                                        data: {
+                                            "resource" : self.RESOURCE_URI,
+                                            "tagURI" : tagsString
+                                        },
+					type: "POST",
 					success: function(data){
 						self.onSuccessRemoveTag(data);
 					},
@@ -292,7 +312,7 @@
 			}
 			// otherwise, just dummy deferred
 			else {
-				console.log("TODO: Would invoke RemoveTag webservice with tags=" + tagsString);
+//				console.log("TODO: Would invoke RemoveTag webservice with tags=" + tagsString);
 
 				window.setTimeout(function(){
 					self.onSuccessRemoveTag();
@@ -360,7 +380,25 @@
 		$.each(tags, function(i, tag){
 			self.buildTag(tag);
 		});
+
+                this.adjustTagCloudHeight();
+
+                this.adjustInlineTagsView();
 	}
+
+        this.adjustInlineTagsView = function(){
+            var h = "";
+            
+            $.each(this.tagsMap, function(uri, tag) {
+                if (tag.prefix) {
+                    h += tag.prefix + ":" + tag.label + " ";
+                } else {
+                    h += tag.label + " "
+                }
+            });
+
+            $(inlineTagsViewEl).html(h);
+        }
 
 	/**
 	 * Adds a tag to internal models and UI.
@@ -375,11 +413,10 @@
 		// Update internal data models and UI
 		this.tagsMap[tag.uri] = tag;
 
-		if(tag.controlled==0){
-			//Tag isn't required
-			this.buildFreeTag(tag);
+		if(tag.controlled==1) {
+                    this.buildCategoryTag(tag);
 		}else{
-			this.buildCategoryTag(tag);
+                    this.buildFreeTag(tag);
 		}
 
 		// Tell others
@@ -403,11 +440,22 @@
 		var freeTagsContainer = $(this.CS).find(".tagsEditor_freeTags");
 		freeTagsContainer.append(tagEl);
 
-		// Checking if we haven't add tag from tagCloud via suggester => in that
-		// case we have to assing selectedTag class to the selected tag in a tagCloud
+		// If the just added tag is in the tag cloud, it should get
+                // selected
 		if(this.recommendedTagEls[tag.uri]){
-			this.recommendedTagEls[tag.uri].addClass("selectedTag");
-		}
+                    this.recommendedTagEls[tag.uri].addClass("selectedTag");
+
+		} else if(this.recommendedTagEls["label:" + tag.label]){
+                    var recTagEl = this.recommendedTagEls["label:" + tag.label];
+                    recTagEl.addClass("selectedTag");
+                    recTagEl.attr("tagUri", tag.uri);
+
+                    // Since we have URI of this tag now, remap it
+                    delete this.recommendedTagEls["label:" + tag.label];
+                    this.recommendedTagEls[tag.uri] = recTagEl;
+                    delete this.recommendedTags["label:" + tag.label];
+                    this.recommendedTags[tag.uri] = tag;
+                }
 
 		// Keep reference to the DOM element
 		this.freeTags[tag.uri] = tagEl;
@@ -426,35 +474,44 @@
 		tagEl.html(tag.label + "<div class='delete'/> ");
 		var categoryCont = $(this.CS).find(".tagsEditor_requiredTags");
 
+                // HACK: Since tags in Geo categories may have various prefixes, e.g. "cont", "region" and "country",
+                // we don't know based on data, that they belong to the Geo taxonomy
+                // So here we special-case this and treat all geo taxonomy tags as if they had geo-taxonomy root prefix
+                var catPrefix = tag.prefix;
+                if (tag.uri.indexOf("Geo_Category") != -1) {
+                    // TODO: This should be "geo"
+                    catPrefix = "geo";
+                }
+
 		//If suggester is in editingMode, we just replace the TAG - we don't even need to
 		//check of the category exists
 		if(this.suggester2.editingMode && this.suggester2.isSecondary){
-			categoryCont.children("."+tag.prefix+"CategoryContainer").children(".categoryTags").children(".gold").replaceWith(tagEl);
+			categoryCont.children("."+catPrefix+"CategoryContainer").find(".categoryTags").children(".gold").replaceWith(tagEl);
 		}
 		//Suggester isn't in editingMode
 		else{
 			//Checking if TAG's category-list exists (category's 'required' is 'true')
-			if(this.categoryMap[tag.prefix]){
+			if(this.categoryMap[catPrefix]){
 				//Category-list exists so just put TAG inside
-				categoryCont.children("."+tag.prefix+"CategoryContainer").children(".categoryTags").append(tagEl);
+				categoryCont.children("."+catPrefix+"CategoryContainer").find(".categoryTags").append(tagEl);
 				tagEl.after(tagEl.siblings("span.add"));
-				self.checkEmptyCategories(categoryCont.children("."+tag.prefix+"CategoryContainer").children(".categoryTags"));
+				self.checkEmptyCategories(categoryCont.children("."+catPrefix+"CategoryContainer").find(".categoryTags"));
 			}
 			//Category-list doesn't exists (category's 'required' is 'false') so we have to make additional room for it
 			else{
 				//We need label of the category - let's search this.requiredCategoryOptions for desired label
 				for(var i = 0;i<this.requiredCategoryOptions.length;i++){
 					//We've got a label
-					if(this.requiredCategoryOptions[i].prefix == tag.prefix){
+					if(this.requiredCategoryOptions[i].prefix == catPrefix){
 						//We have to save this non-required category into the required category map because we don't want to make new space for it nextime
-						this.categoryMap[tag.prefix] = this.requiredCategoryOptions[i];
+						this.categoryMap[catPrefix] = this.requiredCategoryOptions[i];
 						//Building new space for this category
-						this.buildCategory(tag.prefix, this.categoryMap[tag.prefix].label);
+						this.buildCategory(catPrefix, this.categoryMap[catPrefix].label);
 						//Appending the tag...
-						categoryCont.children("."+tag.prefix+"CategoryContainer").children(".categoryTags").append(tagEl);
+						categoryCont.children("."+catPrefix+"CategoryContainer").find(".categoryTags").append(tagEl);
 						tagEl.after(tagEl.siblings("span.add"));
 						//Checking empty category - in this case category isn't empty so the ADD buton wil show...
-						self.checkEmptyCategories(categoryCont.children("."+tag.prefix+"CategoryContainer").children(".categoryTags"));
+						self.checkEmptyCategories(categoryCont.children("."+catPrefix+"CategoryContainer").find(".categoryTags"));
 					}
 				}
 			}
@@ -463,6 +520,14 @@
 		this.controlledTags[tag.uri] = tagEl;
 	}
 
+        /**
+         * Adjusts the
+         */
+        this.adjustTagCloudHeight = function(){
+            // Is there a way to achieve this in CSS?
+            jQuery(".tagsEditor_tagCloud").height((jQuery(".tagsEditor").height() - jQuery(".tagsEditor_tagCloud").position().top));
+        }
+
 	/**
 	 * Adds a tag based on a tag object. Adds the tag in the backend and in the UI
 	 *
@@ -470,8 +535,10 @@
 	 */
 	this.addTag = function(tag){
 		this.buildTag(tag);
-
+                this.adjustTagCloudHeight();
 		this.invokeAddTag(tag);
+
+                this.adjustInlineTagsView();
 	}
 
 	/**
@@ -488,7 +555,9 @@
 	 */
 	this.onFailureAddTag = function(xhr, textStatus, errorThrown){
 		this.ajaxDone();
-		alert("Ooops, we failed to save your new tags:"  + xhr.responseText);
+                if (typeof console != "undefined") {
+                    console.log("Ooops, we failed to save your new tags:"  + xhr.responseText);
+                }
 	}
 
 	/**
@@ -540,6 +609,10 @@
 		// If it fails (rarely), we'll show an error message; reloading the page
 		// would fix the problem
 		this.invokeRemoveTag(tagUri);
+
+                this.adjustTagCloudHeight();
+
+                this.adjustInlineTagsView();
 	}
 
 	/**
@@ -556,7 +629,9 @@
 	 */
 	this.onFailureRemoveTag = function(xhr, textStatus, errorThrown){
 		this.ajaxDone();
-		alert("Ooops, we failed to remove a tag:" + xhr.responseText);
+                if (typeof console != "undefined") {
+                    console.log("Ooops, we failed to remove a tag:" + xhr.responseText);
+                }
 	}
 
 //------------------------------------------------------------------------------
@@ -564,8 +639,8 @@
 //------------------------------------------------------------------------------
 
 	/**
-	 * Invokes a web service that returns the list of allowed tags in
-	 * required categories and populates the UI (pulldowns)
+	 * Invokes a web service that returns list of taxonomies
+	 * and populates the UI
 	 */
 	this.fetchRequiredCategoryOptions = function() {
 		this.showProgress();
@@ -574,9 +649,7 @@
 		// If we don't have test data, invoke a web service'
 		if (!this.testDataRequiredCategories) {
 			$.ajax({
-				url: self.ENDPOINT_TAG_EXTRACT + self.FUNC_GET_LIST_REQ + "?uri=" + self.RESOURCE_URI,
-				dataType: "jsonp",
-				jsonp: "jsonpCallback",
+				url: self.ENDPOINT_TAGGING + self.FUNC_GETTAXONOMIES,
 				success: function(data){
 					self.onSuccessFetchRequiredCategoryOptions(data);
 				},
@@ -600,7 +673,7 @@
 	this.onSuccessFetchRequiredCategoryOptions = function(data) {
 		this.hideProgress();
 		//Now we have all categories for controlled tags
-		this.requiredCategoryOptions = data.required;
+		this.requiredCategoryOptions = data;
 
 		var requiredTagsContainer = $(this.CS).find(".tagsEditor_requiredTags");
 		requiredTagsContainer.empty();
@@ -616,14 +689,14 @@
 		this.bindControlledCategories();
 
 		// Pass the categories on to suggesters; they may need it too
-		this.suggester.categories = this.requiredCategoryOptions;
-		this.suggester2.categories = this.requiredCategoryOptions;
+		this.suggester.setTaxonomies(this.requiredCategoryOptions);
+		this.suggester2.setTaxonomies(this.requiredCategoryOptions);
 
 		// Only when we got both - tags assigned to this document and
 		// data for the required categories, we can populate the UI of tags
 		if (this.dataGetTags && this.requiredCategoryOptions) {
 			//this.buildCategoryOptions();
-			this.buildTags(this.dataGetTags.items);
+			this.buildTags(this.dataGetTags);
 
 			// After we're done, drop this data, we won't need it anymore
 			this.dataGetTags = null;
@@ -633,16 +706,24 @@
 	this.buildCategory = function(prefix,label){
 		var requiredTagsContainer = $(this.CS).find(".tagsEditor_requiredTags");
 		requiredTagsContainer.append(
-			"<div class=\""+prefix+"CategoryContainer categoryContainer\"> <div class=\"categoryName\">"
-				+label+":</div> <div class=\"categoryTags empty\" pref=\"" + prefix + "\">  "
+			"<div class=\""+prefix+"CategoryContainer categoryContainer\">"
+                                + "<table><tr><td valign='top'>"
+                                + "<div class=\"categoryName\">"
+				+label+":</div> "
+                                + "</td><td>"
+                                + "<div class=\"categoryTags empty\" pref=\"" + prefix + "\">  "
 				+ "<span class=\"add\"><a href=\"\">add</a> "
 				+ "<div class='add'/>"
-				+ "</span><span class=\"none\">none</span>  </div> <div class=\"categoryClear\"></div> </div>");
+				+ "</span><span class=\"none\">none</span>  </div> <div class=\"categoryClear\"></div> "
+                                + "</td></tr></table>"
+                                + "</div>");
 	}
 	
 	this.onFailureFetchRequiredCategoryOptions = function(xhr, textStatus, errorThrown){
 		this.ajaxDone();
-		alert("Error getting list of possible required categories: " + xhr.responseText);
+                if (typeof console != "undefined") {
+                    console.log("Error getting list of possible required categories: " + xhr.responseText);
+                }
 	}
 
 	/**
@@ -751,6 +832,7 @@
 		if (oldTag)
 			this.invokeRemoveTag(oldTag.uri);
 
+                // TODO: Is this right?
 		if (newTag)
 			this.invokeAddTag(newTag.label);
 
@@ -780,9 +862,10 @@
 		// If we don't have test data, invoke a web service ...
 		if (!this.testDataTagExtract) {
 			$.ajax({
-				url: self.ENDPOINT_TAG_EXTRACT + self.FUNC_EXTRACT_TAX_TAGS + "?uri=" + self.RESOURCE_URI,
-				dataType: "jsonp",
-				jsonp: "jsonpCallback",
+				url: self.ENDPOINT_TAG_EXTRACT + self.FUNC_EXTRACT_TAX_TAGS,
+                                data: {
+                                    "uri" : self.RESOURCE_URI
+                                },
 				success: function(data){
 					self.onSuccessFetchRecommendedTags(data);
 				},
@@ -811,12 +894,16 @@
 		// Option 2: Recommended categories are only shown above tag cloud
 		//this.buildRecommendedCategories(data);
 
+                this.adjustTagCloudHeight();
+
 		this.buildRecommendedTags(data.optional);
 	}
 
 	this.onFailureFetchRecommendedTags = function(xhr, textStatus, errorThrown){
 		this.ajaxDone();
-		alert("Error extracting tags from the document: " + xhr.responseText);
+                if (typeof console != "undefined") {
+                    console.log("Error extracting tags from the document: " + xhr.responseText);
+                }
 	}
 
 	/**
@@ -975,9 +1062,15 @@
 
 			if (fontSize >= self.MIN_TAG_FONT_SIZE) {
 				var tagEl = $(document.createElement("A"));
-				tagEl.attr("tagUri", tag.uri);
+                                if (tag.uri) {
+                                    tagEl.attr("tagUri", tag.uri);
+                                } else {
+                                    tagEl.attr("tagLabel", tag.label);
+                                }
+				
 				if (tag.controlled == 1) {
 					tagEl.addClass("tagsEditor_controlled");
+                                        tagEl.attr("title", tag.prefix + ":" + tag.label);
 				}
 				if (self.freeTags[tag.uri] || self.controlledTags[tag.uri]){
 					tagEl.addClass("selectedTag");
@@ -988,14 +1081,28 @@
 				recommendedTagsContainer.append(tagEl);
 				recommendedTagsContainer.append(" ");
 
-				// Keep reference to the DOM element in a map
-				self.recommendedTagEls[tag.uri] = tagEl;
+                                // If this is a preexisting tag, keep a reference to the element
+                                // and the tag by URI
+                                if (tag.uri) {
+                                    // Keep reference to the DOM element in a map (if it has URI
+                                    self.recommendedTagEls[tag.uri] = tagEl;
 
-				// Also keep reference to the tag object itself
-				self.recommendedTags[tag.uri] = tag;
+                                    // Also keep reference to the tag object itself
+                                    self.recommendedTags[tag.uri] = tag;
+                                } 
+                                // But if this is a non-existent tag, keep a reference to the element
+                                // and the tag by URI of kind "label:$label"
+                                // This is a bit of a hack, but will work
+                                else {
+                                    // Keep reference to the DOM element in a map (if it has URI
+                                    self.recommendedTagEls["label:" + tag.label] = tagEl;
+
+                                    // Also keep reference to the tag object itself
+                                    self.recommendedTags["label:" + tag.label] = tag;
+                                }
 
 
-
+				
 				tagsCount++;
 			}
 		});
@@ -1039,10 +1146,21 @@
 				} else {
 					//Tag hasn't been selected yet => build up new free or controlled tag
 					el.addClass("selectedTag");
-					var uri = el.attr("tagUri");
-					var tag = self.recommendedTags[uri];
 
-					self.addTag(tag);
+                                        if (el.attr("tagUri")) {
+                                            var uri = el.attr("tagUri");
+                                            var tag = self.recommendedTags[uri];
+
+                                            self.addTag(tag);
+                                        } else {
+                                            var label = el.attr("tagLabel");
+                                            var tag = {
+                                                label : label
+                                            }
+
+                                            self.invokeAddTagWithLabel(label, null);
+                                        }
+					
 				}
 			}
 		});
@@ -1054,11 +1172,11 @@
 			//Separating X-icon from PLUS-icon - parent of PLUS-icon doesn't have a tagUri attribute
 			if ((el.attr("tagName") == "DIV") && (el.attr("className") == "delete") && el.parent().attr("tagUri")) {
 				var tagUri = $(el.parent()[0]).attr("taguri");
-				var categoryContainer = el.parent().parent();
+				var categoryContainer = el.parents(".categoryContainer");
 				var prefix = this.tagsMap[tagUri].prefix;
 				self.removeTag(tagUri);
 				//Checking if the category is empty
-				if(self.checkEmptyCategories(categoryContainer) == true){
+				if(self.checkEmptyCategories(categoryContainer.find("div.categoryTags")) == true){
 					//If category is empty - check if it's non-required and eventually remove it
 					this.removeEmptyCategory(prefix,categoryContainer.parent());
 				}
@@ -1067,11 +1185,11 @@
 				var tagUri = $(el).attr("taguri");
 				var tag = self.tagsMap[tagUri];
 				//Removing highlight from all controlled TAGS
-				requiredTagsContainer.children("div.categoryContainer").children("div.categoryTags").children().removeClass("gold");
+				requiredTagsContainer.find("div.categoryContainer").find("div.categoryTags").children().removeClass("gold");
 				//Adding highlight to the editing tag
 				el.addClass("gold");
 				//Showing suggester
-				self.suggester2.show({below:el, edit: tag});
+				self.suggester2.show({below:el, edit: tag, parent:$(self.CS).find("div.tagsEditor")});
 				//Hiding textfield - we don't need it in a tag editing
 				self.suggester2.elTxt.css("display","none");
 				//Hiding ADD button aswell
@@ -1084,7 +1202,7 @@
 				var parent = el.parent();
 				if (parent.attr("tagName") == "SPAN" && parent.hasClass("add")) {
 					var prefix = parent.parent().attr("pref");
-					self.suggester2.show({below:parent, add: prefix});
+					self.suggester2.show({below:parent, add: prefix, parent:$(self.CS).find("div.tagsEditor")});
 					//Showing back the textfield - we don't need it in a tag editing
 					self.suggester2.elTxt.css("display","inline");
 					//Showing back the ADD button aswell
@@ -1104,6 +1222,11 @@
 
 	//This function checks if empty category is non-required and eventually removes it via URI of the last tag and the categoty element itself
 	this.removeEmptyCategory = function(prefix,category){
+                var catPrefix = prefix;
+                if ((prefix == "region") || (prefix == "cont") || (prefix == "country"))  {
+                    prefix = "geo";
+                }
+
 		if (this.categoryMap[prefix].required == false){
 			delete this.categoryMap[prefix];
 			category.remove();
@@ -1139,18 +1262,42 @@
 	 *
 	 */
 	this.invokeAddTagWithLabel = function(label, suggester){
-		// dummy implementation, integrator needs to provide this
+		var tag = {
+			label: label
+		}
+                var self = this;
+                this.safeInvoke(function(){
+                    $.ajax({
+                            url: this.ENDPOINT_TAGGING + this.FUNC_ADDTAGS,
+                            data : {
+                                    "resource" : this.RESOURCE_URI,
+                                    // Note: $.toJSON is broken on arrays
+                                    "tags"	   : tinymce.util.JSON.serialize([tag])
+                            },
+                            type:"POST",
+                            success: function(data){
+                                    self.onSuccessAddTagWithLabel(data, suggester);
+                            },
+                            error: function(xhr, textStatus, errorThrown){
+                                    self.onFailureAddTagWithLabel(textStatus, suggester);
+                            }
+                    });
+                });
 	}
 
-	this.onSuccessAddTagWithLabel = function(tags, suggester) {
+	this.onSuccessAddTagWithLabel = function(data, suggester) {
 		this.ajaxDone();
-		this.buildTags(tags);
-		suggester.onCustomTagAdded();
+		this.buildTags(data.items);
+
+                if (suggester)
+                    suggester.onCustomTagAdded();
 	}
 
 	this.onFailureAddTagWithLabel = function(error, suggester) {
 		this.ajaxDone();
-		suggester.onCustomTagFailed(error);
+
+                if (suggester)
+                    suggester.onCustomTagFailed(error);
 	}
 
 
@@ -1205,7 +1352,7 @@
 		});
 
 		// Initialize suggester
-		this.suggester = new $.Suggester();
+		this.suggester = new $.Suggester(false);
 		this.suggester.setSelectedTags(this.tagsMap);
 		// TODO: Remove this? Not used?
 		this.suggester.addTag = this.addTag;
@@ -1238,6 +1385,13 @@
 
 		this.suggester2.onAddTag = $.proxy(function(tag){
 			this.addTag(tag);
+
+                        // After tag is added, need to reposition the suggester below the newly added tag?
+                        var tagEl = this.suggester2.positionAnchorEl.parent().find("span.tag").last();
+                        var offset = tagEl.position();
+                        offset.left = offset.left + tagEl.width() +5;
+                        offset.top = offset.top - 3;
+                        this.suggester2.reposition(offset);
 		},this);
 
 		//Adding new TAG with label from suggester's textField - triggered by ENTER key

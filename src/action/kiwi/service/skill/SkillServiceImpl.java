@@ -287,20 +287,21 @@ public class SkillServiceImpl implements SkillServiceLocal, SkillServiceRemote  
 		if (deleteUserSkills()) {
 			List<User> users = userService.getAllCreatedUsers();
 			for (User user : users) {
-//				System.out.println("computeUserSkills... "+user.getFirstName());
 				computeUserSkill(user);
-									
 			}
 		}		
 	}
 
+	/* (non-Javadoc)
+	 * @see kiwi.api.skill.SkillService#computeUserSkill(kiwi.model.user.User)
+	 */
 	public void computeUserSkill(User user){
 			Map<String, Float> map = computeSkillsByUser(user);
 			if (map!=null && !map.isEmpty()) {
 //				System.out.println("map for use "+user.getFirstName()+" is "+map);
 				UserSkill userSkill = new UserSkill(user,map);
-				kiwiEntityManager.persist(userSkill);
-//				kiwiEntityManager.flush();
+				entityManager.persist(userSkill);
+				//entityManager.flush();
 			}else{
 //				System.out.println("map is null or empty or existssssssssssssss");
 			}
@@ -313,9 +314,7 @@ public class SkillServiceImpl implements SkillServiceLocal, SkillServiceRemote  
 		List<UserSkill> uss = this.listUserSkills();
 		for (UserSkill us : uss) {
 			entityManager.remove(us);
-			//entityManager.flush();
 		}
-//		entityManager.flush();
 		return listUserSkills().isEmpty();
 	} 	
 
@@ -335,10 +334,6 @@ public class SkillServiceImpl implements SkillServiceLocal, SkillServiceRemote  
 			} catch (PersistenceException ex) {
 				ex.printStackTrace();
 				log.warn("error while listing user skills: query failed");
-			}
-			System.out.println("Current skills for this user" + user.getLogin());
-			for (String skill :result.getSkills().keySet()){
-				System.out.println(skill);
 			}
 			return result;
 	}

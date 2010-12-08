@@ -1,0 +1,28 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:m="http://code.google.com/p/gmaps4jsf/"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+                xmlns:p="http://primefaces.prime.com.tr/ui">
+ 
+ <p:panel id="rule" header="Personalized Rules" toggleable="true" closable="true" widgetVar="ruleWidget" closeListener="#{dashboardAction.removePortlet}">
+	<h:form id="ruleForm">
+		<p:tabView cache="false">
+			<p:tab title="Recommendation" id="recId">
+				<ui:include src="ruleRec.xhtml" />
+			</p:tab>			
+			<p:tab title="Tag" id="tagId">
+				<ui:include src="ruleTag.xhtml" />
+			</p:tab>
+			<p:tab title="My Tag" id="myTagId">
+				<ui:include src="ruleMyTag.xhtml" />
+			</p:tab>			
+		</p:tabView>
+	</h:form>
+</p:panel>   
+</ui:composition>

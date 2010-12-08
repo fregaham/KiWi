@@ -210,11 +210,7 @@ public class DkmsContentRetrievalAction implements Serializable {
 			
 			//bigIdea
 			if(bigIdeaMap != null)
-				ksc.setRdfObjectProperties(bigIdeaMap);
-			
-			
-			//type
-		//	if(type != null){
+				ksc.setRdfObjectProperties(bigIdeaMap);		
 				
 				Set<String> ts = ksc.getTypes();
 
@@ -222,19 +218,7 @@ public class DkmsContentRetrievalAction implements Serializable {
 					KiWiUriResource type = (KiWiUriResource) iterator.next();
 					ts.add(type.getKiwiIdentifier());
 				}				
-				ksc.setTypes(ts);
-				
-				//String kiwiIdentifier = type.getKiwiIdentifier();
-
-				
-				//String crit = ksc.getSolrSearchString();
-				
-//				log.info(crit);
-//				crit = crit+" and type:\""+kiwiIdentifier+"\"";
-//				log.info(crit);
-//				ksc.setSolrSearchString(crit);
-		//	}
-			
+				ksc.setTypes(ts);			
 			
 			searchResults = solrService.search(ksc);
 			
@@ -262,28 +246,15 @@ public class DkmsContentRetrievalAction implements Serializable {
 			
 			if(representationTypeMap != null)
 				ksc.setRdfObjectProperties(representationTypeMap);
-			//type
-		//	if(type != null){
-				
+	
 				Set<String> ts = ksc.getTypes();
 
 				for (Iterator iterator = selectedTypes.iterator(); iterator.hasNext();) {
 					KiWiUriResource type = (KiWiUriResource) iterator.next();
 					ts.add(type.getKiwiIdentifier());
 				}				
-				ksc.setTypes(ts);
-				
-				//String kiwiIdentifier = type.getKiwiIdentifier();
+				ksc.setTypes(ts);				
 
-				
-				//String crit = ksc.getSolrSearchString();
-				
-//				log.info(crit);
-//				crit = crit+" and type:\""+kiwiIdentifier+"\"";
-//				log.info(crit);
-//				ksc.setSolrSearchString(crit);
-		//	}
-			
 			
 			searchResults = solrService.search(ksc);
 			
@@ -396,6 +367,13 @@ public class DkmsContentRetrievalAction implements Serializable {
 		selectedRepresentationTypes = new HashSet<KiWiUriResource>();
 		selectedTypes = new HashSet<KiWiUriResource>();
 		page = 0;
+	}
+	
+	public String clearFacetes() {
+		clear();
+		//selectedBigIdeas.removeAll(bigIdeaFacets);
+		//selectedRepresentationTypes.removeAll(representationTypeFacets);
+		return "/edukms/abcmaths/searchKMS.xhtml";
 	}
 	
 	
@@ -623,10 +601,10 @@ public class DkmsContentRetrievalAction implements Serializable {
 		
 		
 		bigIdeaMap.put("http://www.dkms.at/bigIdeas", kiwiResource2Uri(selectedBigIdeas));
-		//representationTypeMap.put("http://www.dkms.at/representationType", kiwiResource2Uri(selectedRepresentationTypes));
 
-		runBigIdeas(bigIdeaMap);
+		
 		runRepresentationTypes(representationTypeMap);
+		runBigIdeas(bigIdeaMap);
 		return "search";
 				
 	}
@@ -652,7 +630,7 @@ public class DkmsContentRetrievalAction implements Serializable {
 		selectedBigIdeas.remove(bigIdeaResource);
 		if(selectedBigIdeas.size() >0){
 			bigIdeaMap.put("http://www.dkms.at/bigIdeas", kiwiResource2Uri(selectedBigIdeas));
-			//representationTypeMap.put("http://www.dkms.at/representationType", kiwiResource2Uri(selectedRepresentationTypes));
+			
 		}
 		else
 		{
@@ -673,8 +651,9 @@ public class DkmsContentRetrievalAction implements Serializable {
 		{
 			representationTypeMap = null;
 		}
-		runBigIdeas(bigIdeaMap);
 		runRepresentationTypes(representationTypeMap);
+		runBigIdeas(bigIdeaMap);
+		
 		return "search";
 	}
 	

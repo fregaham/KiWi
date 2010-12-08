@@ -363,7 +363,7 @@ public class SolrServiceImpl implements SolrServiceLocal, SolrServiceRemote,
 		final Set<String> tagURIs = new HashSet<String>();
 		final Set<Date> tagCreationDates = new HashSet<Date>();
 
-		for (final Tag t : taggingService.getTags(item)) {
+		for (final Tag t : taggingService.getTaggings(item)) {
 			try {
 				tagNames.add(t.getTaggingResource().getTitle());
 				purposes.add(t.getPurpose());
@@ -545,7 +545,7 @@ public class SolrServiceImpl implements SolrServiceLocal, SolrServiceRemote,
 		final Set<String> tagURIs = new HashSet<String>();
 		final Set<Date> tagCreationDates = new HashSet<Date>();
 
-		for (final Tag t : taggingService.getTags(item)) {
+		for (final Tag t : taggingService.getTaggings(item)) {
 			try {
 				tagNames.add(t.getTaggingResource().getTitle());
 				purposes.add(t.getPurpose());
@@ -618,7 +618,7 @@ public class SolrServiceImpl implements SolrServiceLocal, SolrServiceRemote,
 
 				final ContentItem delegate = ff.getDelegate();
 
-				for (final Tag t : taggingService.getTags(delegate)) {
+				for (final Tag t : taggingService.getTaggings(delegate)) {
 					fragmentTagNames.add(t.getTaggingResource().getTitle());
 					fragmentTagURIs.add(t.getResource().getKiwiIdentifier());
 					fragmentTagCreationDates.add(t.getCreationTime());

@@ -57,19 +57,28 @@ public class SKOSConceptUIHelper implements Serializable {
 
     private static final long serialVersionUID = -808958766714416201L;
 
-    private String patrentConceptURI;
-    
+    private SKOSConcept concept;
+
     private boolean required;
-    
+
     private String title;
 
     private String [] prefixes;
 
-    public SKOSConceptUIHelper(SKOSConcept topConcept, String title, int prefixexCount, String prefix) {
-        this.title = title;
-        final ContentItem delegate = topConcept.getDelegate();
-        final String uri = ((KiWiUriResource) delegate.getResource()).getUri();
-        this.patrentConceptURI = uri;
+    public SKOSConceptUIHelper() {
+        // UNIMPLEMENTED
+    }
+    
+    public SKOSConceptUIHelper(SKOSConcept concept, int prefixexCount, String prefix) {
+
+        if (concept == null ) {
+            final NullPointerException nullException =
+                    new NullPointerException("The concept argument can not be null.");
+            throw nullException;
+        }
+
+        this.concept = concept;
+        this.title = this.getTitle();
         this.prefixes = new String[prefixexCount];
         this.required = true;
         for (int i = 0; i < prefixexCount; i++) {
@@ -105,26 +114,26 @@ public class SKOSConceptUIHelper implements Serializable {
         this.prefixes = prefixes;
     }
 
-    /**
-     * @return the patrentConceptURI
-     */
-    public String getPatrentConceptURI() {
-        return patrentConceptURI;
-    }
-
-    /**
-     * @param patrentConceptURI the patrentConceptURI to set
-     */
-    public void setPatrentConceptURI(String patrentConceptURI) {
-        this.patrentConceptURI = patrentConceptURI;
-    }
-    
     public boolean isRequired() {
         return required;
     }
 
     public void setRequired(boolean required) {
         this.required = required;
+    }
+
+    /**
+     * @return the concept
+     */
+    public SKOSConcept getConcept() {
+        return concept;
+    }
+
+    /**
+     * @param concept the concept to set
+     */
+    public void setConcept(SKOSConcept concept) {
+        this.concept = concept;
     }
 
     /* (non-Javadoc)

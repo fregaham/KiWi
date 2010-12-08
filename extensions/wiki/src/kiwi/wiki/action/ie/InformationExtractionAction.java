@@ -2236,7 +2236,7 @@ public class InformationExtractionAction implements Serializable {
 	 * TODO: rename to readMetadata
 	 */
 	private void readTaggings (ContentItem ci, AnnotationUI annotation) {
-		List<Tag> tags = taggingService.getTags(ci);
+		List<Tag> tags = taggingService.getTaggings(ci);
 		for (Tag tag : tags) {
 			annotation.getTags().add(new ResourceUI(tag.getTaggingResource().getKiwiIdentifier(), tag.getTaggingResource().getTitle()));
 		}
@@ -2344,7 +2344,7 @@ public class InformationExtractionAction implements Serializable {
 	}
 	
 	private void updateTaggings (AnnotationUI annotation, ContentItem ci) {
-		List<Tag> currentTags = taggingService.getTags(ci);
+		List<Tag> currentTags = taggingService.getTaggings(ci);
 		Collection<KiWiResource> currentTypes = ci.getTypes();
 		
 		// delete those that have been deleted...

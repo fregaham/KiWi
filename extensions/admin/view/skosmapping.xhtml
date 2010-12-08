@@ -40,30 +40,42 @@
         </h:form>
 
         <br/>
-        <rich:separator lineType="beveled" height="4" width="100%" align="center"/>
+            <rich:separator lineType="beveled" 
+                            height="4" 
+                            width="100%" 
+                            align="center"/>
         <br/>
 
         <h:form id="skos-map-panel">
-        
-        <table id="panel" style="width:100%;">
-            <tr>
-            <c:forEach  items="#{skosMapperAction.conceptHelpers}"
-                        var="conceptHelper">
-                <td style="vertical-align: top;">
-                <h:outputText value="#{conceptHelper.title}"/>
-                <c:forEach  items="#{conceptHelper.prefixes}"
-                             var="prefix">
-                        <br/>
-                        <h:inputText value="#{prefix}"/>
+            <!--
+            this table contains all the top level SKOS concept and them
+            level mappings. Each column contains a text field for each
+            top level concept nesting level.
+            The last element in a column is a check box, this element
+            represents the required attribute. According with the 
+            specification a Top Level Concept can be required or not.
+            -->
+            <table id="panel" style="width:100%;">
+                <tr>
+                <c:forEach  items="#{skosMapperAction.conceptHelpers}"
+                            var="conceptHelper">
+                    <td style="vertical-align: top;">
+                    <h:outputText value="#{conceptHelper.title}"/>
+                    <c:forEach  items="#{conceptHelper.prefixes}"
+                                 var="prefix">
+                            <br/>
+                            <h:inputText value="#{prefix}"/>
+                    </c:forEach>
+                    <br/>
+                    <h:selectBooleanCheckbox value="#{conceptHelper.required}" />
+                    </td>
                 </c:forEach>
-                </td>
-            </c:forEach>
-            </tr>
-        </table>
+                </tr>
+            </table>
                 
-        <p:commandButton ajax="false"
-                         action="#{skosMapperAction.commitAll()}"
-                         value="Commit All"/>
+            <p:commandButton ajax="false"
+                             action="#{skosMapperAction.commitAll()}"
+                             value="Commit All"/>
         </h:form>
         
 

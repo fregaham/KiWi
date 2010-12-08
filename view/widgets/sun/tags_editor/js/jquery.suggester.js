@@ -1,5 +1,10 @@
 (function( $ ) {
 	$.Suggester = function(isSecondary){
+                // Initiate the WS endpoint ref
+                this.ENDPOINT_TAGGING = document.location.protocol + "//" + document.location.host
+                    + "/KiWi/seam/resource/services/widgets/tagging/";
+
+                // Initiate variables
 		var selectedResult = null;
 		var selectedSuggestions = null;
 
@@ -123,12 +128,12 @@
 			// If "below" property was specified, position the component below
 			// the specified element
 			if (options && options.below) {
-				var offset = $(options.below).offset();
-				offset.top += 19;
+                            this.positionAnchorEl = options.below;
 
-				this.el.css("left", offset.left + "px");
-				this.el.css("top", offset.top + "px");
-				this.el.css("position", "absolute");
+                            var offset = $(this.positionAnchorEl).position();
+                            offset.top += 19;
+
+                            this.reposition(offset);
 			}
 
 
@@ -157,7 +162,14 @@
 			this.elTxt.focus();
 		}
 
-		
+                /**
+                 *
+                 */
+                this.reposition = function(offset){
+                    this.el.css("left", offset.left + "px");
+                    this.el.css("top", offset.top + "px");
+                    this.el.css("position", "absolute");
+                }
 
 		/**
 		* Initialize DOM elements
@@ -219,7 +231,7 @@
 		this.bindInvisHandler = function(){
 			var self = this;
 			
-			this.invisDiv.keydown(function(e){
+			this.invisDiv.keypress(function(e){
 				// TODO: Move these where they're needed (e.g. handling keydown/up)
 				//Getting number of results
 				var childrenNumber = self.suggestions.length;
@@ -253,6 +265,7 @@
 							trueResultHeight *(selectedResult-Math.floor(resultsPerPage/2)));
 						}
 					}
+                                        e.preventDefault();
 				}
 				// key up
 				else if(e.keyCode==38){
@@ -266,9 +279,12 @@
 							self.el.children("div").scrollTop(trueResultHeight *(selectedResult-Math.floor(resultsPerPage/2)));
 						}
 					}
+                                        e.preventDefault();
 				}
 				// key left
-				else if(e.keyCode==37 && selectedResult!=null && self.suggestions[selectedResult].controlled==1){
+				else if(e.keyCode==37 && selectedResult!=null && self.suggestions[selectedResult].controlled==1
+                                    && (self.resultsContainer.children("div").eq(selectedResult).hasClass("hasParent")))
+                                {
 					e.preventDefault();
 					startLoadingParents(selectedResult);
 					selectedResult = null;
@@ -282,7 +298,7 @@
 					selectedResult = null;
 				}
 				//SPACE
-				else if(e.keyCode==32){
+				else if(e.charCode==32){
 					//Selecting suggestion
 					if(selectedResult != null){
 						var uri = self.suggestions[selectedResult].uri;
@@ -343,17 +359,7 @@
 		this.bindTextFieldHandler = function() {
 			var self = this;
 
-			// NOte: This is a hot fix for Macs
 			this.elTxt.keypress(function(e){
-				// ":"
-				if (e.charCode == 58) {
-					self.loadingTimer = window.setTimeout(function(){
-						startLoadingSuggestions();
-					}, 500);
-				}
-			});
-
-			this.elTxt.keydown(function(e){
 
 				// Need to cancel loading suggestions, because:
 				// - either entry will be confirmed (hence no suggestions needed)
@@ -370,15 +376,22 @@
 					e.preventDefault();
 				}
 
-				//            a       -      z  or       space     or               ;                ENTER               ESC                  DOWN             BACKSPACE
-				if(e.keyCode>=65 && e.keyCode<=90 || e.keyCode == 32 || e.keyCode == 59 || e.keyCode == 13 || e.keyCode == 27 || e.keyCode == 40 || e.keyCode == 8){
+				// ":"
+				if (e.charCode == 58) {
+					self.loadingTimer = window.setTimeout(function(){
+						startLoadingSuggestions();
+					}, 500);
+				}
+
+				//            A       -      Z  or         a          -      z          or   space     or               ;                ENTER               ESC                  DOWN             BACKSPACE
+				if(e.charCode>=65 && e.charCode<=90 || e.charCode>=97 && e.charCode<=122 ||  e.charCode == 32 || e.charCode == 59 || e.charCode == 13 || e.keyCode == 27 || e.keyCode == 40 || e.keyCode == 8){
 					//console.log($(e.currentTarget).parent());
 					//59 = ";" - few things can happen:
 
 					if((e.charCode == 59)){
 						//Textfield is empty -> load all prefixes
 						if(self.elTxt.attr("value")==""){
-							console.log("Only one \":\" => loading prefixes - temporary disabled");
+//							console.log("Only one \":\" => loading prefixes - temporary disabled");
 //							self.loadingTimer = window.setTimeout(function(){
 //								startLoadingSuggestions();
 //							}, 2000);
@@ -392,7 +405,7 @@
 									startLoadingSuggestions();
 								}, 500);
 							}else{
-								console.log("Second semicolon - gotcha!");
+								//console.log("Second semicolon - gotcha!");
 								e.preventDefault();
 							}
 						}
@@ -407,11 +420,11 @@
 					//27 = ESC
 					//40 = DOWN
 					//8 = BACKSPACE
-					//              a         -        z                 space
-					if(e.keyCode >= 65 && e.keyCode <= 90 || e.keyCode == 32){
+					//              a         -        z     or A  - Z or          space
+					if(e.charCode >= 65 && e.charCode <= 90 || e.charCode>=97 && e.charCode<=122 || e.charCode == 32){
 						//Checking if there isn't any semicolon on the first place
 						if(self.hasSemicolon(textFieldValue) && textFieldValue.indexOf(":")==0){
-							console.log("Already has semicolon on first place - loading prefixes, stop bothering me!")
+//							console.log("Already has semicolon on first place - loading prefixes, stop bothering me!")
 							e.preventDefault();
 						}else{
 							// Starts "sugestions loading timer". If there was a timer set before,
@@ -435,9 +448,14 @@
 							self.resultsContainer.children("div").eq(0).addClass("highlighted");
 							selectedResult = 0;
 							self.resultsContainer.scrollTop(0);
+                                                        e.preventDefault();
 						} else if(self.resultsContainer.children().length == 0){
 							//self.invisDiv.focus();
-							startLoadingSuggestions();
+                                                        if (textFieldValue.empty()) {
+                                                            self.onLoadSuggestions(self.allPrefixes);
+                                                        } else {
+                                                            startLoadingSuggestions();
+                                                        }
 						}else if(selectedResult > 0){
 							self.invisDiv.focus();
 							selectedResult++;
@@ -522,9 +540,9 @@
 		this.hide = function(keepFocus){
 			if (!this.isSecondary) {
 				this.hideSuggestions(keepFocus);
-
 			} else {
 				this.hideSuggester();
+                                this.editingMode = false;
 			}
 		}
 
@@ -574,7 +592,7 @@
 				if (($(self.elTxt).attr("value") == "") && (!hasFocus)){
 					self.catTimer = window.setTimeout(function(){
 						// TODO: This was problematic, so excluding...
-						self.onLoadSuggestions(self.categories);
+						self.onLoadSuggestions(self.allPrefixes);
 					},3000);
 					// in keyhandler: if(this.catTimer) window.cancelTimeout(this.catTimer)
 				}
@@ -596,14 +614,26 @@
 
 		/**
 		 * This method is called by the compoment when it needs to load suggestions;
-		 * integrators need to override this method
+		 * integrators may need to override this method
 		*
 		*/
 		this.loadSuggestions = function(txt){
-			// This is dummy implementation;
-			// In reality, this method should use AJAX to start fetching
-			// data and call onLoadSuggestions in a success callback
-			this.onLoadSuggestions([]);
+                    var self = this;
+                    $.ajax({
+                        url: this.ENDPOINT_TAGGING + "searchTags",
+                        type : "GET",
+                        data : {
+                            q : txt
+                        },
+                        success: function(data){
+                            self.onLoadSuggestions(data.items);
+                        },
+                        error: function(xhr, textStatus, errorThrown){
+                            // Not completely right, but let's assume now
+                            // the WS will never fail
+                            self.onLoadSuggestions([]);
+                        }
+                    });
 		}
 
 		/**
@@ -622,13 +652,28 @@
 		}
 
 		/**
-		 * Dummy implementation, to be overriden by integrators
+		 * Initial implementation, integrators may override this
 		 */
 		this.loadSiblings = function(uri){
-			// Integrators need to call onLoadSuggestions to provide data
-			// in a callback
-			this.onLoadSuggestions([]);
+                    var self = this;
+                    $.ajax({
+                        url: this.ENDPOINT_TAGGING + "getSiblings",
+                        type : "GET",
+                        data : {
+                            uri : uri
+                        },
+                        success: function(data){
+                            self.onLoadChildren(data.items);
+                        },
+                        error: function(xhr, textStatus, errorThrown){
+                            // Not completely right, but let's assume now
+                            // the WS will never fail
+                            self.onLoadChildren([]);
+                        }
+                    });
 		}
+
+
 
 		var startLoadingChildren = $.proxy(function(selRes){
 			if(this.pendingRequest){
@@ -642,6 +687,28 @@
 			this.resultsContainer.children("div").eq(selRes).children(".result_wait_icon").css("visibility","visible");
 			this.loadChildren(this.suggestions[selRes].uri);
 		},this);
+
+                /*
+                 * Initial implementation, integrators may override this
+                 */
+                this.loadChildren = function(uri) {
+                    var self = this;
+                    $.ajax({
+                        url: this.ENDPOINT_TAGGING + "getChildren",
+                        type : "GET",
+                        data : {
+                            uri : uri
+                        },
+                        success: function(data){
+                            self.onLoadChildren(data.items);
+                        },
+                        error: function(xhr, textStatus, errorThrown){
+                            // Not completely right, but let's assume now
+                            // the WS will never fail
+                            self.onLoadChildren([]);
+                        }
+                    });
+                }
 
 
 		this.onLoadChildren = function(children){
@@ -667,6 +734,27 @@
 			this.loadParents(this.suggestions[selRes].parent);
 		},this);
 
+                /*
+                 * 
+                 */
+                this.loadParents = function(uri) {
+                    var self = this;
+                    $.ajax({
+                        url: this.ENDPOINT_TAGGING + "getSiblings",
+                        type : "GET",
+                        data : {
+                            uri : uri
+                        },
+                        success: function(data){
+                            self.onLoadParents(data.items);
+                        },
+                        error: function(xhr, textStatus, errorThrown){
+                            // Not completely right, but let's assume now
+                            // the WS will never fail
+                            self.onLoadParents([]);
+                        }
+                    });
+                }
 
 		this.onLoadParents = function(parents){
 			//After simulated 2s hide the parents
@@ -675,6 +763,32 @@
 			this.suggestions = parents;
 			this.fillTheDiv("parents");
 		}
+
+                /**
+                 * Returns true if given URI is root of a taxonomy
+                 */
+                var isTaxonomyRoot = $.proxy(function(uri){
+                    if (!this.categories)
+                        return false;
+
+                    for (var i = 0; i < this.categories.length; i++) {
+                        if (this.categories[i].uri == uri)
+                            return true;
+                    }
+
+                    return false;
+                },this);
+
+                this.setTaxonomies = function(taxonomies) {
+                    this.categories = taxonomies;
+                    this.allPrefixes = [];
+
+                    for (var i = 0; i < taxonomies.length; i++) {
+                        this.allPrefixes.push({
+                            prefix: taxonomies[i].prefix
+                        });
+                    }
+                }
 
 		/**
 		 * Function to be overriden by integrators;
@@ -736,7 +850,7 @@
 					}
 
 					//If suggestion has a parent, left arrow get visible condition via class
-					if(this.suggestions[i].parent!=null){
+					if((this.suggestions[i].parent!=null) && (!isTaxonomyRoot(this.suggestions[i].parent))) {
 						classNames += "hasParent ";
 					}
 				}
@@ -847,7 +961,8 @@
 				}
 
 				// TODO: hide suggestions, hide the component
-				
+                                this.hide(true);
+                                selectedResult = null;
 			}
 		}
 

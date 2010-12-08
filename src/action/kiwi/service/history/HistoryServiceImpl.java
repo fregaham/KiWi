@@ -1,5 +1,6 @@
 package kiwi.service.history;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -15,6 +16,7 @@ import kiwi.model.activity.CommentActivity;
 import kiwi.model.activity.EditActivity;
 import kiwi.model.activity.SearchActivity;
 import kiwi.model.activity.VisitActivity;
+import kiwi.model.content.ContentItem;
 import kiwi.model.kbase.KiWiUriResource;
 import kiwi.model.user.User;
 
@@ -118,6 +120,23 @@ public class HistoryServiceImpl implements HistoryServiceLocal, HistoryServiceRe
 		return q.getResultList();
 	}
 	
+	/* (non-Javadoc)
+	 * @see kiwi.api.history.HistoryService#listEditsByContentItem(kiwi.model.content.ContentItem)
+	 */
+	public List<EditActivity> listEditsByContentItem(ContentItem contentItem) {
+		
+		log.debug("listing edits for a given content item...");
+		Query q = entityManager.createNamedQuery("activities.listEditsForContentItem");
+		q.setParameter("contentItem", contentItem);
+		q.setHint("org.hibernate.cacheable", true);
+		List<EditActivity> result = q.getResultList(); 
+		if (result.isEmpty()) {
+			return Collections.EMPTY_LIST;
+		}
+		else {
+			return result;
+		}	
+	}
 	/* (non-Javadoc)
 	 * @see kiwi.api.history.HistoryService#listLastCommentsByUser(kiwi.model.user.User)
 	 */

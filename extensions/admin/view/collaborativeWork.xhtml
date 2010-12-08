@@ -1,0 +1,76 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:m="http://code.google.com/p/gmaps4jsf/"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                template="/template/kiwi/template_2col.xhtml">
+
+    <ui:define name="sidebar">
+        <ui:include src="elements/sidebar.xhtml"/>
+    </ui:define>
+
+    <ui:define name="center">
+
+        <a:outputPanel id="collaborativeWorkPanel" >
+            <h:form>
+
+                <h1 class="title ui-widget-header ui-corner-all">The KiWi Collaborative Work</h1>
+
+
+                <p:messages />
+				<s:decorate>
+                <p:commandButton ajax="false" value="Compute" action="#{collaborationAction.computeCollaborativeWork()}"/>
+				<div style="padding: 10px 0;"/>
+                </s:decorate>
+
+                <s:span id="collaborativeWorkListTable">
+                    <rich:dataTable id = "userPanel" value="#{collaborationAction.collaborativeWorkList}" var="item">
+
+                        <h:column>
+                            <f:facet name="header">Page title</f:facet>
+							<kiwi:link value="#{item.contentItem.title}" contentItem="#{item.contentItem}" />                            
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Author</f:facet>
+                            <h:outputText value="#{item.contentItem.author.login}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Amount of activities</f:facet>
+                            <h:outputText value="#{item.amountOfActivities}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Collaborators</f:facet>
+                            <ui:repeat var="involvedUser" value="#{item.involvedUsers}" >
+	                           <s:span rendered="#{involvedUser.login != item.contentItem.author.login}">
+	                             <h:outputText value="#{involvedUser.login}"/>
+	                           	 <h:outputText value=" " />
+	                           </s:span>
+                            </ui:repeat>
+                        </h:column>
+                        <h:column>
+                        	<f:facet name="header">Activities</f:facet>
+                        	<h:outputText rendered="#{item.tagActivity}" value="tagging (#{item.numberOfTaggings}), " />
+                        	<h:outputText rendered="#{item.commentActivity}" value="commenting (#{item.numberOfComments}), " />
+                        	<h:outputText rendered="#{item.ratingActivity}" value="rating (#{item.numberOfRatings}), " />
+                        	<h:outputText rendered="#{item.editActivity}" value="editing (#{item.numberOfEditings}), " />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Collaborative Work Value</f:facet>
+                            <h:outputText value="#{item.earnedSocialCapitalValue}"/>
+                        </h:column>                        
+                    </rich:dataTable>
+                </s:span>
+                                
+                </h:form>
+        </a:outputPanel>
+    </ui:define>
+
+</ui:composition>

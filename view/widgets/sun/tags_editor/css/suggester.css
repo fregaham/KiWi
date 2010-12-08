@@ -23,7 +23,7 @@ div.suggester{
 	}
 	div.suggester div.resultsContainer{
 		visibility: hidden;
-		width: 240px;
+		width: 284px;
 		max-height: 200px;
 		overflow: auto;
 		position: absolute;
@@ -89,12 +89,13 @@ div.suggester{
 				}
 
 			div.suggester div.resultsContainer div.result_item span.label{
-				width: 120px;
+				width: 190px;
 				height: 15px;
 				margin-right: 10px;
 				vertical-align: top;
 				cursor: pointer;
 				display: inline-block;
+                                overflow:hidden;
 			}
 
 			div.suggester div.resultsContainer div.result_item span.result_wait_icon{

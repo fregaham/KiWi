@@ -1,22 +1,24 @@
 body{
+    /*
 	font-family:arial,helvetica,sans-serif;
 	color: black;
 	font-size: 12px;
+    */
 }
 
-img{
+.tagsEditor img{
 	margin: 0;
 	padding: 0;
 	border: none;
 }
 
-h1,h2,h3,h4{
+.tagsEditor h1,h2,h3,h4{
 	color: #EB8000;
 	margin: 0;
 	padding: 0;
 }
 
-a{
+.tagsEditor a{
 	cursor: pointer;
 }
 
@@ -27,7 +29,11 @@ a{
 	border: 1px solid lightGray;
 }
 	div.tagsEditor{
-		position: relative;
+                bottom:20px;
+                left:47px;
+                position:absolute;
+                right:30px;
+                top:43px;
 	}
 
 	div.tagsEditor div.delete {
@@ -66,7 +72,8 @@ a{
 		}
 
 		div.tagsEditor_requiredTags{
-			margin-top: 5px;
+                    margin-top:5px;
+                    padding-bottom:5px;
 		}
 
 			div.tagsEditor_requiredTags select{
@@ -88,7 +95,8 @@ a{
 			}
 
 		div.tagsEditor_freeTags{
-			margin-top: 20px;
+                    border-top:1px dashed #CECECE;
+                    padding-top:15px;
 		}
 
 		div.tagsEditor_freeTagsEditor #tagsEditor_inputText{
@@ -116,7 +124,13 @@ a{
 			div.tagsEditor_optional div a{
 				color: #666666;
 				margin-right: 10px;
+                                white-space: nowrap;
+                                cursor: pointer;
 			}
+                        div.tagsEditor_optional div a:hover {
+                            text-decoration: underline;
+                        }
+
 
 			div.tagsEditor_optional div a.selectedTag{
 				color: black;
@@ -168,10 +182,10 @@ div.categoryContainer{
 		text-align: left;
 		margin-right: 5px;
 		float: left;
-		
+		font-weight:bold;
 	}
 	div.categoryContainer div.categoryTags{
-		width: 435px;
+		/*width: 435px;*/
 		float: left;
 	}
 
@@ -185,10 +199,10 @@ div.categoryContainer{
 			display: inline;
 		}
 		/* on hover above empty category, show "add" and hide "none" */
-		div.categoryContainer div.categoryTags:hover span.add {
+		div.categoryContainer:hover div.categoryTags span.add {
 			display: inline;
 		}
-		div.categoryContainer div.categoryTags:hover span.none{
+		div.categoryContainer:hover div.categoryTags span.none{
 			display: none;
 		}
 		
@@ -202,3 +216,7 @@ div.categoryContainer{
 		height: 1px;
 		visibility: hidden;
 	}
+
+div.tagsEditor_tagCloud {
+    overflow-y:auto;
+}

@@ -34,6 +34,8 @@
 package kiwi.model.recommendation;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -74,8 +76,7 @@ public class SocialCapitalRecommendation implements Serializable, Comparable<Soc
 	private float earnedSocialCapitalValue;
     
     private ContentItem recommendedItem;
-	
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -91,7 +92,9 @@ public class SocialCapitalRecommendation implements Serializable, Comparable<Soc
 	public void setEarnedSocialCapitalValue(float earnedSocialCapitalValue) {
 		this.earnedSocialCapitalValue = earnedSocialCapitalValue;
 	}
-
+	public void addEarnedSocialCapitalValue(float earnedSocialCapitalValue) {
+		this.earnedSocialCapitalValue += earnedSocialCapitalValue;
+	}
 	public ContentItem getRecommendedItem() {
 		return recommendedItem;
 	}

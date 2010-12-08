@@ -99,15 +99,25 @@ public interface TaggingService {
 	public List<String> autocomplete(String prefix);
 	
 	/**
-	 * List the tags associated with a content item. This method is safer than getTags of 
+	 * List the taggings associated with a content item. This method is safer than getTags of 
 	 * ContentItem, because it avoids the detached entity problem...
 	 * 
 	 * @param item
 	 * @return
 	 */
-	public List<Tag> getTags(ContentItem item);
+	public List<Tag> getTaggings(ContentItem item);
 	
 
+	/**
+	 * Get the content items used as tags for the given content item. This method performs an
+	 * aggregation over all taggings grouped by taggingResource.
+	 * 
+	 * @param item
+	 * @return
+	 */
+	public List<ContentItem> getTags(ContentItem item);
+	
+	
 	/**
 	 * Return tags by a given label
 	 * @param tagLabel
@@ -165,7 +175,6 @@ public interface TaggingService {
 	 */
 	public void removeTaggings(ContentItem item, String[] tagUris, boolean shared);
 
-
 	/**
 	 * Find all Tag objects for a specific tagged and tagging resource.   
 	 * @param taggedResId
@@ -174,23 +183,26 @@ public interface TaggingService {
 	 */
 	public List<Tag> getTagsByTaggedTaggingIds(Long taggedResId, Long taggingResId);
 	
-	
 	/**
 	 * @return
 	 */
 	public List<ContentItem> getFreeTags();
-	
+
 	/**
-	 * Load all tags of the system.
+	 * Return all tags
+	 * Tag instance.
+	 * 
 	 * @return
 	 */
 	public List<Tag> getAllTags();
-	
+
 	/**
-	 * Load all tags of the system.
+	 * Return all content items that are used as tags, i.e. occurring as taggingResource in some
+	 * Tag instance.
+	 * 
 	 * @return
 	 */
-	public List<Tag> getAllDistinctTags();	
+	public List<ContentItem> getTaggingResources();	
 
 	/**
 	 * List all content items tagged with a certain item given as argument. May make use 
@@ -225,8 +237,16 @@ public interface TaggingService {
 	 * @param amountOfTags
 	 * @return
 	 */
+
 	public float getTagFrequencyByContentItem(String tagLabel, ContentItem contentItem, Float amountOfTags);
 
+	/**
+	 * @param tagLabel
+	 * @param taggedResId
+	 * @param taggingResId
+	 * @return
+	 */
+	public List<Tag> getTaggingByTagLabelUserTaggedTaggingIds(String tagLabel, User user, Long taggedResId, Long taggingResId);	
 
     void addTagsByURI(ContentItem item, Set<String> uris);
 
@@ -240,5 +260,12 @@ public interface TaggingService {
      * @return a list with all all the tags where the tag label starts with
      * a given prefix.
      */
-    List<Tag> getTagsByLabelPrefix(String labelPrefix);	
+    List<Tag> getTagsByLabelPrefix(String labelPrefix);
+    
+	/**
+	 * Return distinct tag labels
+	 * @return
+	 */
+	public List<String> getDistinctTagLabels();    
+
 }

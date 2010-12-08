@@ -517,7 +517,7 @@ public class KwqlQueryServiceImpl implements KwqlQueryServiceLocal, KwqlQuerySer
 			KwqlTernary match = KwqlTernary.FALSE;
 
 			int ciId = ci == null ? -1 : ci.getResource().getId().intValue();
-			List<Tag> tags = ci == null ? null : taggingService.getTags(ci);
+			List<Tag> tags = ci == null ? null : taggingService.getTaggings(ci);
 
 			if (generateRelations){
 			constraints.addToRelation(KwqlResource.tag, ciId, -1); // add a

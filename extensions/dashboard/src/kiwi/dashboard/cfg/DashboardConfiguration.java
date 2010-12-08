@@ -14,6 +14,8 @@ public class DashboardConfiguration {
 		PORTLETS.add("tagcloud");
 		PORTLETS.add("history");
 		PORTLETS.add("recommendations");
+		PORTLETS.add("preference");
+		PORTLETS.add("rule");			
 		//add new portlets here
 	}
 	

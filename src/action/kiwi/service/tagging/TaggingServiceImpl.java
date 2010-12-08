@@ -334,7 +334,16 @@ public class TaggingServiceImpl implements TaggingServiceLocal, TaggingServiceRe
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Tag> getTags(ContentItem item) {
+	public List<Tag> getTaggings(ContentItem item) {
+		Query q = entityManager.createNamedQuery("taggingService.listTaggingsByContentItem");
+		q.setParameter("ci", item);
+		q.setHint("org.hibernate.cacheable", true);
+		return q.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ContentItem> getTags(ContentItem item) {
 		Query q = entityManager.createNamedQuery("taggingService.listTagsByContentItem");
 		q.setParameter("ci", item);
 		q.setHint("org.hibernate.cacheable", true);
@@ -376,19 +385,45 @@ public class TaggingServiceImpl implements TaggingServiceLocal, TaggingServiceRe
         return result;
 	}	
 	
+	
+	/* (non-Javadoc)
+	 * @see kiwi.api.tagging.TaggingService#getAllTags()
+	 */
 	@SuppressWarnings("unchecked")
+	@Override
 	public List<Tag> getAllTags() {
 		Query q = entityManager.createNamedQuery("taggingService.listAllTags");
-		return q.getResultList();
+		q.setHint("org.hibernate.cacheable", true);
+		return (List<Tag>)q.getResultList();
+		
 	}
 	
-	
+	/* (non-Javadoc)
+	 * @see kiwi.api.tagging.TaggingService#getAllTags()
+	 */
 	@SuppressWarnings("unchecked")
-	public List<Tag> getAllDistinctTags() {
-		Query q = entityManager.createNamedQuery("taggingService.listAllDistinctTags");
-		return q.getResultList();
-	}
+	@Override
+	public List<ContentItem> getTaggingResources() {
+		Query q = entityManager.createNamedQuery("taggingService.listTaggingResources");
+		q.setHint("org.hibernate.cacheable", true);
+		return (List<ContentItem>)q.getResultList();
+		
+	}	
 	
+	/* (non-Javadoc)
+	 * @see kiwi.api.tagging.TaggingService#getDistinctTagLabels()
+	 */
+	@Override
+	public List<String> getDistinctTagLabels() {
+		Query q = entityManager.createNamedQuery("taggingService.listDistinctTagLabels");
+		q.setHint("org.hibernate.cacheable", true);
+		return q.getResultList();
+		
+	}	
+
+	/* (non-Javadoc)
+	 * @see kiwi.api.tagging.TaggingService#getTagById(long)
+	 */
 	public Tag getTagById(long tagId) {
 		Tag result;
 		javax.persistence.Query q = entityManager
@@ -430,8 +465,8 @@ public class TaggingServiceImpl implements TaggingServiceLocal, TaggingServiceRe
                 contentItemService.updateTitle(taggingItem, label);
                 kiwiEntityManager.persist(taggingItem);
                 log.info("created new content item for non-existant tag");
-                result.add(taggingItem);
             }
+            result.add(taggingItem);
 
             createTagging(label, item, taggingItem, currentUser);
         }
@@ -689,6 +724,23 @@ public class TaggingServiceImpl implements TaggingServiceLocal, TaggingServiceRe
 	    }
 		return tagFrequency.floatValue();
 	}	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Tag> getTaggingByTagLabelUserTaggedTaggingIds(String tagLabel, User user, Long taggedResId, Long taggingResId) {
+		Query q = entityManager.createQuery("select t " +
+				  "from kiwi.model.tagging.Tag t " +
+				  "where t.taggingResource.title= :tagLabel  and t.taggingResource.id = :taggingResId " +
+				  " and t.taggedResource.id = :taggedResId and  t.taggedBy.login = :login " +
+				  " and t.deleted = false");
+
+		q.setParameter("tagLabel", "tag: "+tagLabel.toLowerCase());
+		q.setParameter("taggedResId", taggedResId);
+		q.setParameter("login", user.getLogin());
+		q.setParameter("taggingResId", taggingResId);
+		
+	return (List<Tag>)q.getResultList();
+	}		
 	
 	
 	

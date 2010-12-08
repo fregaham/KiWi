@@ -76,4 +76,9 @@
             <class name="kiwi.test.service.JSFRDFaServiceTest"/>
         </classes>
     </test> 
+    <test name="SunTagServiceTest" junit="false">
+        <classes>
+            <class name="kiwi.test.service.sun.SunTagServiceTest"/>
+        </classes>
+    </test> 
 </suite>

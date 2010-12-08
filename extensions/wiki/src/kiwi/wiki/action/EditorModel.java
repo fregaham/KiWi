@@ -956,7 +956,7 @@ public class EditorModel {
 			}
 			
 			// We also get the tags.
-			getTags(itemResource).addAll(taggingService.getTags(item));
+			getTags(itemResource).addAll(taggingService.getTaggings(item));
 			
 			// ... and comments...
 			List<Comment> comments = getComments(itemResource);
@@ -971,7 +971,7 @@ public class EditorModel {
 				this.getFragments(itemResource).add(ff.getResource());
 				
 				// ...and their tags...
-				getTags(ff.getResource()).addAll(taggingService.getTags(ff.getDelegate()));
+				getTags(ff.getResource()).addAll(taggingService.getTaggings(ff.getDelegate()));
 				
 				// ...and their comments...
 				List<Comment> fragmentComments = getComments(ff.getResource());

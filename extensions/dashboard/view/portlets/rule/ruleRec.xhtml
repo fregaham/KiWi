@@ -1,0 +1,44 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:m="http://code.google.com/p/gmaps4jsf/"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+	xmlns:p="http://primefaces.prime.com.tr/ui">
+
+
+	<h4><h:outputText value="Recommend me pages with tags: " /></h4>
+	<h:inputText id="fqueryRuleRec"
+		value="#{kiwi.dashboard.ruleAction.tagRec}" />
+	<p:commandButton value="Save" ajax="false"
+		action="#{kiwi.dashboard.ruleAction.createRule('recTag')}" />
+	<h:outputText value=" " />
+	<s:span id="myRecRuleSpan"
+		rendered="#{kiwi.dashboard.ruleAction.ruleBasedRecommendations.size() &gt; 0}">
+		<c:forEach var="rule"
+			items="#{kiwi.dashboard.ruleAction.ruleBasedRecommendations}"
+			id="myrules">
+			<div class="myRule" style="padding: 10px 0;"><s:span
+				rendered="#{not empty rule.tagRec}">
+				<h:outputText value="Recommend me pages with tag '#{rule.tagRec}'." />
+				<h:outputText value=" " />
+				<a:commandLink
+					action="#{kiwi.dashboard.ruleAction.removeRule(rule)}"
+					value="Remove" reRender="ruleRecList" />
+				<h:outputText value=" " />
+				<a:commandLink
+					action="#{kiwi.dashboard.ruleAction.generateRule(rule)}"
+					value="Enable it!" reRender="ruleRecList" />
+				<h:outputText value=" " />
+			</s:span></div>
+		</c:forEach>
+	</s:span>
+	<s:span id="myRecNonRuleSpan"
+		rendered="#{kiwi.dashboard.ruleAction.ruleBasedRecommendations.size() == 0}">
+		<h:outputText value="You still have no personal rules." />
+	</s:span>
+</ui:composition>

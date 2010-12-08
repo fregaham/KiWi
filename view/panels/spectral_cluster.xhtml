@@ -9,9 +9,8 @@
 		    	xmlns:a="http://richfaces.org/a4j"
 	            xmlns:p="http://primefaces.prime.com.tr/ui" 
     			xmlns:kiwi="http://www.kiwi-project.eu/jsf">
-
+	<p:tab title="Tag Cluster Menu">
 	<s:span id="testShowClusterMenu" rendered="#{currentUser.userPreference != null and currentUser.userPreference.showTagClusterMenu}">
-	<h2>Tag Cluster Menu</h2>
 			<s:span id="tagClusterSpan" rendered="#{clusterWidget.clusterNode.size() &gt; 0}">	            
   			<div style="margin-top: 1em;">
                 <rich:tree style="width:150px" switchType="client">
@@ -33,5 +32,5 @@
 						<h:outputText value="Tag-cluster menu not available."/>
 			</s:span>
 		</s:span>                                  
-	            
+	</p:tab>
 </ui:composition>

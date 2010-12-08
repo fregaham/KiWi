@@ -103,11 +103,12 @@ public class InteractionServiceImpl implements InteractionServiceLocal,
 									 
 				                       getUserTagInteractivity(user1,user2).size()+
 									 
-				  				       getUserEditingInteractivity(user1,user2).size() +
+				  				       //getUserEditingInteractivity(user1,user2).size() +
 									 
 									   getUserRatingInteractivity(user1,user2).size();
 
-			userInteractivityLevel = userInteractivityLevel/4;
+			//userInteractivityLevel = userInteractivityLevel/4;
+			userInteractivityLevel = userInteractivityLevel/3;
 		}
 		return userInteractivityLevel;
 	}
@@ -327,35 +328,6 @@ public class InteractionServiceImpl implements InteractionServiceLocal,
 			return result;
 		}
 	}
-	
-
-	/**
-	 * This returns the comment activities by user on a given content item.
-	 * @param user
-	 * @param contentItem
-	 * @return
-	 */
-	@SuppressWarnings({ "unused", "unchecked", "unchecked" })	
-	private List<CommentActivity> getUserCommentActivityByContentItem(User user, ContentItem contentItem) {
-		List<CommentActivity> result = new LinkedList<CommentActivity>();
-		Query q = entityManager.createNamedQuery("activities.listUserCommentActivityByContentItem");
-        q.setParameter("user", user);
-		q.setParameter("contentItem", contentItem);
-		q.setHint("org.hibernate.cacheable", true);
-		try {
-			result = (List<CommentActivity>) q.getResultList();
-		} catch (PersistenceException ex) {
-			ex.printStackTrace();
-			log.warn("error while listing user: query failed");
-		}
-
-		if (result == null) {
-			return Collections.EMPTY_LIST;
-		} else {
-			return result;
-		}
-	}	
-
 	/**
 	 * @param user1
 	 * @param user2
@@ -367,6 +339,8 @@ public class InteractionServiceImpl implements InteractionServiceLocal,
 
 		String s = " select ci from ContentItem ci join fetch ci.resource left outer join fetch ci.textContent tc "+
 				   " where ci.author.login =:user1 and tc.contentItem.author.login =:user2";
+		
+
 
 		javax.persistence.Query q = entityManager.createQuery(s);
 		q.setParameter("user1", user1.getLogin());

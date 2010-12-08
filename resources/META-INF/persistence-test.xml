@@ -6,9 +6,9 @@
 
    <!--
    
-   		resources/META-INF/persistence.xml.tmpl should be the only place you change anything 
-   		any of persistence.*.xml. After changing it, "ant configure" 
-   		copies it to all places it is needed.
+        resources/META-INF/persistence.xml.tmpl should be the only place you change anything 
+        any of persistence.*.xml. After changing it, "ant configure" 
+        copies it to all places it is needed.
    
    -->
      
@@ -25,7 +25,7 @@
          <property name="jboss.entity.manager.factory.jndi.name" value="java:/KiWiEntityManagerFactory"/>
          <property name="hibernate.jdbc.fetch_size" value="30"/>
          <property name="hibernate.jdbc.batch_size" value="30"/>
-		 <property name="hibernate.default_batch_fetch_size" value="16" />
+         <property name="hibernate.default_batch_fetch_size" value="16" />
          <property name="hibernate.max_fetch_depth" value="3" />
          
          <!-- Without this statement seem Hibernate to come to "Cannot open connection" state at peak times (e.g. test) -->
@@ -51,7 +51,7 @@
                   value="kiwi-test/gate"/>
                  
          <!--  caching -->
-   		 <property name="hibernate.cache.region.factory_class" 
+         <property name="hibernate.cache.region.factory_class" 
                    value="net.sf.ehcache.hibernate.EhCacheRegionFactory"/>
          <property name="hibernate.cache.use_query_cache" value="true" />
          <property name="hibernate.cache.use_second_level_cache" value="false"/>

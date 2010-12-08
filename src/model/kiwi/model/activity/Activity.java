@@ -123,6 +123,16 @@ import org.hibernate.validator.NotNull;
                         "where (a.contentItem = :ci or t.taggedResource = :ci) " +
                         "and a.class != 'VISIT' " +
                         "order by a.created desc"),
+                        
+	@NamedQuery(name  = "activities.listCollaborativeActivities",
+		        query = "select a from Activity a " +
+		                "where a.contentItem is not null and a.contentItem.author is not null " +
+                        "and a.class != 'VISIT' " +
+                        "and a.class != 'LOGIN' " +
+                        "and a.class != 'LOGOUT' " +
+                        "and a.class != 'SEARCH' " +
+		                "order by a.created desc"),
+                                        
     @NamedQuery(name  = "activities.listActivitiesByContentItemURI",
                 query = "select a " +
                         "from ContentItem ci, Activity a left join a.tag t " +
@@ -140,6 +150,11 @@ import org.hibernate.validator.NotNull;
                         "from EditActivity a inner join fetch a.contentItem " +
                         "where a.user.login = :login " +
                         "order by a.created desc"),
+	@NamedQuery(name  = "activities.listEditsForContentItem",
+				query = "select a " +
+                        "from EditActivity a inner join fetch a.contentItem " +
+                        "where a.contentItem = :contentItem " +
+                        "order by a.created desc"),                        
     @NamedQuery(name  = "activities.listLastUserTags",
                 query = "select a " +
                         "from AddTagActivity a inner join fetch a.tag " +

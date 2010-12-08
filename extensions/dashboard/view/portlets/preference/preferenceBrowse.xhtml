@@ -1,0 +1,35 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+	    xmlns:h="http://java.sun.com/jsf/html"
+	    xmlns:f="http://java.sun.com/jsf/core"
+	    xmlns:s="http://jboss.com/products/seam/taglib"
+	    xmlns:rich="http://richfaces.org/rich"
+	    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	    xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+	    xmlns:c="http://java.sun.com/jstl/core"
+	    xmlns:a="http://richfaces.org/a4j"
+	    xmlns:p="http://primefaces.prime.com.tr/ui">
+
+	<table>
+		<tr>
+			<td>
+			<div class="integrationLoginBox">
+			<h:panelGrid columns="2">
+				<h:outputText
+					value="After login, redirect me to the last pages visited: " />
+				<h:selectBooleanCheckbox
+					value="#{kiwi.dashboard.preferenceAction.redirectToLastPage}" />
+				<h:outputText
+					value="After login, show my last visted pages on the menu: " />
+				<h:selectBooleanCheckbox
+					value="#{kiwi.dashboard.preferenceAction.showMyLastVisitedPages}" />
+				<h:outputText value="Show tag cluster menu: " />
+				<h:selectBooleanCheckbox
+					value="#{kiwi.dashboard.preferenceAction.showTagClusterMenu}" />
+			</h:panelGrid> <p:commandButton
+				action="#{kiwi.dashboard.preferenceAction.saveUserPreference()}"
+				value="Save Preference" /></div>
+			</td>
+		</tr>
+	</table>
+</ui:composition>

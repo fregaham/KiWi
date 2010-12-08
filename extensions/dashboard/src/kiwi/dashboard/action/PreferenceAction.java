@@ -101,21 +101,21 @@ public class PreferenceAction implements Serializable {
 			userPreference = new UserPreference();	
 		}			
 		userPreference.setRecommendationSize(new Integer(getRecommendationSize()));
-		userPreference.setShowGroupRecommendation(showGroupRecommendation);
-		userPreference.setShowMultiFactorRecommendation(showMultiFactorRecommendation);
-		userPreference.setShowSocialCapitalRecommendation(showSocialCapitalRecommendation);
-		userPreference.setShowStandardRecommendation(showStandardRecommendation);
-		userPreference.setShowTagGroupedRecommendation(showTagGroupedRecommendation);
-		userPreference.setShowPersonalRecommendation(showPersonalRecommendation);
-		userPreference.setShowContactRecommendation(showContactRecommendation);
-		userPreference.setShowSemanticVectorRecommendation(showSemanticVectorRecommendation);
-		userPreference.setShowFriendActivity(showFriendActivity);
-		userPreference.setShowMyLastVisitedPages(showMyLastVisitedPages);
-		userPreference.setRedirectToLastPage(redirectToLastPage);
-		userPreference.setShowTagClusterMenu(showTagClusterMenu);
+		userPreference.setShowGroupRecommendation(getShowGroupRecommendation());
+		userPreference.setShowMultiFactorRecommendation(getShowMultiFactorRecommendation());
+		userPreference.setShowSocialCapitalRecommendation(getShowSocialCapitalRecommendation());
+		userPreference.setShowStandardRecommendation(getShowStandardRecommendation());
+		userPreference.setShowTagGroupedRecommendation(getShowTagGroupedRecommendation());
+		userPreference.setShowPersonalRecommendation(getShowPersonalRecommendation());
+		userPreference.setShowContactRecommendation(getShowContactRecommendation());
+		userPreference.setShowSemanticVectorRecommendation(isShowSemanticVectorRecommendation());
+		userPreference.setShowFriendActivity(isShowFriendActivity());
+		userPreference.setShowMyLastVisitedPages(isShowMyLastVisitedPages());
+		userPreference.setRedirectToLastPage(isRedirectToLastPage());
+		userPreference.setShowTagClusterMenu(isShowTagClusterMenu());
 		userPreference.setUser(currentUser);
 		userPreferenceService.createUserPreference(userPreference);
-		FacesMessages.instance().add("User preferences updated.");		
+		FacesMessages.instance().add("User preferences updated.");
 	}
 	
 	

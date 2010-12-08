@@ -663,7 +663,7 @@ public class InformationExtractionServiceImpl implements
 			KiWiResource subject = s.getInstance().getSourceResource();
 			
 			// taggingService.createTagging(s.getLabel(), subject.getContentItem(), s.getClassifier().getResource().getContentItem(), user);
-			for (Tag tag : taggingService.getTags(subject.getContentItem())) {
+			for (Tag tag : taggingService.getTaggings(subject.getContentItem())) {
 				if (tag.getTaggedBy().equals(user) && tag.getTaggingResource().equals(s.getClassifier().getResource().getContentItem())) {
 					taggingService.removeTagging(tag);
 					break;

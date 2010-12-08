@@ -34,6 +34,9 @@
 
 package kiwi.api.socialcapital;
 
+import java.util.Set;
+
+import kiwi.model.recommendation.CollaborativeWorkBean;
 import kiwi.model.recommendation.SocialCapital;
 import kiwi.model.user.User;
 
@@ -55,5 +58,11 @@ public interface SocialCapitalService {
 	public void calculateSocialCapital(SocialCapital socialCapital,
 			User contentItemAuthor, float friendShipLevel,
 			User currentUser);
+	
+	/**
+	 * @param currentUser
+	 * @return
+	 */
+	public Set<CollaborativeWorkBean> computeCollaborativeWork();
 
 }

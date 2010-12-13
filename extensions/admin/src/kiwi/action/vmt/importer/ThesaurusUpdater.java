@@ -33,20 +33,18 @@
  */
 package kiwi.action.vmt.importer;
 
+
+
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
-
+import java.util.List;
 import kiwi.api.content.ContentItemService;
 import kiwi.api.entity.KiWiEntityManager;
 import kiwi.api.importexport.importer.RDFImporter;
 import kiwi.model.content.ContentItem;
-import kiwi.model.kbase.KiWiTriple;
-import kiwi.model.ontology.SKOSConcept;
-
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -63,14 +61,11 @@ import org.openrdf.query.GraphQueryResult;
 import org.openrdf.query.QueryLanguage;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
+import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.sail.memory.MemoryStore;
-
-import com.sun.syndication.feed.atom.Content;
-
-import antlr.collections.List;
 
 
 /**
@@ -84,9 +79,26 @@ import antlr.collections.List;
 @Scope(ScopeType.CONVERSATION)
 public class ThesaurusUpdater {
     
+    private static final String PREDICAT_REPLACED = "http://purl.org/dc/terms/replaced";
+
+    private static final String PREDICAT_DEPRECATED = "http://www.w3.org/2002/07/owl#deprecated";
+
+    private static final String PREDICAT_MODIFIED = "http://purl.org/dc/terms/modified";
+
+    private static final String PREDICAT_CREATED = "http://purl.org/dc/terms/created";
+
     @Logger
     private Log log;
     
+    @In
+    private KiWiEntityManager kiwiEntityManager;
+    
+    @In
+    ContentItemService contentItemService;
+    
+    @In 
+    private  FacesMessages facesMessages;
+
     private String updateUri;
     
     private Date date;
@@ -105,152 +117,136 @@ public class ThesaurusUpdater {
 	formats.add("n3");
     }
 
-    @In
-    private KiWiEntityManager kiwiEntityManager;
     
-    @In
-    private ContentItemService contentItemService;
-    
-    public void updateThesaurus() throws Exception {
-	
-	log.debug("updating thesaurus ...");
-	log.debug("update ontology is located at "+updateUri);
-	
-	if(date != null){
-	    DateTime dt = new DateTime(date);
-	    log.debug(dt.toLocalDateTime());
-	    updateUri = updateUri + "/" + dt.toLocalDateTime();
-	    log.debug(updateUri);
-	}
-	
-	Repository myRepository = new SailRepository(new MemoryStore());
-	myRepository.initialize();
-	con = myRepository.getConnection();
-	
-	updateUri += "?format="+format;
-	
-	
-	try {
-	    log.debug(updateUri);
-	    URL u = new URL(updateUri);
-	    con.add(u, u.toString(), RDFFormat.TURTLE);
-	
-	//get all concepts
-	GraphQueryResult rs = con.prepareGraphQuery(QueryLanguage.SERQL,"CONSTRUCT * FROM {x} rdf:type {skos:Concept} USING NAMESPACE rdf = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> , skos = <http://www.w3.org/2004/02/skos/core#> ").evaluate();
-	
-	LinkedList<String> concepts2Import = new LinkedList<String>();
-	LinkedList<String> concepts2update = new LinkedList<String>();
-	
-	while (rs.hasNext()) {
-	    	log.debug("--- ");
-		Statement st = rs.next();
-		log.debug("---"+st.getSubject());
-		log.debug(st);
-		RepositoryResult<Statement> rs1 = con.getStatements(st.getSubject(), null, null, true);
-		
-		
-		boolean deprecated = false;
-		boolean modified = false;
-		boolean replacedBy = false;
-		boolean created = false;
-		
-		//java.util.List<Statement> lls = Collections.EMPTY_LIST;
-		
-		//get all data about the concept
-		while (rs1.hasNext()) {	
-		    
-		    Statement st1 = rs1.next();
-		  //  lls.add(st1);
-		    
-		    if(st1.getPredicate().toString().contains("deprecated")){
-			deprecated = true;
-		    }
-		    if(st1.getPredicate().toString().contains("modified")){
-			modified = true;
-		    }
-		    if(st1.getPredicate().toString().contains("replaced")){
-			replacedBy = true;
-		    }
-		    if(st1.getPredicate().toString().contains("created")){
-			created = true;
-		    }
-  
-		    log.debug("S "+st1.getSubject());
-		    log.debug("P "+st1.getPredicate());
-		    log.debug("O "+st1.getObject());
-		    if(st1.getObject().toString().contains("Umwelt")){
-			log.debug("umwelt");
-		    }
-		    
-		}
-		
-		if(created == true){
-		    log.debug("create new concept ...");
-//		    String y = url_concept + File.separatorChar + lls.get(0).getSubject().toString() + File.separatorChar + format + language;
-//		    ContentItem ci = contentItemService.createContentItem(lls.get(0).getSubject().toString());
-		    concepts2Import.add(st.getSubject().toString());
-		    //importRemoteConcept(st.getSubject().toString());		    
-		}		
-		else if(deprecated == true && replacedBy == false){
-		    log.debug("delete concept ...");
-		    
-		    ContentItem ci = contentItemService.getContentItemByUri(st.getSubject().toString());
-		    log.debug(ci != null?ci.getTitle():"ci is null");
-		    if(ci != null){
-			kiwiEntityManager.remove(ci);
-		    }
-		    // delete concept
-		}
-		else if((modified == true) && (deprecated == false) && (replacedBy == false)){
-		    log.debug("reload concept ...");
-		    concepts2update.add(st.getSubject().toString());
-		    // lade das konzept neu
-		}
-		else if((modified == true) && (replacedBy == true)){
-		    log.debug("concept replaced by ... replace tags");
-		    //concept replaced by
-		}
-	}
-	
-	for(String conceptUri: concepts2Import){
-	    
-	    
-	   String broaderURI = importRemoteConcept(conceptUri);
-	   
-	   ContentItem broader = contentItemService.getContentItemByUri(broaderURI);
-	   ContentItem ci = contentItemService.getContentItemByUriIncludeDeleted(conceptUri);
-	   
-	   log.debug("broaderuri "+broaderURI+"-");
-	 
-	   if(broader != null){
-	       
-	   log.debug("broaderuri "+broaderURI);
-	   log.debug(ci.getTitle());
-	   log.debug(broader.getTitle());
-	   
-	   SKOSConcept concept = kiwiEntityManager.createFacade(ci, SKOSConcept.class);
-	   SKOSConcept broaderConcept = kiwiEntityManager.createFacade(broader, SKOSConcept.class);
-	   
-	   HashSet<SKOSConcept> skl = broaderConcept.getNarrower();
-	   skl.add(concept);
-	   broaderConcept.setNarrower(skl);
-	   
-	   kiwiEntityManager.persist(broaderConcept);
-	   
+    public void updateThesaurus() {
 
-	   }
-	   else{
-	       log.debug("Broader element is null ...");
-	       FacesMessages.instance().add("Error: Broader element can not be found ... Some elements may not be imported correctly");
-	   }
-	}
-	for(String conceptUri: concepts2update){
-	    updateRemoteConcept(conceptUri);
-	}
-	
-	} catch (Exception e) {
-	    FacesMessages.instance().add("Something wrong happened. Most likely the urls to the webservices are not valid.");
-	}
+        log.debug("updating thesaurus begin.");
+
+        final DateTime dt = new DateTime(date == null ? new Date() : date);
+        updateUri = updateUri + "/" + dt.toLocalDateTime();
+
+        log.debug("Updating thesaurus for date #0.", dt.toLocalDateTime());
+        log.info("Update Ontology from : #0", updateUri);
+        facesMessages.add("Update Ontology from : #0", updateUri);
+
+        try {
+            final Repository myRepository =
+                    new SailRepository(new MemoryStore());
+            myRepository.initialize();
+            con = myRepository.getConnection();
+        } catch (RepositoryException exception) {
+            log.error(exception.getMessage(), exception);
+            throw new ThesaurusUpdateException(exception);
+        }
+
+        updateUri += "?format=" + format;
+        final List<Runnable> commands = new LinkedList<Runnable>();
+
+        log.debug(updateUri);
+        URL u;
+        try {
+            u = new URL(updateUri);
+        } catch (MalformedURLException exception) {
+            log.error(exception.getMessage(), exception);
+            throw new ThesaurusUpdateException(exception);
+        }
+
+        try {
+            con.add(u, u.toString(), RDFFormat.TURTLE);
+        } catch (Exception exception) {
+            log.error(exception.getMessage(), exception);
+            throw new ThesaurusUpdateException(exception);
+        }
+
+        // get all concepts
+        final GraphQueryResult rs;
+        try {
+            rs = con.prepareGraphQuery(
+                    QueryLanguage.SERQL,
+                    "CONSTRUCT * FROM {x} rdf:type {skos:Concept} USING NAMESPACE rdf = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> , skos = <http://www.w3.org/2004/02/skos/core#> ")
+                    .evaluate();
+        } catch (Exception exception) {
+            log.error(exception.getMessage(), exception);
+            throw new ThesaurusUpdateException(exception);
+        }
+
+        int conceptIndex = 0;
+        final ConceptUpdateException updateException = 
+                new ConceptUpdateException();
+        try {
+            while (rs.hasNext()) {
+                // process all the concepts
+                log.debug("--- ");
+                final Statement mainStatement = rs.next();
+                updateException.setStatement(mainStatement);
+                log.debug("Tries to process the statement : #0", mainStatement);
+                // get all the triples with this subject
+                final RepositoryResult<Statement> rs1 =
+                        con.getStatements(mainStatement.getSubject(), null, null, true);
+
+                log.debug("Try to process [Subject:#0, Predicat:#1, Object:#2]",
+                        mainStatement.getSubject(),
+                        mainStatement.getPredicate(),
+                        mainStatement.getObject());
+                // get all data about the concept
+                while (rs1.hasNext()) {
+                    // this loop determinate if a concept is
+                    final Statement secStatement = rs1.next();
+                    updateException.setStatement(secStatement);
+
+                    // lls.add(st1);
+                    final String subject = secStatement.getSubject().toString();
+                    final String predicate = secStatement.getPredicate().toString();
+                    final String object = secStatement.getObject().toString();
+                    log.debug("Try to process Subject:#0, Predicat:#1, Object:#2 ",
+                            subject, predicate, object);
+
+                    if (predicate.equals(PREDICAT_CREATED)) {
+                        final Runnable create =
+                                new CreateCommand(mainStatement, contentItemService,
+                                        kiwiEntityManager, log, con, url_concept,
+                                        format);
+                        commands.add(create);
+                    }
+
+                    if (predicate.equals(PREDICAT_MODIFIED)) {
+                        final Runnable update =
+                                new UpdateCommand(mainStatement, log, con, url_concept, format);
+                        commands.add(update);
+                    }
+
+                    if (predicate.equals(PREDICAT_DEPRECATED)) {
+                        final Runnable remove =
+                                new RemoveCommand(mainStatement, contentItemService,
+                                        kiwiEntityManager, log);
+                        commands.add(remove);
+                    }
+
+                    if (predicate.equals(PREDICAT_REPLACED)) {
+                    }
+                }
+                log.debug("[Subject:#0, Predicat:#1, Object:#2] was process.",
+                        mainStatement.getSubject(), mainStatement.getPredicate(), mainStatement.getObject());
+                log.debug("--- ");
+                conceptIndex++;
+            }
+        } catch (Exception exception) {
+            log.error(exception.getMessage(), exception);
+            updateException.initCause(exception);
+            throw updateException;
+        }
+
+        
+        log.debug("#0 concepts was prcessed.", conceptIndex);
+        for (Runnable command : commands) {
+            log.debug("Try to execute command [#0].", command);
+            try {
+                command.run();
+                log.debug("command [#0] was executed.", command);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+        }
     }
     
     //deletes old properties
@@ -349,6 +345,9 @@ public class ThesaurusUpdater {
     public java.util.Set<String> getFormats() {	
         return formats;
     }
+    
+    private boolean conceptExists(String uri) {
+        final ContentItem item = contentItemService.getContentItemByUri(uri);
+        return item == null;
+    }
 }
-
-

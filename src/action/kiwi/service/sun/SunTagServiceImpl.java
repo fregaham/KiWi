@@ -4,11 +4,12 @@ package kiwi.service.sun;
 
 import static kiwi.model.SunConstants.*;
 
+
+
+
+
 import java.util.*;
 
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.persistence.EntityManager;
 
 import kiwi.api.entity.KiWiEntityManager;
 import kiwi.api.ontology.SKOSService;
@@ -28,9 +29,15 @@ import kiwi.model.kbase.KiWiTriple;
 import kiwi.model.kbase.KiWiUriResource;
 import kiwi.model.ontology.SKOSConcept;
 import kiwi.model.tagging.Tag;
+import kiwi.model.user.User;
 import kiwi.service.transaction.KiWiSynchronizationImpl;
 import kiwi.util.MD5;
 
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrDocumentList;
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -73,8 +80,9 @@ public class SunTagServiceImpl implements SunTagService {
     @In
     private KiWiEntityManager kiwiEntityManager;
     
-    @In
-    private EntityManager entityManager;
+    @In(create=true)
+    private User currentUser;
+
 
     @Override
     public void addTags(ContentItem item, List<String> tagLables) {

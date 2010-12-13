@@ -76,8 +76,8 @@ public class UserPreferenceServiceImpl implements UserPreferenceServiceLocal, Us
 	 */
 	public void createUserPreference(UserPreference userPreference) {
 		currentUser.setUserPreference(userPreference);
-		entityManager.persist(userPreference);
-//		entityManager.flush();
+		entityManager.merge(userPreference);
+		//entityManager.flush();
 	}	
 
 	/**

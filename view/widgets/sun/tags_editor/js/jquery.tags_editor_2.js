@@ -44,8 +44,15 @@
 
 	this.MAX_SCORE				= 300.0;
 
-	// Tags with MAX_SCORE get this size in "em"
-        this.MAX_TAG_FONT_SIZE      = 4.5;
+        // The font size to be used for a tag with maximal score (in "em")
+        // This scale also defines proportional size for other tags, 
+        // i.e. a tag with score 50% of the max, gets 50% of this size
+        // Note: That the font size can be further "clipped" with MAX_TAG_FONT_SIZE
+        this.TAG_FONT_SCALE = 5;
+
+	// This is a further threshold on the font-size, clipping too "big" tags
+        // This is normally equal to TAG_FONT_SCALE, but may be lower
+        this.MAX_TAG_FONT_SIZE = 3;
 
 	// Tags with low score resulting with display size lower than specified
 	// below are not shown in the UI (again, in "em")
@@ -703,6 +710,21 @@
 		}
 	}
 
+        this.fetchPrefixes = function(){
+            var self = this;
+            $.ajax({
+                    url: this.ENDPOINT_TAGGING + "getPrefixes",
+                    success: function(data){
+                            self.suggester.setPrefixes(data);
+                            self.suggester2.setPrefixes(data);
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        if (typeof console != "undefined")
+                            console.log(xhr.responseText)
+                    }
+            });
+        }
+
 	this.buildCategory = function(prefix,label){
 		var requiredTagsContainer = $(this.CS).find(".tagsEditor_requiredTags");
 		requiredTagsContainer.append(
@@ -1053,13 +1075,19 @@
 			// If the tag score is lower than the above computed and limited max
 			// compute proportional size;
 			if (tag.score < maxScore) {
-				fontSize = tag.score / maxScore * self.MAX_TAG_FONT_SIZE;
+				fontSize = tag.score / maxScore * self.TAG_FONT_SCALE;
 			} 
 			// otherwise, just use max size
 			else {
-				fontSize = self.MAX_TAG_FONT_SIZE;
+				fontSize = self.TAG_FONT_SCALE;
 			}
 
+                        // Ceiling threshold
+                        if (fontSize > self.MAX_TAG_FONT_SIZE) {
+                            fontSize = self.MAX_TAG_FONT_SIZE;
+                        }
+
+                        // Floor threshold
 			if (fontSize >= self.MIN_TAG_FONT_SIZE) {
 				var tagEl = $(document.createElement("A"));
                                 if (tag.uri) {
@@ -1406,6 +1434,8 @@
 		// Start fetching initial data
 		this.fetchRequiredCategoryOptions();
 		this.fetchTags(this.RESOURCE_URI);
+
+                this.fetchPrefixes();
 	}
 	
 

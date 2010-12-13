@@ -619,7 +619,7 @@
 		*/
 		this.loadSuggestions = function(txt){
                     var self = this;
-                    $.ajax({
+                    return $.ajax({
                         url: this.ENDPOINT_TAGGING + "searchTags",
                         type : "GET",
                         data : {
@@ -783,11 +783,17 @@
                     this.categories = taxonomies;
                     this.allPrefixes = [];
 
+                    // Collect prefixes from all taxonomies
                     for (var i = 0; i < taxonomies.length; i++) {
                         this.allPrefixes.push({
                             prefix: taxonomies[i].prefix
                         });
                     }
+                }
+
+                this.setPrefixes = function(prefixes) {
+                    // This is a more precise WS response; use this one
+                    this.allPrefixes = prefixes;
                 }
 
 		/**

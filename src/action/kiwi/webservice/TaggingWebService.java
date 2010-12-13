@@ -6,13 +6,6 @@ package kiwi.webservice;
 import java.util.*;
 import java.util.Map.Entry;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.NotSupportedException;
-import javax.transaction.RollbackException;
-import javax.transaction.SystemException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -21,13 +14,10 @@ import kiwi.api.config.ConfigurationService;
 import kiwi.api.content.ContentItemService;
 import kiwi.api.entity.KiWiEntityManager;
 import kiwi.api.equity.EquityService;
-import kiwi.api.ontology.SKOSService;
-import kiwi.api.sun.SunTagMapperService;
 import kiwi.api.sun.SunTagService;
 import kiwi.api.tagging.ExtendedTagCloudEntry;
 import kiwi.api.tagging.TagCloudService;
 import kiwi.api.tagging.TaggingService;
-import kiwi.api.transaction.TransactionService;
 import kiwi.model.Constants;
 import kiwi.model.content.ContentItem;
 import kiwi.model.kbase.KiWiResource;
@@ -35,7 +25,6 @@ import kiwi.model.kbase.KiWiUriResource;
 import kiwi.model.ontology.SKOSConcept;
 import kiwi.model.tagging.Tag;
 import kiwi.service.sun.SunSkosUtils;
-import kiwi.service.transaction.KiWiSynchronizationImpl;
 import kiwi.webservice.utility.sun.PrefiexesListResult;
 import kiwi.webservice.utility.sun.RemoveTagResponse;
 import kiwi.webservice.utility.sun.TagsListResult;
@@ -47,25 +36,33 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
-import org.jboss.seam.transaction.Transaction;
-import org.jboss.seam.transaction.UserTransaction;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import sun.print.SunMinMaxPage;
 
 
 /**
- * WebService endpoint for tagging Path to the methods:
- * [TaggingWS] =
- * http://localhost:8080/KiWi/seam/resource/services
- * /widgets/tagging [TaggingWS]/listTags.json?docUri=http://
- * query.json?q=StartPage&jsonpCallback=cb123
+ * This class contains all the web services required for the Sun Use Case. 
+ * The web service base path is : <i><KIWI URI>/KiWi/seam/resource/services/widgets/tagging/</i> <br>
+ * The this class is based on the free/controlled tag principle.
+ * For more information please consider  <a href="http://www.kiwi-community.eu/display/sunspace/Tagging+WebServices+Umbrella#TaggingWebServicesUmbrella-GetChildren">Tagging WebServices Umbrella</a> <br>
  * 
+ * This class provides the following web services :
+ * <ul>
+ * <li> /addTags -add a certain tag {@link #addTags(String, String)}
+ * <li> /getChildern - get all the children for a given tag {@link #getChidlren(String)}
+ * <li> /listTags.json - list all the tags {@link #getTags(String, String, boolean)}
+ * <li> /removeTags - removes a given tag {@link #removeTags(String, String)}
+ * <li> /searchTags - searches {@link #searchTags(String)}
+ * <li> /getSiblings - get all the siblings for a given tag {@link #getSiblings(String)} 
+ * <li> /getPrefixes - {@link #getPrefixes()}
+ * <li> /getTaxonomies - {@link #getTaxonomies()}
+ * </ul>
+ *
  * @author Szaby Grünwald
+ * @author Mihai Radulescu
  */
 @Name("kiwi.webservice.TaggingWebService")
 @Scope(ScopeType.STATELESS)
@@ -78,9 +75,6 @@ public class TaggingWebService {
     @In(create = true)
     private TaggingService taggingService;
 
-    @In(create = true)
-    private EquityService equityService;
-
     @In
     private SunTagService sunTagService;
 
@@ -92,12 +86,6 @@ public class TaggingWebService {
 
     @In
     private KiWiEntityManager kiwiEntityManager;
-    
-    @In
-    private EntityManager entityManager;
-
-    @In
-    private TransactionService transactionService;
 
 
     public enum OrderTypes {
@@ -150,10 +138,7 @@ public class TaggingWebService {
             @QueryParam("order") @DefaultValue("usage") String order,
             @QueryParam("reverse") @DefaultValue("false") boolean reverse) {
         try {
-            ContentItemService ciService =
-                    (ContentItemService) Component
-                            .getInstance("contentItemService");
-            ContentItem item = ciService.getContentItemByUri(docUri);
+            final ContentItem item = contentItemService.getContentItemByUri(docUri);
 
             if (item == null) {
                 throw new WebApplicationException(Response.status(
@@ -290,41 +275,6 @@ public class TaggingWebService {
                 kiwiEntityManager.createFacade(item, SKOSConcept.class);
         final HashSet<SKOSConcept> narrower = facade.getNarrower();
         return !narrower.isEmpty();
-    }
-
-    private void insertTagsToJsonResult(List<Tag> tags, TagsListResult jsonRes,
-            ContentItem item) {
-        log.info("JSON packing #0 tags", tags.size());
-        TagCloudService tagCloudService =
-                (TagCloudService) Component.getInstance("tagCloudService");
-        LinkedList<ExtendedTagCloudEntry> tagCloud =
-                new LinkedList<ExtendedTagCloudEntry>();
-        // tagCloud.addAll(tagCloudService.aggregateTagsByCI(item)
-        // aggregateTags(tags));
-
-        for (ExtendedTagCloudEntry tagCloudEntry : tagCloud) {
-
-            String uri =
-                    ((KiWiUriResource) tagCloudEntry.getTag().getResource())
-                            .getUri();
-            Long usage = taggingService.getTagUsage(tagCloudEntry.getTag());
-
-            List<Tag> tagCloudEntryTags =
-                    taggingService.getTagsByTaggedTaggingIds(item.getId(),
-                            tagCloudEntry.getTag().getId());
-            double tq = equityService.getTagEquity(tagCloudEntryTags.get(0));
-
-            final ContentItem tag = tagCloudEntry.getTag();
-            // mihai : I am not sure if the skos title is the
-            // same with the tag title.
-            final String label = tag.getTitle();
-            log.info("tag label: #0, uri: #1, tq: #2", label, uri, tq);
-            try {
-                jsonRes.addFreeTag(uri, usage, label, tq);
-            } catch (JSONException e) {
-                log.error(e.getMessage(), e);
-            }
-        }
     }
 
     /**
@@ -683,7 +633,10 @@ public class TaggingWebService {
     @Path("/searchTags")
     @Produces("application/json")
     public Response searchTags(@QueryParam("q") String q) {
+
         log.debug("Try to process #0", q);
+        // allows space in the query
+        q = org.apache.solr.client.solrj.util.ClientUtils.escapeQueryChars(q);
         final int indexOf = q.indexOf(":");
         final boolean noSeparator = indexOf == -1;
         final String prefix =
@@ -691,8 +644,9 @@ public class TaggingWebService {
 
         if (noSeparator) {
             log.debug("No seprarator -all tags (both free and controlled ones) with labels starting with prefix ");
-// case 6:)
-// there is no ':' in the query -> the user has just entered some string 
+            // case 6:)
+            // there is no ':' in the query
+            // -> the user has just entered some string 
             Response searchTagsForPrefix;
             try {
                 searchTagsForPrefix = searchTagsForLabelPrefix(prefix);
@@ -703,24 +657,26 @@ public class TaggingWebService {
             return searchTagsForPrefix;
         }
 
-
         final String label = q.substring(indexOf + 1, q.length()).trim();
-
+        final ContentItem toplevelTag = sunTagService.getToplevelTag(prefix);
 
         if (label.isEmpty()) {
-            Map<String, Integer> noQueryParam = null;
             // HACK (hot fix): This is a hack for case 1: We should only look for
             // business rule, if the given prefix denotes a top level prefix;
             // Also, this should only look for business rules for given taxonomy
             // The original code here was uniformely consulting the business rule
             // regardless of the prefix and relationship of a business rule to a taxonomy
-            if ("geo".equals(prefix)) {
-                noQueryParam = getNoQueryParam();
-            }
+//            if ("geo".equals(prefix)) {
+//                noQueryParam = getNoQueryParam();
+//            }
+            final Map<String, Integer> noQueryParam = (toplevelTag != null)
+                    ? getNoQueryParam()
+                    : new HashMap<String, Integer>();
+//            final Map<String, Integer> noQueryParam =  new HashMap<String, Integer>();
 
-            if ((noQueryParam != null) && (!noQueryParam.isEmpty())) {
+            if (!noQueryParam.isEmpty()) {
                 //(case 1:) 
-                // If a business rule is defined, return all concepts from 
+                // If a business rule is defined, return all concepts from
                 // the level defined in business rule.
                 final Set<ContentItem> tags = new HashSet<ContentItem>();
                 for (Entry<String, Integer> conf : noQueryParam.entrySet()) {
@@ -738,7 +694,6 @@ public class TaggingWebService {
                 return Response.ok(jsonRes.toString()).build();
             }
 
-            final ContentItem toplevelTag = sunTagService.getToplevelTag(prefix);
             if (toplevelTag != null) {
                 // case 2
                 // If a business rule is not defined,
@@ -780,9 +735,8 @@ public class TaggingWebService {
             }
         } else {
             // label and prefix are present.
-            final ContentItem toplevelTag = sunTagService.getToplevelTag(prefix);
             if (toplevelTag != null) {
-                // (case 4:) 
+                // (case 4)
                 // if the prefix is a root level prefix (e.g. "geo"),
                 // return all concepts from ALL levels,
                 // that start with "label"
@@ -801,12 +755,12 @@ public class TaggingWebService {
 
             if (toplevelTag == null) {
                 // redundant if check :)
-                //  //(case 5) 
-                // if the prefix is not a root level prefix 
+                //  //(case 5)
+                // if the prefix is not a root level prefix
                 // (e.g. "country", "region") then return ALL
                 // tags from this prefix's level that start with "label"
 
-                // if a tag has prefix then it also can be included in a 
+                // if a tag has prefix then it also can be included in a
                 // hierarchical structure and this makes it controlled.
 
                 // The reason why I don't search also for level is the relation
@@ -830,14 +784,15 @@ public class TaggingWebService {
         log.error(exception.getMessage(), exception);
         throw exception;
     }
-    
+
     private void addControlledTags(Set<ContentItem> tags, TagsListResult result) {
         for (ContentItem item : tags) {
             try {
                 addControlledTag(result, item);
             } catch (JSONException e) {
                 log.error(e.getMessage(), e);
-// mihai : in this way I only skip only the items with problems.
+                // mihai : in this way I only skip only
+                // the items with problems.
             }
         }
     }
@@ -967,19 +922,18 @@ public class TaggingWebService {
             }
         }
     }
-    
 
     /**
      * proves if a given <code>KiWiUriResource</code> has a
      * certain type, the type is defined like URI. <br>
      * This is a work-around for the :
-     * 
+     *
      * <pre>
      * KiWiUriResource uriResource = ...
      * String controlledTypeUri = Constants.NS_SKOS + "Concept";
      * boolean isControlled = uriResource.hasType(controlledTypeUri);
      * </pre>
-     * 
+     *
      * @param uriResource the resource for the type check
      * @param typeUri the uri for the type.
      * @return true if the given resource is from the specified
@@ -1001,7 +955,50 @@ public class TaggingWebService {
     }
 
     /**
-     * @param ciUri
+     * Returns all the siblings for a given content item
+     * (inclusive the specified content item), the
+     * content item is identified after its URI. The response is
+     * a list of JSON objects, one for each siblings. The response
+     * depends on the if the wrapped siblings, the wrapped siblings can
+     * be free or controlled tag. <br>
+     * The URI for this web service is : <KIWI_URL>
+     * /team/resource/services /widgets/tagging/getSiblings <br>
+     * This WS is GET http method. The JSON format is like in
+     * next snippet :
+     *
+     * <pre>
+     * {
+     * "resource":"URI-of-tagged-resource",
+     * "items":
+     *  [
+     *   {
+     *    "uri":"http://kiwi/tags/1234",
+     *    "usage":262,
+     *    "label":"DEV",
+     *    "tq":2263,
+     *    "controlled":1,
+     *    "prefix":"community",
+     *    "parent":"http://...",
+     *    "hasChildren":true
+     *   },
+     *   {
+     *    "uri":"http://kiwi/tags/1235",
+     *    "usage":11
+     *    "label":"web2.0",
+     *    "tq":-72,
+     *    "controlled":0
+     *   },
+     *   ...
+     *  ]
+     * }
+     * </pre>
+     * 
+     * @see <a href=
+     *      "http://www.kiwi-community.eu/display/sunspace/Tagging+WebServices+Umbrella#TaggingWebServicesUmbrella-GetChildren"
+     *      >Tagging WebServices Umbrella</a>
+     * @param ciUri the uri for the parent document.
+     * @return all the children for a given content item like
+     *         JSON objects.
      * @return
      */
     @GET
@@ -1018,5 +1015,4 @@ public class TaggingWebService {
 
         return Response.ok(jsonRes.toString()).build();
     }
-
 }

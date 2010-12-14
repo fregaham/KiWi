@@ -85,18 +85,18 @@ Annotations.prototype.annotation_get_style = function(id) {
  * @param element
  * @return list of annotation ids
  */
-Annotations.prototype.getAnnotationsData(element) {
+Annotations.prototype.getAnnotationsData = function(element) {
 	if (element.getUserData) {
 		return element.getUserData("annotations");
 	}
 	else {
 		var annotations = element.getAttribute("annotations");
-		if (annotation == null) {
+		if (annotations == null) {
 			return null;
 		}
 		return annotations.split(" ");
 	}
-}
+};
 
 /**
  * Store the list of annotation ids in the element. It uses the DOM level 3 user
@@ -107,7 +107,7 @@ Annotations.prototype.getAnnotationsData(element) {
  * @param element
  * @param annotations list of annotation ids
  */
-Annotations.prototype.setAnnotationsData(element, annotations) {
+Annotations.prototype.setAnnotationsData = function(element, annotations) {
 	if (element.setUserData) {
 		element.setUserData("annotations", annotations,
 				onABSpanClone.partial(this)); 
@@ -115,7 +115,7 @@ Annotations.prototype.setAnnotationsData(element, annotations) {
 	else {
 		element.setAttribute("annotations", annotations.join(" ")); 
 	}
-}
+};
 
 
 

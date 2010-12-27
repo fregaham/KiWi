@@ -1,0 +1,41 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+    xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+    xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:p="http://primefaces.prime.com.tr/ui"
+	xmlns:a="http://richfaces.org/a4j">
+
+
+		<style>
+		   
+	    </style> 
+		
+		<h1>Experiment template<h:outputText value=" "/><h:outputText property="http://www.kiwi-project.eu/kiwi/core/title"/></h1>
+		
+		
+		
+		<p style="margin-top: 20px; margin-left: 10px; margin-right: 10px;" class="help">
+		</p>
+
+		<br/>
+
+		<a:form id="experimentTemplatePageForm">
+			<rich:listShuttle targetValue="#{rrs.experimentTemplateAction.selectedTemplatePages}"
+     	                  sourceValue="#{rrs.experimentTemplateAction.availableTemplatePages}"
+     	                  var="item" sourceRequired="false" targetRequired="true"
+     	                  sourceCaptionLabel="Available Template Pages"
+     	                  targetCaptionLabel="Selected Template Pages"
+     	                  converter="org.jboss.seam.ui.EntityConverter">
+     		<rich:column><h:outputText value="#{item.title}"/></rich:column>
+     		</rich:listShuttle>
+     		
+     		<h:commandButton action="#{rrs.experimentTemplateAction.saveTemplatePages}" value="Save"/>
+		</a:form>
+	        
+</ui:composition>

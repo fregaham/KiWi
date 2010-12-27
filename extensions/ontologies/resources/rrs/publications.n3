@@ -3,6 +3,7 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
 @prefix pub: <http://nlp.fit.vutbr.cz/2010/publications#>.
+@prefix exp: <http://nlp.fit.vutbr.cz/2010/experiment#>.
 @prefix foaf: <http://xmlns.com/foaf/0.1/>.
 
 pub:PublicationInterface a owl:Class.
@@ -92,5 +93,37 @@ pub:usesMethod a owl:ObjectProperty.
 pub:usesMethod rdfs:label "uses method".
 pub:usesMethod rdfs:domain pub:PublicationInterface.
 pub:usesMethod rdfs:range pub:Method.
+
+exp:ExperimentTemplate a owl:Class.
+exp:ExperimentTemplate rdfs:label "Experiment Template".
+
+exp:ExperimentTemplatePage a owl:Class.
+exp:ExperimentTemplatePage rdfs:label "Experiment Template Page".
+
+exp:firstTemplatePage a owl:ObjectProperty.
+exp:firstTemplatePage rdfs:label "first template page".
+exp:firstTemplatePage rdfs:domain exp:ExperimentTemplate.
+exp:firstTemplatePage rdfs:range exp:ExperimentTemplatePage.
+
+exp:nextTemplatePage a owl:ObjectProperty.
+exp:nextTemplatePage rdfs:label "next template page".
+exp:nextTemplatePage rdfs:domain exp:ExperimentTemplatePage.
+exp:nextTemplatePage rdfs:range exp:ExperimentTemplatePage.
+
+exp:Experiment a owl:Class.
+exp:Experiment rdfs:label "Experiment".
+
+exp:ExperimentPage a owl:Class.
+exp:ExperimentPage rdfs:label "Experiment Page".
+
+exp:firstPage a owl:ObjectProperty.
+exp:firstPage rdfs:label "first page".
+exp:firstPage rdfs:domain exp:Experiment.
+exp:firstPage rdfs:range exp:ExperimentPage.
+
+exp:nextPage a owl:ObjectProperty.
+exp:nextPage rdfs:label "next page".
+exp:nextPage rdfs:domain exp:ExperimentPage.
+exp:nextPage rdfs:range exp:ExperimentPage.
 
 

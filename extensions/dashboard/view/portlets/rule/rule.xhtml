@@ -11,7 +11,7 @@
                 xmlns:p="http://primefaces.prime.com.tr/ui">
  
  <p:panel id="rule" header="Personalized Rules" toggleable="true" closable="true" widgetVar="ruleWidget" closeListener="#{dashboardAction.removePortlet}">
-	<h:form id="ruleForm">
+
 		<p:tabView cache="false">
 			<p:tab title="Recommendation" id="recId">
 				<ui:include src="ruleRec.xhtml" />
@@ -23,6 +23,6 @@
 				<ui:include src="ruleMyTag.xhtml" />
 			</p:tab>			
 		</p:tabView>
-	</h:form>
+
 </p:panel>   
 </ui:composition>

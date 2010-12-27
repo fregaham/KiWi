@@ -177,7 +177,7 @@ public class SkillAction implements Serializable {
 		}
 		else {
 			for (String skill :skills.getSkills().keySet()){
-				if(skills.getSkills().get(skill)>=skillTreshold){
+				if(skills.getSkills().get(skill)>=skillTreshold && skillService.getFakeSkillsBySkillName(skill)==null){
 					SkillBean tmpBean = new SkillBean();
 					tmpBean.setSkill(skill);
 					tmpBean.setUser(skills.getUser());
@@ -209,11 +209,13 @@ public class SkillAction implements Serializable {
 			for (UserSkill userSkill2 : userSkills) {
 				Map<String, Float> userSkill2Map = userSkill2.getSkills();
 				for (String skillKey : userSkill2Map.keySet()) {
-					SkillBean skillBean = new SkillBean();
-					skillBean.setUser(userSkill2.getUser());
-					skillBean.setSkill(skillKey);
-					skillBean.setValue(userSkill2Map.get(skillKey).toString());
-					skillList.add(skillBean);
+					if (skillService.getFakeSkillsBySkillName(skillKey)==null) {
+						SkillBean skillBean = new SkillBean();
+						skillBean.setUser(userSkill2.getUser());
+						skillBean.setSkill(skillKey);
+						skillBean.setValue(userSkill2Map.get(skillKey).toString());
+						skillList.add(skillBean);
+					}
 				}
 			}
 	}

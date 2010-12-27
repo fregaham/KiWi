@@ -26,14 +26,17 @@
 				rendered="#{not empty rule.tagRec}">
 				<h:outputText value="Recommend me pages with tag '#{rule.tagRec}'." />
 				<h:outputText value=" " />
-				<a:commandLink
+				<p:commandLink
 					action="#{kiwi.dashboard.ruleAction.removeRule(rule)}"
-					value="Remove" reRender="ruleRecList" />
+					value="Remove" ajax="false">
+				<h:outputText value="Remove" />
+				 </p:commandLink> 
 				<h:outputText value=" " />
-				<a:commandLink
-					action="#{kiwi.dashboard.ruleAction.generateRule(rule)}"
-					value="Enable it!" reRender="ruleRecList" />
-				<h:outputText value=" " />
+				<p:commandLink
+					actionListener="#{kiwi.dashboard.ruleAction.generateRule(rule)}"
+					value="Enable it!" ajax="false"> <!--  reRender="ruleRecList" -->
+				<h:outputText value="Enable it!" />
+				 </p:commandLink> 
 			</s:span></div>
 		</c:forEach>
 	</s:span>
@@ -41,4 +44,5 @@
 		rendered="#{kiwi.dashboard.ruleAction.ruleBasedRecommendations.size() == 0}">
 		<h:outputText value="You still have no personal rules." />
 	</s:span>
+
 </ui:composition>

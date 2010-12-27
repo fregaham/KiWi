@@ -315,10 +315,11 @@ public class RuleBasedAction implements Serializable {
 	public void removeRule(RuleBasedRecommendation rule) {
 		if (rule.getKiwiTriple()!=null) {
 		    tripleStore.removeTriple(rule.getKiwiTriple());
+		}		    
 		    entityManager.remove(rule);
 			entityManager.flush();
 			FacesMessages.instance().add("Rule deleted successfully.");	
-		}
+		
 
 	}	
 

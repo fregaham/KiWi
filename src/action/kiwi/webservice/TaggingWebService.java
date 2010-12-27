@@ -636,11 +636,11 @@ public class TaggingWebService {
 
         log.debug("Try to process #0", q);
         // allows space in the query
-        q = org.apache.solr.client.solrj.util.ClientUtils.escapeQueryChars(q);
         final int indexOf = q.indexOf(":");
         final boolean noSeparator = indexOf == -1;
-        final String prefix =
+        String prefix =
                 noSeparator ? q.trim() : q.substring(0, indexOf).trim();
+        prefix = org.apache.solr.client.solrj.util.ClientUtils.escapeQueryChars(prefix);
 
         if (noSeparator) {
             log.debug("No seprarator -all tags (both free and controlled ones) with labels starting with prefix ");
@@ -657,7 +657,8 @@ public class TaggingWebService {
             return searchTagsForPrefix;
         }
 
-        final String label = q.substring(indexOf + 1, q.length()).trim();
+        String label = q.substring(indexOf + 1, q.length()).trim();
+        label = org.apache.solr.client.solrj.util.ClientUtils.escapeQueryChars(label);
         final ContentItem toplevelTag = sunTagService.getToplevelTag(prefix);
 
         if (label.isEmpty()) {

@@ -10,26 +10,22 @@
 	    xmlns:a="http://richfaces.org/a4j"
 	    xmlns:p="http://primefaces.prime.com.tr/ui">
 
-	<table>
-		<tr>
-			<td>
-			<div class="integrationLoginBox">
-			<h:panelGrid columns="2">
-				<h:outputText
-					value="After login, redirect me to the last pages visited: " />
-				<h:selectBooleanCheckbox
-					value="#{kiwi.dashboard.preferenceAction.redirectToLastPage}" />
-				<h:outputText
-					value="After login, show my last visted pages on the menu: " />
-				<h:selectBooleanCheckbox
-					value="#{kiwi.dashboard.preferenceAction.showMyLastVisitedPages}" />
-				<h:outputText value="Show tag cluster menu: " />
-				<h:selectBooleanCheckbox
-					value="#{kiwi.dashboard.preferenceAction.showTagClusterMenu}" />
-			</h:panelGrid> <p:commandButton
-				action="#{kiwi.dashboard.preferenceAction.saveUserPreference()}"
-				value="Save Preference" /></div>
-			</td>
-		</tr>
-	</table>
+
+	<h:panelGrid columns="2">
+		<h:outputText
+			value="After login, redirect me to the last pages visited: " />
+		<h:selectBooleanCheckbox
+			value="#{kiwi.dashboard.preferenceAction.redirectToLastPage}" />
+		<h:outputText
+			value="After login, show my last visted pages on the menu: " />
+		<h:selectBooleanCheckbox
+			value="#{kiwi.dashboard.preferenceAction.showMyLastVisitedPages}" />
+		<h:outputText value="Show tag cluster menu: " />
+		<h:selectBooleanCheckbox
+			value="#{kiwi.dashboard.preferenceAction.showTagClusterMenu}" />
+		<p:commandButton ajax="false"
+			action="#{kiwi.dashboard.preferenceAction.saveUserPreference()}"
+			value="Save Preference" />
+	</h:panelGrid>
+
 </ui:composition>

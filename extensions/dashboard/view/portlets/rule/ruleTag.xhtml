@@ -29,13 +29,17 @@
 				<h:outputText
 					value="To all my pages tagged with: '#{rule.firstQuery}', must be assigned with the tag '#{rule.secondQuery}'." />
 				<h:outputText value=" " />
-				<a:commandLink
+				<p:commandLink
 					action="#{kiwi.dashboard.ruleAction.removeRule(rule)}"
-					value="Remove" reRender="ruleTagList" />
+					value="Remove" ajax="false">
+				<h:outputText value="Remove" />
+				 </p:commandLink> 
 				<h:outputText value=" " />
-				<a:commandLink
-					action="#{kiwi.dashboard.ruleAction.generateRule(rule)}"
-					value="Enable it!" reRender="ruleTagList" />
+				<p:commandLink
+					actionListener="#{kiwi.dashboard.ruleAction.generateRule(rule)}"
+					value="Enable it!" ajax="false">
+				<h:outputText value="Enable it!" />
+				 </p:commandLink> 
 				<h:outputText value=" " />
 			</s:span></div>
 		</c:forEach>

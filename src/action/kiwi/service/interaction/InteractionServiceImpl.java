@@ -137,7 +137,7 @@ public class InteractionServiceImpl implements InteractionServiceLocal,
 			newWsers = users;
 			for (User user : newWsers) {
 				for (User user2 : newWsers) {
-					if (user!=user2  && !comparisions.contains(user.getLogin()+user2.getLogin())) {
+					if (user!=user2  && !comparisions.contains(user.getLogin()+user2.getLogin()) && !comparisions.contains(user2.getLogin()+user.getLogin())) {
 						//System.out.println("computeUserInteractivity...USER 1 "+user.getFirstName()+" USER 2 "+ user2.getFirstName());
 						float userInterctivityValue = computeUserInteractivity(user,user2);
 						if (userInterctivityValue>0f) {
@@ -145,6 +145,7 @@ public class InteractionServiceImpl implements InteractionServiceLocal,
 							kiwiEntityManager.persist(userInteraction);
 //							kiwiEntityManager.flush();
 							comparisions.add(user.getLogin()+user2.getLogin());
+							comparisions.add(user2.getLogin()+user.getLogin());
 						}
 					}
 				}
@@ -202,7 +203,7 @@ public class InteractionServiceImpl implements InteractionServiceLocal,
 	 */
 	@SuppressWarnings("unchecked")
 	public List<UserInteraction> listUserInteractions(){
-		List<UserInteraction> result = null;	
+		List<UserInteraction> result = null;
 		String s = "from kiwi.model.interaction.UserInteraction u";
 			javax.persistence.Query q = entityManager.createQuery(s);
 			try {

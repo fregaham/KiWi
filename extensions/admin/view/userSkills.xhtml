@@ -32,9 +32,12 @@
 			<h1 class="title ui-widget-header ui-corner-all">Compute User Skills</h1>
 
 			<p:messages />
-			<s:decorate>
+			<s:decorate><!--
 				<p:commandButton ajax="false" value="index and compute"
 					action="#{userSkillAction.indexAndComputeUserSkills()}" />
+				
+				--><p:commandButton ajax="false" value="Show User Skills"
+					action="#{userSkillAction.initTagList()}" />					
 
 				<p:commandButton ajax="false" value="only compute"
 					action="#{userSkillAction.computeUserSkills()}" />
@@ -109,7 +112,7 @@
 				</rich:comboBox>
 				<a:commandButton
 					action="#{userSkillAction.getUserSkillsByUserLogin()}"
-					reRender="skillListTest,noSkillListTest,showUsersBySkill"
+					reRender="skillListTest,noSkillListTest,userListTable"
 					value="Show skills" />
 			</h:panelGrid></div>
 
@@ -134,7 +137,7 @@
 						<f:facet name="header">Fake</f:facet>
 						<a:commandButton
 							action="#{userSkillAction.removeSkillByUser(skillEntry)}"
-							value="FakeSkill" reRender="skillListTest,showUsersBySkill" />
+							value="FakeSkill" reRender="skillListTest,userListTable" />
 					</h:column>
 
 					<h:column>

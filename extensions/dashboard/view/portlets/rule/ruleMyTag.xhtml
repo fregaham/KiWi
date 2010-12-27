@@ -10,13 +10,14 @@
 	xmlns:a="http://richfaces.org/a4j"
 	xmlns:p="http://primefaces.prime.com.tr/ui">
 
-	<h4><h:outputText value="To all pages tagged by assign this tag: " /></h4>
+	<h4><h:outputText value="To all pages tagged by me, assign this tag: " /></h4>
+	<br/>
 	<h:inputText id="fqueryRuleMy"
 		value="#{kiwi.dashboard.ruleAction.myTag}" />
 	<p:commandButton
 		action="#{kiwi.dashboard.ruleAction.createRule('myTag')}" value="Save"
 		ajax="false" />
-	<h:outputText value=" " />
+		<br/>
 	<s:span id="myMyRuleSpan"
 		rendered="#{kiwi.dashboard.ruleAction.ruleBasedRecommendations.size() &gt; 0}">
 		<c:forEach var="rule"
@@ -26,13 +27,17 @@
 				rendered="#{not empty rule.myTag}">
 				<h:outputText value="Tag my tagged pages with tag '#{rule.myTag}'." />
 				<h:outputText value=" " />
-				<a:commandLink
+				<p:commandLink
 					action="#{kiwi.dashboard.ruleAction.removeRule(rule)}"
-					value="Remove" reRender="ruleMyList" />
-				<h:outputText value=" " />
-				<a:commandLink
-					action="#{kiwi.dashboard.ruleAction.generateRule(rule)}"
-					value="Enable it!" reRender="ruleMyList" />
+					value="Remove" ajax="false">
+				<h:outputText value="Remove" />
+				 </p:commandLink>
+				 <h:outputText value=" " /> 
+				<p:commandLink
+					actionListener="#{kiwi.dashboard.ruleAction.generateRule(rule)}"
+					value="Enable it!" ajax="false">
+				<h:outputText value="Enable it!" />
+				 </p:commandLink> 
 				<h:outputText value=" " />
 			</s:span></div>
 		</c:forEach>

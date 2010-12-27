@@ -10,53 +10,54 @@
 	    xmlns:a="http://richfaces.org/a4j"
 	    xmlns:p="http://primefaces.prime.com.tr/ui">
 
-	<table>
-		<tr>
-			<td>
-			<div class="integrationLoginBox">
-			<h:panelGrid columns="2">
-				<h:outputText value="Recommendations per view: " />
-				<h:inputText
-					value="#{kiwi.dashboard.preferenceAction.recommendationSize}"
-					size="2" />
 
-				<h:outputText value="Show Recommendations: " />
-				<h:selectBooleanCheckbox
-					value="#{kiwi.dashboard.preferenceAction.showRecommendation}" />
 
-				<h:outputText value="Show Standard Recommendations: " />
-				<h:selectBooleanCheckbox
-					value="#{kiwi.dashboard.preferenceAction.showStandardRecommendation}" />
+	<h:panelGrid columns="2">
+		<h:outputText value="Recommendations per view: " />
+		<h:inputText
+			value="#{kiwi.dashboard.preferenceAction.recommendationSize}"
+			size="2" />
 
-				<h:outputText value="Show Semantic Recommendations: " />
-				<h:selectBooleanCheckbox
-					value="#{kiwi.dashboard.preferenceAction.showSemanticVectorRecommendation}" />
+		<h:outputText value="Show Recommendations: " />
+		<h:selectBooleanCheckbox
+			value="#{kiwi.dashboard.preferenceAction.showRecommendation}" />
 
-				<h:outputText value="Show Multifactor Recommendations: " />
-				<h:selectBooleanCheckbox
-					value="#{kiwi.dashboard.preferenceAction.showMultiFactorRecommendation}" />
+		<h:outputText value="Show Standard Recommendations: " />
+		<h:selectBooleanCheckbox
+			value="#{kiwi.dashboard.preferenceAction.showStandardRecommendation}" />
 
-				<h:outputText value="Show Recommendations Grouped By Tag: " />
-				<h:selectBooleanCheckbox
-					value="#{kiwi.dashboard.preferenceAction.showTagGroupedRecommendation}" />
+		<h:outputText value="Show Semantic Recommendations: " />
+		<h:selectBooleanCheckbox
+			value="#{kiwi.dashboard.preferenceAction.showSemanticVectorRecommendation}" />
 
-				<h:outputText value="Show Recommendations Sent By Contacts: " />
-				<h:selectBooleanCheckbox
-					value="#{kiwi.dashboard.preferenceAction.showContactRecommendation}" />
+		<h:outputText value="Show Multifactor Recommendations: " />
+		<h:selectBooleanCheckbox
+			value="#{kiwi.dashboard.preferenceAction.showMultiFactorRecommendation}" />
 
-				<h:outputText value="Show Personal Recommendations: " />
-				<h:selectBooleanCheckbox
-					value="#{kiwi.dashboard.preferenceAction.showPersonalRecommendation}" />
+		<h:outputText value="Show Recommendations Grouped By Tag: " />
+		<h:selectBooleanCheckbox
+			value="#{kiwi.dashboard.preferenceAction.showTagGroupedRecommendation}" />
 
-				<h:outputText value="Show Social Capital Recommendations: " />
-				<h:selectBooleanCheckbox
-					value="#{kiwi.dashboard.preferenceAction.showSocialCapitalRecommendation}" />
+		<h:outputText value="Show Recommendations Sent By Contacts: " />
+		<h:selectBooleanCheckbox
+			value="#{kiwi.dashboard.preferenceAction.showContactRecommendation}" />
 
-			</h:panelGrid> <p:commandButton
-				action="#{kiwi.dashboard.preferenceAction.saveUserPreference()}"
-				value="Save Preference" /></div>
-			</td>
-		</tr>
-	</table>
+		<h:outputText value="Show Personal Recommendations: " />
+		<h:selectBooleanCheckbox
+			value="#{kiwi.dashboard.preferenceAction.showPersonalRecommendation}" />
+
+		<h:outputText value="Show Social Capital Recommendations: " />
+		<h:selectBooleanCheckbox
+			value="#{kiwi.dashboard.preferenceAction.showSocialCapitalRecommendation}" />
+
+
+		<p:commandButton
+			action="#{kiwi.dashboard.preferenceAction.saveUserPreference()}"
+			value="Save Preference" ajax="false" />
+
+	</h:panelGrid>
+
+
+
 
 </ui:composition>

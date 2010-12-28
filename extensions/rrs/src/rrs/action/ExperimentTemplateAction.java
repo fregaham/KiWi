@@ -60,6 +60,8 @@ public class ExperimentTemplateAction implements Serializable {
 	private List<ContentItem> selectedTemplatePages;
 	private List<ContentItem> availableTemplatePages;
 	
+	private String prefix;
+	
 	public void setAvailableTemplatePages(List<ContentItem> pages) {
 		availableTemplatePages = pages;
 	}
@@ -67,7 +69,7 @@ public class ExperimentTemplateAction implements Serializable {
 	public void setSelectedTemplatePages(List<ContentItem> pages) {
 		selectedTemplatePages = pages;
 	}
-	
+		
 	public List<ContentItem> getSelectedTemplatePages() throws NamespaceResolvingException {
 		
 		if (selectedTemplatePages == null) {
@@ -162,5 +164,78 @@ public class ExperimentTemplateAction implements Serializable {
 		}
 		
 		return availableTemplatePages;
+	}
+	
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
+	}
+	
+	public String getPrefix() {
+		return prefix;
+	}
+	
+	/**
+	 * Clone the text content of a template and set it to the new item
+	 * @param template
+	 * @param item
+	 */
+	private void clone(ContentItem template, ContentItem item) {
+		contentItemService.updateTextContentItem(item, template.getTextContent().copyXmlDocument());
+	}
+	
+	/**
+	 * Create an experiment from the currentContentItem template
+	 * @throws NamespaceResolvingException 
+	 */
+	public void createExperiment() throws NamespaceResolvingException {
+		ContentItem experiment = contentItemService.createContentItem();
+		experiment.addType(tripleStore.createUriResource(exp + "Experiment"));
+		clone(currentContentItem, experiment);
+		contentItemService.updateTitle(experiment, prefix + ": " + currentContentItem.getTitle());
+		contentItemService.saveContentItem(experiment);
+		
+		tripleStore.createTriple(experiment.getResource(), tripleStore.createUriResource(exp + "experimentTemplate"), currentContentItem.getResource());
+		
+		KiWiUriResource expFirstPage = tripleStore.createUriResource(exp + "firstPage");
+		KiWiUriResource expNextPage = tripleStore.createUriResource(exp + "nextPage");
+		
+		List<ContentItem> experimentPages = new LinkedList<ContentItem> ();
+		List<ContentItem> templatePages = getSelectedTemplatePages(); 
+		for (ContentItem template : templatePages) {
+			ContentItem page = contentItemService.createContentItem();
+			page.addType(tripleStore.createUriResource(exp + "ExperimentPage"));
+			clone(template, page);
+			
+			contentItemService.updateTitle(page, prefix + ": " + template.getTitle());
+			
+			contentItemService.saveContentItem(page);
+			
+			experimentPages.add(page);
+		}
+		
+		if (experimentPages.size() > 0) {
+			tripleStore.createTriple(experiment.getResource(), expFirstPage, experimentPages.get(0).getResource());
+		}
+		
+		for (int i = 0; i < experimentPages.size() - 1; ++i) {
+			KiWiResource pageFrom = experimentPages.get(i).getResource();
+			KiWiResource pageTo = experimentPages.get(i + 1).getResource();
+			
+			tripleStore.createTriple(pageFrom, expNextPage, pageTo);
+		}
+	}
+	
+	/**
+	 * Get the list of experiments created from this template
+	 * @return
+	 * @throws NamespaceResolvingException
+	 */
+	public List<ContentItem> getExperiments() throws NamespaceResolvingException {
+		List<ContentItem> ret = new LinkedList<ContentItem> ();
+		for (KiWiTriple triple : currentContentItem.getResource().listIncoming("<" + exp + "experimentTemplate" +">")) {
+			ret.add(triple.getSubject().getContentItem());
+		}
+		
+		return ret;
 	}
 }

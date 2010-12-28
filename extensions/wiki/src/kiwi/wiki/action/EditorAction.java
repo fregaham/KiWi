@@ -86,6 +86,7 @@ import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Synchronized;
@@ -239,6 +240,7 @@ public class EditorAction implements Serializable {
     	}
 
     	updated = false;
+    	suggestionsDisplayed = false;
     	
     	state.initModel(currentContentItem, currentUser, content);
     	
@@ -272,6 +274,13 @@ public class EditorAction implements Serializable {
     
     public void restoreTitle() {
     	setTitle(currentContentItem.getTitle());
+    }
+    
+    @Observer("refreshEditor")
+    public void refreshEditor() {
+    	initialized = false;
+    	
+    	log.info("Refreshing editor");
     }
 	
 	/**

@@ -36,6 +36,20 @@
      		</rich:listShuttle>
      		
      		<h:commandButton action="#{rrs.experimentTemplateAction.saveTemplatePages}" value="Save"/>
+     		
+     		<h2>Experiments</h2>
+     		
+     		<h3>Create new experiment from this template</h3>
+     		<div>
+     			<h:inputText value="#{rrs.experimentTemplateAction.prefix}"/>
+     			<h:commandButton action="#{rrs.experimentTemplateAction.createExperiment}" value="Create Experiment"/>
+     		</div>
+     		
+     		<div>
+     			<ui:repeat var="ex" value="#{rrs.experimentTemplateAction.experiments}">
+					<h:outputText value="#{ex.title}"/>
+				</ui:repeat>
+     		</div>
 		</a:form>
 	        
 </ui:composition>

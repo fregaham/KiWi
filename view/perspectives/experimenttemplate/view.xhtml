@@ -19,8 +19,15 @@
 
 		<br/>
 
+		<h2>Template pages</h2>
+
 		<ui:repeat var="page" value="#{rrs.experimentTemplateAction.selectedTemplatePages}">
 			<h:outputText value="#{page.title}"/>
 		</ui:repeat>
 		
+		<h2>Experiments</h2>
+		
+		<ui:repeat var="ex" value="#{rrs.experimentTemplateAction.experiments}">
+			<h:outputText value="#{ex.title}"/>
+		</ui:repeat>
 </ui:composition>

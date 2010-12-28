@@ -22,6 +22,8 @@
 <ui:define name="body">
     <h1>ReReSearch Extension</h1>
    
+  
+   
    <!--  
     <h:form id="rrs_search">
     	<div>
@@ -40,6 +42,13 @@
     <h:form id="rrs_home">
     	<h:commandLink value="Upload PDF" action="upload"/> | 
     	<!-- <h:commandLink value="Annotate" action="annotate"/> -->
+    	
+    	 <h3>Experiments</h3>
+   <div>
+   	<ui:repeat value="#{rrs.experimentAction.experiments}" var="exp">
+   		<h:commandLink value="#{exp.title}" action="#{rrs.experimentAction.startExperiment(exp)}"/>
+   	</ui:repeat>
+   </div>
     	
     	<h3>My Collection</h3>
     	<ui:repeat value="#{rrs.importAction.listMyPublications()}" var="pub">

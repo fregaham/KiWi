@@ -1,0 +1,532 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+		    	xmlns:rich="http://richfaces.org/rich"
+		    	xmlns:a="http://richfaces.org/a4j"
+	            xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+	            xmlns:c="http://java.sun.com/jstl/core"
+	            template="layout/template.xhtml">
+
+	<ui:define name="links">	
+		<ui:include src="/dialogs/fragments.xhtml" />
+		<ui:include src="/dialogs/kiwirdfaAbout.xhtml" />
+		<ui:include src="/dialogs/kiwirdfaLink.xhtml" />
+
+		<rich:modalPanel xmlns="http://www.w3.org/1999/xhtml"
+			xmlns:ui="http://java.sun.com/jsf/facelets"
+			xmlns:h="http://java.sun.com/jsf/html"
+			xmlns:f="http://java.sun.com/jsf/core"
+			xmlns:s="http://jboss.com/products/seam/taglib"
+			xmlns:rich="http://richfaces.org/rich"
+			xmlns:a="http://richfaces.org/a4j"
+			xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+			xmlns:c="http://java.sun.com/jstl/core" width="500" autosized="true"
+			id="editorFragmentsPanel">
+			<f:facet name="header">
+				<h:panelGroup>
+					<h:outputText value="Fragment Editor"></h:outputText>
+				</h:panelGroup>
+			</f:facet>
+
+			<p style="margin-top: 20px; margin-left: 10px; margin-right: 10px;"
+				class="help">Add tags to the fragment.</p>
+
+			<a:region renderRegionOnly="true">
+
+			<h:form id="editorFragmentForm">
+					<rich:messages styleClass="message" />
+
+					<s:div id="tagcloud">
+						<h3>Existing Tags:</h3>
+						<c:forEach var="tag" items="#{editorAction.tagCloud}">
+							<span style="font-size: #{tag.size}"> <s:link
+								view="/search.xhtml" value="#{tag.tag.title}"
+								style="color: rgb(100,#{tag.colorCode},100);">
+								<f:param name="q" value="tag:#{tag.tag.title}" />
+							</s:link> </span>
+							<s:span rendered="#{!tag.ownTag}">
+								<a:commandButton action="#{editorAction.addTag(tag.tag)}"
+									image="img/type_add.png" reRender="editorFragmentForm" />
+							</s:span>
+							<s:span rendered="#{tag.ownTag}">
+								<a:commandButton action="#{editorAction.removeTag(tag.tag)}"
+									image="img/type_delete.png" reRender="editorFragmentForm" />
+							</s:span>
+							<h:outputText value=", " />
+						</c:forEach>
+					</s:div>
+
+					<s:div id="taginput" style="margin-top: 1em;">
+						<h3>New Tags:</h3>
+						<h:inputText value="#{editorAction.tagLabel}"
+							style="width: 300px" id="taglabel" />
+						<rich:suggestionbox id="suggestionBoxId" for="taglabel"
+							tokens=",[]" suggestionAction="#{editorAction.autocomplete}"
+							var="result" fetchValue="#{result}" minChars="2"
+							shadowOpacity="4" border="1" height="150" width="100"
+							shadowDepth="3" cellpadding="2" nothingLabel="No tags found"
+							columnClasses="center" usingSuggestObjects="true"
+							reRender="suggestionBoxId">
+
+							<h:column>
+								<h:outputText value="#{result}" />
+							</h:column>
+						</rich:suggestionbox>
+						<a:commandButton id="addTagBtn" action="#{editorAction.addTag}"
+							value="Add" reRender="editorFragmentForm">
+						</a:commandButton>
+						<a:status>
+							<f:facet name="start">
+								<h:graphicImage
+									value="#{facesContext.externalContext.requestContextPath}/img/busy-indicator.gif" />
+							</f:facet>
+						</a:status>
+					</s:div>
+ 
+					<rich:togglePanel id="comments" switchType="ajax"
+						stateOrder="closed,open">
+						<f:facet name="closed">
+							<rich:toggleControl>
+								<h2 class="commentsClosed">Comments (<h:outputText value="#{editorAction.getComments().size()}"/>)</h2>
+							</rich:toggleControl>
+						</f:facet>
+
+						<f:facet name="open">
+							<f:subview id="commentPanel">
+								<rich:toggleControl>
+									<h2 class="commentsOpen">Comments</h2>
+								</rich:toggleControl>
+<!-- 
+								<c:if
+									test="#{editorAction.getComments().isEmpty()}">
+									<div class="nocomments">No comments</div>
+								</c:if>-->
+ 
+								<ui:repeat var="comment"
+									value="#{editorAction.comments}">
+									<div class="comment">
+									<div class="comment-title"><h:outputText
+										value="#{comment.title}" /></div>
+									<div class="comment-meta"><h:outputText
+										value="#{comment.created}">
+										<s:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText> <h:outputText value=" by " /> <kiwi:link
+										resource="#{comment.author.resource}"
+										value=" #{comment.author.firstName} #{comment.author.lastName}" />
+									</div>
+									<div class="comment-body"><h:outputText
+										value="#{comment.html}"
+										escape="false" /></div>
+									</div>
+								</ui:repeat>
+
+								<rich:togglePanel id="newcomment" switchType="ajax"
+									stateOrder="closed,open">
+									<f:facet name="closed">
+										<rich:toggleControl id="addComment" value="Add Comment" />
+									</f:facet>
+
+									<f:facet name="open">
+										<f:subview id="newCommentPanel">
+											<hr />
+
+											<strong>Title:</strong>
+											<h:inputText value="#{editorAction.commentTitle}"
+												style="margin-left: 10px; width: 80%" />
+
+
+
+											<!-- It seems the editor breaks the fragments in the main editor...
+								 Let's use non-rich editor here... 
+								 TODO: fix it! -->
+											<h:inputTextarea style="width: 90%" value="#{editorAction.comment}" />
+											<div style="margin-bottom:6px">
+											<!-- <rich:editor id="newcommentEditor" height="100" required="false"
+									theme="advanced" configuration="tinymce-small"
+									plugins="safari,pagebreak,style,layer,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,visualchars,nonbreaking,xhtmlxtras"
+									value="#{editorAction.comment}">
+								</rich:editor> -->
+
+											<a:commandLink value="Add" id="addComment"
+												action="#{editorAction.addComment}" reRender="comments"
+												styleClass="grayRoundButton">
+												<rich:componentControl for="newcomment"
+													operation="switchToState('closed')">
+												</rich:componentControl>
+											</a:commandLink>
+											<rich:toggleControl id="commentCancel" process="comments"
+												value="Cancel" styleClass="grayRoundButton" />
+											</div>
+										</f:subview>
+									</f:facet>
+								</rich:togglePanel>
+
+							</f:subview>
+						</f:facet>
+					</rich:togglePanel>
+
+				  
+					
+
+					<div class="actionButtons center"><a:commandButton
+						value="Create/Update" id="btnCreateFragment"
+						action="#{editorAction.fragmentCreate}"
+						data="#{editorAction.fragmentJS}"
+						oncomplete="fragmentJSLib.onCreateOrUpdate(data)" /> <a:commandButton
+						value="Delete" id="btnDeleteFragment"
+						action="#{editorAction.fragmentDelete}"
+						oncomplete="fragmentJSLib.onDelete()" /> <a:commandButton
+						value="Cancel" id="btnCancelFragment"
+						action="#{editorAction.fragmentCancel}"
+						oncomplete="fragmentJSLib.onCancel()" /> <a:jsFunction
+						name="fragmentSet" reRender="editorFragmentForm">
+						<a:actionparam name="Param1"
+							assignTo="#{editorAction.fragmentJS}" />
+					</a:jsFunction></div>
+				</h:form>
+			</a:region>
+
+		</rich:modalPanel>
+
+		<a:form>
+			<!-- Querywizard Helper jsFunctions -->
+			<a:jsFunction name="wizardSetQuery"
+				oncomplete="queryWizardJSLib.showQuerywizardPanel();"
+				reRender="fmt,#{queryWizardAction.renderedSearchPageParts()}"
+				action="#{queryWizardAction.searchEngine.runSearch}">
+				<a:actionparam name="param1" assignTo="#{queryWizardAction.format}" />
+				<a:actionparam name="param2" assignTo="#{queryWizardAction.query}" />
+				<a:actionparam name="param3" assignTo="#{queryWizardAction.lang}" />
+			</a:jsFunction>
+
+			<!-- Kiwilink Helper jsFunctions -->
+			<a:jsFunction name="insertLinkHTML"
+				data="#{kiwilinkAction.replacementHTML}"
+				oncomplete="kiwilinkJSLib.kiwilinkCreate(data);"
+				reRender="linkLabel,linkTarget,linkTargetSuggest,linkPreview" />
+	
+			<a:jsFunction name="kiwilinkFormActivate"
+				action="#{kiwilinkAction.formActivate}" 
+				reRender="linkLabel,linkTarget,linkTargetSuggest,linkPreview"/>
+	
+	        <a:jsFunction name="setSelectionHTML" 
+	        	oncomplete="kiwilinkJSLib.showKiwilinkPanel();" 
+	        	reRender="kiwilinkPanel">
+	        	<a:actionparam name="param1" assignTo="#{kiwilinkAction.selectionHTML}" />
+	        </a:jsFunction>
+		</a:form>
+ 
+		<script  type="text/javascript">
+	    	kiwilinkJSLib={};
+	    	kiwilinkJSLib.showKiwilinkPanel = function(){
+				
+	    		// a4j:jsFunction on kiwilink.xhtml
+	    		kiwilinkFormActivate();
+	    		 
+	    	showKiwiDialogbox('wiki.kiwilinkPanel');
+	    	}
+	    	kiwilinkJSLib.kiwilinkCreate = function(replacement){
+	    		// var kiwilinkAction = Seam.Component.getInstance("kiwilinkAction");
+	    		kiwilinkJSLib.createLink(replacement);
+	    	}
+	
+	    	queryWizardJSLib = {};
+	    	queryWizardJSLib.showQuerywizardPanel = function(){
+				
+	    		// a4j:jsFunction on kiwilink.xhtml
+	    		// querywizardFormActivate();
+	    		showKiwiDialogbox("wiki.querywizardPanel");
+	    		// #{rich:component('querywizardPanel')}.show();
+	    	}
+	    	
+	    </script>
+	    
+	    
+	    <!--  Fragments-related things start here -->
+	    <script type="text/javascript" src="./js/tinymceplugins/fragments/functional.js"></script>
+	    <script type="text/javascript" src="./js/tinymceplugins/fragments/annotations.js"></script>
+	    
+	    <script type="text/javascript">
+	    	fragmentJSLib={};
+	    	fragmentJSLib.showFragmentsPanel = function (context, fragment) {
+	    		var argString = 
+						(context == null ? "" : context) + " " + 
+						(fragment == null ? "" : fragment);
+				
+				fragmentSet(argString);
+				#{rich:component('editorFragmentsPanel')}.show();
+	    	}
+	    	
+	    	fragmentJSLib.onCreateOrUpdate = function (fragmentJS) {
+				#{rich:component('editorFragmentsPanel')}.hide();
+				this._setFragment(fragmentJS);
+			}
+			
+			fragmentJSLib.onCancel = function () {
+	        	#{rich:component('editorFragmentsPanel')}.hide();
+	        	this._cancel ();
+	        }
+	
+	        fragmentJSLib.onDelete = function () {
+	        	#{rich:component('editorFragmentsPanel')}.hide();
+	        	this._delete ();
+	        }
+	        
+	        /* The Information Extraction suggestions, as fragments */
+	        fragmentJSLib.acceptLinkSuggestion = function (id, text, control) {
+	        	// acceptSuggestion(id);
+	        	var context = kiwirdfaJSLib.getContext(control);
+	        	var contextTypes = kiwirdfaJSLib.getContextTypes(control);
+	        	kiwirdfaJSLib.showKiwirdfaLinkPanel(context, contextTypes, id, null, null, null, null, text);	        	
+	        }
+	        
+	        fragmentJSLib.acceptItemSuggestion = function (id, text, control) {
+	        	// acceptSuggestion(id);
+	        	var context = kiwirdfaJSLib.getContext(control);
+	        	var contextTypes = kiwirdfaJSLib.getContextTypes(control);
+	        	kiwirdfaJSLib.showKiwirdfaAboutPanel(context, contextTypes, id, null, null);	        	
+	        }
+	        
+	        fragmentJSLib.rejectSuggestion = function (id) {
+	        	rejectSuggestion(id);
+	        	fragmentJSLib.deleteFragment(id);
+	        }
+	        
+	        fragmentJSLib.createSpanFromFragment = function (id) {
+	        	return this._createSpanFromFragment(id);
+	        } 
+	        
+	        fragmentJSLib.createDivFromFragment = function (id) {
+	        	return this._createDivFromFragment(id);
+	        }
+	        
+	        fragmentJSLib.deleteFragment = function (id) {
+	        	return this._deleteFragment (id);
+	        }
+	        
+	        fragmentJSLib.showSuggestions = function() {
+	        	showSuggestions();
+	        }
+	        
+	        fragmentJSLib.hideSuggestions = function() {
+	        	hideSuggestions();
+	        }
+	    </script>
+	    
+	    <!--  Fragments-related things end here -->
+	    
+	    <!--  Rdfa-related things start here -->
+	    
+	    <!-- It is not really a plugin, if it needs this fixed library here, but I don't know how to do it better... (MS) -->
+	    
+	    <script type="text/javascript" src="./js/tinymceplugins/kiwirdfa/rdfa.js"></script>
+		<script type="text/javascript">
+			kiwirdfaJSLib={};
+			
+	        kiwirdfaJSLib.showKiwirdfaAboutPanel = function(context, contextTypes, fragmentId, uri, relation, types) {
+				
+				kiwirdfaJSLib.fragmentId = fragmentId;
+				
+				context = context == null ? "" : context;
+				contextTypes = contextTypes == null ? "" : contextTypes;
+				fragmentUd = fragmentId == null ? "" : fragmentId;
+				uri = uri == null ? "" : uri;
+				relation = relation == null ? "" : relation;
+				types = types == null ? "" : types;
+				
+				var argString = JSON.stringify([context, contextTypes, fragmentId, uri, relation, types]);
+				
+				kiwirdfaSetAbout(argString);
+				#{rich:component('kiwirdfaAboutPanel')}.show();
+	    	}
+	
+			kiwirdfaJSLib.onCreateOrUpdateAbout = function (componentJS) {
+				#{rich:component('kiwirdfaAboutPanel')}.hide();
+				var args = JSON.parse(componentJS);
+				
+				if (kiwirdfaJSLib.fragmentId != null) {
+					var div = fragmentJSLib.createDivFromFragment(kiwirdfaJSLib.fragmentId);
+					this._setAboutProperties(div, args[1], args[2], args[3]);
+					acceptSuggestion(kiwirdfaJSLib.fragmentId);
+					
+					if (args[0] == "true") {
+						insertNestedItem(args[1]);
+					}
+				}
+				else {
+					this._setAboutProperties(null, args[1], args[2], args[3]);
+					if (args[0] == "true") {
+						// That means we are inserting exisiting nested item, we need to call the editor action for that.
+						insertNestedItem(args[1]);					
+					}
+				}
+			}
+	
+	        kiwirdfaJSLib.onCancelAbout = function () {
+	        	#{rich:component('kiwirdfaAboutPanel')}.hide();
+	        	this._cancelAbout ();
+	        }
+	
+	        kiwirdfaJSLib.onDeleteAbout = function () {
+	        	#{rich:component('kiwirdfaAboutPanel')}.hide();
+	        	this._deleteAbout ();
+	        }
+
+	        kiwirdfaJSLib.showKiwirdfaLinkPanel = function(context, contextTypes, fragmentId, target, rel, property, content, text) {
+				
+	        	// we remember the fragmentId
+	        	kiwirdfaJSLib.fragmentId = fragmentId;
+	        	
+				context = context == null ? "" : context;
+				contextTypes = contextTypes == null ? "" : contextTypes;
+				fragmentId = fragmentId == null ? "" : fragmentId;
+				target = target == null ? "" : target;
+				rel = rel == null ? "" : rel; 
+				property = property == null ? "" : property;
+				content = content == null ? "" : content;
+				text = text == null ? "" : text;
+				
+				var argString = JSON.stringify([context, contextTypes, fragmentId, target, rel, property, content, text]);
+				
+				kiwirdfaSetLink(argString);
+				#{rich:component('kiwirdfaLinkPanel')}.show();
+	    	}
+	        
+			kiwirdfaJSLib.onCreateOrUpdateLink = function (linkJS) {
+				#{rich:component('kiwirdfaLinkPanel')}.hide();
+				var args = JSON.parse(linkJS);
+				
+				if (kiwirdfaJSLib.fragmentId != null) {
+					var span = fragmentJSLib.createSpanFromFragment(kiwirdfaJSLib.fragmentId);
+					this._setLinkProperties(span, args[0], args[1], args[2], args[3], args[4]);
+					acceptSuggestion(kiwirdfaJSLib.fragmentId);
+				}
+				else {
+					this._setLinkProperties(null, args[0], args[1], args[2], args[3], args[4]);
+				}
+			}
+	
+	        kiwirdfaJSLib.onCancelLink = function () {
+	        	#{rich:component('kiwirdfaLinkPanel')}.hide();
+	        	
+	        	if (kiwirdfaJSLib.fragmentId != null) {
+	        	}
+	        	else {
+	        		this._cancelLink ();
+	        	}
+	        }
+	
+	        kiwirdfaJSLib.onDeleteLink = function () {
+	        	#{rich:component('kiwirdfaLinkPanel')}.hide();
+	        	
+				if (kiwirdfaJSLib.fragmentId != null) {
+					fragmentJSLib.deleteFragment(kiwirdfaJSLib.fragmentId);
+					rejectSuggestion(kiwirdfaJSLib.fragmentId);
+				}
+				else {
+					this._deleteLink ();
+				}
+	        }
+			
+			kiwirdfaJSLib.getContext = function(element) {
+				return this._getContext(element);
+			}
+			
+			kiwirdfaJSLib.getContextTypes = function(element) {
+				return this._getContextTypes(element);
+			}
+	        
+		</script>
+		<!--  Rdfa-related things end here -->
+		
+	</ui:define>
+	
+	<ui:define name="body">
+	
+		<h:form id="formWikiEdit">
+		
+		<h1><rich:inplaceInput value="#{editorAction.title}" defaultLabel="click to edit title" required="true"/></h1>
+	
+		<div style="float:right;">
+			Language: 
+			<h:selectOneMenu value="#{editorAction.language}" id="lang">
+				<s:selectItems value="#{editorAction.languages}" var="lang" label="#{lang}" itemValue="#{lang}" hideNoSelectionLabel="true"/>
+			</h:selectOneMenu>
+		</div>	
+	
+	
+		<rich:messages styleClass="message"/>
+
+
+		<!-- Nested Items helper functions -->
+			<a:jsFunction name="insertNestedItem" 
+				reRender="contentWrap" 
+				action="#{editorAction.insertNestedItem}">
+				<a:actionparam name="param1" assignTo="#{editorAction.nestedItemId}"/>
+			</a:jsFunction>
+
+		<!-- Information Extraction suggestion helper functions -->
+		
+			<a:jsFunction name="showSuggestions" 
+	        	reRender="contentWrap,tags_widget:extractedTags,types_widget:extractedTypes"
+	        	action="#{editorAction.suggest()}">
+	        </a:jsFunction>
+	        
+	        <a:jsFunction name="hideSuggestions" 
+	        	reRender="contentWrap"
+	        	action="#{editorAction.hideSuggestions()}">
+	        </a:jsFunction>
+		
+			<a:jsFunction name="acceptSuggestion" 
+	        	action="#{editorAction.acceptSuggestion}">
+	        	<a:actionparam name="param1" assignTo="#{editorAction.suggestionId}" />
+	        </a:jsFunction>
+	        
+	        <a:jsFunction name="rejectSuggestion" 
+	        	action="#{editorAction.rejectSuggestion}">
+	        	<a:actionparam name="param1" assignTo="#{editorAction.suggestionId}" />
+	        </a:jsFunction>
+	        
+	        <a:jsFunction name="kiwiSave"
+	        	reRender="contentWrap"
+	        	action="#{editorAction.storeContentItem}">
+	        </a:jsFunction>
+
+		<s:div id="contentWrap">	        
+
+			<script type="text/javascript">
+				fragmentJSLib.suggestionsDisplayed = #{editorAction.suggestionsDisplayed};
+			</script>
+
+		<!-- autoResize = "true" -->
+		<rich:editor id="editorContent"
+                         value    = "#{editorAction.content}"
+       	                 height   = "400"
+        	             theme    = "advanced"
+        	             customPlugins = "kiwiPlugins"
+        	             configuration = "tinymce-full"
+        	             plugins  = "safari,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,kiwirdfa,querywizard,fragments" 
+                         autoResize="true"
+                         >
+		</rich:editor>
+				
+		</s:div>
+		
+		
+		<h:commandButton action="#{editorAction.storeContentItem}" value="#{messages['btn.save']}" />
+	      <!--   <h:selectBooleanCheckbox value="#{editorAction.sign}"/> <h:outputText value="Sign Content"/>
+	        <h:selectBooleanCheckbox value="#{editorAction.encrypt}"/> <h:outputText value="Encrypt Content"/> -->
+	        <s:button action="#{editorAction.cancel}" value="#{messages['btn.cancel']}" rendered="#{conversation.nested}" />
+	        
+	    <div>
+	    	<h:commandButton action="#{rrs.experimentAction.previous}" value="Previous"/>
+	    	<h:commandButton action="#{rrs.experimentAction.next}" value="Next"/>
+	    </div>
+	        
+	    </h:form>
+		
+	</ui:define>
+	
+</ui:composition>

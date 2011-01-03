@@ -24,8 +24,20 @@
 		</p>
 
 		<br/>
+		
+		
+		<h:form id="experimentTemplatePageFormFromXmlFile">
+			<h2>Load Experiment template pages from XML</h2>
+			<div>
+				URL: <h:inputText value="#{rrs.experimentTemplateAction.fileUrl}"/>
+				<h:commandButton action="#{rrs.experimentTemplateAction.loadExperimentTemplateFromXmlFile}" value="Load"/>
+			</div>
+		</h:form>
 
+	
 		<a:form id="experimentTemplatePageForm">
+			<h2>Add Experiment Template Pages</h2>	
+		
 			<rich:listShuttle targetValue="#{rrs.experimentTemplateAction.selectedTemplatePages}"
      	                  sourceValue="#{rrs.experimentTemplateAction.availableTemplatePages}"
      	                  var="item" sourceRequired="false" targetRequired="true"

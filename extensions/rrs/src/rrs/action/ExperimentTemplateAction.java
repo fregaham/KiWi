@@ -1,6 +1,7 @@
 package rrs.action;
 
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -16,6 +17,15 @@ import kiwi.model.kbase.KiWiResource;
 import kiwi.model.kbase.KiWiTriple;
 import kiwi.model.kbase.KiWiUriResource;
 import kiwi.model.user.User;
+
+import nu.xom.Builder;
+import nu.xom.Document;
+import nu.xom.Element;
+import nu.xom.Elements;
+import nu.xom.Nodes;
+import nu.xom.ParsingException;
+import nu.xom.Serializer;
+import nu.xom.ValidityException;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -237,5 +247,46 @@ public class ExperimentTemplateAction implements Serializable {
 		}
 		
 		return ret;
+	}
+	
+	private String fileUrl;
+	
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
+	}
+	
+	public String getFileUrl() {
+		return this.fileUrl;
+	}
+	
+	public void loadExperimentTemplateFromXmlFile() throws ValidityException, ParsingException, IOException, NamespaceResolvingException {
+		Builder parser = new Builder();
+		Document document = parser.build(fileUrl);
+
+		List<ContentItem> pages = new LinkedList<ContentItem>();
+		
+		Nodes nodes = document.query("//doc");
+		for (int i = 0; i < nodes.size(); ++i) {
+			Element doc = (Element)nodes.get(i);
+			
+			// Let it fail if the format is wrong... 
+			String title = doc.getFirstChildElement("title").getValue();
+			
+			Nodes divs = doc.query("text/div");
+			Element div = (Element)divs.get(0);
+			
+			String xml = div.toXML();
+			
+			ContentItem page = contentItemService.createContentItem();
+			page.addType(tripleStore.createUriResource(exp + "ExperimentTemplatePage"));
+			contentItemService.updateTextContentItem(page, xml);
+			contentItemService.updateTitle(page, title);
+			contentItemService.saveContentItem(page);
+			
+			pages.add(page);
+		}
+		
+		setSelectedTemplatePages(pages);
+		saveTemplatePages();
 	}
 }

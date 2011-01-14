@@ -41,6 +41,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
@@ -236,7 +237,60 @@ public class LabelServiceImpl implements LabelService {
 				}
 			}
 		}
-		
+				
 		return ret;
+	}
+
+	@Override
+	public Label storeLabel(Label l) {
+		
+		try {
+			if(Transaction.instance().isActive()) {
+				Transaction.instance().commit();
+			}
+			Transaction.instance().begin();
+			transactionService.registerSynchronization(
+            		KiWiSynchronizationImpl.getInstance(), 
+            		transactionService.getUserTransaction() );
+			Transaction.instance().enlist(entityManager);
+		
+			Query q = entityManager.createNamedQuery("kiwi.informationextraction.labelService.getLabel");
+			q.setParameter("string", l.getString());
+			q.setParameter("type", l.getType());
+			q.setParameter("resource", l.getResource());
+		
+		// 	TODO: fix, catching expected behavior
+			try {
+				return (Label)q.getSingleResult();
+			}
+			catch (NoResultException x) {
+				entityManager.persist(l);
+				Transaction.instance().commit();
+				return l;
+			}
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (SystemException e) {
+			e.printStackTrace();
+		} catch (RollbackException e) {
+			e.printStackTrace();
+		} catch (HeuristicMixedException e) {
+			e.printStackTrace();
+		} catch (HeuristicRollbackException e) {
+			e.printStackTrace();
+		} catch (NotSupportedException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+
+	@Override
+	public List<Label> getLabelsByResource(KiWiResource resource) {
+		Query q = entityManager.createNamedQuery("kiwi.informationextraction.labelService.listLabelsByResource");
+		q.setParameter("resource", resource);
+		return (List<Label>)q.getResultList();
 	}
 }

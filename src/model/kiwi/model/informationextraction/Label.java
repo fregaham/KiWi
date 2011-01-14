@@ -72,13 +72,18 @@ import org.hibernate.annotations.OptimisticLockType;
 	@NamedQuery(name  = "kiwi.informationextraction.labelService.deleteLabelsByResource",
 				query = "delete kiwi.model.informationextraction.Label l where l.resource = :resource"),
 	@NamedQuery(name="kiwi.informationextraction.labelService.listResourceLabels",
-				query="select label.string, label.resource.id " +
+				query="select label.string, label.resource.id, label.id " +
 					  "from kiwi.model.informationextraction.Label label"),
 	@NamedQuery(name = "kiwi.informationextraction.labelService.listResourcesByString",
 				query = "select label.resource from kiwi.model.informationextraction.Label label " +
 						"where label.string = :string"),
 	@NamedQuery(name = "kiwi.informationextraction.labelService.countLabels",
-				query = "select count(*) from kiwi.model.informationextraction.Label")
+				query = "select count(*) from kiwi.model.informationextraction.Label"),
+	@NamedQuery(name = "kiwi.informationextraction.labelService.getLabel",
+			    query = "select label from kiwi.model.informationextraction.Label label where label.string = :string and " +
+			    		" label.type = :type and label.resource = :resource"),
+   @NamedQuery(name = "kiwi.informationextraction.labelService.listLabelsByResource",
+			    query = "select label from kiwi.model.informationextraction.Label label where label.resource = :resource")			    		
 })
 public class Label implements Serializable {
 
@@ -102,8 +107,13 @@ public class Label implements Serializable {
 	@Index(name="idx_label_string")
 	private String string;
 	
-	public static int TYPE_TITLE = 0;
-	public static int TYPE_ALTLABEL = 1;
+	public static final int TYPE_TITLE = 0;
+	public static final int TYPE_ALTLABEL = 1;
+	
+	/**
+	 * The resource is a property, the label is a literal of that property.
+	 */
+	public static final int TYPE_PROPERTY_LITERAL = 2;
 	
 	/**
 	 * The origin of the label, so that it's possible to disable 

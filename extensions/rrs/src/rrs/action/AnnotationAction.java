@@ -66,10 +66,10 @@ public class AnnotationAction {
 	
 	public List<Tag> getTags() {
 		List<Tag> ret = new LinkedList<Tag>();
-		ret.addAll(taggingService.getTags(currentContentItem));
+		ret.addAll(taggingService.getTaggings(currentContentItem));
 		
 		for (FragmentFacade ff : fragmentService.getContentItemFragments(currentContentItem, FragmentFacade.class)) {
-			ret.addAll(taggingService.getTags(ff.getDelegate()));
+			ret.addAll(taggingService.getTaggings(ff.getDelegate()));
 		}
 		
 		return ret;

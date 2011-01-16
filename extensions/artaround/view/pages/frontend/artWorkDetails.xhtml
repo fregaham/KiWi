@@ -14,6 +14,7 @@
 		    	xmlns:a="http://richfaces.org/a4j"
 		    	template="../../layout/template-3col.xhtml"
 		    	xmlns:a4j="http://richfaces.org/a4j"	
+		    	xmlns:p="http://primefaces.prime.com.tr/ui"
 		    	xmlns:c="http://java.sun.com/jstl/core">
 		    		    	
 	 <ui:define name="breadcrumps">
@@ -23,7 +24,7 @@
 	 		</li>
 	 		<li>				 			
 				<s:link view="/artaround/pages/frontend/artWorkDetails.xhtml" 
-					value="#{messages['artaround.breadcrumps.artworkDetails']}"/>
+					value="Kunstwerk Details"/>
 			</li>	
 	 	</ul>
 	 </ui:define>
@@ -84,9 +85,13 @@
 			color:#456;
 			font-weight:normal;
 			text-align: left;
-		}    		
-					
+		} 
+		
+							
 	 </style>
+	 
+	 <!-- Full version of jQuery Tools + jQuery 1.3.2 -->
+	<script src="#{facesContext.externalContext.requestContextPath}/view/js/jQueryMain/jquery.tools.min.js"></script>
 
 	 <script>
 		// execute your scripts when the DOM is ready. this is a good habit
@@ -137,40 +142,67 @@
 	
 	<!-- wrapper element for the large image -->
 	<div id="image_wrap" style="height: 380px; width: 680px">
+	<h:form>
 	  <table cellspacing="10px" style="margin-right:10px">	
 		<tr>
-			<td colspan="2" align="center">			  
-				<h3 style="margin-left:20px; text-align:center;">
-				#{artWorkBean.artWorkName}  &#8901; #{artWorkBean.authorName} &#8901; Salzburg
-				</h3>			 
-			</td>
-		</tr>	
-		<tr>	
-			<td >				
-				<div style="margin-left:15px;">
-				<!-- <h3>#{artWorkBean.technique}</h3><br/>   -->
-				<h4>#{artWorkBean.description}</h4><br/><br/>
-				<h4>#{messages['artaround.artworks.price']}: #{artWorkBean.currency} #{artWorkBean.price}</h4><br/>
+			<td align="center" width="250" height="400">	
+				
+				
+				<h3 style="margin-left:15px; text-align:center; margin-bottom: 15px">#{artWorkBean.artWorkName}  </h3>	
+				<h3 style="margin-left:15px; text-align:center; margin-bottom: 15px"> &#9674; </h3>
+				<h3 style="margin-left:15px; text-align:center">#{artWorkBean.authorName} </h3>
+				<br/><br/>
+				<h:inputTextarea readonly="true" rows="10" value="#{artWorkBean.description}" style="margin-left:12px; text-align:left; width:220px; font-size:14px;
+					color:#456; font-weight:normal; border:none;"/>
+<!--				<h4 style="margin-left:20px; text-align:left;">Beschreibung:&#160; #{artWorkBean.description} </h4>		-->
 				<br/>
-				<a href="#" style="color:#EB6D0E" id = "techniquex" onclick="jQuery('#map_chooser').fadeIn('fast',function(){initialize()})">#{messages['artaround.artworks.location']} des Kunstwerkes</a>	
-		       	<br/><br/><br/>
-				<c:if test="#{artWorkBean.sellingState}">
-					<h:form>
-						<a4j:commandLink value="#{messages['artaround.artworks.buyArtwork']}"  
-							action="#{showArtWorkAction.buyArtWork()}" />
-					</h:form>
-				</c:if>
-				<c:if test="#{not artWorkBean.sellingState}">
-					<h4>#{messages['artaround.artworks.sellingStateNo']}</h4>
-				</c:if>
-				</div>
-			</td>			
-			<td width="430px" height="360px">
-				<!-- Initially the image is a simple 1x1 pixel transparent GIF -->
-				<img src="#{facesContext.externalContext.requestContextPath}/view/img/blank.gif" />
+				<h4 style="margin-left:15px; text-align:left;">Technik:&#160; <c:forEach items ="#{artWorkBean.getTechniques()}" var="tec">#{tec.preferredLabel}&#160; </c:forEach> </h4>	
+												
+				<h4 style="margin-left:15px; text-align:left;">#{messages['artaround.artworks.price']}: #{artWorkBean.currency} #{artWorkBean.price}</h4><br/>
+				
+				
+		       
+				
+				
 			</td>
+			<td align="center">
+				<table>
+				<tr>
+				<td>		
+					<!-- Initially the image is a simple 1x1 pixel transparent GIF -->
+					<img src="#{facesContext.externalContext.requestContextPath}/view/img/blank.gif" align="middle"/>
+				</td>
+				</tr>
+				<tr>
+				<td>
+					<table align="center">
+					<tr>
+					<td>
+					
+						<c:if test="#{artWorkBean.sellingState}">
+						
+							<a4j:commandLink value="Kunstwerk Anfrage"  
+								style="text-align:left; margin-left:20px; float:left;" action="#{showArtWorkAction.buyArtWork()}" />
+						
+						</c:if>
+						<c:if test="#{not artWorkBean.sellingState}">
+							<h4>#{messages['artaround.artworks.sellingStateNo']}</h4>
+						</c:if>
+					</td>
+					<td>
+						<form>					
+						<a href="#" style="color:#aaa; margin-left:20px; float:left; text-align:left;" id = "techniquex" onclick="jQuery('#map_chooser').fadeIn('fast',function(){initialize()})">#{messages['artaround.artworks.location']} des Kunstwerkes</a>	
+					    </form>
+					</td>
+					</tr>
+					</table>
+				</td>
+				</tr>
+				</table>
+			</td>			
 		</tr>
 	  </table>
+	</h:form>
 	</div>
 	
 	<!-- "previous page" action -->
@@ -188,28 +220,7 @@
 					<img src="#{showArtWorkAction.getMiniMultimediaFilename(pic)}" />
 			</c:forEach> 
 			
-			<!-- Dummy Pics nur zur Darstellung von jQuery Komponente -->
-			<!-- 1-5 -->
-			<img src="http://farm1.static.flickr.com/143/321464099_a7cfcb95cf_t.jpg" width="100px" height="75px" />
-			<img src="http://farm4.static.flickr.com/3089/2796719087_c3ee89a730_t.jpg" width="100px" height="75px" />
-			<img src="http://farm1.static.flickr.com/79/244441862_08ec9b6b49_t.jpg" width="100px" height="75px" />
-			<img src="http://farm1.static.flickr.com/28/66523124_b468cf4978_t.jpg" width="100px" height="75px" />
-			<img src="http://farm1.static.flickr.com/164/399223606_b875ddf797_t.jpg" width="100px" height="75px" />
 			
-			<!-- 5-10 -->
-			<img src="http://farm1.static.flickr.com/163/399223609_db47d35b7c_t.jpg" width="100px" height="75px" />
-			<img src="http://farm1.static.flickr.com/135/321464104_c010dbf34c_t.jpg" width="100px" height="75px" />
-			<img src="http://farm1.static.flickr.com/40/117346184_9760f3aabc_t.jpg" width="100px" height="75px" />
-			<img src="http://farm1.static.flickr.com/153/399232237_6928a527c1_t.jpg" width="100px" height="75px" />
-			<img src="http://farm1.static.flickr.com/50/117346182_1fded507fa_t.jpg" width="100px" height="75px" />
-			
-			<!-- 10-15 
-			<img src="http://farm4.static.flickr.com/3629/3323896446_3b87a8bf75_t.jpg" width="100px" height="75px" />
-			<img src="http://farm4.static.flickr.com/3023/3323897466_e61624f6de_t.jpg" width="100px" height="75px" />
-			<img src="http://farm4.static.flickr.com/3650/3323058611_d35c894fab_t.jpg" width="100px" height="75px" />
-			<img src="http://farm4.static.flickr.com/3635/3323893254_3183671257_t.jpg" width="100px" height="75px" />
-			<img src="http://farm4.static.flickr.com/3624/3323893148_8318838fbd_t.jpg" width="100px" height="75px" />
-			-->
 		</div>		
 	</div>
 	

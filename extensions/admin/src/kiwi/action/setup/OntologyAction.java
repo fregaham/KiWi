@@ -249,6 +249,22 @@ public class OntologyAction implements Serializable {
 			ideator.setLoad(true);
 			setupOntologyList.add(ideator);
 			
+			OntologyBean edukms = new OntologyBean();
+			edukms.setName("Edukms Ontology");
+			edukms.setDescription("This is the edukms ontology.");
+			edukms.setUri("edukms/edukms.owl");
+			edukms.setFormat(KiWiDataFormat.RDFXML);
+			edukms.setLoad(false);
+			setupOntologyList.add(edukms);
+			
+			OntologyBean edukmsThesaurus = new OntologyBean();
+			edukmsThesaurus.setName("Edukms Thesaurus");
+			edukmsThesaurus.setDescription("This is the edukms Thesaurus.");
+			edukmsThesaurus.setUri("edukms/edukms_thesaurus.owl");
+			edukmsThesaurus.setFormat(KiWiDataFormat.RDFXML);
+			edukmsThesaurus.setLoad(false);
+			setupOntologyList.add(edukmsThesaurus);
+			
 			OntologyBean ideatorThesaurus = new OntologyBean();
 			ideatorThesaurus.setName("Ideator Thesaurus");
 			ideatorThesaurus.setDescription("This is the Ideator Thesaurus.");

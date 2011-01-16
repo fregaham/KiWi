@@ -667,15 +667,16 @@ public class TaggingWebService {
             // Also, this should only look for business rules for given taxonomy
             // The original code here was uniformely consulting the business rule
             // regardless of the prefix and relationship of a business rule to a taxonomy
-//            if ("geo".equals(prefix)) {
-//                noQueryParam = getNoQueryParam();
-//            }
-            final Map<String, Integer> noQueryParam = (toplevelTag != null)
-                    ? getNoQueryParam()
-                    : new HashMap<String, Integer>();
+            Map<String, Integer> noQueryParam = null;
+            if ("geo".equals(prefix)) {
+                noQueryParam = getNoQueryParam();
+            }
+//            final Map<String, Integer> noQueryParam = (toplevelTag != null)
+//                    ? getNoQueryParam()
+//                    : new HashMap<String, Integer>();
 //            final Map<String, Integer> noQueryParam =  new HashMap<String, Integer>();
 
-            if (!noQueryParam.isEmpty()) {
+            if ((noQueryParam != null) && (!noQueryParam.isEmpty())) {
                 //(case 1:) 
                 // If a business rule is defined, return all concepts from
                 // the level defined in business rule.

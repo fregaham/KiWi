@@ -128,21 +128,48 @@ float:left;
     
 <!--    <h:form>-->
 
-        <rich:toolBar>
+       <rich:toolBar>
+        
 			<rich:toolBarGroup location="right">
             <rich:dropDownMenu >
                 <f:facet name="label"> 
                     <h:panelGroup>
                        
-                        <h:graphicImage value="../img/vorschau_symbol.png" styleClass="pic"/>
-                        <h:outputText value="Preview"/>
+                        <h:graphicImage value="../img/plus.png" styleClass="pic"/>
+                        <h:outputText value="Add Comment"/>                    
+                        
+                        
+                    </h:panelGroup>
+                </f:facet>
+                
+                 <c:if test="#{identity.loggedIn == true}">
+                <rich:menuItem submitMode="ajax" value="Comment resource"
+                    action="#{dkmsReadModusAction.insertComment()}">
+                </rich:menuItem>
+                </c:if>
+                <c:if test="#{identity.loggedIn == false}">
+                <rich:menuItem submitMode="ajax" value="Comment resource"
+                    action="#" onclick="javascript:alert('Please go to platform home and login with your username and password!');">
+                </rich:menuItem>
+                </c:if>        
+
+            </rich:dropDownMenu>
+            </rich:toolBarGroup>
+            
+            <rich:toolBarGroup location="right">
+            <rich:dropDownMenu >
+                <f:facet name="label"> 
+                    <h:panelGroup>
+                       
+                        <h:graphicImage value="../img/tabreiter.png" styleClass="pic"/>
+                        <h:outputText value="Tab Perspective"/>
                         
                         
                     </h:panelGroup>
                 </f:facet>
                 
                 <rich:menuItem submitMode="ajax" value="Open"
-                    action="#{dkmsReadModusAction.previewExerciseSheet()}">
+             action="#{dkmsReadModusAction.showCombiTabPerspective()}">
                 </rich:menuItem>
               
 
@@ -150,42 +177,25 @@ float:left;
             </rich:toolBarGroup>
             
             <rich:toolBarGroup location="right">
-             <rich:dropDownMenu>
+            <rich:dropDownMenu >
                 <f:facet name="label"> 
-                    <h:panelGroup >
-                        <h:graphicImage value="../img/round_verysmall.png" styleClass="pic"/>
-                        <h:outputText value="Cancel"/>
+                    <h:panelGroup>
+                       
+                        <h:graphicImage value="../img/arrowleft_small.png" styleClass="pic"/>
+                        <h:outputText value="Back"/>
+                        
                         
                     </h:panelGroup>
                 </f:facet>
                 
-                <rich:menuItem submitMode="ajax" value="Go back"
-                   action="#{dkmsBasicAction.goToHome()}">
+                <rich:menuItem submitMode="ajax" value="Back to Resource Set"
+                action="#{dkmsReadModusAction.goToCombinedResource(dkmsContentItemBean.tmpContentItem)}">
                 </rich:menuItem>
               
 
             </rich:dropDownMenu>
             </rich:toolBarGroup>
-            
-            <rich:toolBarGroup location="right">
-            <rich:dropDownMenu>
-                <f:facet name="label"> 
-                    <h:panelGroup >
-                        <h:graphicImage value="../img/arrowright_small.png" styleClass="pic"/>
-                        <h:outputText value="Proceed"/>
-                        
-                    </h:panelGroup>
-                </f:facet>
-                
-                <rich:menuItem submitMode="ajax" value="Go on"
-                  action="#{dkmsBasicAction.nextStepSheet()}">
-                </rich:menuItem>
-              
-
-            </rich:dropDownMenu>
-		</rich:toolBarGroup>
-
-            
+                       
         </rich:toolBar>
 <!--    </h:form>-->
 

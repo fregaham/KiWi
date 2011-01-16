@@ -11,24 +11,55 @@
     xmlns:kiwi="http://www.kiwi-project.eu/jsf"
     xmlns:c="http://java.sun.com/jstl/core"
 	xmlns:a="http://richfaces.org/a4j" 
-	template="layout/template-2col.xhtml">
+	template="layout/template-3col.xhtml"
+	xmlns:a4j="http://richfaces.org/a4j">
+	
+	<ui:define name="breadcrumps">
+	 	<ul>
+	 		<li class="first">				 			
+				<s:link view="/artaround/home.xhtml" value="#{messages['artaround.breadcrumps.home']}"/>
+	 		</li>
+	 		<li>				 			
+				<s:link view="/artaround/artaroundSearch.xhtml" value="Detailsuche"/>
+	 		</li>
+	 	</ul>
+	 </ui:define>
 
 	<ui:define name="body">
 	
+	<style>
+	
+	
+	
+	h3 {
+	
+		style="font-size:13px; 
+		font-weight:normal; 
+		color:#aaa; 
+		margin-left:10px"	
+	
+	}
+	</style>
+	
+	
 	<fieldset class="fieldsetborder" style="width:800px">
-	<legend>Suchergebnis verfeinern:</legend>	       
+	<legend>Detailsuche:</legend>	       
 	<rich:messages styleClass="message" />    
     
     <div id="searchbar">
 		<h:form id="search_fulltext">
 		<div style="float:left; margin-left: 10px">
-				<h:commandButton type="submit" value="Start search" action="#{artSearchAction.searchAll}"  />
+				<h:commandButton type="submit" value="Alle Inhalte laden" action="#{artSearchAction.searchAll}"  /><h:outputText value="&#160;&#160;oder nach Begriff suchen:&#160;&#160;" />
+				<h:inputText id="hdrSearchBox" value="#{artSearchAction.fullquery}"/>&#160;<a4j:commandButton id="hdrSearchBtn" action="#{artSearchAction.getSearchView()}"  style="border: 0; valign: center; vertical-align: middle;" image="/img/search.png" value="#{messages['hdr.search']}" type="submit">
+		     			 <s:defaultAction/>
+		           </a4j:commandButton>
 		</div><br/>
 		</h:form>
 	</div>
-	<br/>
+	
+	
 	<div id="technique_chooser" style="width:300px; margin-left:10px; margin-top:5px; float:left">
-		<h3><h:outputText value="Waehle eine Technik aus" /></h3>
+		<h3><h:outputText value="Technik einschraenken:" /></h3>
 			<h:form styleClass="box_facets">
 				<ui:repeat value="#{artSearchAction.techniqueFacets}" var="tech">
 					<h:commandLink value = "#{tech.content.contentItem.title} (#{tech.resultCount})" action="#{artSearchAction.setTechniqueResource(tech.content)}"/>
@@ -38,7 +69,7 @@
 				<h:outputText rendered="#{artSearchAction.statusFacet.size == 0}" value="#{messages['ideator.search.facets.none']}" />
 			</h:form>
 			<br/>
-			<h3><h:outputText value="Waehle einen Typ aus" /></h3>
+			<h3><h:outputText value="Inhaltstyp einschraenken" /></h3>
 			<h:form styleClass="box_facets">
 				<ui:repeat value="#{artSearchAction.relevantTypes}" var="type">
 					<h:commandLink value = "#{type.content.label} (#{type.resultCount})"  action="#{artSearchAction.setType(type.content)}" />
@@ -130,10 +161,10 @@
 					</ui:include>
 					</td><td>
 						 <div style="margin-left:30px">
-						 <h:outputText value = "Bewertung:"/> 
-						 <br/>
-						 <h:outputText value = "#{r.ceq}"/> 
-						 <br/>
+<!--						 <h:outputText value = "Bewertung:"/> -->
+<!--						 <br/>-->
+<!--						 <h:outputText value = "#{r.ceq}"/> -->
+<!--						 <br/>-->
 <!--						 <h:outputText value = "#{showArtWorkAction.getEquityValue(r.item)}"/>	-->
 						 </div>				
 					</td></tr></table>

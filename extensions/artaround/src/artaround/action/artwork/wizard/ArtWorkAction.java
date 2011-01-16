@@ -74,18 +74,13 @@ public class ArtWorkAction implements Serializable {
     public String neuesKunstwerk(){
     	//clear all values which are curently in the ArtWorkbean
     	artWorkBean.clear();
-    	return "neuesKunstwerk";
+    	return "/artaround/pages/artworks/neuesKunstwerk";
     }
 	
 	public String buyArtWork(){
 		return "/artaround/pages/frontend/buyArtwork.xhtml";
 	}
-	
-	public String showArtWorksLastUploaded(){
-		return "/artaround/pages/frontend/artWorks.xhtml";
-	}
-
-	
+		
 	public String goToHome(){
 		return "/artaround/home.seam";
 		

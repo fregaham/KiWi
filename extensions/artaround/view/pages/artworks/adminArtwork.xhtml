@@ -11,7 +11,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
 		    	xmlns:rich="http://richfaces.org/rich"
-		    	template="../../layout/template-2col.xhtml"
+		    	template="../../layout/template-3col.xhtml"
 		    	xmlns:c="http://java.sun.com/jstl/core"
 		    	xmlns:a4j="http://richfaces.org/a4j">		    	
 
@@ -134,11 +134,12 @@
 											required="false" 
 										  	value = "#{artWorkBean.price}"/>
 										<h:outputLabel for="waehrung">#{messages['artaround.currency']}:</h:outputLabel>								
-								      	<rich:comboBox defaultLabel="EUR" 
+								      	<rich:comboBox  
 										  	id = "waehrung" value = "#{artWorkBean.currency}" width="100px" style="float:left;">
-									      			 <f:selectItem itemValue="USD"/>
+									      			 
 									      			 <f:selectItem itemValue="EUR"/>
-									      			 <f:selectItem itemValue="Alpen $"/>
+									      			 <f:selectItem itemValue="USD"/>
+									      			 
 				       				  	</rich:comboBox>						      						
 						         	</h:panelGrid>
 						         	</div>   														
@@ -159,7 +160,7 @@
 					</div>
 				</td>
 				<td valign="top">
-					<fieldset class="fieldsetborder">
+					<fieldset class="fieldsetborder" style="height:476px">
 						<legend>Bildbearbeitung</legend>
 							<div class="expose" id = "oGal">
 								<rich:dataGrid id="gal" value="#{artWorkBean.artAroundMediaList}"  var="pic" columns="1" elements="1"  width="270" align="center">

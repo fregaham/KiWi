@@ -21,6 +21,7 @@
 					title="AP Author Program"/>
 	        </a>	    
 	    </div>
+	    
 		<!-- text in the center of the page -->
 	    <div id="mainnav">
 			<div id="aiHeaderText">					
@@ -39,40 +40,65 @@
 	    </div>
 		<!-- fast login -->
 		
-		<div id="headerRight">
+		<c:if test="#{identity.loggedIn == false}">
+		<div id="headerRight" style="margin-top:-92px; margin-right: 12px; padding: 5px">
 		
-			<div id="ai_headerpic">			    
+			<div id="ai_headerpic">	
+			
+				
+				<h:form>
+				
+						<table>
+						<tr>
+						<td><h:outputLabel for="username" style="font-size:12px; font-weight:300">Username</h:outputLabel></td>
+						<td><h:inputText id="username" value="#{credentials.username}" style="margin:1px; width:150px"/></td>
+						</tr>
+						<tr>
+						<td><h:outputLabel for="password" style="font-size:12px; font-weight:300">Password</h:outputLabel></td>
+						<td><h:inputSecret id="password" value="#{credentials.password}" style="margin:1px; width:150px"/></td>
+						</tr>
+						<tr>
+						<td>&#160;</td>
+						<td><h:commandButton id="loginButton" value="Login" action="#{identity.login}" rendered="#{not identity.loggedIn}" style="margin:1px"/></td>
+						</tr>
+						</table>					
+				    	
+				 </h:form>
+					    
 		           		        	    
 	    	</div>
-			<!-- 
-				<div id="fastLogin"  >
-					<h:form id="formLoginFast" rendered="#{not identity.loggedIn}">	
-						<h:inputText id="username" value="#{credentials.username}" />
-						<h:outputText value=" " />
-						<h:inputSecret id="password" value="#{credentials.password}" />			
-						<h:commandButton value="Platform Login" action="#{identity.login}" style="margin-left:5px;"/>
-						<div class="registerText" style="text-align:right;">
-							<h:outputText value="Register" />
-							<h:outputText value=" " />
-							<s:link view="/artaround/pages/login/register.xhtml" value="Register"/>
-						</div>					
-				    </h:form>
-				</div>
-		    -->
-			<div id="cap-kom-link">
-			   <!-- [start] cap-kom logo and link --> 
-			   
-			   <!--
-			   <a href="http://www.artaround.at/abcmaths" 
-			   		title="ABCMaths">
-			         <img src="#{facesContext.externalContext.requestContextPath}/view/img/abcmathslogo.jpg" 
-							alt="ABCMaths" 
-							title="ABCMaths" height="65"/>
-			   </a>		
-			   -->
-			   <!-- [start] cap-kom logo and link -->				
-			</div>	
-		</div>	
+	    	
+	    </div>	
+		</c:if>	
+		
+		
+		 <c:if test="#{identity.loggedIn == true}">
+		 <div id="headerRight" style="margin-top:-92px; margin-right: 12px; padding: 5px">
+		
+			<div id="ai_headerpic">	
+				    	 	<table>
+							<tr>
+							<td ><img src="#{facesContext.externalContext.requestContextPath}/view/img/welcome.png"
+									style="valign: center; vertical-align: middle"/></td>
+							<td><h:outputText style="font-size: 12px; font-weight:bold; text-align:center" value="Hello #{identity.username}!"
+			                       rendered="#{identity.loggedIn}" /></td>
+							</tr>
+							<td>&#160;</td>
+							<td><h:form>
+			                <h:commandButton action = "#{identityManagerService.logout}" value="Logout" style="float:right"/>
+			                </h:form></td>
+							<tr>
+							</tr>
+							</table>		
+		
+		     </div>
+		   </div>
+		
+		 </c:if>			
+				
+		    
+			
+		
     </div>
 	<!-- end header -->
 	
@@ -84,7 +110,9 @@
 			<div id="login">
 				<h:form id="formHdrNavigation">
 		
-				    <div id="user">
+				    <div id="user">	
+				    
+				    		    	
 				    
 				    	<s:link view="/edukms/home.seam" 
 			                     value="EduKMS |  "

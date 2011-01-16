@@ -52,13 +52,6 @@
 		<rdfs:range rdf:resource="&rdfs;Literal"/>
 	</owl:DatatypeProperty>
 	
-	<owl:DatatypeProperty rdf:about="&edukms;representationType">
-		<rdfs:label>Representation Type</rdfs:label>
-		<rdfs:comment>Representation Type</rdfs:comment>
-		<rdfs:domain rdf:resource="&edukms;DkmsContentItem"/>
-		<rdfs:range rdf:resource="&rdfs;Literal"/>
-	</owl:DatatypeProperty>
-	
-	
+		
 		
 </rdf:RDF>

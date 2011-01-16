@@ -18,26 +18,14 @@
 				view="/edukms/authorInterface/home.xhtml" value="| Author Home" /></li>
 			<li><s:link
 				view="/edukms/authorInterface/userAdministrationArea.xhtml"
-				value="Administration" /></li>	
+				value="Administration Area" /></li>	
 			<li><s:link
 				view="/edukms/authorInterface/trashContainer.xhtml"
 				value="Trash-Box" /></li>
 		</ul>
 	</ui:define>
 	<ui:define name="body">
-		<!-- default set of jQuery Tools + jQuery 1.3.2 -->
-		<script
-			src="#{facesContext.externalContext.requestContextPath}/view/js/jQueryMain/jquery.tools.min.js"></script>
-
-		<!-- activate tabs with JavaScript -->
-		<script>
-	
-		jQuery(function() { 
-	
-		jQuery("#vert_accordion").tabs("#vert_accordion div.pane", {tabs: 'h2', effect: 'slide', initialIndex: null});
-	});
 		
-	</script>
 		<style>
 /* root element for vert_accordion. decorated with rounded borders and gradient background image */
 #vert_accordion {
@@ -121,12 +109,43 @@ h3 {
 	border-bottom: 1px solid ##FFE8C3;
 	margin: 20px;
 }
+
+.rich-mpnl-controls img {
+	src: url("../../img/close.png");
+}
+
+.rich-stglpanel-header {
+background-color:#eee;
+border-color:#eee;
+height:15px;
+color:#666;
+font-size:12px;
+font-weight:bold;
+
+}
+
+.rich-stglpanel {
+background-color:#eee;
+border-color:#C0C0C0;
+}
+
+.rich-stglpanel-body {
+
+padding:0px;
+
+}
 </style>
 
 
 		<div id="cover">
-		<fieldset class="fieldsetborder"
-			style="float:left; width:100%; height: 570px; margin-left: -170px; border:1px solid #FFE8C3">		
+		
+		<h:form>
+		 <rich:simpleTogglePanel  style="margin-left:-170px; margin-bottom: 10px; border-color: #FFE8C3; width:100% " opened="true" switchType="client"  >			
+				<ui:include src="./menu/menu_trashContainer.xhtml" ></ui:include>			
+		 </rich:simpleTogglePanel>
+		 </h:form>
+		
+		<div style="float:left; width:100%; height: 580px; margin-left: -170px; border:1px solid #FFE8C3; padding-top:10px">
 			
 			<img style="margin: 10px 15px 0 15px; float: left;"
 				src="#{facesContext.externalContext.requestContextPath}/view/img/trashbox.png" /><br />
@@ -136,9 +155,9 @@ h3 {
 				<h:form>
 					<div style="height:550px; overflow:auto; margin-left:25px; margin-top:10px ">
 					<table cellspacing="1">
-						<c:forEach items="#{dkmsReadModusAction.allDkmsContentItems}"
+						<c:forEach items="#{dkmsReadModusAction.getTrashedContentItems()}"
 							var="dci" id="dciList">
-						<c:if test="#{dci.trashState == true}">
+<!--						<c:if test="#{dci.trashState == true}">-->
 							<tr>
 								<td style="border:1px solid #FFE8C3; width:200px">
 								<h3 style="margin:5px">#{dci.title}</h3>
@@ -163,34 +182,19 @@ h3 {
 									action="#{dkmsReadModusAction.deleteDkmsContentItem(dci)}" ><img src="#{facesContext.externalContext.requestContextPath}/view/img/close_verysmall.png" title="Delete permanently" style="margin:3px"/></h:commandLink>
 								</td>					
 							</tr>
-						</c:if>
+<!--						</c:if>-->
 						</c:forEach>
 					</table>
 					</div>
 				</h:form></div>
 		
-		</fieldset>
-		<fieldset class="fieldsetborder" style="float:right; width: 200px; height: 570px; margin-right: -160px; border:1px solid #FFE8C3">
-		<div id="buttons">
-		<h:form>
-
-			<h:commandLink class="buttonclass"
-				action="#{dkmsBasicAction.goToHome()}">
-				<img
-					src="#{facesContext.externalContext.requestContextPath}/view/img/editor_verysmall.png"
-					style="valign: center; vertical-align: middle; margin-right: 5px; margin-top: 5px" />Create new resource</h:commandLink>
-			<br/><br/>
-			<h:commandLink class="buttonclass"
-			action="#{dkmsReadModusAction.exitTrashConfirmation()}">
-			<img
-				src="#{facesContext.externalContext.requestContextPath}/view/img/arrowleft_small.png"
-				style="valign: center; vertical-align: middle; margin-right: 5px;" />Back</h:commandLink>
-		<br />
-		<br />
-		</h:form>
 		</div>
-		<div id="trennlinie"></div>
-		</fieldset>
+		
+		<h:form>
+		 <rich:simpleTogglePanel  style="float:left; margin-left:-170px; margin-top: 10px; margin-bottom: 10px; border-color: #FFE8C3; width:100% " opened="true" switchType="client"  >
+			<ui:include src="./menu/menu_trashContainer.xhtml" ></ui:include>
+		 </rich:simpleTogglePanel>  
+		</h:form>
 
 		</div>
 		<!-- end cover -->

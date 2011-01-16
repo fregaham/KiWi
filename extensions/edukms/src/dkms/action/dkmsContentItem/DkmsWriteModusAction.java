@@ -77,118 +77,46 @@ public class DkmsWriteModusAction {
 	
 	
 	
-	
-	public void listener(UploadEvent event) {
-
-		UploadItem item = event.getUploadItem();
-
-		log.info("File: '#0' with type '#1' was uploaded", item.getFileName(),
-				item.getContentType());
-
-		String name = FilenameUtils.getName(item.getFileName());
-		String type = item.getContentType();
-		
-
-		if (item.isTempFile()) {
-			try {
-
-				File file = item.getFile();
-
-				String repos = DkmsPropertiesReader
-						.getProperty(DkmsPropertiesReader.FILE_REPOSITORY);
-				String cache = DkmsPropertiesReader.getProperty(DkmsPropertiesReader.FILE_CACHE);
-
-				try {
-					name = "" + new Date().getTime() + "_" + name;
-					DkmsFileService.copyFile(file, new File(repos + "/" + name));
-				} catch (Exception e) {
-					log.error("error copy file ... " + e.getMessage());
-					e.printStackTrace();
-				}
-
-				// create the mini thumbnail image:
-				//TODO: Werte aus property file auslesen
-				Integer width = new Integer(100);
-				Integer height = new Integer(75);
-				File mini = new File(cache + "/" + width + "x" + height + "_"
-						+ name);
-				DkmsImageScaleService.createScaledFile(file, mini, width, height, true);
-				
-				// create the thumbnail image:
-				width = new Integer(DkmsPropertiesReader
-						.getProperty(DkmsPropertiesReader.THUMB_SIZE_X));
-				height = new Integer(DkmsPropertiesReader
-						.getProperty(DkmsPropertiesReader.THUMB_SIZE_Y));
-				File thumb = new File(cache + "/" + width + "x" + height + "_"
-						+ name);
-				DkmsImageScaleService.createScaledFile(file, thumb, width, height, true);
-				
-				// create the mini preview image:
-				width = new Integer(280);
-				height = new Integer(150);
-				File miniprev = new File(cache + "/" + width + "x" + height + "_"
-						+ name);
-				DkmsImageScaleService.createScaledFile(file, miniprev, width, height, true);
-
-				// create the preview image:
-				width = new Integer(DkmsPropertiesReader
-						.getProperty(DkmsPropertiesReader.PREVIEW_SIZE_X));
-				height = new Integer(DkmsPropertiesReader
-						.getProperty(DkmsPropertiesReader.PREVIEW_SIZE_Y));
-				File prev = new File(cache + "/" + width + "x" + height + "_"
-						+ name);
-				DkmsImageScaleService.createScaledFile(file, prev, width, height, true);
-
-				// create the detail image:
-				width = new Integer(DkmsPropertiesReader
-						.getProperty(DkmsPropertiesReader.DETAIL_SIZE_X));
-				height = new Integer(DkmsPropertiesReader
-						.getProperty(DkmsPropertiesReader.DETAIL_SIZE_Y));
-				File detail = new File(cache + "/" + width + "x" + height + "_"
-						+ name);
-				DkmsImageScaleService.createScaledFile(file, detail, width, height, true);
-
-			} catch (IOException e) {
-				log.error("error reading file #0", item.getFile()
-						.getAbsolutePath());
-			}
-		}
-		
-		DkmsFileManager mt = new DkmsFileManager();
-		mt.setMimeType(type);
-		mt.setFileName(name);
-		
-		LinkedList<DkmsFileManager> dkmsContentItemList = dkmsContentItemBean.getDkmsMediaList();
-		if(dkmsContentItemList == null){
-			dkmsContentItemList = new LinkedList<DkmsFileManager>();
-		}
-		
-		dkmsContentItemList.add(mt);
-		dkmsContentItemBean.setDkmsMediaList(dkmsContentItemList);
-	}
-	
-	
 	@End
 	public String changeDkmsContentItem() {
 		
 		selectedDkmsContentItem.setBigIdeas(dkmsBigIdeasAction.getChosenBigIdeas());
-		selectedDkmsContentItem.setRepresentationType(dkmsRepresentationTypeAction.getChosenRepresentationTypes());
+		//selectedDkmsContentItem.setRepresentationType(dkmsRepresentationTypeAction.getChosenRepresentationTypes());
+		if (dkmsContentItemBean.getDkmsContentItemName().equals("")){
+			dkmsContentItemBean.setDkmsContentItemName("No Title");
+		}
 		dkmsContentItemBean.setDkmsContentItemType(selectedDkmsContentItem.getDkmsContentItemType());
 		dkmsContentItemService.updateDkmsContentItem(selectedDkmsContentItem, dkmsContentItemBean);
 		return "/edukms/authorInterface/userAdministrationArea.xhtml";
 		
 	}
-	
 	@End
 	public String changeWikiContentItem() {
 		
 		selectedDkmsContentItem.setBigIdeas(dkmsBigIdeasAction.getChosenBigIdeas());
-		selectedDkmsContentItem.setRepresentationType(dkmsRepresentationTypeAction.getChosenRepresentationTypes());
+		if (dkmsContentItemBean.getDkmsContentItemName().equals("")){
+			dkmsContentItemBean.setDkmsContentItemName("No Title");
+		}
+		//selectedDkmsContentItem.setRepresentationType(dkmsRepresentationTypeAction.getChosenRepresentationTypes());
 		dkmsContentItemBean.setDkmsContentItemType(selectedDkmsContentItem.getDkmsContentItemType());
 		dkmsContentItemService.updateDkmsContentItem(selectedDkmsContentItem, dkmsContentItemBean);
-		return "/edukms/abcmaths/lastUploadedResult.xhtml";
+		return "/edukms/abcmaths/searchKMS.xhtml";
 		
 	}
+	@End
+	public String changeBlogContentItem() {
+		
+		selectedDkmsContentItem.setBigIdeas(dkmsBigIdeasAction.getChosenBigIdeas());
+		if (dkmsContentItemBean.getDkmsContentItemName().equals("")){
+			dkmsContentItemBean.setDkmsContentItemName("No Title");
+		}
+		//selectedDkmsContentItem.setRepresentationType(dkmsRepresentationTypeAction.getChosenRepresentationTypes());
+		dkmsContentItemBean.setDkmsContentItemType(selectedDkmsContentItem.getDkmsContentItemType());
+		dkmsContentItemService.updateDkmsContentItem(selectedDkmsContentItem, dkmsContentItemBean);
+		return "/edukms/abcmaths/searchKMS.xhtml";
+		
+	}
+	
 	
 	@End
 	public String storeComment() {
@@ -219,20 +147,31 @@ public class DkmsWriteModusAction {
 		selectedDkmsContentItem.setRepresentationType(dkmsRepresentationTypeAction.getChosenRepresentationTypes());
 		dkmsContentItemBean.setDkmsContentItemType(selectedDkmsContentItem.getDkmsContentItemType());
 		dkmsContentItemService.updateDkmsContentItem(selectedDkmsContentItem, dkmsContentItemBean);
-		return "/edukms/abcmaths/lastUploadedResult.xhtml";
+		
+//		if (dkmsContentItemBean.getDkmsContentItemType().equals("1")){
+//			return "/edukms/abcmaths/exerciseSheetPresentation.xhtml";
+//		}
+//		else if (dkmsContentItemBean.getDkmsContentItemType().equals("2")){
+//			return "/edukms/abcmaths/sequencePresentation.xhtml";
+//		}
+//		else if (dkmsContentItemBean.getDkmsContentItemType().equals("3")){
+//			return "/edukms/abcmaths/documentPresentation.xhtml";
+//		}
+//		else if (dkmsContentItemBean.getDkmsContentItemType().equals("4")){
+//			return "/edukms/abcmaths/wikiPresentation.xhtml";
+//		}
+//		else if (dkmsContentItemBean.getDkmsContentItemType().equals("5")){
+//			return "/edukms/abcmaths/blogPresentation.xhtml";
+//		}
+//		else if (dkmsContentItemBean.getDkmsContentItemType().equals("6")){
+//			return "/edukms/abcmaths/combinedResourcesPresentation.xhtml";
+//		}
+		return "/edukms/abcmaths/searchKMS.xhtml";
 		
 	}	
 	
 	
-	public String changeBlogContentItem() {
-		
-		selectedDkmsContentItem.setBigIdeas(dkmsBigIdeasAction.getChosenBigIdeas());
-		selectedDkmsContentItem.setRepresentationType(dkmsRepresentationTypeAction.getChosenRepresentationTypes());
-		dkmsContentItemBean.setDkmsContentItemType(selectedDkmsContentItem.getDkmsContentItemType());
-		dkmsContentItemService.updateDkmsContentItem(selectedDkmsContentItem, dkmsContentItemBean);
-		return "/edukms/abcmaths/blogPresentation.xhtml";
-		
-	}
+	
 	
 	public String trashDkmsContentItem() {
 		
@@ -253,6 +192,5 @@ public class DkmsWriteModusAction {
 		dkmsContentItemService.updateDkmsContentItem(selectedDkmsContentItem, dkmsContentItemBean);
 		return "/edukms/authorInterface/userAdministrationArea.xhtml";
 	}	
-	
-	
+		
 }

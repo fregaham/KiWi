@@ -157,7 +157,7 @@
 	 <h:form>
 	 <div id="cover">
 	 
-	 <fieldset class="fieldsetborder" style="float:left; width:100%; height: 570px; margin-left: -170px; border:1px solid #FFE8C3">
+	<div style="float:left; width:100%; height: 580px; margin-left: -170px; border:1px solid #FFE8C3; padding-top:10px">
 	 
 	 <h2>You may create a simple resource or a segmented resource for a task sequence.</h2>
 	 
@@ -177,7 +177,7 @@
 	    <h:commandLink action="#" onclick="javascript:alert('Please login with your username and password!');" style="text-decoration:none">
 	    
 	    	
-	 		<img  src="#{facesContext.externalContext.requestContextPath}/view/img/simple_res.png" title="I'd like to create an segmented online resource. It's content can be worked on only by myself."/> 
+	 		<img  src="#{facesContext.externalContext.requestContextPath}/view/img/simple_res.png" title="I'd like to create a simple online resource. It's content can be worked on only by myself."/> 
 	 	
 	 	</h:commandLink>
 	 	</c:if>
@@ -185,13 +185,13 @@
 	    <h:commandLink action="#{dkmsBasicAction.newSequence()}" style="text-decoration:none">
 	    
 	 	
-	 		<img src="#{facesContext.externalContext.requestContextPath}/view/img/segmented_res.png" title=" I'd like to create a learning sequence. It's content can be worked on only by myself."/> 
+	 		<img src="#{facesContext.externalContext.requestContextPath}/view/img/segmented_res.png" title=" I'd like to create a structured online resource. It's content can be worked on only by myself."/> 
 	 	</h:commandLink>
 	 	</c:if>
 	 	<c:if test="#{identity.loggedIn == false}">
 	    <h:commandLink action="#" onclick="javascript:alert('Please login with your username and password!');" style="text-decoration:none">
 	    
-	    <img src="#{facesContext.externalContext.requestContextPath}/view/img/segmented_res.png" title=" I'd like to create a learning sequence. It's content can be worked on only by myself."/> 
+	    <img src="#{facesContext.externalContext.requestContextPath}/view/img/segmented_res.png" title=" I'd like to create a structured online resource. It's content can be worked on only by myself."/> 
 	 	</h:commandLink>
 	 	</c:if>
 	    
@@ -199,80 +199,8 @@
 	 	
 	 </div>
 	 <div id="dynatip">&nbsp;</div>
-	 </fieldset>
-	 <fieldset class="fieldsetborder" style="float:right; width: 200px; height: 570px; margin-right: -160px; border:1px solid #FFE8C3">
+	 </div>
 	 
-	 <!--	  [start] menue for logged in user -->
-		<c:if test="#{identity.loggedIn == true}">
-			<div class="buttons">
-			
-				<div style="margin-left:6px"><img
-					src="#{facesContext.externalContext.requestContextPath}/view/img/welcome.png"
-					style="valign: center; vertical-align: middle; margin-right: 10px; margin-top: 5px; margin-left:-3px"/><h:outputText style="color: #6f91c0; font-size: 12px; font-weight:bold; text-align:center" value="Hello #{identity.username}!"
-			                       rendered="#{identity.loggedIn}" /></div>
-			    
-			    <div id="trennlinie"></div>
-				
-				<h:commandLink 
-				
-					action = "#{identityManagerService.logout}">
-				<img
-					src="#{facesContext.externalContext.requestContextPath}/view/img/logout_small.png"
-					style="valign: center; vertical-align: middle; margin-right: 5px;" /> Logout</h:commandLink>
-			<br />
-			
-			</div>
-			<div id="trennlinie"></div>
-			<h:commandLink 
-					action="#{dkmsBasicAction.goToAdminArea()}">
-					<img
-						src="#{facesContext.externalContext.requestContextPath}/view/img/images_ordner_small.png"
-						style="valign: center; vertical-align: middle; margin-right: 12px; margin-top: 5px; margin-left:17px;" />My documents</h:commandLink>
-				<br/>
-			
-		</c:if>
-<!--		 [end] menue for logged in user -->
-<!--		 [start] menue for not logged in user -->
-		<c:if test="#{identity.loggedIn == false}">
-			<div class="buttons">
-			
-	
-				<table>
-				<tr>
-				<td></td>
-				<td><br/>
-				<div class="loginBox" style="margin-left: 0px" >
-				
-							<h:outputLabel for="username">Username</h:outputLabel><br/>
-							<h:inputText id="username" value="#{credentials.username}" /><br/><br/>
-							<h:outputLabel for="password">Password</h:outputLabel><br/>
-							<h:inputSecret id="password" value="#{credentials.password}" /><br/><br/>
-							<h:outputLabel for="rememberMe">remember&#160;</h:outputLabel>
-							<h:selectBooleanCheckbox id="rememberMe" value="#{rememberMe.enabled}" style="vertical-align:middle"/>
-							<h:outputLabel for="loginButton"></h:outputLabel>
-							<h:commandButton id="loginButton" value="Login" action="#{identity.login}" rendered="#{not identity.loggedIn}" style="float:right"/>
-			
-				</div>
-				<br/>
-<!--				<div class="loginBox">-->
-<!--							<s:link view="/dkms/forgotPassword.xhtml" value="#{messages['artaround.login.forgotPassword']}"/>-->
-<!--						</div><br/>				-->
-<!--				        <div class="loginBox">-->
-<!--							<h:outputText value=" " /><s:link view="/dkms/register.xhtml" value="Noch nicht registriert?"/>-->
-<!--						</div>-->
-				</td>
-				</tr></table>
-			
-	
-				
-			
-			</div>
-			
-			
-		</c:if>
-<!--		 [end] menue for not logged in user -->
-		
-	 </fieldset>
 	 
 	 </div>
 	</h:form> 

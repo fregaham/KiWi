@@ -120,16 +120,47 @@ h1 {
 	border-bottom: 1px solid #eee;
 	margin: 10px;
 }
+
+.rich-mpnl-controls img {
+	src: url("../../img/close.png");
+}
+
+.rich-stglpanel-header {
+background-color:#eee;
+border-color:#eee;
+height:15px;
+color:#666;
+font-size:12px;
+font-weight:bold;
+
+}
+
+.rich-stglpanel {
+background-color:#eee;
+border-color:#C0C0C0;
+}
+
+.rich-stglpanel-body {
+
+padding:0px;
+
+}
 </style>
 	
 	
 	<div id="cover">
 	
-	<fieldset class="fieldsetborder" style="float:left; width:100%; height: 570px; margin-left: -170px; border:1px solid #ddd">
+	<h:form>
+	<rich:simpleTogglePanel  style="margin-left:-170px; margin-bottom: 10px; border-color: #eee; width:100% " opened="true" switchType="client"  >			
+				<ui:include src="./menu/menu_searchMain.xhtml" ></ui:include>			
+		 </rich:simpleTogglePanel>
+	</h:form>	
+		
+	<div style="float:left; width:100%; height: 620px; margin-left: -170px; border:1px solid #ddd; padding-top:10px">
 	      
 	<rich:messages styleClass="message" /> 
 	
-	<div style="width:770px; height:520px; overflow:auto;"> 
+	<div style="width:770px; height:580px; overflow:auto;"> 
 	
 	
 	<h3>Search by category:</h3><br/>
@@ -156,51 +187,39 @@ h1 {
 		<h2><h:outputText value="Spezialise search result:" /></h2><br/>
 			<h:form styleClass="box_facets">
 			<h4>Big Ideas:</h4>
-				<ui:repeat value="#{dkmsContentRetrievalAction.bigIdeaFacets}" var="bif">
+				<ui:repeat value="#{dkmsContentRetrievalAction.getBigIdeaSet()}" var="bif">
 					<h:commandLink value = "#{bif.content.contentItem.title} (#{bif.resultCount}) &#160;&#160;" action="#{dkmsContentRetrievalAction.setBigIdeaResource(bif.content)}"/>
-					<!--  <h:commandLink value="#{ideator.searchAction.getStatusFacetString(stat.content)}(#{stat.resultCount})" action="#{ideator.searchAction.setStatus(stat.content)}"/> -->
-					
 				</ui:repeat>
-				<h:outputText rendered="#{dkmsContentRetrievalAction.bigIdeaStatusFacet.size == 0}" value="#{messages['ideator.search.facets.none']}" />
-			</h:form>
-			<h:form styleClass="box_facets">
-			<h4>Representation Types:</h4>
-				<ui:repeat value="#{dkmsContentRetrievalAction.representationTypeFacets}" var="rtf">
-					<h:commandLink value = "#{rtf.content.contentItem.title} (#{rtf.resultCount}) &#160;&#160;" action="#{dkmsContentRetrievalAction.setRepresentationTypeResource(rtf.content)}"/>
-					<!--  <h:commandLink value="#{ideator.searchAction.getStatusFacetString(stat.content)}(#{stat.resultCount})" action="#{ideator.searchAction.setStatus(stat.content)}"/> -->
-					
+<!--				<h:outputText rendered="#{dkmsContentRetrievalAction.bigIdeaStatusFacet.size == 0}" value="#{messages['ideator.search.facets.none']}" />-->
+			<h4>Content areas:</h4>
+				<ui:repeat value="#{dkmsContentRetrievalAction.getContentAreaSet()}" var="bif">
+					<h:commandLink value = "#{bif.content.contentItem.title} (#{bif.resultCount}) &#160;&#160;" action="#{dkmsContentRetrievalAction.setBigIdeaResource(bif.content)}"/>
 				</ui:repeat>
-				<h:outputText rendered="#{dkmsContentRetrievalAction.representationTypeStatusFacet.size == 0}" value="#{messages['ideator.search.facets.none']}" />
+			<h4>Languages:</h4>
+				<ui:repeat value="#{dkmsContentRetrievalAction.getLanguageSet()}" var="bif">
+					<h:commandLink value = "#{bif.content.contentItem.title} (#{bif.resultCount}) &#160;&#160;" action="#{dkmsContentRetrievalAction.setBigIdeaResource(bif.content)}"/>
+				</ui:repeat>
+			<h4>Stati:</h4>
+				<ui:repeat value="#{dkmsContentRetrievalAction.getStatusSet()}" var="bif">
+					<h:commandLink value = "#{bif.content.contentItem.title} (#{bif.resultCount}) &#160;&#160;" action="#{dkmsContentRetrievalAction.setBigIdeaResource(bif.content)}"/>
+				</ui:repeat>	
+			<h4>Type of resource:</h4>
+				<ui:repeat value="#{dkmsContentRetrievalAction.getTypeOfResourceSet()}" var="bif">
+					<h:commandLink value = "#{bif.content.contentItem.title} (#{bif.resultCount}) &#160;&#160;" action="#{dkmsContentRetrievalAction.setBigIdeaResource(bif.content)}"/>
+				</ui:repeat>	
+			<h4>Intention:</h4>
+				<ui:repeat value="#{dkmsContentRetrievalAction.getIntentionSet()}" var="bif">
+					<h:commandLink value = "#{bif.content.contentItem.title} (#{bif.resultCount}) &#160;&#160;" action="#{dkmsContentRetrievalAction.setBigIdeaResource(bif.content)}"/>
+				</ui:repeat>	
+			<h4>Age group:</h4>
+				<ui:repeat value="#{dkmsContentRetrievalAction.getAgeGroupSet()}" var="bif">
+					<h:commandLink value = "#{bif.content.contentItem.title} (#{bif.resultCount}) &#160;&#160;" action="#{dkmsContentRetrievalAction.setBigIdeaResource(bif.content)}"/>
+				</ui:repeat>	
 			</h:form>
-<!--			<br/>-->
-<!--			<h2><h:outputText value="Waehle einen Typ aus" /></h2>-->
-<!--			<h:form styleClass="box_facets">-->
-<!--				<ui:repeat value="#{dkmsContentRetrievalAction.relevantTypes}" var="type">-->
-<!--					<h:commandLink value = "#{type.content.label} (#{type.resultCount})"  action="#{dkmsContentRetrievalAction.setType(type.content)}" />-->
-<!--					  <h:commandLink value="#{ideator.searchAction.getStatusFacetString(stat.content)}(#{stat.resultCount})" action="#{ideator.searchAction.setStatus(stat.content)}"/> -->
-<!--					<h:outputText value=" " />-->
-<!--				</ui:repeat>-->
-<!--				<h:outputText rendered="#{dkmsContentRetrievalAction.relevantTypes.size == 0}" value="#{messages['ideator.search.facets.none']}" />-->
-<!--			</h:form>		-->
 	 </div>
 	 <br/>
-	 <!-- tag facettes -->
-		<h:form>
-			<div class="search_facets" style="margin-left:10px">
-		<!--  		<s:span styleClass="search_facets" rendered="#{ideator.searchAction.status != -1}" >
-					<h:outputText value="#{messages['ideator.search.hasstate']} #{ideator.searchAction.getStatusFacetString(ideator.searchAction.status)}" />
-					<h:commandLink action="#{ideator.searchAction.setStatus(-1)}">
-						<img src="stylesheet/images/icon_cancel.png" style="width:12px;margin-left:-3px" />
-					</h:commandLink>
-					</s:span> 
-		-->
-<!--				<h2 ><h:outputText value=" Search result categorised by:" rendered="#{dkmsContentRetrievalAction.selectedBigIdeas.size > 0}" /></h2><br/><br/>-->
-<!--					<h2 ><h:outputText value=" Search result categorised by:"  /></h2><br/><br/>-->
-				
-				
-				
-			</div>
-		</h:form>		
+
+	
 	<br/>
 		    	
 	<div>
@@ -208,58 +227,47 @@ h1 {
 	<div style="margin-left:10px; margin-top:10px">
 	<h:form>
 	<a:repeat value="#{dkmsContentRetrievalAction.selectedBigIdeas}" var="bigIdea" rowKeyVar="index">
+	
 				<div style="margin-right:10px; margin-left:2px; float:left">
 					<h:outputText value=" #{bigIdea.label}" style="float:left; margin-right:5px; color:#FE2E2E"/>
 					<h:commandLink action="#{dkmsContentRetrievalAction.removeBigIdea(bigIdea)}">
 						<img src="#{facesContext.externalContext.requestContextPath}/view/img/close_small.png" style="width:12px;margin-left:-3px; " />
 					</h:commandLink>
-				<!-- 	<h:commandLink action="#{ideator.searchAction.removeTag(tag)}">
-						<img src="stylesheet/images/icon_cancel.png" style="width:12px;margin-left:-3px" />
-					</h:commandLink>  -->
-				<!--  	<h:outputText value=", " rendered="#{ideator.searchAction.searchTags.size != index+1}" /> -->
 				</div>
-				</a:repeat>
-				
-				<a:repeat value="#{dkmsContentRetrievalAction.selectedRepresentationTypes}" var="repType" rowKeyVar="index">
-				<div style="margin-right:10px; margin-left:2px; float:left">
-					<h:outputText value=" #{repType.label}" style="float:left; margin-right:5px; color:#FE2E2E"/>
-					<h:commandLink action="#{dkmsContentRetrievalAction.removeRepresentationType(repType)}">
-						<img src="#{facesContext.externalContext.requestContextPath}/view/img/close_small.png" style="width:12px;margin-left:-3px; " />
-					</h:commandLink>
-				<!-- 	<h:commandLink action="#{ideator.searchAction.removeTag(tag)}">
-						<img src="stylesheet/images/icon_cancel.png" style="width:12px;margin-left:-3px" />
-					</h:commandLink>  -->
-				<!--  	<h:outputText value=", " rendered="#{ideator.searchAction.searchTags.size != index+1}" /> -->
-				</div>
-				</a:repeat>
-	</h:form>    
+	
+	</a:repeat>
+   </h:form>
 	</div>
+	<br/><br/>
+		<h:form>
+		<h:commandButton type="submit" value="Reset" action="#{dkmsContentRetrievalAction.search()}"  style="margin-left:10px"/>
+		</h:form>
 	<br/><br/>
     <!-- result list -->
     <!-- Geht leider nicht mit layout/template-2col.xhtml -->
     	
 		<div class="search_size" style="margin-left:10px">
 			<h:form id="search_order" rendered="#{dkmsContentRetrievalAction.resultCount > 0}">
-				<h:outputText value="#{dkmsContentRetrievalAction.firstContentNumber} - #{dkmsContentRetrievalAction.lastContentNumber} #{messages['ideator.search.oftotally']} #{dkmsContentRetrievalAction.resultCount} #{messages['ideator.search.orderedby']} " />
-				<rich:inplaceSelect value="#{dkmsContentRetrievalAction.sort}">
-					<f:selectItem itemValue="score" itemLabel="#{messages['ideator.search.ordering.relevance']}" />
-					<f:selectItem itemValue="modified" itemLabel="#{messages['ideator.search.ordering.modified']}" />
-					<f:selectItem itemValue="ceq" itemLabel="#{messages['ideator.search.ordering.ceq']}" />
-					<a:support event="onviewactivated" action="#{dkmsContentRetrievalAction.search}" />
-				</rich:inplaceSelect>
-				<h:outputText value=" "/>
-				<rich:inplaceSelect value="#{dkmsContentRetrievalAction.order}">
-					<f:selectItem itemValue="desc" itemLabel="#{messages['ideator.search.ordering.desc']}" />
-					<f:selectItem itemValue="asc" itemLabel="#{messages['ideator.search.ordering.asc']}" />
-					<a:support event="onviewactivated" action="#{dkmsContentRetrievalAction.search}" />
-				</rich:inplaceSelect>
+				<h:outputText value="#{dkmsContentRetrievalAction.firstContentNumber} - #{dkmsContentRetrievalAction.lastContentNumber} #{messages['ideator.search.oftotally']} #{dkmsContentRetrievalAction.resultCount}  " />
+<!--				<rich:inplaceSelect value="#{dkmsContentRetrievalAction.sort}">-->
+<!--					<f:selectItem itemValue="score" itemLabel="#{messages['ideator.search.ordering.relevance']}" />-->
+<!--					<f:selectItem itemValue="modified" itemLabel="#{messages['ideator.search.ordering.modified']}" />-->
+<!--					<f:selectItem itemValue="ceq" itemLabel="#{messages['ideator.search.ordering.ceq']}" />-->
+<!--					<a:support event="onviewactivated" action="#{dkmsContentRetrievalAction.search}" />-->
+<!--				</rich:inplaceSelect>-->
+<!--				<h:outputText value=" "/>-->
+<!--				<rich:inplaceSelect value="#{dkmsContentRetrievalAction.order}">-->
+<!--					<f:selectItem itemValue="desc" itemLabel="#{messages['ideator.search.ordering.desc']}" />-->
+<!--					<f:selectItem itemValue="asc" itemLabel="#{messages['ideator.search.ordering.asc']}" />-->
+<!--					<a:support event="onviewactivated" action="#{dkmsContentRetrievalAction.search}" />-->
+<!--				</rich:inplaceSelect>-->
 			</h:form>
 			<s:span rendered="#{dkmsContentRetrievalAction.resultCount == 0}">#{messages['ideator.search.noresults']}</s:span>
 		</div>
 		<br/>
 		<div class="search_results" style="margin-left:10px">
 		
-		<div style="height:400px; overflow:auto; margin-left:0px; margin-top:10px ">
+<!--		<div style="height:400px; overflow:auto; margin-left:0px; margin-top:10px ">-->
 		
 			<c:forEach items ="#{dkmsContentRetrievalAction.searchResults}" var="r">
 
@@ -273,45 +281,47 @@ h1 {
 	  
 	  <br/><br/>
  				
-		<div class="search_paging" align="center">
-		<h:form rendered="#{dkmsContentRetrievalAction.resultCount > 0}">
-		<span class="back" style="margin-right:10px; font-size:14px; font-weight:normal">
-			<c:choose>
-			<c:when test="#{dkmsContentRetrievalAction.hasPrevPage()}">
-				<h:commandLink value="#{messages['ideator.btn.back']}" action="#{dkmsContentRetrievalAction.prevPage()}" />
-			</c:when>
-			<c:otherwise>
-    			<a href="#">#{messages['ideator.btn.back']}</a>
-			</c:otherwise>
-			</c:choose>
-		</span>
-		<c:forEach var="x" items="#{dkmsContentRetrievalAction.pageArray}" varStatus="status">
-			<c:choose>
-				<c:when test="#{x}">
-					<span class="number selected" style="font-size:14px; font-weight:normal"><a href="#">#{status.index+1}</a></span>
-				</c:when>
-				<c:otherwise>
-					<span class="number" style="font-size:14px; font-weight:normal"><h:commandLink value="#{status.index+1}" action="#{dkmsContentRetrievalAction.setPage(status.index)}"/></span>
-				</c:otherwise>
-			</c:choose>
-		</c:forEach>
-		<span class="next" style="margin-left:10px; font-size:14px; font-weight:normal">
-			<c:choose>
-			<c:when test="#{dkmsContentRetrievalAction.hasNextPage()}">
-				<h:commandLink value="#{messages['ideator.btn.ahead']}" action="#{dkmsContentRetrievalAction.nextPage()}" />
-			</c:when>
-			<c:otherwise>
-    			<a href="#">#{messages['ideator.btn.ahead']}</a>
-			</c:otherwise>
-			</c:choose>
-		</span>
-		</h:form>
-	</div>	</div>  
+<!--		<div class="search_paging" align="center">-->
+<!--		<h:form rendered="#{dkmsContentRetrievalAction.resultCount > 0}">-->
+<!--		<span class="back" style="margin-right:10px; font-size:14px; font-weight:normal">-->
+<!--			<c:choose>-->
+<!--			<c:when test="#{dkmsContentRetrievalAction.hasPrevPage()}">-->
+<!--				<h:commandLink value="#{messages['ideator.btn.back']}" action="#{dkmsContentRetrievalAction.prevPage()}" />-->
+<!--			</c:when>-->
+<!--			<c:otherwise>-->
+<!--    			<a href="#">#{messages['ideator.btn.back']}</a>-->
+<!--			</c:otherwise>-->
+<!--			</c:choose>-->
+<!--		</span>-->
+<!--		<c:forEach var="x" items="#{dkmsContentRetrievalAction.pageArray}" varStatus="status">-->
+<!--			<c:choose>-->
+<!--				<c:when test="#{x}">-->
+<!--					<span class="number selected" style="font-size:14px; font-weight:normal"><a href="#">#{status.index+1}</a></span>-->
+<!--				</c:when>-->
+<!--				<c:otherwise>-->
+<!--					<span class="number" style="font-size:14px; font-weight:normal"><h:commandLink value="#{status.index+1}" action="#{dkmsContentRetrievalAction.setPage(status.index)}"/></span>-->
+<!--				</c:otherwise>-->
+<!--			</c:choose>-->
+<!--		</c:forEach>-->
+<!--		<span class="next" style="margin-left:10px; font-size:14px; font-weight:normal">-->
+<!--			<c:choose>-->
+<!--			<c:when test="#{dkmsContentRetrievalAction.hasNextPage()}">-->
+<!--				<h:commandLink value="#{messages['ideator.btn.ahead']}" action="#{dkmsContentRetrievalAction.nextPage()}" />-->
+<!--			</c:when>-->
+<!--			<c:otherwise>-->
+<!--    			<a href="#">#{messages['ideator.btn.ahead']}</a>-->
+<!--			</c:otherwise>-->
+<!--			</c:choose>-->
+<!--		</span>-->
+<!--		</h:form>-->
+<!--	</div>	-->
+	
+	</div>  
 	
 	
 			
- </div>
-    </fieldset>
+<!-- </div>-->
+    </div>
     
     	
 	</div>  

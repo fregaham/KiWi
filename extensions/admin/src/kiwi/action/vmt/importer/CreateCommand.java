@@ -5,6 +5,7 @@ package kiwi.action.vmt.importer;
 
 import java.net.URL;
 import java.util.HashSet;
+import java.util.Locale;
 
 import kiwi.api.content.ContentItemService;
 import kiwi.api.entity.KiWiEntityManager;
@@ -88,6 +89,7 @@ final class CreateCommand implements Runnable {
 
             SKOSConcept concept =
                     kiwiEntityManager.createFacade(ci, SKOSConcept.class);
+            updateSKOSConcept(concept);
             SKOSConcept broaderConcept =
                     kiwiEntityManager.createFacade(broader, SKOSConcept.class);
 
@@ -107,6 +109,26 @@ final class CreateCommand implements Runnable {
         log.debug("Concept for statement  [#0] was succesful created.",
                 statement.toString());
 
+    }
+
+    /**
+     * Used to update the actual content item as follow :
+     * <ul>
+     * <li> sets the pref label for the given concept on
+     * the same value like with the wraped content item title.
+     * <li> sets the language to English.
+     * </ul>
+     *
+     * @param concept the concept to update.
+     */
+    private void updateSKOSConcept(SKOSConcept concept) {
+        final ContentItem item = concept.getDelegate();
+        final String title = item.getTitle();
+        concept.setPreferredLabel(title == null ? "no title" : title);
+        final Locale language = concept.getLanguage();
+        if (language == null) {
+            concept.setLanguage(Locale.ENGLISH);
+        }
     }
 
     private String importRemoteConcept(String uri) throws Exception {

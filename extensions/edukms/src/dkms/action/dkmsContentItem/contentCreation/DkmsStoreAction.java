@@ -15,12 +15,17 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.core.Events;
+import org.jfree.util.Log;
 
 import dkms.action.dkmsContentItem.DkmsBlogManager;
 import dkms.action.dkmsContentItem.DkmsCombinedComponentManager;
 import dkms.action.dkmsContentItem.DkmsContentItemBean;
+import dkms.action.dkmsContentItem.DkmsFileManager;
 import dkms.action.dkmsContentItem.DkmsSequenceComponentManager;
+import dkms.action.dkmsContentItem.DkmsSlideManager;
 import dkms.action.dkmsContentItem.DkmsWikiManager;
+import dkms.action.dkmsContentItem.DkmsWriteModusAction;
+import dkms.action.dkmsContentItem.categories.DkmsBigIdeasAction;
 import dkms.datamodel.dkmsContentItem.DkmsContentItemFacade;
 import dkms.datamodel.dkmsContentItem.DkmsSequenceComponentFacade;
 import dkms.service.DkmsContentItemService;
@@ -42,6 +47,9 @@ public class DkmsStoreAction {
 	@In(create = true)
     private User currentUser;
 	
+	@In(required = false)
+	private DkmsBigIdeasAction dkmsBigIdeasAction;
+	
 
 	public String finish() {
 				
@@ -59,6 +67,8 @@ public class DkmsStoreAction {
 		
 		String wikiAuthor = currentUser.getLogin();
 		
+		boolean tmp = false;
+		
 		
 		DkmsWikiManager wm = new DkmsWikiManager();
 		wm.setVersion(version);
@@ -73,10 +83,15 @@ public class DkmsStoreAction {
 		
 		dkmsContentItemList.add(wm);
 		dkmsContentItemBean.setDkmsWikiList(dkmsContentItemList);
+		dkmsBigIdeasAction.setChosenBigIdeas(dkmsContentItemBean.getBigIdeas());
 		//neuer Author (der gerade eingeloggt ist und den WikiContent geändert hat)
 		dkmsContentItemBean.setAuthorName(wikiAuthor);
+		dkmsContentItemBean.setDkmsContentItemType("4");
+		tmp = dkmsContentItemBean.getBigIdeas().isEmpty();
+		System.out.println("Show bigIdeas:" +tmp);
+		Log.info("Show bigIdeas:" +tmp);
 		
-		return "/edukms/abcmaths/wikiItemChangeData.xhtml";
+		return "/edukms/abcmaths/infoPlatformItemData.xhtml";
 	}
 	
 	public String storeBlogComment() {
@@ -101,9 +116,11 @@ public class DkmsStoreAction {
 		
 		dkmsContentItemList.add(bm);
 		dkmsContentItemBean.setDkmsCommentList(dkmsContentItemList);
+		dkmsBigIdeasAction.setChosenBigIdeas(dkmsContentItemBean.getBigIdeas());
 		dkmsContentItemBean.setCommentText("");
+		dkmsContentItemBean.setDkmsContentItemType("5");
 		
-		return "/edukms/abcmaths/blogItemChangeData.xhtml";
+		return "/edukms/abcmaths/infoPlatformItemData.xhtml";
 	}
 	
 	public String storeSequenceItem() {
@@ -199,7 +216,7 @@ public class DkmsStoreAction {
 	
 }
 	
-	public void clearCombinedComponent(){
+	public String clearCombinedComponentList(){
 		
 		
 		
@@ -211,8 +228,129 @@ public class DkmsStoreAction {
 		dkmsContentItemList.clear();
 		dkmsContentItemBean.setDkmsCombinedComponentList(dkmsContentItemList);
 	
-	
+		return "/edukms/authorInterface/combineRessourcesController.xhtml";
 	
 }
+	
+	public String removeCombinedComponent(DkmsCombinedComponentManager item){
+		
+		
+		
+		LinkedList<DkmsCombinedComponentManager> dkmsContentItemList = dkmsContentItemBean.getDkmsCombinedComponentList();
+		if(dkmsContentItemList == null){
+			dkmsContentItemList = new LinkedList<DkmsCombinedComponentManager>();
+		}
+		
+		dkmsContentItemList.remove(item);
+		dkmsContentItemBean.setDkmsCombinedComponentList(dkmsContentItemList);
+		
+	
+		return "/edukms/authorInterface/combineRessourcesController.xhtml";
+	
+}
+	
+	public String clearUploadedResourcesList(){
+		
+		
+		
+		LinkedList<DkmsFileManager> dkmsContentItemList = dkmsContentItemBean.getDkmsMediaList();
+		if(dkmsContentItemList == null){
+			dkmsContentItemList = new LinkedList<DkmsFileManager>();
+		}
+				
+		
+		dkmsContentItemList.clear();
+		dkmsContentItemBean.setDkmsMediaList(dkmsContentItemList);
+	
+		return "/edukms/authorInterface/documentUploadEditor.xhtml";
+	
+}
+	
+	public String removeUploadedResourse(DkmsFileManager item){
+		
+		
+		
+		LinkedList<DkmsFileManager> dkmsContentItemList = dkmsContentItemBean.getDkmsMediaList();
+		if(dkmsContentItemList == null){
+			dkmsContentItemList = new LinkedList<DkmsFileManager>();
+		}
+		
+		dkmsContentItemList.remove(item);
+		dkmsContentItemBean.setDkmsMediaList(dkmsContentItemList);
+		
+	
+		return "/edukms/authorInterface/documentUploadEditor.xhtml";
+	
+}
+	
+	public String clearImageList(){
+		
+		
+		
+		LinkedList<DkmsFileManager> dkmsContentItemList = dkmsContentItemBean.getDkmsMediaList();
+		if(dkmsContentItemList == null){
+			dkmsContentItemList = new LinkedList<DkmsFileManager>();
+		}
+				
+		
+		dkmsContentItemList.clear();
+		dkmsContentItemBean.setDkmsMediaList(dkmsContentItemList);
+	
+		return "/edukms/authorInterface/imageInserter.xhtml";
+	
+}
+	
+	public String removeImage(DkmsFileManager item){
+		
+		
+		
+		LinkedList<DkmsFileManager> dkmsContentItemList = dkmsContentItemBean.getDkmsMediaList();
+		if(dkmsContentItemList == null){
+			dkmsContentItemList = new LinkedList<DkmsFileManager>();
+		}
+		
+		dkmsContentItemList.remove(item);
+		dkmsContentItemBean.setDkmsMediaList(dkmsContentItemList);
+	
+		return "/edukms/authorInterface/imageInserter.xhtml";
+	
+}
+	
+	
+	public String clearSlideList(){
+		
+		
+		
+		LinkedList<DkmsSlideManager> dkmsContentItemList = dkmsContentItemBean.getDkmsSlideList();
+		if(dkmsContentItemList == null){
+			dkmsContentItemList = new LinkedList<DkmsSlideManager>();
+		}
+				
+		
+		dkmsContentItemList.clear();
+		dkmsContentItemBean.setDkmsSlideList(dkmsContentItemList);
+	
+		return "/edukms/authorInterface/exerciseSheetEditor.xhtml";
+	
+}
+	
+	public String removeSlide(DkmsSlideManager item){
+		
+		
+		
+		LinkedList<DkmsSlideManager> dkmsContentItemList = dkmsContentItemBean.getDkmsSlideList();
+		if(dkmsContentItemList == null){
+			dkmsContentItemList = new LinkedList<DkmsSlideManager>();
+		}
+		
+		dkmsContentItemList.remove(item);
+		dkmsContentItemBean.setDkmsSlideList(dkmsContentItemList);
+	
+		return "/edukms/authorInterface/exerciseSheetEditor.xhtml";
+	
+}
+	
+	
+	
 	
 }

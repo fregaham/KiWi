@@ -43,7 +43,7 @@
          <skos:hasTopConcept rdf:resource="&edukms;representationType"/>
     </rdf:Description>
     
-    <!-- ABCMaths Big Idea -->
+    
     <rdf:Description rdf:about="&edukms;bigIdeas">
         <rdf:type rdf:resource="&skos;Concept"/>
         <skos:prefLabel xml:lang="en">Big Idea</skos:prefLabel>
@@ -55,89 +55,295 @@
         <skos:narrower rdf:resource="&edukms;insecurityVariationRandomDeviations"/>
         <skos:narrower rdf:resource="&edukms;doingUndoingInverting"/>
         <skos:narrower rdf:resource="&edukms;specialisationGeneralisation"/>
+        
+        <skos:narrower rdf:resource="&edukms;number"/> 
+        <skos:narrower rdf:resource="&edukms;algebraFunctions"/>
+        <skos:narrower rdf:resource="&edukms;shape"/>
+        <skos:narrower rdf:resource="&edukms;spaceMeasures"/>
+        <skos:narrower rdf:resource="&edukms;handlingData"/>
+        
+        <skos:narrower rdf:resource="&edukms;english"/>
+        <skos:narrower rdf:resource="&edukms;german"/>
+        
+        <skos:narrower rdf:resource="&edukms;mathematicsContentKnowledge"/>
+        <skos:narrower rdf:resource="&edukms;pedagogicalContentKnowledge"/>
+        <skos:narrower rdf:resource="&edukms;classroomSituations"/>
+        
+         <skos:narrower rdf:resource="&edukms;introductionToBigIdeas"/>
+        <skos:narrower rdf:resource="&edukms;problemsActivities"/>
+        <skos:narrower rdf:resource="&edukms;teachersEngagingWithBigIdeas"/>
+        <skos:narrower rdf:resource="&edukms;supportingMaterials"/>
+        <skos:narrower rdf:resource="&edukms;research"/>
+        <skos:narrower rdf:resource="&edukms;examplesOfStudentsLearning"/>
+        
+         <skos:narrower rdf:resource="&edukms;theoreticalInput"/>
+        <skos:narrower rdf:resource="&edukms;exercise"/>
+        <skos:narrower rdf:resource="&edukms;exemplar"/>
+         <skos:narrower rdf:resource="&edukms;review"/>
+        <skos:narrower rdf:resource="&edukms;constrGuidance"/>
+        
+        <skos:narrower rdf:resource="&edukms;fifeToEleven"/>
+        <skos:narrower rdf:resource="&edukms;elevenToSixteen"/>
+        <skos:narrower rdf:resource="&edukms;sixteenToNineteen"/>
+        <skos:narrower rdf:resource="&edukms;everyAgeGroup"/>
+        <skos:narrower rdf:resource="&edukms;independent"/>
+        <skos:narrower rdf:resource="&edukms;materialForTeachers"/>
+         
+        
+        
             
     </rdf:Description>
     
-    
+    <!-- ABCMaths Big Idea -->
     <rdf:Description rdf:about="&edukms;functionalDependence">
         <rdf:type rdf:resource="&skos;Concept"/>
         <skos:prefLabel xml:lang="en">functional dependence</skos:prefLabel>
-        <skos:definition xml:lang="en">--</skos:definition>
+        <skos:definition xml:lang="en">Big Idea</skos:definition>
         <skos:broader rdf:resource="&edukms;bigIdeas"/>
     </rdf:Description>
     
     <rdf:Description rdf:about="&edukms;argumentationProof">
         <rdf:type rdf:resource="&skos;Concept"/>
         <skos:prefLabel xml:lang="en"><![CDATA[argumentation/proof]]></skos:prefLabel>
-        <skos:definition xml:lang="en">--</skos:definition>
+        <skos:definition xml:lang="en">Big Idea</skos:definition>
         <skos:broader rdf:resource="&edukms;bigIdeas"/>
     </rdf:Description>
     
      <rdf:Description rdf:about="&edukms;infinity">
         <rdf:type rdf:resource="&skos;Concept"/>
         <skos:prefLabel xml:lang="en">infinity</skos:prefLabel>
-        <skos:definition xml:lang="en">--</skos:definition>
+        <skos:definition xml:lang="en">Big Idea</skos:definition>
         <skos:broader rdf:resource="&edukms;bigIdeas"/>
     </rdf:Description>
     
     <rdf:Description rdf:about="&edukms;multipleRepresentation">
         <rdf:type rdf:resource="&skos;Concept"/>
         <skos:prefLabel xml:lang="en">multiple representation</skos:prefLabel>
-        <skos:definition xml:lang="en">--</skos:definition>
+        <skos:definition xml:lang="en">Big Idea</skos:definition>
         <skos:broader rdf:resource="&edukms;bigIdeas"/>
     </rdf:Description>
     
     <rdf:Description rdf:about="&edukms;insecurityVariationRandomDeviations">
         <rdf:type rdf:resource="&skos;Concept"/>
         <skos:prefLabel xml:lang="en"><![CDATA[insecurity/variation,random deviations]]></skos:prefLabel>
-        <skos:definition xml:lang="en">--</skos:definition>
+        <skos:definition xml:lang="en">Big Idea</skos:definition>
         <skos:broader rdf:resource="&edukms;bigIdeas"/>
     </rdf:Description>
     
     <rdf:Description rdf:about="&edukms;doingUndoingInverting">
         <rdf:type rdf:resource="&skos;Concept"/>
         <skos:prefLabel xml:lang="en"><![CDATA[doing/undoing,inverting]]></skos:prefLabel>
-        <skos:definition xml:lang="en">--</skos:definition>
+        <skos:definition xml:lang="en">Big Idea</skos:definition>
         <skos:broader rdf:resource="&edukms;bigIdeas"/>
     </rdf:Description>
     
     <rdf:Description rdf:about="&edukms;specialisationGeneralisation">
         <rdf:type rdf:resource="&skos;Concept"/>
         <skos:prefLabel xml:lang="en"><![CDATA[specialisation/generalisation]]></skos:prefLabel>
-        <skos:definition xml:lang="en">--</skos:definition>
+        <skos:definition xml:lang="en">Big Idea</skos:definition>
         <skos:broader rdf:resource="&edukms;bigIdeas"/>
     </rdf:Description>
     
     
-    <!-- Edukms Representation Type -->
-    <rdf:Description rdf:about="&edukms;representationType">
+    
+    <!-- ABCMaths Content Area -->
+    <rdf:Description rdf:about="&edukms;number">
         <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:prefLabel xml:lang="en">Representation Type</skos:prefLabel>
-        <skos:definition xml:lang="en">This is the representation type of EduKMS Resources</skos:definition>
-        <skos:narrower rdf:resource="&edukms;graphic"/>
-        <skos:narrower rdf:resource="&edukms;numeric"/>
-        <skos:narrower rdf:resource="&edukms;symbolic"/>
+        <skos:prefLabel xml:lang="en">number</skos:prefLabel>
+        <skos:definition xml:lang="en">Content Area</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
     </rdf:Description>
     
-     <rdf:Description rdf:about="&edukms;graphic">
+    <rdf:Description rdf:about="&edukms;algebraFunctions">
         <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:prefLabel xml:lang="en">graphic</skos:prefLabel>
-        <skos:definition xml:lang="en">--</skos:definition>
-        <skos:broader rdf:resource="&edukms;representationType"/>
+        <skos:prefLabel xml:lang="en">algebra functions</skos:prefLabel>
+        <skos:definition xml:lang="en">Content Area</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
     </rdf:Description>
     
-    <rdf:Description rdf:about="&edukms;numeric">
+    <rdf:Description rdf:about="&edukms;shape">
         <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:prefLabel xml:lang="en">numeric</skos:prefLabel>
-        <skos:definition xml:lang="en">--</skos:definition>
-        <skos:broader rdf:resource="&edukms;representationType"/>
+        <skos:prefLabel xml:lang="en">shape</skos:prefLabel>
+        <skos:definition xml:lang="en">Content Area</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
     </rdf:Description>
     
-     <rdf:Description rdf:about="&edukms;symbolic">
+    <rdf:Description rdf:about="&edukms;spaceMeasures">
         <rdf:type rdf:resource="&skos;Concept"/>
-        <skos:prefLabel xml:lang="en">symbolic</skos:prefLabel>
-        <skos:definition xml:lang="en">--</skos:definition>
-        <skos:broader rdf:resource="&edukms;representationType"/>
+        <skos:prefLabel xml:lang="en">space measures</skos:prefLabel>
+        <skos:definition xml:lang="en">Content Area</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
     </rdf:Description>
+    
+    <rdf:Description rdf:about="&edukms;handlingData">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en">handling data</skos:prefLabel>
+        <skos:definition xml:lang="en">Content Area</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
+    </rdf:Description>
+    
+    
+    <!-- EduKMS Languages -->
+    <rdf:Description rdf:about="&edukms;english">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en">english</skos:prefLabel>
+        <skos:definition xml:lang="en">Language</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
+    </rdf:Description>
+    
+    <rdf:Description rdf:about="&edukms;german">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en">german</skos:prefLabel>
+        <skos:definition xml:lang="en">Language</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
+    </rdf:Description>
+    
+    <!-- ABCMaths Status -->
+     <rdf:Description rdf:about="&edukms;mathematicsContentKnowledge">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en">mathematics content knowledge</skos:prefLabel>
+        <skos:definition xml:lang="en"></skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
+    </rdf:Description>
+    
+    <rdf:Description rdf:about="&edukms;pedagogicalContentKnowledge">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en">pedagogical content knowledge</skos:prefLabel>
+        <skos:definition xml:lang="en">Status</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
+    </rdf:Description>
+    
+    <rdf:Description rdf:about="&edukms;classroomSituations">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en">classroom situations</skos:prefLabel>
+        <skos:definition xml:lang="en">Status</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
+    </rdf:Description>
+    
+    
+     <!-- ABCMaths Type of resource -->
+    <rdf:Description rdf:about="&edukms;introductionToBigIdeas">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en">introduction to Big Ideas</skos:prefLabel>
+        <skos:definition xml:lang="en">Type of resource</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
+    </rdf:Description>
+    
+    <rdf:Description rdf:about="&edukms;problemsActivities">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en"><![CDATA[problems and activities]]></skos:prefLabel>
+        <skos:definition xml:lang="en">Type of resource</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
+    </rdf:Description>
+    
+    <rdf:Description rdf:about="&edukms;teachersEngagingWithBigIdeas">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en">teachers engaging with Big Ideas</skos:prefLabel>
+        <skos:definition xml:lang="en">Type of resource</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
+    </rdf:Description>
+    
+    <rdf:Description rdf:about="&edukms;supportingMaterials">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en">supporting materials</skos:prefLabel>
+        <skos:definition xml:lang="en">Type of resource</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
+    </rdf:Description>
+    
+    <rdf:Description rdf:about="&edukms;research">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en">research</skos:prefLabel>
+        <skos:definition xml:lang="en">Type of resource</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
+    </rdf:Description>
+    
+    <rdf:Description rdf:about="&edukms;examplesOfStudentsLearning">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en"><![CDATA[examples of students learning]]></skos:prefLabel>
+        <skos:definition xml:lang="en">Type of resource</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
+    </rdf:Description>
+            
+            
+    <!-- Edukms Intention -->
+    <rdf:Description rdf:about="&edukms;theoreticalInput">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en">theoretical input</skos:prefLabel>
+        <skos:definition xml:lang="en">Intention</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
+    </rdf:Description>
+    
+    <rdf:Description rdf:about="&edukms;exercise">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en">exercise</skos:prefLabel>
+        <skos:definition xml:lang="en">Intention</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
+    </rdf:Description>
+    
+    <rdf:Description rdf:about="&edukms;exemplar">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en">exemplar</skos:prefLabel>
+        <skos:definition xml:lang="en">Intention</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
+    </rdf:Description>
+    
+    <rdf:Description rdf:about="&edukms;review">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en">review</skos:prefLabel>
+        <skos:definition xml:lang="en">Intention</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
+    </rdf:Description>
+    
+    <rdf:Description rdf:about="&edukms;constrGuidance">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en">constructional guidance</skos:prefLabel>
+        <skos:definition xml:lang="en">Intention</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
+    </rdf:Description>
+    
+    <!-- Age Groups -->
+    <rdf:Description rdf:about="&edukms;fifeToEleven">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en"><![CDATA[5 to 11]]></skos:prefLabel>
+        <skos:definition xml:lang="en">Age Group</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
+    </rdf:Description>
+    
+    <rdf:Description rdf:about="&edukms;elevenToSixteen">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en"><![CDATA[11 to 16]]></skos:prefLabel>
+        <skos:definition xml:lang="en">Age Group</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
+    </rdf:Description>
+    
+    <rdf:Description rdf:about="&edukms;sixteenToNineteen">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en"><![CDATA[16 to 19]]></skos:prefLabel>
+        <skos:definition xml:lang="en">Age Group</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
+    </rdf:Description>
+    
+    <rdf:Description rdf:about="&edukms;everyAgeGroup">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en">every age group</skos:prefLabel>
+        <skos:definition xml:lang="en">Age Group</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
+    </rdf:Description>
+    
+    <rdf:Description rdf:about="&edukms;independent">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en">independent</skos:prefLabel>
+        <skos:definition xml:lang="en">Age Group</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
+    </rdf:Description>
+    
+    <rdf:Description rdf:about="&edukms;materialForTeachers">
+        <rdf:type rdf:resource="&skos;Concept"/>
+        <skos:prefLabel xml:lang="en">material for teachers</skos:prefLabel>
+        <skos:definition xml:lang="en">Age Group</skos:definition>
+        <skos:broader rdf:resource="&edukms;bigIdeas"/>
+    </rdf:Description>
+    
+    
    
 </rdf:RDF>

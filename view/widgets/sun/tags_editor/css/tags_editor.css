@@ -125,7 +125,7 @@ body{
 			margin-top: 10px;
 		}
                 div.tagsEditor_addTags a {
-                    color: gray;
+                    color: #EE6523;
                 }
                 div.tagsEditor_addTags a:hover {
                     text-decoration:underline;
@@ -135,7 +135,7 @@ body{
 			margin-top: 5px;
 		}
                 div.tagsEditor_recommendTags a {
-                    color: gray;
+                    color: #EE6523;
                 }
                 div.tagsEditor_recommendTags a:hover {
                     text-decoration:underline;
@@ -150,6 +150,7 @@ body{
 				margin-right: 10px;
                                 white-space: nowrap;
                                 cursor: pointer;
+                                padding:5px;
 			}
                         div.tagsEditor_optional div a:hover {
                             text-decoration: underline;
@@ -159,6 +160,7 @@ body{
 			div.tagsEditor_optional div a.selectedTag{
 				color: black;
                                 text-decoration: underline;
+                                background-color:#999999;
 			}
 
 				/*Must be for orange color of .tagsEditor_controlled class inside <a> (wich has grey color from line 76*/
@@ -167,7 +169,15 @@ body{
 				}
 				div.tagsEditor_optional div a.selectedTag.tagsEditor_controlled{
 					color: #EB0000;
+                                        background-color:#EBC0C0;
 				}
+
+                                div.tagsEditor_optional span.categorytags_label{
+                                    color: #EB0000;
+                                }
+                                div.tagsEditor_optional span.freetags_label {
+                                    color: black;
+                                }
 		
 		.tagsEditor_controlled{
 			color: #EB8000;
@@ -245,4 +255,18 @@ div.categoryContainer{
 div.tagsEditor_tagCloud {
     overflow-y:auto;
     border-top:1px dashed #CECECE;
+}
+
+div.tagsEditor_tagCloud div.noTags {
+    display:none;
+}
+div.tagsEditor_tagCloud.noTags div.noTags {
+    display:block;
+}
+
+div.suntagEditor_inlineTags span.free {
+    color: black;
+}
+div.suntagEditor_inlineTags span.controlled {
+    color: #EB0000;
 }

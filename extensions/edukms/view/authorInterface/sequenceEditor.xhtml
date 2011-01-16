@@ -15,7 +15,7 @@
 				view="/edukms/authorInterface/home.xhtml" value="| Author Home" /></li>
 			<li><s:link
 				view="/edukms/authorInterface/sequenceEditor.xhtml"
-				value="Edit Task Sequence" /></li>
+				value="Edit Task" /></li>
 		</ul>
 	</ui:define>
 
@@ -98,32 +98,61 @@ h3 {
 
 }
 
+.rich-mpnl-controls img {
+	src: url("../../img/close.png");
+}
+
+.rich-stglpanel-header {
+background-color:#eee;
+border-color:#eee;
+height:15px;
+color:#666;
+font-size:12px;
+font-weight:bold;
+
+}
+
+.rich-stglpanel {
+background-color:#eee;
+border-color:#C0C0C0;
+}
+
+.rich-stglpanel-body {
+
+padding:0px;
+
+}
+
 
 </style>
 		<h:form>
 		<div id="cover"><!-- start cover -->
 
-		<fieldset class="fieldsetborder"
-			style="float:left; width:100%; height: 700px; margin-left: -170px; border:1px solid #ddd">
+		 <rich:simpleTogglePanel  style="margin-left:-170px; margin-bottom: 10px; border-color: #FFE8C3; width:100% " opened="true" switchType="client"  >			
+				<ui:include src="./menu/menu_sequenceEditor.xhtml" ></ui:include>			
+		 </rich:simpleTogglePanel>
+
+		<div style="float:left; width:100%; height: 620px; margin-left: -170px; border:1px solid #FFE8C3; padding-top:10px">
 				
-			<div><img style="margin: 10px 15px 0 15px; float: left;"
-				src="#{facesContext.externalContext.requestContextPath}/view/img/editor.png" /><br />
-			<h2 style="margin-top: 5px; ">Here you can edit the content of the sequence: &#160;&#160; #{dkmsContentItemBean.dkmsContentItemName}</h2>		
-			
-			<br/>
+			<div>
+<!--			<img style="margin: 10px 15px 0 15px; float: left;"-->
+<!--				src="#{facesContext.externalContext.requestContextPath}/view/img/editor.png" /><br />-->
+<!--			<h2 style="margin-top: 5px; ">Here you can edit the content of the task: &#160;&#160; #{dkmsContentItemBean.dkmsContentItemName}</h2>		-->
+<!--			-->
+<!--			<br/>-->
 			<table border="0"><tr><td valign="middle">
-			<h3 style="margin: 0 10px 0 20px">Step 1: Insert the task title (e.g. Indication):&#160;&#160; </h3></td><td valign="middle">
+			<h3 style="margin: 0 10px 0 20px">Step 1: Insert task title (e.g. Indication):&#160;&#160; </h3></td><td valign="middle">
 			
 			<h:inputText id="taskTitle"
 				style="width:335px; margin:0 0 0 0px; vertical-align:top" required="true"
 				value="#{dkmsContentItemBean.taskTitle}" ><s:validate /><h:messages /></h:inputText>
 			</td></tr></table>
 			<br />
-			<h3 style="margin: -10px 0 0 22px">Step 2: Before inserting images into your sheet please use the 'Images wizard'</h3>
+			<h3 style="margin: -10px 0 0 22px">Step 2: Use editor below for creating and formatting text</h3>
 			
 
 			<br />
-			<h3 style="margin: 0 0 0 22px">Step 2: Here you can work on the indications content:</h3>
+			<h3 style="margin: 0 0 0 22px">Note: Use wizards for inserting images or movies into your resource</h3>
 
 
 			</div>
@@ -151,97 +180,13 @@ h3 {
 			</div>				
 			
 		
-		</fieldset>
-		<fieldset class="fieldsetborder" style="float:right; width: 200px; height: 700px; margin-right: -160px; border:1px solid #FFE8C3">
-		<div id="buttons">
-		
-			<h:commandLink	class="buttonclass" action="#{dkmsStoreAction.storeSequenceItem()}" >
-				<img title="Proceed"
-					src="#{facesContext.externalContext.requestContextPath}/view/img/arrowright_small.png" style="vertical-align:middle; margin-right: 5px; margin-left:8px"/>Proceed
-			</h:commandLink>
 		</div>
-		<div id="trennlinie"></div>
-		  
-				<br/>
-				 <f:subview xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:a4j="http://richfaces.org/a4j"
-      xmlns:rich="http://richfaces.org/rich"> 
-    <rich:modalPanel id="panel" width="400" height="350">
-        <f:facet name="header" style="height:20px">
-            <h:panelGroup>
-                <h:outputText value="Upload Images"></h:outputText>
-            </h:panelGroup>
-        </f:facet>
-        <f:facet name="controls">
-            <h:panelGroup>
-                <h:graphicImage value="../img/close.png" styleClass="hidelink" id="hidelink" style="padding-top:7px"/>
-<!--                <img src="#{facesContext.externalContext.requestContextPath}/view/img/close.png" style="margin-top:1px" class="hidelink" id="hidelink"/>-->
-                <rich:componentControl for="panel" attachTo="hidelink" operation="hide" event="onclick"/>
-            </h:panelGroup>
-        </f:facet>
-        <br/>
-       <h2 style="float:left">Step 1: Upload one or more images:</h2>
-        <br/>
-        <div style="margin-left:10px">
-        <rich:fileUpload 
-						fileUploadListener="#{dkmsFileAction.picListener}"
-						immediateUpload="false"
-						maxFilesQuantity="30"
-						listHeight="130pt"
-						listWidth="240"
-				        allowFlash="true"
-				        acceptedTypes="jpg, gif, png" 
-						addControlLabel="Add File" 
-						clearAllControlLabel="Clear All" 
-						clearControlLabel="Clear"
-                        stopEntryControlLabel="Stop" 
-						uploadControlLabel="Upload">
-				        	
-<!--			        <a:support event="onuploadcomplete"  reRender="panel" actionListener="#{dkmsBasicAction.reloadWikiChangeEditor()}"/>-->
-		            <f:facet name="label">
-		                <h:outputText value="Upload State" />
-		        	</f:facet>					
-		   		</rich:fileUpload>	  
-		   		</div> 
-		   		<br/> <br/><br/>
-       <h2 style="float:left">Step 2:&#160;&#160; <h:commandLink style="font-size:14px;" value="Update pic-list" action="#{dkmsBasicAction.reloadSequenceEditor()}"/>
-			<a:support event="onClick" /></h2>
-       <br/>
-       
-       
-      
-    </rich:modalPanel>
-    <h:outputLink value="#" id="link">
-        <img title="Pic Upload"
-					src="#{facesContext.externalContext.requestContextPath}/view/img/picUpload_small.png" style="vertical-align:middle; margin-right: 8px; margin-left:15px"/>Image Wizard
 		
-        <rich:componentControl for="panel" attachTo="link" operation="show" event="onclick"/>
-    </h:outputLink>
-</f:subview>
-            
-	    <div id="trennlinie"></div>
-	    
-	    <div id="picCatalogue" style="height:520px; overflow:auto; margin-left:-10px;  ">
-	    <br/>
-		<h2 style="margin-left:25px">Image-List:</h2>
-		<table cellspacing="10" cellpadding="10">		
-		<c:forEach items="#{dkmsContentItemBean.dkmsMediaList}" var="item">    	    
-      	<tr><td >   
-      	    <img src="#{dkmsReadModusAction.getMiniMultimediaPicname(item)}" style="margin: 0px 15px 0 15px; border: 1px solid #ddd "  />
-      	    </td><td><h:commandLink value="Insert" action="#{dkmsBasicAction.insertPicIntoTaskContent(dkmsReadModusAction.getOriginalMultimediaFilename(item))}"/>
-			<a:support event="onClick" />
-			
-		</td></tr>
-		</c:forEach> 
-		</table>
 		
-		</div>	  
-		  
-		  
-		</fieldset>
+		 <rich:simpleTogglePanel  style="float:left; margin-left:-170px; margin-top: 10px; margin-bottom: 10px; border-color: #FFE8C3; width:100% " opened="true" switchType="client"  >
+			<ui:include src="./menu/menu_sequenceEditor.xhtml" ></ui:include>
+		 </rich:simpleTogglePanel>   
+		
 		</div>
 		</h:form>
 		<!-- end cover -->

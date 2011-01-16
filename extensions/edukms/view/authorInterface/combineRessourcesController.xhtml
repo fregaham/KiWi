@@ -30,7 +30,7 @@
 	/*border:1px solid #eee;	*/
 	-background: #666;
 	margin-top: 10px;
-	margin-left: 10px;
+	margin-left: 2px;
 }
 
 /* vert_accordion header */
@@ -42,7 +42,7 @@
 	font-size: 14px;
 	font-weight: normal;
 	/*border:1px solid #eee; */
-	border-bottom: 1px solid #FFE8C3;
+	/*border-bottom: 1px solid #FFE8C3;*/
 	cursor: pointer;
 	color: #452;
 }
@@ -104,44 +104,103 @@ h3 {
 	border-bottom: 1px solid #FFE8C3;
 	margin: 10px;
 }
+
+.rich-mpnl-controls img {
+	src: url("../../img/close.png");
+}
+
+.rich-stglpanel-header {
+background-color:#eee;
+border-color:#eee;
+height:15px;
+color:#666;
+font-size:12px;
+font-weight:bold;
+
+}
+
+.rich-stglpanel {
+background-color:#eee;
+border-color:#C0C0C0;
+}
+
+.rich-stglpanel-body {
+
+padding:0px;
+
+}
 </style>
 
 
-	
+	<h:form>
 		<div id="cover"><!-- start cover -->
-		<h:form>
-		<fieldset class="fieldsetborder"
-			style="float:left; width:100%; height: 700px; margin-left: -170px; border:1px solid #FFE8C3">
 		
-			<h2 style="margin-top: 5px;">In this area you may combine various resources to a learning sequence:</h2>
+		
+		<rich:simpleTogglePanel  style="margin-left:-170px; margin-bottom: 10px; border-color: #FFE8C3; width:100% " opened="true" switchType="client"  >			
+				<ui:include src="./menu/menu_combineResourcesController.xhtml" ></ui:include>			
+		 </rich:simpleTogglePanel>
+		
+
+		<div style="float:left; width:100%; height: 620px; margin-left: -170px; border:1px solid #FFE8C3; padding-top:10px">
+		
+		    <c:if test="#{dkmsContentItemBean.contentItemState == 'N'}">	
+		    <h:form>
+			<h2 style="margin-top: 5px;">In this area you may combine various existing contributions to a single resource</h2>
 			<br />
 
 			
 			<table border="0"><tr><td valign="middle">
 			<h3 style="margin: -2px 0px 0 20px">Step 1: Insert a title for your new share:&#160;&#160;  </h3></td><td valign="middle">
 			
+<!--			<h:inputText id="dkmsContentItemName"-->
+<!--				style="width:343px; margin:0 0 0 0px; vertical-align:top" required="true"-->
+<!--				value="#{dkmsContentItemBean.dkmsContentItemName}" ><s:validate /><h:messages /></h:inputText>-->
 			<h:inputText id="dkmsContentItemName"
-				style="width:343px; margin:0 0 0 0px; vertical-align:top" required="true"
-				value="#{dkmsContentItemBean.dkmsContentItemName}" ><s:validate /><h:messages /></h:inputText>
+				style="width:343px; margin:0 0 0 0px; vertical-align:top"
+				value="#{dkmsContentItemBean.dkmsContentItemName}" ></h:inputText>
 			</td></tr></table><br/>
 			<h3 style="margin: -10px 0 0 22px">Step 2: Select resources to combine them to a sequence</h3>
 			<br />
+			</h:form>
+			</c:if>
+			<c:if test="#{dkmsContentItemBean.contentItemState == 'C'}">	
+			<h:form>
+			<h2 style="margin-top: 5px;">In this area you may administrate your combined resource:</h2>
+			<br />
+
+			
+			<table border="0"><tr><td valign="middle">
+			<h3 style="margin: -2px 0px 0 20px">Title of resource:&#160;&#160;  </h3></td><td valign="middle">
+			
+<!--			<h:inputText id="dkmsContentItemName"-->
+<!--				style="width:343px; margin:0 0 0 0px; vertical-align:top" required="true"-->
+<!--				value="#{dkmsContentItemBean.dkmsContentItemName}" ><s:validate /><h:messages /></h:inputText>-->
+			<h:inputText id="dkmsContentItemName"
+				style="width:343px; margin:0 0 0 0px; vertical-align:top"
+				value="#{dkmsContentItemBean.dkmsContentItemName}" ></h:inputText>
+			</td></tr></table><br/>
+			<h3 style="margin: -10px 0 0 22px">Add or remove resources:</h3>
+			
+			</h:form>		
+			</c:if>
 			<!-- vert_accordion -->
 		<div id="vert_accordion"><!--  Folder  -->
 	
+		<table border="0" cellspacing="30" ><tr>
 		
-		<!--  Tab 1 Header -->
+		<td style="vertical-align:top; width:300px">
+		
 		<h2><img
 			src="#{facesContext.externalContext.requestContextPath}/view/img/angabe_verysmall.png"
 			style="valign: center; vertical-align: middle; margin-right: 5px" />
 		All my resources</h2>
 		<!--  Tab 1 Content -->
-		<div class="pane" style="display: block">
-			<div style="height:150px; overflow:auto; margin-left:25px; margin-top:10px ">
+		<div >
+			<div style="height:380px; overflow:auto; margin-left:10px; margin-top:10px; margin-bottom:10px">
+			
 			<table cellspacing="1">
-				<c:forEach items="#{dkmsReadModusAction.dkmsContentItems}" var="dci" id="dciList">
-				<c:if test="#{dci.dkmsContentItemType == '1'}">
-				<c:if test="#{dci.trashState == false}">
+				<c:forEach items="#{dkmsReadModusAction.getSimpleResources()}" var="dci" id="dciList">
+				
 					<tr>
 						<td style="border:1px solid #FFE8C3; width:200px">
 						<h5 style="margin:5px">#{dci.title}</h5>
@@ -149,19 +208,17 @@ h3 {
 						<td style="border:1px solid #FFE8C3; width:30px">
 						<img src="#{facesContext.externalContext.requestContextPath}/view/img/angabe_verysmall.png" style="valign: center; vertical-align: middle; margin: 2px" title="Simple resource"/>
 						</td>
-						<td style="border:1px solid #FFE8C3; width:30px">
-						<h:commandLink action="#{dkmsReadModusAction.showExerciseSheetDetails(dci)}"><img src="#{facesContext.externalContext.requestContextPath}/view/img/vorschau_verysmall.png" title="Show details" style="margin:3px"/></h:commandLink>
-						</td>						
-						<td style="border:1px solid #FFE8C3; width:70px">
+<!--						<td style="border:1px solid #FFE8C3; width:30px">-->
+<!--						<h:commandLink action="#{dkmsReadModusAction.showExerciseSheetFromCombined(dci, dkmsContentItemBean.contentItemIdentifier)}"><img src="#{facesContext.externalContext.requestContextPath}/view/img/vorschau_verysmall.png" title="Show details" style="margin:3px"/></h:commandLink>-->
+<!--						</td>						-->
+						<td style="border:1px solid #FFE8C3; width:100px">
 						<h:commandLink style="margin:5px; align:center" reRender="dciList"
-							value="Select" action="#{dkmsStoreAction.storeCombinedComponent(dci)}" ></h:commandLink>
+							value="Select &#62;&#62;" action="#{dkmsStoreAction.storeCombinedComponent(dci)}" ></h:commandLink>
 						</td>	
 											
 					</tr>
-				</c:if>
-				</c:if>
-				<c:if test="#{dci.dkmsContentItemType == '2'}">
-				<c:if test="#{dci.trashState == false}">
+				</c:forEach>
+				<c:forEach items="#{dkmsReadModusAction.getSegmentedResources()}" var="dci" id="dciList">
 					<tr>
 						<td style="border:1px solid #FFE8C3; width:200px">
 						<h5 style="margin:5px">#{dci.title}</h5>
@@ -169,42 +226,43 @@ h3 {
 						<td style="border:1px solid #FFE8C3; width:30px">
 						<img src="#{facesContext.externalContext.requestContextPath}/view/img/dokumente_verysmall.png" style="valign: center; vertical-align: middle; margin: 2px" title="Segmented resource"/>
 						</td>
-						<td style="border:1px solid #FFE8C3; width:30px">
-						<h:commandLink action="#{dkmsReadModusAction.showSequenceDetails(dci)}"><img src="#{facesContext.externalContext.requestContextPath}/view/img/vorschau_verysmall.png" title="Show details" style="margin:3px"/></h:commandLink>
-						</td>						
-						<td style="border:1px solid #FFE8C3; width:70px">
+<!--						<td style="border:1px solid #FFE8C3; width:30px">-->
+<!--						<h:commandLink action="#{dkmsReadModusAction.showSequenceFromCombined(dci, dkmsContentItemBean.contentItemIdentifier)}"><img src="#{facesContext.externalContext.requestContextPath}/view/img/vorschau_verysmall.png" title="Show details" style="margin:3px"/></h:commandLink>-->
+<!--						</td>						-->
+						<td style="border:1px solid #FFE8C3; width:100px">
 						<h:commandLink style="margin:5px; align:center" reRender="dciList"
-							value="Select" action="#{dkmsStoreAction.storeCombinedComponent(dci)}" ></h:commandLink>
+							value="Select &#62;&#62;" action="#{dkmsStoreAction.storeCombinedComponent(dci)}" ></h:commandLink>
 						</td>	
 											
 					</tr>
-				</c:if>
-				</c:if>
-				<c:if test="#{dci.dkmsContentItemType == '3'}">
-				<c:if test="#{dci.trashState == false}">
+				</c:forEach>
+				<c:forEach items="#{dkmsReadModusAction.getUploadedResources()}" var="dci" id="dciList">
 					<tr>
 						<td style="border:1px solid #FFE8C3; width:200px">
 						<h5 style="margin:5px">#{dci.title}</h5>
 						</td >
 						<td style="border:1px solid #FFE8C3; width:30px">
-						<img src="#{facesContext.externalContext.requestContextPath}/view/img/pdf_dokument_verysmall.png" style="valign: center; vertical-align: middle; margin: 2px" title="Uploaded resource"/>
+						<img src="#{facesContext.externalContext.requestContextPath}/view/img/picUpload_small.png" style="valign: center; vertical-align: middle; margin: 2px" title="Uploaded resource"/>
 						</td>
-						<td style="border:1px solid #FFE8C3; width:30px">
-						<h:commandLink action="#{dkmsReadModusAction.showDocumentDetails(dci)}"><img src="#{facesContext.externalContext.requestContextPath}/view/img/vorschau_verysmall.png" title="Show details" style="margin:3px"/></h:commandLink>
-						</td>						
-						<td style="border:1px solid #FFE8C3; width:70px">
+<!--						<td style="border:1px solid #FFE8C3; width:30px">-->
+<!--						<h:commandLink action="#{dkmsReadModusAction.showDocumentFromCombined(dci, dkmsContentItemBean.contentItemIdentifier)}"><img src="#{facesContext.externalContext.requestContextPath}/view/img/vorschau_verysmall.png" title="Show details" style="margin:3px"/></h:commandLink>-->
+<!--						</td>						-->
+						<td style="border:1px solid #FFE8C3; width:100px">
 						<h:commandLink style="margin:5px; align:center" reRender="dciList"
-							value="Select" action="#{dkmsStoreAction.storeCombinedComponent(dci)}" ></h:commandLink>
+							value="Select &#62;&#62;" action="#{dkmsStoreAction.storeCombinedComponent(dci)}" ></h:commandLink>
 						</td>	
 											
 					</tr>
-				</c:if>
-				</c:if>
+				
 				</c:forEach>
 			</table>
+			
 			</div>
 		</div>
-		<!--  Tab 1 Header -->
+		
+		</td>
+		<td style="vertical-align:top; width:300px">
+
 		<h2><img
 			src="#{facesContext.externalContext.requestContextPath}/view/img/angabe_verysmall.png"
 			style="valign: center; vertical-align: middle; margin-right: 5px" />&#160;-&#160;<img
@@ -212,15 +270,20 @@ h3 {
 			style="valign: center; vertical-align: middle; margin-right: 5px" />&#160;-&#160;<img
 			src="#{facesContext.externalContext.requestContextPath}/view/img/angabe_verysmall.png"
 			style="valign: center; vertical-align: middle; margin-right: 5px" />
-		Sequence of resources</h2>
+		Resource combination</h2>
 		<!--  Tab 1 Content -->
-		<div class="pane" style="display: block">
-			<div style="height:150px; overflow:auto; margin-left:25px; margin-top:10px ">
+		<div >
+			<div style="height:380px; overflow:auto; margin-left:10px; margin-top:10px ">
+			
 			<table cellspacing="1">
 				<c:forEach items="#{dkmsContentItemBean.dkmsCombinedComponentList}" var="item" id="itemList">
 					<c:if test="#{item.combinedItemType == '1'}">
 								
 					<tr>
+						<td style="border:1px solid #FFE8C3; width:100px">
+							<h:commandLink style="margin:5px; align:center" reRender="dciList"
+							value="&#60;&#60; Remove" action="#{dkmsStoreAction.removeCombinedComponent(item)}" ></h:commandLink>
+						</td>
 						<td style="border:1px solid #FFE8C3; width:200px">
 						<h5 style="margin:5px">#{item.combinedItemTitle}</h5>
 						</td >
@@ -228,15 +291,17 @@ h3 {
 						<img src="#{facesContext.externalContext.requestContextPath}/view/img/angabe_verysmall.png" style="valign: center; vertical-align: middle; margin: 2px" title="Simple resource"/>
 						</td>
 						
-						<td style="border:1px solid #FFE8C3; width:100px">
-						#{item.combinedItemId}
-						</td>
+						
 					</tr>
 					
 					</c:if>
 					<c:if test="#{item.combinedItemType == '2'}">
 					
 					<tr>
+						<td style="border:1px solid #FFE8C3; width:100px">
+							<h:commandLink style="margin:5px; align:center" reRender="dciList"
+								value="&#60;&#60; Remove" action="#{dkmsStoreAction.removeCombinedComponent(item)}" ></h:commandLink>
+						</td>	
 						<td style="border:1px solid #FFE8C3; width:200px">
 						<h5 style="margin:5px">#{item.combinedItemTitle}</h5>
 						</td >
@@ -244,75 +309,47 @@ h3 {
 						<img src="#{facesContext.externalContext.requestContextPath}/view/img/dokumente_verysmall.png" style="valign: center; vertical-align: middle; margin: 2px" title="Segmented resource"/>
 						</td>
 						
-						<td style="border:1px solid #FFE8C3; width:100px">
-						#{item.combinedItemId}
-						</td>																	
+																						
 					</tr>
 			
 				</c:if>
 				<c:if test="#{item.combinedItemType == '3'}">
 				
 					<tr>
+						<td style="border:1px solid #FFE8C3; width:100px">
+							<h:commandLink style="margin:5px; align:center" reRender="dciList"
+							value="&#60;&#60; Remove" action="#{dkmsStoreAction.removeCombinedComponent(item)}" ></h:commandLink>
+						</td>	
 						<td style="border:1px solid #FFE8C3; width:200px">
 						<h5 style="margin:5px">#{item.combinedItemTitle}</h5>
 						</td >
 						<td style="border:1px solid #FFE8C3; width:30px">
-						<img src="#{facesContext.externalContext.requestContextPath}/view/img/pdf_dokument_verysmall.png" style="valign: center; vertical-align: middle; margin: 2px" title="Uploaded resource"/>
+						<img src="#{facesContext.externalContext.requestContextPath}/view/img/picUpload_small.png" style="valign: center; vertical-align: middle; margin: 2px" title="Uploaded resource"/>
 						</td>
 						
-						<td style="border:1px solid #FFE8C3; width:100px">
-						#{item.combinedItemId}
-						</td>											
+																
 					</tr>
 			
 				</c:if>
 				</c:forEach>
 			</table>
+		
 			</div>
-		</div></div>
+		</div>
+		
+		</td></tr></table>
+		
+		</div>	
+		
+		</div>
+		
+		<rich:simpleTogglePanel  style="float:left; margin-left:-170px; margin-top: 10px; margin-bottom: 10px; border-color: #FFE8C3; width:100% " opened="true" switchType="client"  >
+			<ui:include src="./menu/menu_combineResourcesController.xhtml" ></ui:include>
+		 </rich:simpleTogglePanel>   
 
-		
-		</fieldset>
-		
-		<fieldset class="fieldsetborder" style="float:right; width: 200px; height: 700px; margin-right: -160px; border:1px solid #FFE8C3">
-		
-		<div id="buttons">
-				
-			<h:commandLink 
-				action="#{dkmsStoreAction.clearCombinedComponent()}">
-				<img
-					src="#{facesContext.externalContext.requestContextPath}/view/img/close_verysmall.png"
-					style="valign: center; vertical-align: middle; margin-right: 5px; margin-top: 5px"/>Clear combination</h:commandLink>
-			<br/>	
-			
-		<div id="trennlinie"></div>
-		
-		<br/>
-			
-			<h:commandLink class="buttonclass" 	action="#{dkmsBasicAction.goToHome()}">
-			<img
-				src="#{facesContext.externalContext.requestContextPath}/view/img/arrowleft_small.png"
-				style="vertical-align: middle; margin-right: 5px; margin-left:8px" /> Cancel</h:commandLink>
-			<br /><br/>
-		    <h:commandLink				
-				action="#{dkmsBasicAction.nextStepCombinedResource()}" >
-				<img title="Proceed"
-					src="#{facesContext.externalContext.requestContextPath}/view/img/arrowright_small.png" style="vertical-align:middle; margin-right: 7px; margin-left:8px"/>Proceed
-			</h:commandLink>
-		
-		</div>
-		
-		
-            
 	
-	    
-	  
-		
-		
-		
-		</fieldset></h:form>
 		</div>
-		
+	</h:form>
 		<!-- end cover -->
 		
 	</ui:define>

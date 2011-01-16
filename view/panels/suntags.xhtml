@@ -20,12 +20,12 @@
 	<link rel="stylesheet" type="text/css" href="/KiWi/view/widgets/sun/tags_editor/css/tags_editor.css" />
 
 	<div>
-            <div id="sun_tag_editor_inlineTags" style="display:none"></div>
+            <div id="sun_tag_editor_inlineTags" class="suntagEditor_inlineTags"></div>
             <button id="sun_tag_editor_button" rel="#sun_tag_editor_overlay">Edit</button>
             <div id="sun_tag_editor_overlay" class="overlay"/> 
  
-            <script type="text/javascript" src="/KiWi/view/widgets/sun/tags_editor/js/jquery.tags_editor_2.js"></script> 
-            <script type="text/javascript" src="/KiWi/view/widgets/sun/tags_editor/js/tags_editor_templates_2.js"></script> 
+            <script type="text/javascript" src="/KiWi/view/widgets/sun/tags_editor/js/jquery.tags_editor.js"></script> 
+            <script type="text/javascript" src="/KiWi/view/widgets/sun/tags_editor/js/tags_editor_templates.js"></script> 
  
             <script type="text/javascript" src="/KiWi/view/widgets/sun/tags_editor/js/jquery.suggester.js"></script>
  
@@ -36,18 +36,24 @@
 		jQuery.noConflict();
 		jQuery(document).ready(function(){
                     (function($){
+
+                        //$("#sun_tag_editor_overlay").append("<div id=\"sun_tag_editor_overlay_content\"></div>");
+                        var resourceURI = "#{currentContentItem.resource.uri}";
+                        
+                        tagsEditor = new $.TagsEditor(null,/*#sun_tag_editor_overlay_content",*/ $("#sun_tag_editor_inlineTags"), resourceURI);
+
+                        // Tell the widget not to send actual add/remove requests
+                        tagsEditor.testAddRemove = false;
+                        tagsEditor.deploy();
+                        tagsEditor.attach($("#sun_tag_editor_overlay"));
+
                         $("#sun_tag_editor_button").overlay({
 				onBeforeLoad:function(){
-                                    $("#sun_tag_editor_overlay").append("<div id=\"sun_tag_editor_overlay_content\"></div>");
-                                    var resourceURI = "#{currentContentItem.resource.uri}";
-                                    tagsEditor = new $.TagsEditor("#sun_tag_editor_overlay_content", $("#sun_tag_editor_inlineTags"), resourceURI);
- 
-                                    // Tell the widget not to send actual add/remove requests
-                                    tagsEditor.testAddRemove = false;
-                                    tagsEditor.deploy();
+                                    
 				},
 				onClose:function(){                                        
-					$("#sun_tag_editor_overlay_content").remove();
+                                    //$("#sun_tag_editor_overlay_content").remove();
+                                    tagsEditor.hideRecommendedTags();
 				},
 				expose: {
 					color: '#BAD0DB',

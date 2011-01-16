@@ -18,11 +18,11 @@
 				<td style="border:1px solid #ddd; width:200px">
 					<h:commandLink action="#{dkmsContentRetrievalAction.showContentItemPresentation(ci)}"><h4 style="margin:5px">#{ci.title}</h4></h:commandLink>			
 				</td>
-				<td style="border:1px solid #ddd; width:100px">
-<!--				<h4 style="margin:5px">#{ci.dkmsContentItemType}</h4>-->
+				<td style="border:1px solid #ddd; width:200px">
+				<h4 style="margin:5px">#{ci.author.firstName} #{ci.author.lastName}</h4>
 				</td>
 				<td style="border:1px solid #ddd; width:100px">
-					<h:commandLink action="#{dkmsContentRetrievalAction.showContentItemPresentation(ci)}"><h2 style="margin:5px">Details</h2></h:commandLink>
+					<h:commandLink action="#{dkmsContentRetrievalAction.showContentItemPresentation(ci)}"><h4 style="margin:5px"><img src="#{facesContext.externalContext.requestContextPath}/view/img/vorschau_verysmall.png" title="Details" style="vertical-align:middle; margin:5px"/>Details</h4></h:commandLink>
 				</td>
 				</tr>
 				</table>

@@ -15,7 +15,8 @@
                 xmlns:m="http://code.google.com/p/gmaps4jsf/"
 			 	xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:kiwi="http://www.kiwi-project.eu/jsf"
-                template="../../layout/template-2col.xhtml"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                template="../../layout/template-3col.xhtml"
                 xmlns:a4j="http://richfaces.org/a4j">
                 	
 	<ui:define name="breadcrumps">
@@ -107,29 +108,35 @@
 	    <div class="subcr">	    
 	      <fieldset class="fieldsetborder">
 			<legend>#{messages['artaround.artworks.mediaUpload']}</legend>			
-			<h:form>  			 	
-					<rich:fileUpload 
-						fileUploadListener="#{artWorkMediaAction.listener}"
-						immediateUpload="false"
-						maxFilesQuantity="#{artWorkMediaAction.uploadsAvailable}"
-						listHeight="200pt"
-						listWidth="auto"
-				        allowFlash="true"
-				        acceptedTypes="jpg, gif, png" 
-						addControlLabel="#{messages['artaround.addFile']}..." 
-						clearAllControlLabel="#{messages['artaround.clearAll']}" 
-						clearControlLabel="#{messages['artaround.clear']}"
-                        stopEntryControlLabel="#{messages['artaround.stopProcess']}" 
-						uploadControlLabel="#{messages['artaround.upload']}...">
-				        	
-			        <a4j:support event="onuploadcomplete" reRender="media_content" />
-		            <f:facet name="label">
-		                <h:outputText value="#{messages['artaround.upload.state']}" />
-		        	</f:facet>					
-		   		</rich:fileUpload>
-				<br/>
-            	<h:commandButton action="#{artWorkMediaAction.storeArtWork()}" 
-					value="Weiter" style="margin-top:5px;"/>
+			<h:form> 
+			
+			<p:fileUpload fileUploadListener="#{artWorkMediaAction.listener}" 
+				multiple="true" label="Choose file" allowTypes="*.jpg;*.png;*.gif;" description="Images" language="de" update="messages"/>
+			<br/><br/>
+			
+			
+			 			 	
+<!--					<rich:fileUpload -->
+<!--						fileUploadListener="#{artWorkMediaAction.listener}"-->
+<!--						immediateUpload="false"-->
+<!--						maxFilesQuantity="#{artWorkMediaAction.uploadsAvailable}"-->
+<!--						listHeight="200pt"-->
+<!--						listWidth="auto"-->
+<!--				        allowFlash="true"-->
+<!--				        acceptedTypes="jpg, gif, png" -->
+<!--						addControlLabel="#{messages['artaround.addFile']}..." -->
+<!--						clearAllControlLabel="#{messages['artaround.clearAll']}" -->
+<!--						clearControlLabel="#{messages['artaround.clear']}"-->
+<!--                        stopEntryControlLabel="#{messages['artaround.stopProcess']}" -->
+<!--						uploadControlLabel="#{messages['artaround.upload']}...">-->
+<!--				        	-->
+<!--			        <a4j:support event="onuploadcomplete" reRender="media_content" />-->
+<!--		            <f:facet name="label">-->
+<!--		                <h:outputText value="#{messages['artaround.upload.state']}" />-->
+<!--		        	</f:facet>					-->
+<!--		   		</rich:fileUpload>-->
+<!--				<br/>-->
+            	<h:commandButton action="#{artWorkMediaAction.storeArtWork()}"	value="Weiter" style="margin-top:5px;"/>
 				
 			 </h:form>	
 			</fieldset>

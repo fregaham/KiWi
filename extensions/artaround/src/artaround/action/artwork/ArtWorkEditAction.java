@@ -19,6 +19,8 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.log.Log;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.UploadedFile;
 import org.richfaces.event.UploadEvent;
 import org.richfaces.model.UploadItem;
 
@@ -101,38 +103,36 @@ public class ArtWorkEditAction {
 		artWorkService.deleteMultimediaFromArtWork(selectedArtWork, pic);
 	}
 	
-	public void listener(UploadEvent event) {
+	public void listener(FileUploadEvent event) {
 
-		UploadItem item = event.getUploadItem();
+		UploadedFile item = event.getFile();
 
 		log.info("File: '#0' with type '#1' was uploaded", item.getFileName(),
 				item.getContentType());
 
 		String name = FilenameUtils.getName(item.getFileName());
 		String type = item.getContentType();
-		// byte[] data = item.getData();
-		// byte[] data = null;
 
-		if (item.isTempFile()) {
-			try {
-				// data = FileUtils.readFileToByteArray(item.getFile());
+		log.info("File successfully read!");
 
-				File file = item.getFile();
+		String repos = PropertiesReader
+				.getProperty(PropertiesReader.FILE_REPOSITORY);
+		String cache = PropertiesReader
+				.getProperty(PropertiesReader.FILE_CACHE);
 
-				String repos = PropertiesReader
-						.getProperty(PropertiesReader.FILE_REPOSITORY);
-				String cache = PropertiesReader.getProperty(PropertiesReader.FILE_CACHE);
-
-				// store the orig in file repos:
-				try {
-					// create unique filename with timestamp+filename:
-					name = "" + new Date().getTime() + "_" + name;
-					FileService.copyFile(file, new File(repos + "/" + name));
-				} catch (Exception e) {
-					log.error("error copy file ... " + e.getMessage());
-					e.printStackTrace();
-				}
-
+		File file = null;
+		// store the orig in file repos:
+		try {
+			// create unique filename with timestamp+filename:
+			name = "" + new Date().getTime() + "_" + name;
+			file = FileService.copyFile(item.getContents(), new File(repos
+					+ "/" + name));
+		} catch (Exception e) {
+			log.error("error copy file ... " + e.getMessage());
+			e.printStackTrace();
+		}
+		
+		try {
 				// create the mini thumbnail image:
 				//TODO: Werte aus property file auslesen
 				Integer width = new Integer(100);
@@ -176,10 +176,9 @@ public class ArtWorkEditAction {
 				ImageScaleService.createScaledFile(file, detail, width, height, true);
 
 			} catch (IOException e) {
-				log.error("error reading file #0", item.getFile()
-						.getAbsolutePath());
+				e.printStackTrace();
 			}
-		}
+		
 		
 		MediaTmp mt = new MediaTmp();
 		mt.setMimeType(type);
@@ -217,4 +216,5 @@ public class ArtWorkEditAction {
 //		kiwiEntityManager.persist(selectedArtWork);
 		return "/artaround/pages/profil/meinProfil.xhtml";
 	}	
+	
 }

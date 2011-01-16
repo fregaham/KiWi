@@ -1,0 +1,225 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:p="http://primefaces.prime.com.tr/ui"
+	template="layout/main.xhtml">
+
+	<ui:define name="breadcrumps">
+		<ul>
+			<li class="first"><s:link
+				view="/edukms/authorInterface/home.xhtml" value="| Author Home" /></li>
+			<li><s:link
+				view="/edukms/authorInterface/exerciseSheetEditor.xhtml"
+				value="Create resource" /></li>
+			<li><s:link
+				view="/edukms/authorInterface/movieWizard.xhtml"
+				value="Movie Wizard" /></li>
+		</ul>
+	</ui:define>
+
+	<ui:define name="body">
+
+		<style>
+h1 {
+	color: #6f91c0;
+	font-size: 16px;
+	margin-left: 20px;
+	margin-right: 10px;
+	line-hight: 20px;
+}
+
+ul li {
+	list-style-image: url(../img/li.png);
+	color: red;
+	font-size: 14px;
+	margin-left: 30px;
+	margin-top: 5px;
+}
+
+li img {
+	vertical-align: center;
+}
+
+h2 {
+	color: #6f91c0;
+	font-size: 14px;
+	margin-left: 20px;
+	margin-top: -15px;
+}
+
+h3 {
+	color: #6f91c0;
+	font-size: 12px;
+	margin-left: 20px;
+	margin-top: -15px;
+}
+
+h4 {
+	color: #6f91c0;
+	font-size: 11px;
+	margin-left: 20px;
+	margin-top: -15px;
+}
+
+
+.column {
+	width: 600px;
+	vertical-align: top;
+}
+
+#cover {
+	margin: 10px 0 0 0;
+	width: 800px;
+}
+
+#arrows {
+	width: 630px;
+	margin: 20px;
+}
+
+#editor {
+	margin: 20px 20px 20px 20px;
+	
+}
+
+.buttonclass {
+
+	text-decoration: none;
+	margin-right: 5px;
+
+}
+
+#buttons {
+	
+	/*border-bottom: 1px solid #FFE8C3; */
+	padding:10px;
+
+}
+
+#trennlinie {
+	
+	border-bottom: 1px solid #FFE8C3; 
+	margin:10px;
+
+}
+
+.rich-mpnl-controls img {
+	src: url("../../img/close.png");
+}
+
+.rich-stglpanel-header {
+background-color:#eee;
+border-color:#eee;
+height:15px;
+color:#666;
+font-size:12px;
+font-weight:bold;
+
+}
+
+.rich-stglpanel {
+background-color:#eee;
+border-color:#C0C0C0;
+}
+
+.rich-stglpanel-body {
+
+padding:0px;
+
+}
+
+
+
+
+</style>
+
+
+
+
+	<h:form>
+		<div id="cover"><!-- start cover -->
+		
+
+		 <rich:simpleTogglePanel  style="margin-left:-170px; margin-bottom: 10px; border-color: #FFE8C3; width:100% " opened="true" switchType="client"  >
+			<ui:include src="./menu/menu_movieWizard.xhtml" ></ui:include>
+		 </rich:simpleTogglePanel>
+
+		
+		<div style="float:left; width:100%; height: 580px; margin-left: -170px; border:1px solid #FFE8C3; padding-top:10px">
+	
+		  <br/>
+		<h2 style="float:left">Step 1: Add movie file</h2>
+       
+	    <br/><br/>
+	    <h2 style="float:left">Step 2: Press Upload-Button:</h2>
+       
+	    <br/>
+	    <div style="margin-left:20px">
+	    
+	     <p:fileUpload fileUploadListener="#{dkmsFileAction.movieListener}" 
+				multiple="true" label="Choose file" allowTypes="*.swf;" description="Images" language="de" update="messages"/>
+			<br/><br/>
+	    
+<!--       <rich:fileUpload -->
+<!--						fileUploadListener="#{dkmsFileAction.movieListener}"-->
+<!--						immediateUpload="false"-->
+<!--						maxFilesQuantity="1"-->
+<!--						listHeight="250pt"-->
+<!--						listWidth="400"-->
+<!--				        allowFlash="true"-->
+<!--				        acceptedTypes="swf" -->
+<!--						addControlLabel="Add File" -->
+<!--						clearAllControlLabel="Clear All" -->
+<!--						clearControlLabel="Clear"-->
+<!--                        stopEntryControlLabel="Stop" -->
+<!--						uploadControlLabel="Upload">-->
+<!--				        style="float:left"	-->
+<!--			        <a:support event="onuploadcomplete"  actionListener="#"/>-->
+<!--		            <f:facet name="label">-->
+<!--		                <h:outputText value="Upload State" />-->
+<!--		        	</f:facet>					-->
+<!--		   		</rich:fileUpload>	-->
+		   		
+		   		<br/> <br/><br/>
+		
+	    <c:if test="#{dkmsContentItemBean.dkmsContentItemType == '1'}">	
+       <h2 style="float:left">Step 2:&#160;&#160; <h:commandLink style="font-size:14px;" value="Insert Movie" action="#{dkmsBasicAction.insertMovieIntoSheet()}"/>
+			<a:support event="onClick" /></h2>
+		</c:if>
+		<c:if test="#{dkmsContentItemBean.dkmsContentItemType == '2'}">	
+       <h2 style="float:left">Step 2:&#160;&#160; <h:commandLink style="font-size:14px;" value="Insert Movie" action="#{dkmsBasicAction.insertMovieIntoTaskContent()}"/>
+			<a:support event="onClick" /></h2>
+		</c:if>
+		<c:if test="#{dkmsContentItemBean.dkmsContentItemType == '4'}">	
+       <h2 style="float:left">Step 2:&#160;&#160; <h:commandLink style="font-size:14px;" value="Insert Movie" action="#{dkmsBasicAction.insertMovieIntoWikiContent()}"/>
+			<a:support event="onClick" /></h2>
+		</c:if>
+       <br/>
+      
+	    
+			
+		</div>	
+		
+		
+		
+		</div>
+
+		 
+		</div>
+		
+		</h:form>
+		<!-- end cover -->
+		
+	</ui:define>
+	
+	
+</ui:composition>
+
+
+ 

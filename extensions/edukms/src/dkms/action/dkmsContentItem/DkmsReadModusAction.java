@@ -46,6 +46,8 @@ public class DkmsReadModusAction {
 	private List<DkmsContentItemFacade> dkmsContentItems;
 	private List<DkmsContentItemFacade> allDkmsContentItems;
 	
+	private List<DkmsContentItemFacade> resultList;
+	
 	@In(create = true)
 	private DkmsContentItemBean dkmsContentItemBean;
 	
@@ -60,35 +62,61 @@ public class DkmsReadModusAction {
 	 * @return Html Link
 	 */
 	
-	@Begin(join=true)
+	
 	public String editExerciseSheetContent(DkmsContentItemFacade dkmsContentItem){
 		 dkmsContentItemBean.init(dkmsContentItem);	
 		 selectedDkmsContentItem = dkmsContentItem;
-		 return "/edukms/authorInterface/exerciseSheetChangeEditor.xhtml";
+		 selectedDkmsContentItem.setContentItemState("C");
+		 dkmsContentItemBean.setContentItemState("C");
+		 return "/edukms/authorInterface/exerciseSheetEditor.xhtml";
 	}
 	
-	@Begin(join=true)
+	
 	public String editWikiContent(){
-		 return "/edukms/abcmaths/wikiChangeEditor.xhtml";
+		 dkmsContentItemBean.setContentItemState("C");
+		 return "/edukms/abcmaths/wikiEditor.xhtml";
 	}
 	
-	@Begin(join=true)
-	public String insertBlogComment(){		 
+	
+	public String insertBlogComment(){	
+		 dkmsContentItemBean.setContentItemState("C");
 		 return "/edukms/abcmaths/blogInsertionEditor.xhtml";
 	}
 	
-	@Begin(join=true)
-	public String insertComment(){		 
+	
+	public String insertComment(){	
+		 dkmsContentItemBean.setContentItemState("C");
 		 return "/edukms/abcmaths/commentEditor.xhtml";
 	}
 	
-	@Begin(join=true)
+	
 	public String editSequence(DkmsContentItemFacade dkmsContentItem){
 		 dkmsContentItemBean.init(dkmsContentItem);	
 		 selectedDkmsContentItem = dkmsContentItem;
 		 selectedDkmsContentItem.setContentItemState("C");
+		 dkmsContentItemBean.setContentItemState("C");
+		
 		 return "/edukms/authorInterface/sequenceController.xhtml";
 	}
+	
+	public String editDocument(DkmsContentItemFacade dkmsContentItem){
+		 dkmsContentItemBean.init(dkmsContentItem);	
+		 selectedDkmsContentItem = dkmsContentItem;
+		 selectedDkmsContentItem.setContentItemState("C");
+		 dkmsContentItemBean.setContentItemState("C");
+		
+		 return "/edukms/authorInterface/documentUploadEditor.xhtml";
+	}
+	
+	public String editCombinedResource(DkmsContentItemFacade dkmsContentItem){
+		 dkmsContentItemBean.init(dkmsContentItem);	
+		 selectedDkmsContentItem = dkmsContentItem;
+		 selectedDkmsContentItem.setContentItemState("C");
+		 dkmsContentItemBean.setContentItemState("C");		 	 
+		 return "/edukms/authorInterface/combineRessourcesController.xhtml";
+	}
+	
+	
 	
 	public String exitSequenceChangeController(){
 		
@@ -97,9 +125,20 @@ public class DkmsReadModusAction {
 	
 	@Begin(join=true)
 	public String showExerciseSheetDetails(DkmsContentItemFacade dkmsContentItem){
-		 dkmsContentItemBean.init(dkmsContentItem);	
+		 dkmsContentItemBean.init(dkmsContentItem);
+		 dkmsContentItemBean.setContentItemStateBuffer("1");
 		 selectedDkmsContentItem = dkmsContentItem;
 		 return "/edukms/authorInterface/exerciseSheetShowDetails.xhtml";
+	}
+	
+	@Begin(join=true)
+	public String showExerciseSheetFromCombined(DkmsContentItemFacade contentItem, String identifier){
+		dkmsContentItemBean.init(contentItem);
+		dkmsContentItemBean.setTmpContentItem(identifier);
+		dkmsContentItemBean.setContentItemStateBuffer("6");
+		selectedDkmsContentItem = contentItem;		 
+		 	 
+		return "/edukms/authorInterface/exerciseSheetShowDetails.xhtml";
 	}
 	
 	@Begin(join=true)
@@ -126,10 +165,22 @@ public class DkmsReadModusAction {
 	@Begin(join=true)
 	public String showSequenceDetails(DkmsContentItemFacade dkmsContentItem){
 		 dkmsContentItemBean.init(dkmsContentItem);	
+		 dkmsContentItemBean.setContentItemStateBuffer("2");
 		 selectedDkmsContentItem = dkmsContentItem;
 		 return "/edukms/authorInterface/sequenceShowDetails.xhtml";
 	}
 	
+	
+	@Begin(join=true)
+	public String showSequenceFromCombined(DkmsContentItemFacade contentItem, String identifier){
+		dkmsContentItemBean.init(contentItem);
+		dkmsContentItemBean.setTmpContentItem(identifier);
+		dkmsContentItemBean.setContentItemStateBuffer("6");
+		selectedDkmsContentItem = contentItem;		 
+		 	 
+		 return "/edukms/authorInterface/sequenceShowDetails.xhtml";
+	}
+		
 	public String showSequenceChangeDetails(){
 		 
 		 return "/edukms/authorInterface/sequenceShowChangeDetails.xhtml";
@@ -152,10 +203,29 @@ public class DkmsReadModusAction {
 	@Begin(join=true)
 	public String showDocumentDetails(DkmsContentItemFacade dkmsContentItem){
 		 dkmsContentItemBean.init(dkmsContentItem);	
+		 dkmsContentItemBean.setContentItemStateBuffer("3");
 		 selectedDkmsContentItem = dkmsContentItem;
 		 return "/edukms/authorInterface/documentShowDetails.xhtml";
 	}
 	
+	@Begin(join=true)
+	public String showCombinedResourceDetails(DkmsContentItemFacade dkmsContentItem){
+		 dkmsContentItemBean.init(dkmsContentItem);	
+		 selectedDkmsContentItem = dkmsContentItem;
+		 return "/edukms/authorInterface/combinedResourceShowDetails.xhtml";
+	}
+	
+	
+	@Begin(join=true)
+	public String showDocumentFromCombined(DkmsContentItemFacade contentItem, String identifier){
+		dkmsContentItemBean.init(contentItem);
+		dkmsContentItemBean.setTmpContentItem(identifier);
+		dkmsContentItemBean.setContentItemStateBuffer("6");
+		selectedDkmsContentItem = contentItem;		 
+		 	 
+		return "/edukms/authorInterface/documentShowDetails.xhtml";
+	}
+		
 	@Begin(join=true)
 	public String showDocumentPresentation(DkmsContentItemFacade dkmsContentItem){
 		 dkmsContentItemBean.init(dkmsContentItem);	
@@ -167,6 +237,67 @@ public class DkmsReadModusAction {
 		return equityService.getContentItemEquity(ci);
 	}
 	
+	
+	public String getQuickResources(String queryType){
+		
+		if (queryType.equals("1")){
+		
+			List<DkmsContentItemFacade> dkmsContentItemList = dkmsContentItemService.getAllDkmsContentItems();
+			resultList = new LinkedList<DkmsContentItemFacade>();
+			
+			for (DkmsContentItemFacade cifTmp : dkmsContentItemList) {
+				
+				if (cifTmp.getTrashState() == false) resultList.add(cifTmp);
+			
+			}
+			
+		
+		}
+		
+		if (queryType.equals("2")){
+			
+			List<DkmsContentItemFacade> dkmsContentItemList = dkmsContentItemService.getNewestDkmsContentItems();
+			resultList = new LinkedList<DkmsContentItemFacade>();
+			
+			for (DkmsContentItemFacade cifTmp : dkmsContentItemList) {
+				
+				if (cifTmp.getTrashState() == false) resultList.add(cifTmp);
+			
+			}
+			
+		
+		}
+		
+		if (queryType.equals("3")){
+			
+			List<DkmsContentItemFacade> dkmsContentItemList = dkmsContentItemService.getAllWikiResources();
+			resultList = new LinkedList<DkmsContentItemFacade>();
+			
+			for (DkmsContentItemFacade cifTmp : dkmsContentItemList) {
+				
+				if (cifTmp.getTrashState() == false) resultList.add(cifTmp);
+			
+			}
+			
+		
+		}
+		
+		if (queryType.equals("4")){
+			
+			List<DkmsContentItemFacade> dkmsContentItemList = dkmsContentItemService.getAllBlogResources();
+			resultList = new LinkedList<DkmsContentItemFacade>();
+			
+			for (DkmsContentItemFacade cifTmp : dkmsContentItemList) {
+				
+				if (cifTmp.getTrashState() == false) resultList.add(cifTmp);
+			
+			}
+			
+		
+		}
+		
+		return "/edukms/abcmaths/quickSearchResult.xhtml";
+	}
 	
 	public String showCombinedSimpleResource(String combinedItemId, String identifier){
 		 
@@ -193,14 +324,14 @@ public class DkmsReadModusAction {
 		
 		List<DkmsContentItemFacade> dkmsContentItemList = dkmsContentItemService.getAllDkmsContentItems();
 		
-		String tmpCI = selectedDkmsContentItem.getKiwiIdentifier();
+		//String tmpCI = selectedDkmsContentItem.getKiwiIdentifier();
 		
 		for (DkmsContentItemFacade cifTmp : dkmsContentItemList) {
 			if (cifTmp.getKiwiIdentifier().equals(combinedItemId)){
 				
 				dkmsContentItemBean.init(cifTmp);
 				dkmsContentItemBean.setTmpContentItem(identifier);
-				selectedDkmsContentItem = cifTmp;
+				//selectedDkmsContentItem = cifTmp;
 							
 			}
 		}			
@@ -250,6 +381,26 @@ public class DkmsReadModusAction {
 	
 	
 	
+	public String goToCombinedResourceController(String identifier){ 
+		
+		List<DkmsContentItemFacade> dkmsContentItemList = dkmsContentItemService.getAllDkmsContentItems();
+		
+		for (DkmsContentItemFacade cifTmp : dkmsContentItemList) {
+			if (cifTmp.getKiwiIdentifier().equals(identifier)){
+				
+				dkmsContentItemBean.init(cifTmp);
+				selectedDkmsContentItem = cifTmp;
+								
+			}
+		}			
+		
+		//dkmsContentItemBean.setContentItemState("6");
+		//selectedDkmsContentItem.setContentItemState("6");
+    	return "/edukms/authorInterface/combineRessourcesController.xhtml";
+    }
+	
+	
+	
 	
 	public String showScrollPerspective(){
 		
@@ -259,10 +410,10 @@ public class DkmsReadModusAction {
 		
 		if(scTmp != null){
 			for (DkmsSequenceComponentManager sequenceComponentTmp : scTmp) {
-				
-				content = content + "<b>" + sequenceComponentTmp.getTaskTitle() + "</b><br/>";
-				content = content + sequenceComponentTmp.getSequenceContent() + "<br/><br/>";
-				
+				if (sequenceComponentTmp.getViewStatus()==0){
+					content = content + "<b>" + sequenceComponentTmp.getTaskTitle() + "</b><br/>";
+					content = content + sequenceComponentTmp.getSequenceContent() + "<br/><br/>";
+				}
 			}			
 		}	
 		 dkmsContentItemBean.setTaskContent(content);
@@ -332,8 +483,6 @@ public class DkmsReadModusAction {
 		return "/edukms/authorInterface/trashContainer.xhtml";		
 	}
 	
-	
-	
 	public String previewExerciseSheet() {
 		
 		Events.instance().raiseEvent("onSaveEvent");
@@ -392,7 +541,7 @@ public class DkmsReadModusAction {
 	
 	public String goToResultList(){
 		 
-		 return "/edukms/abcmaths/lastUploadedResult.xhtml";
+		 return "/edukms/abcmaths/searchKMS.xhtml";
 	}
 	
 	public String buyDkmsContentItem(){
@@ -518,12 +667,17 @@ public class DkmsReadModusAction {
 	//TODO: Pfad aus Property File und Server!!!
 	public String getOriginalMultimediaFilename(DkmsFileManager multimedia) {
 		//localhost
-		//String path = "I:/edukms/files/cache/";	
+		//String path = "http://localhost:8080//KiWi/images/";	
 		//abcmaths Server
 		String path = "http://abcmaths.sbg.ac.at/images/";	
 
 		
 		return path + multimedia.getFileName();
+	}
+	
+	public String getOriginalMultimediaFilenameShort(DkmsFileManager multimedia){		
+		
+		return multimedia.getFileName();
 	}
 	
 	//TODO: Pfad aus Property File und Server!!!
@@ -533,7 +687,7 @@ public class DkmsReadModusAction {
 		Integer height = new Integer(400);
 		
 		//localhost
-//		String path = "D:/dkms/images/cache/";	
+		//String path = "http://localhost:8080//KiWi/images/";	
 		//abcmaths Server
 		String path = "http://abcmaths.sbg.ac.at/images/cache";	
         String pic = "/" + width + "x" + height + "_" + multimedia.getFileName();
@@ -576,13 +730,13 @@ public class DkmsReadModusAction {
 //		return dkmsImageService.createImageURL(multimedia.getFileName(), width, height);
 //	}
 	
-	public String getMiniMultimediaFilename(DkmsFileManager multimedia) {
+	public String getShapedMultimediaFilename(DkmsFileManager multimedia) {
 		// TODO Werte und path von Property File auslesen
-		Integer width = new Integer(100);
-		Integer height = new Integer(75);
+		Integer width = new Integer(650);
+		Integer height = new Integer(2000);
 		
 		//localhost
-		//String path = "D:/edukms/files/cache/";	
+		//String path = "http://localhost:8080//KiWi/images/cache";	
 		//abcmaths Server
 		String path = "http://abcmaths.sbg.ac.at/images/cache/";	
 
@@ -597,7 +751,7 @@ public class DkmsReadModusAction {
 		Integer height = new Integer(75);
 		
 		//localhost
-		//String path = "D:/edukms/files/cache/";	
+		//String path = "http://localhost:8080//KiWi/images/cache";	
 		//abcmaths Server
 		String path = "http://abcmaths.sbg.ac.at/images/cache/";	
 
@@ -623,4 +777,54 @@ public class DkmsReadModusAction {
 		dkmsContentItems = dkmsContentItemService.getDkmsContentItems();
 		return dkmsContentItems;
 	}
+	
+	public List<DkmsContentItemFacade> getTrashedContentItems() {
+		return dkmsContentItemService.getTrashedContentItems();
+		
+	}
+	
+	public List<DkmsContentItemFacade> getSimpleResources() {
+		return dkmsContentItemService.getSimpleResources();
+		
+	}
+	
+	public List<DkmsContentItemFacade> getSegmentedResources() {
+		return dkmsContentItemService.getSegmentedResources();
+		
+	}
+	
+	public List<DkmsContentItemFacade> getUploadedResources() {
+		return dkmsContentItemService.getUploadedResources();
+		
+	}
+	
+	public List<DkmsContentItemFacade> getCombinedResources() {
+		return dkmsContentItemService.getCombinedResources();
+	
+	}
+	
+	public List<DkmsContentItemFacade> getAllWikiResources() {
+		return dkmsContentItemService.getAllWikiResources();
+	
+	}
+	
+	public List<DkmsContentItemFacade> getAllBlogResources() {
+		return dkmsContentItemService.getAllBlogResources();
+	
+	}
+	
+	public List<DkmsContentItemFacade> getNewestDkmsContentItems() {
+		return dkmsContentItemService.getNewestDkmsContentItems();
+	
+	}
+	
+	public List<DkmsContentItemFacade> getResultList() {
+		return resultList;
+	}
+
+	public void setResultList(List<DkmsContentItemFacade> resultList) {
+		this.resultList = resultList;
+	}
+	
+	
 }

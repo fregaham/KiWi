@@ -87,8 +87,21 @@
 			        
 			            <s:link action="#{identityManagerService.logout}" 
 			                     value="#{messages['artaround.logout']}"
-			                  rendered="#{identity.loggedIn}" />	    
-												
+			                  rendered="#{identity.loggedIn}" />	
+			                  
+			             <h:outputText value=" | " rendered="#{identity.loggedIn}"/>
+			             
+			             <s:link action="/artaround/pages/profil/meinProfil.xhtml" 
+			                     value="Mein Admin-bereich"
+			                  rendered="#{identity.loggedIn}" /> 
+			             
+			             <c:if test="#{identity.loggedIn}">
+			             <h:outputText value=" | " rendered="#{credentials.username == 'admin'}"/>
+			             
+			             <s:link action="/artaround/masterAdmin.xhtml" 
+			                     value="Master Adminbereich"
+			                  rendered="#{credentials.username == 'admin'}" />    
+						 </c:if>						
 				    </div>
 			
 			    </h:form>

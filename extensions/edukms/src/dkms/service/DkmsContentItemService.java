@@ -21,6 +21,7 @@ import kiwi.model.Constants;
 import kiwi.model.content.ContentItem;
 import kiwi.model.user.User;
 
+import org.apache.solr.client.solrj.SolrQuery.ORDER;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -82,22 +83,147 @@ public class DkmsContentItemService {
 		KiWiSearchCriteria criteria = new KiWiSearchCriteria();
 		criteria.getTypes().add(tripleStore.createUriResource(Constants.DKMS_CORE + "DkmsContentItem").getKiwiIdentifier());
 		criteria.setLimit(Integer.MAX_VALUE);
+		criteria.setSortField("modified");		
+		List <DkmsContentItemFacade> allDkmsContentItems = getDkmsContentItemsWithCriteria(criteria);		
+		return allDkmsContentItems;
+	}
+	
+	public List<DkmsContentItemFacade> getNewestDkmsContentItems(){
+		KiWiSearchCriteria criteria = new KiWiSearchCriteria();
+		criteria.getTypes().add(tripleStore.createUriResource(Constants.DKMS_CORE + "DkmsContentItem").getKiwiIdentifier());
+		criteria.setLimit(25);
+		criteria.setSortField("modified");		
 		List <DkmsContentItemFacade> allDkmsContentItems = getDkmsContentItemsWithCriteria(criteria);		
 		return allDkmsContentItems;
 	}
 	
 	/**
-	 * This class <b>returns all DkmsContentItems</b>
+	 * This class <b>returns TrashedContentItems</b>
 	 * @param no parameters
-	 * @return returns all ArtWors
+	 * @return returns TrashedContentItems by logged in user
+	 */
+	public List<DkmsContentItemFacade> getTrashedContentItems(){
+		KiWiSearchCriteria criteria = new KiWiSearchCriteria();
+		criteria.getTypes().add(tripleStore.createUriResource(Constants.DKMS_CORE + "DkmsContentItem").getKiwiIdentifier());
+		criteria.setPerson(currentUser.getLogin());
+		criteria.setLimit(Integer.MAX_VALUE);
+		List <DkmsContentItemFacade> trashedContentItems = new LinkedList<DkmsContentItemFacade>();
+		List <DkmsContentItemFacade> dkmsContentItems = getDkmsContentItemsWithCriteria(criteria);	
+		for (DkmsContentItemFacade cif : dkmsContentItems){
+			if ((cif.getTrashState() == true)){
+				trashedContentItems.add(cif);
+			}			
+		}		
+		return trashedContentItems;
+	}
+	
+	
+	/**
+	 * This class <b>returns dkmsContentItems</b>
+	 * @param no parameters
+	 * @return returns dkmsContentItems by logged in user
 	 */
 	public List<DkmsContentItemFacade> getDkmsContentItems(){
 		KiWiSearchCriteria criteria = new KiWiSearchCriteria();
 		criteria.getTypes().add(tripleStore.createUriResource(Constants.DKMS_CORE + "DkmsContentItem").getKiwiIdentifier());
 		criteria.setPerson(currentUser.getLogin());
 		criteria.setLimit(Integer.MAX_VALUE);
-		List <DkmsContentItemFacade> dkmsContentItems = getDkmsContentItemsWithCriteria(criteria);	
+		List <DkmsContentItemFacade> dkmsContentItems = new LinkedList<DkmsContentItemFacade>();
+		List <DkmsContentItemFacade> dkmsContentItemList = getDkmsContentItemsWithCriteria(criteria);	
+		for (DkmsContentItemFacade cif : dkmsContentItemList){
+			if ((cif.getTrashState() == false)){
+				dkmsContentItems.add(cif);
+			}			
+		}		
 		return dkmsContentItems;
+	}
+	
+	public List<DkmsContentItemFacade> getSimpleResources(){
+		KiWiSearchCriteria criteria = new KiWiSearchCriteria();
+		criteria.getTypes().add(tripleStore.createUriResource(Constants.DKMS_CORE + "DkmsContentItem").getKiwiIdentifier());
+		criteria.setPerson(currentUser.getLogin());
+		criteria.setLimit(Integer.MAX_VALUE);
+		List <DkmsContentItemFacade> simpleResources = new LinkedList<DkmsContentItemFacade>();
+		List <DkmsContentItemFacade> dkmsContentItems = getDkmsContentItemsWithCriteria(criteria);	
+		for (DkmsContentItemFacade cif : dkmsContentItems){
+			if (cif.getDkmsContentItemType().equals("1") && (cif.getTrashState() == false)){
+				simpleResources.add(cif);
+			}			
+		}		
+		return simpleResources;
+	}
+	
+	public List<DkmsContentItemFacade> getSegmentedResources(){
+		KiWiSearchCriteria criteria = new KiWiSearchCriteria();
+		criteria.getTypes().add(tripleStore.createUriResource(Constants.DKMS_CORE + "DkmsContentItem").getKiwiIdentifier());
+		criteria.setPerson(currentUser.getLogin());
+		criteria.setLimit(Integer.MAX_VALUE);
+		List <DkmsContentItemFacade> simpleResources = new LinkedList<DkmsContentItemFacade>();
+		List <DkmsContentItemFacade> dkmsContentItems = getDkmsContentItemsWithCriteria(criteria);	
+		for (DkmsContentItemFacade cif : dkmsContentItems){
+			if (cif.getDkmsContentItemType().equals("2") && (cif.getTrashState() == false)){
+				simpleResources.add(cif);
+			}			
+		}		
+		return simpleResources;
+	}
+	
+	public List<DkmsContentItemFacade> getUploadedResources(){
+		KiWiSearchCriteria criteria = new KiWiSearchCriteria();
+		criteria.getTypes().add(tripleStore.createUriResource(Constants.DKMS_CORE + "DkmsContentItem").getKiwiIdentifier());
+		criteria.setPerson(currentUser.getLogin());
+		criteria.setLimit(Integer.MAX_VALUE);
+		List <DkmsContentItemFacade> simpleResources = new LinkedList<DkmsContentItemFacade>();
+		List <DkmsContentItemFacade> dkmsContentItems = getDkmsContentItemsWithCriteria(criteria);	
+		for (DkmsContentItemFacade cif : dkmsContentItems){
+			if (cif.getDkmsContentItemType().equals("3") && (cif.getTrashState() == false)){
+				simpleResources.add(cif);
+			}			
+		}		
+		return simpleResources;
+	}
+	
+	public List<DkmsContentItemFacade> getAllWikiResources(){
+		KiWiSearchCriteria criteria = new KiWiSearchCriteria();
+		criteria.getTypes().add(tripleStore.createUriResource(Constants.DKMS_CORE + "DkmsContentItem").getKiwiIdentifier());		
+		criteria.setLimit(Integer.MAX_VALUE);
+		List <DkmsContentItemFacade> simpleResources = new LinkedList<DkmsContentItemFacade>();
+		List <DkmsContentItemFacade> dkmsContentItems = getDkmsContentItemsWithCriteria(criteria);	
+		for (DkmsContentItemFacade cif : dkmsContentItems){
+			if (cif.getDkmsContentItemType().equals("4") && (cif.getTrashState() == false)){
+				simpleResources.add(cif);
+			}			
+		}		
+		return simpleResources;
+	}
+	
+	public List<DkmsContentItemFacade> getAllBlogResources(){
+		KiWiSearchCriteria criteria = new KiWiSearchCriteria();
+		criteria.getTypes().add(tripleStore.createUriResource(Constants.DKMS_CORE + "DkmsContentItem").getKiwiIdentifier());		
+		criteria.setLimit(Integer.MAX_VALUE);
+		List <DkmsContentItemFacade> simpleResources = new LinkedList<DkmsContentItemFacade>();
+		List <DkmsContentItemFacade> dkmsContentItems = getDkmsContentItemsWithCriteria(criteria);	
+		for (DkmsContentItemFacade cif : dkmsContentItems){
+			if (cif.getDkmsContentItemType().equals("5") && (cif.getTrashState() == false)){
+				simpleResources.add(cif);
+			}			
+		}		
+		return simpleResources;
+	}
+	
+	public List<DkmsContentItemFacade> getCombinedResources(){
+		KiWiSearchCriteria criteria = new KiWiSearchCriteria();
+		criteria.getTypes().add(tripleStore.createUriResource(Constants.DKMS_CORE + "DkmsContentItem").getKiwiIdentifier());
+		criteria.setPerson(currentUser.getLogin());
+		criteria.setLimit(Integer.MAX_VALUE);
+		List <DkmsContentItemFacade> simpleResources = new LinkedList<DkmsContentItemFacade>();
+		List <DkmsContentItemFacade> dkmsContentItems = getDkmsContentItemsWithCriteria(criteria);	
+		for (DkmsContentItemFacade cif : dkmsContentItems){
+			if (cif.getDkmsContentItemType().equals("6") && (cif.getTrashState() == false)){
+				simpleResources.add(cif);
+			}			
+		}		
+		return simpleResources;
 	}
 	
 	private List<DkmsContentItemFacade> getDkmsContentItemsWithCriteria(KiWiSearchCriteria criteria){
@@ -177,6 +303,10 @@ public class DkmsContentItemService {
 		dkmsContentItem.setDkmsContentItemType(dkmsContentItemBean.getDkmsContentItemType());
 		
 		dkmsContentItem.setTmpContentItem(dkmsContentItemBean.getTmpContentItem());
+		
+		dkmsContentItem.setContentItemStateBuffer(dkmsContentItemBean.getContentItemStateBuffer());
+		
+		dkmsContentItem.setContentItemBuffer(dkmsContentItemBean.getContentItemBuffer());
 		
 		dkmsContentItem.setContentItemIdentifier(dkmsContentItem.getKiwiIdentifier());
 		
@@ -281,7 +411,9 @@ public class DkmsContentItemService {
 				dkmsSequenceComponent.setTaskId(sequenceComponentTmp.getTaskId());
 				dkmsSequenceComponent.setTaskTitle(sequenceComponentTmp.getTaskTitle());
 				dkmsSequenceComponent.setSequenceContent(sequenceComponentTmp.getSequenceContent());
-				dkmsSequenceComponent.setVersion(sequenceComponentTmp.getVersion());				
+				dkmsSequenceComponent.setVersion(sequenceComponentTmp.getVersion());
+				dkmsSequenceComponent.setViewStatus(sequenceComponentTmp.getViewStatus());
+								
 
 				scml.add(dkmsSequenceComponent);
 

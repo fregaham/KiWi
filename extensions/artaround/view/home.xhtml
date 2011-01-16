@@ -73,6 +73,63 @@
 		});
 	</script> 	
 	
+	<script>
+		jQuery(function() {
+
+					
+		jQuery(".items img").click(function() {
+		
+			// calclulate large image's URL based on the thumbnail URL (flickr specific)
+			var url = jQuery(this).attr("src").replace("100x75", "400x330"); //wrap to mini preview image size
+
+			var tit = jQuery(this).attr("title");
+
+			var ref = jQuery(this).attr("name");
+
+			
+			
+
+			// get handle to element that wraps the image and make it semitransparent
+			var wrap = jQuery("#image_wrap").fadeTo("medium", 0.5);
+		
+			// the large image from flickr
+			var img = new Image();
+
+			
+		
+			// call this function after it's loaded
+			img.onload = function() {
+		
+				// make wrapper fully visible
+				wrap.fadeTo("fast", 1);
+		
+				// change the image
+				wrap.find("img").attr("src", url);
+				wrap.find("img").attr("title", tit);
+				wrap.find("div").attr("style", "display:none");
+							
+				var imgref = "#" + ref + "";	
+				var tmp = "#testimg";		
+				//alert(imgref + " : " + tmp);			
+				jQuery(imgref).attr("style", "display:block");
+				//jQuery(tmp).attr("style", "display:block");
+				document.imgDesc.imgTit.value = tit;		
+					
+			};
+		
+			// begin loading the image
+			img.src = url;
+					
+		
+		// when page loads simulate a "click" on the first image
+		}).filter(":first").click();
+		});
+		
+	</script>
+		
+	<link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.requestContextPath}/view/jQueryStyle/scrollable-horizontal.css" />
+	<link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.requestContextPath}/view/jQueryStyle/scrollable-buttons.css" /> 
+	
 	 <style>
 
 
@@ -111,15 +168,15 @@
 		.scrollable {
 			position:relative;
 			overflow:hidden;
-			width: 510px;
-			height: 450px;
+			width: 620px;
+			height: 120px;
 		}
 		
 		/* root element for scrollable items */
 		.scrollable .items {
 			width:20000em;
 			position:absolute;
-			clear:both;			
+			clear:both;
 		}
 		
 		/* single scrollable item */
@@ -127,8 +184,8 @@
 			float:left;
 			cursor:pointer;
 			width:500px;
-			height:450px;
-			padding:10px;			
+			height:400px;
+			padding:10px;
 		}		
 		
 		/* main navigator */
@@ -236,266 +293,77 @@
 			document.imgC.style.opacity = "1";
 		}		 
 	 </script>	
-	 
-	<div id="cover"> <!-- begin cover -->
-	 	
-	<!-- main navigator -->
-	<ul id="main_navi">	
-		
-		<li  onclick="clickA()">			
-<!--			<img name="imgA" src="#{facesContext.externalContext.requestContextPath}/view/img/artaround_symbol.jpg"/>-->
-			<h3>#{messages['artaround']}</h3>
-			<h4>#{messages['artaround.topTen']}</h4>			
-		</li>
-		<li onclick="clickB()">
-<!--			<img name="imgB" src="#{facesContext.externalContext.requestContextPath}/view/img/comunity_symbol.jpg"/>-->
-			<h3>#{messages['artaround.community']}</h3>
-			<h4>#{messages['artaround.topTen']}</h4>
-			
-		</li>		
-		<li onclick="clickC()">
-<!--			<img name="imgC" src="#{facesContext.externalContext.requestContextPath}/view/img/kunst_symbol.png" />-->
-			<h3>Neue</h3>
-			<h4>Kunstwerke</h4>
-		</li>				
-	</ul>
 
-	<!-- root element for the main scrollable -->
-	<div id="mainpic"><!--  begin mainpic -->
+	<div id="cover"> <!-- begin cover -->
 	
-		<!-- root element for pages -->
-		<div id="pages">
+	 
+	<div id="image_wrap" style="border: 1px solid #ccc; margin-bottom:10px; margin-left:40px; width:620px" >
 	
-			<!-- page #1 -->
-			<div class="singlepage">
-	
-				<!-- sub navigator #1 -->
-				<div class="navi"></div>
-	
-				<!-- inner scrollable #1 -->
-				<div class="scrollable">
+	<!--  Formular Begin -->		
+				
+			<form name="imgDesc" style="margin-bottom:10px; margin-top:10px">
+			
+				<table><tr><td align="center" width="610" >
 						
-	
-					<!-- root element for scrollable items -->
-					<div class="items">					
-	
-						<!-- items  -->
-						<div class="item" style="text-align:center">
-							<img src="http://www.artaround.at/musterpics/muster6.jpg" />
-							<div id="description"><h3>Tortura &#8226; Mario Manzel &#8226; Liezen</h3></div>
-							<div id="actions"><br/>
-								#{messages['artaround.forward']} <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" /> <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" />
+	 					<input style="border:none; font-size:16px; color:#999; font-weight:bold; text-align:center; width:400px"  name="imgTit" type="text" value="" />
+ 						
+				</td></tr></table>
+			
+<!--			<div id="testimg" style="display:none">Hallo Test</div>-->
+
+			
+			<table>
+				
+				<tr><td align="center" height="350" width="610">		
+						<!-- Transparentes Bild als Platzhalter -->
+						<c:forEach items="#{showArtWorkAction.allArtWorks}" var="artWork">
+							
+	 						<div id="#{artWork.title}" style="display:none">
+	 							<h:form>
+	 							<a4j:outputPanel>
+								<img name="#{artWork.title}" align="middle" src="http://static.flowplayer.org/tools/img/blank.gif" title="" alt="No pic" />
+								<a4j:support event="onclick" action="#{showArtWorkAction.selectArtWork(artWork)}" />
+								</a4j:outputPanel>
+								</h:form>
 							</div>
-						</div>
-						<div class="item" style="text-align:center">
-							<img src="http://www.artaround.at/musterpics/muster22.jpg" />
-							<div id="description"><h3>Blaubeeren am See &#8226; Mike Gonzales Schneider &#8226; Salzburg</h3></div>
-							<div id="actions"><br/>
-								#{messages['artaround.forward']} <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" /> <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" />
-							</div>
-						</div>
-						<div class="item" style="text-align:center">
-							<img src="http://www.artaround.at/musterpics/muster12.jpg" />
-							<div id="description"><h3>Mozartsteine &#8226; Mini Murxi &#8226; Liebenau</h3></div>
-							<div id="actions"><br/>
-								#{messages['artaround.forward']} <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" /> <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" />
-							</div>
-						</div>
-						<div class="item" style="text-align:center">
-							<img src="http://www.artaround.at/musterpics/muster11.jpg" />
-							<div id="description"><h3>Altertum &#8226; Heinrich Maller &#8226; Hieding</h3></div>
-							<div id="actions"><br/>
-								#{messages['artaround.forward']} <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" /> <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" />
-							</div>
-						</div>
-						<div class="item" style="text-align:center">
-							<img src="http://www.artaround.at/musterpics/muster10.jpg" />
-							<div id="description"><h3>Typhus &#8226; Roman Wallner &#8226;Innsbruck</h3></div>
-							<div id="actions"><br/>
-								#{messages['artaround.forward']} <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" /> <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" />
-							</div>
-						</div>
-						<div class="item" style="text-align:center">
-							<img src="http://www.artaround.at/musterpics/muster7.jpg" />
-							<div id="description"><h3>Skyline &#8226; Rodolfo Sintifaxus &#8226; Wien</h3></div>
-							<div id="actions"><br/>
-								#{messages['artaround.forward']} <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" /> <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" />
-							</div>
-						</div>
-						<div class="item" style="text-align:center">
-							<img src="http://www.artaround.at/musterpics/muster8.jpg" />
-							<div id="description"><h3>Business Flair &#8226; Mike Gonzales Schneider &#8226; Salzburg</h3></div>
-							<div id="actions"><br/>
-								#{messages['artaround.forward']} <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" /> <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" />
-							</div>
-						</div>
-						<div class="item" style="text-align:center">
-							<img src="http://www.artaround.at/musterpics/muster9.jpg" />
-							<div id="description"><h3>Buildings &#8226; CapCoster &#8226; Salzburg</h3></div>
-							<div id="actions"><br/>
-								#{messages['artaround.forward']} <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" /> <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" />
-							</div>
-						</div>	
-					</div>	
-				</div>	
-			</div>
-	
-			<!-- page #2 -->
-			<div class="singlepage">
-	
-				<div class="navi"></div>
-	
-				<!-- inner scrollable #2 -->
-				<div class="scrollable">
-	
-					<!-- root element for scrollable items -->
-					<div class="items">
-	
-						<!-- items on the second page -->
-						<div class="item" style="text-align:center">
-							<img src="http://www.artaround.at/musterpics/muster15.jpg" />
-							<div id="description"><h3>Eierpecken ... &#8226; Heinrich Grazei &#8226; Lustenau</h3></div>
-							<div id="actions"><br/>
-								#{messages['artaround.forward']} <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" /> <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" />
-							</div>
-						</div>
-						<div class="item" style="text-align:center">
-							<img src="http://www.artaround.at/musterpics/muster16.jpg" />
-							<div id="description"><h3>Lebendig Sein &#8226; Klaus Lebender &#8226; Graz</h3></div>
-							<div id="actions"><br/>
-								#{messages['artaround.forward']} <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" /> <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" />
-							</div>
-						</div>
-						<div class="item" style="text-align:center">
-							<img src="http://www.artaround.at/musterpics/muster17.jpg" />
-							<div id="description"><h3>Allerlei &#8226; Susi Sillers &#8226; Koppl</h3></div>
-							<div id="actions"><br/>
-								#{messages['artaround.forward']} <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" /> <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" />
-							</div>
-						</div>
-						<div class="item" style="text-align:center">
-							<img src="http://www.artaround.at/musterpics/muster14.jpg" />
-							<div id="description"><h3>Alpenglocken &#8226; Mirna Murco &#8226; Gastein</h3></div>
-							<div id="actions"><br/>
-								#{messages['artaround.forward']} <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" /> <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" />
-							</div>
-						</div>
-						<div class="item" style="text-align:center">
-							<img src="http://www.artaround.at/musterpics/muster13.jpg" />
-							<div id="description"><h3>Hochzeitstraum &#8226; Gerry Stiller &#8226; Graz</h3></div>
-							<div id="actions"><br/>
-								#{messages['artaround.forward']} <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" /> <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" />
-							</div>
-						</div>
-						<div class="item" style="text-align:center">
-							<img src="http://www.artaround.at/musterpics/muster3.jpg" />
-							<div id="description"><h3>Wall &#8226; CapCoster &#8226; Salzburg</h3></div>
-							<div id="actions"><br/>
-								#{messages['artaround.forward']} <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" /> <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" />
-							</div>
-						</div>
-						<div class="item" style="text-align:center">
-							<img src="http://www.artaround.at/musterpics/muster2.jpg" />
-							<div id="description"><h3>Figure &#8226; Mike Gonzales Schneider &#8226; Salzburg</h3></div>
-							<div id="actions"><br/>
-								#{messages['artaround.forward']} <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" /> <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" />
-							</div>
-						</div>
-						<div class="item" style="text-align:center">
-							<img src="http://www.artaround.at/musterpics/muster1.jpg" />
-							<div id="description"><h3>Modern Art &#8226; Rodolfo Sintifaxus &#8226; Tirol</h3></div>
-							<div id="actions"><br/>
-								#{messages['artaround.forward']} <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" /> <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" />
-							</div>
-						</div>	
-					</div>	
-				</div>	
-			</div>
-	
-			<!-- page #3 -->
-			<div class="singlepage">
-	
-				<div class="navi"></div>
-	
-				<!-- inner scrollable #3 -->
-				<div class="scrollable">
-	
-					<!-- root element for scrollable items -->
-					<div class="items">
-	
-						<!-- items on the third page -->
-						<c:forEach items="#{showArtWorkAction.artWorks}" var="artWork">
-						<div class="item" style="text-align:center">
-						    	<img src="#{showArtWorkAction.getPreviewMasterFileNameFromArtwork(artWork)}"/>
-						    	<div id="description"><h3>#{artWork.title} &#8226; #{artWork.authorName} &#8226; #{artWork.location}</h3></div>
-						    	<div id="actions"><br/>
-								#{messages['artaround.forward']} <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" /> <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" />
-							</div>
-						    	<div id="details">
-									<h:form>
-										<a4j:commandLink value="#{messages['artaround.artworks.details']}" action="#{showArtWorkAction.selectArtWork(artWork)}" style="text-decoration:none; color:#EB6D0E"/>
-									</h:form>
-								</div>
-						</div>
 						</c:forEach>
 						
-						<div class="item" style="text-align:center">
-							<img src="http://www.artaround.at/musterpics/muster21.jpg" />
-							<div id="description"><h3>Kraxn &#8226; Gundi Gumpold &#8226; Salzburg</h3></div>
-							<div id="actions"><br/>
-								#{messages['artaround.forward']} <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" /> <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" />
-							</div>
-						</div>
-						<div class="item" style="text-align:center">
-							<img src="http://www.artaround.at/musterpics/muster20.jpg" />
-							<div id="description"><h3>Kampusleben &#8226; Mandi Murli &#8226; Hof</h3></div>
-							<div id="actions"><br/>
-								#{messages['artaround.forward']} <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" /> <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" />
-							</div>
-						</div>
-						<div class="item" style="text-align:center">
-							<img src="http://www.artaround.at/musterpics/muster19.jpg" />
-							<div id="description"><h3>Aberstunden &#8226; Moriz Glanzer &#8226; Salzburg</h3></div>
-							<div id="actions"><br/>
-								#{messages['artaround.forward']} <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" /> <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" />
-							</div>
-						</div>
-						<div class="item" style="text-align:center">
-							<img src="http://www.artaround.at/musterpics/muster18.jpg" />
-							<div id="description"><h3>Pferdegefluster &#8226; Hugo Simon &#8226; Graz</h3></div>
-							<div id="actions"><br/>
-								#{messages['artaround.forward']} <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" /> <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" />
-							</div>
-						</div>
-						<div class="item" style="text-align:center">
-							<img src="http://www.artaround.at/musterpics/muster4.jpg" />
-							<div id="description"><h3>Wall &#8226; CapCoster &#8226; Salzburg</h3></div>
-							<div id="actions"><br/>
-								#{messages['artaround.forward']} <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" /> <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" />
-							</div>
-							
-						</div>
-						<div class="item" style="text-align:center">
-							<img src="http://www.artaround.at/musterpics/muster5.jpg" />
-							<div id="description"><h3>Brick &#8226; Hernandes Filius &#8226; Linz</h3></div>
-							<div id="actions"><br/>
-								#{messages['artaround.forward']} <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" /> <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" />
-							</div>
-						</div>
-						<div class="item" style="text-align:center">
-							<img src="http://www.artaround.at/musterpics/muster6.jpg" />
-							<div id="description"><h3>Mauerstein &#8226; Heinz Huber &#8226; Eisenstadt</h3></div>
-							<div id="actions"><br/>
-								#{messages['artaround.forward']} <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" /> <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" />
-							</div>
-						</div>	
-					</div>	
-				</div>	
-			</div>	
-		</div>
-	</div><!--  end mainpic -->
-</div>  <!--  end cover -->
-			 		    
+				</td></tr></table>
+			
+			
+		</form>
+	</div>
+
+	<!-- "previous page" action -->
+	<a class="prevPage browse left"></a>
+	
+	<!-- root element for scrollable -->
+	<div class="scrollable">		
+		<!-- root element for the items -->
+		<div class="items">		
+		
+			<!--  Alle Bilder des selektierten Kunstwerkes -->			 
+			<c:forEach items="#{showArtWorkAction.allArtWorks}" var="artWork">
+<!--					<c:if test="#{artWork.publicAccess}">-->
+						<img src="#{showArtWorkAction.getThumbMasterFileNameFromArtwork(artWork)}" title="#{artWork.title}&#160;&#9674;&#160;#{artWork.authorName}" name="#{artWork.title}"/>
+<!--					</c:if>-->
+					
+<!--					<h:commandLink value="Details" action="#{showArtWorkAction.viewArtWorkDetailsIdent(artWork.getKiwiIdentifier())}" />-->
+					
+					
+				
+			</c:forEach>
+			
+			
+			
+		</div>		
+	</div>
+	
+	<!-- "next page" action -->
+	<a class="nextPage browse right"></a>
+	
+</div>
+		 		    
 </ui:define>
 		 	
 </ui:composition>

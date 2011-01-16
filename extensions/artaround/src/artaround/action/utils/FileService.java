@@ -102,33 +102,28 @@ public class FileService {
 	 * @param the
 	 *            new file
 	 * */
-	public static void copyFile(File in, File out) throws Exception {
+	public static File copyFile(byte [] b, File out) throws Exception {
 
-		FileInputStream fis = new FileInputStream(in);
+		//FileInputStream fis = new FileInputStream(in);
 		FileOutputStream fos = new FileOutputStream(out);
-		byte[] buf = new byte[1024];
-		int i = 0;
 
-		while ((i = fis.read(buf)) != -1) {
-			fos.write(buf, 0, i);
-		}
-
-		fis.close();
+		fos.write(b);		
 		fos.close();
 
+		return out;
 	}
 
-	/**
-	 * copy a file
-	 * 
-	 * @param in
-	 *            the file to copy
-	 * @param the
-	 *            new file
-	 * */
-	public static void copyFile(String in, String out) throws Exception {
-		FileService.copyFile(new File(in), new File(out));
-	}
+//	/**
+//	 * copy a file
+//	 * 
+//	 * @param in
+//	 *            the file to copy
+//	 * @param the
+//	 *            new file
+//	 * */
+//	public static void copyFile(String in, String out) throws Exception {
+//		FileService.copyFile(new File(in), new File(out));
+//	}
 
 	/**
 	 * Deletes all files under dir. Returns true if all deletions were

@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import kiwi.commons.treeChosser.TreeChooserAction;
+import kiwi.commons.treeChosser.TreeNode;
 import kiwi.model.ontology.SKOSConcept;
 
 import org.jboss.seam.ScopeType;
@@ -17,7 +18,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.log.Log;
 
 
@@ -39,7 +39,133 @@ public class DkmsBigIdeasAction extends TreeChooserAction{
 	@Override
 	public String getRoot() {
 		return "Big Idea";	
+		
 	}
+	
+	public LinkedList<TreeNode> getBigIdeas(){
+		
+		
+		TreeNode[] tr = getTreeRoots();
+		
+		LinkedList<TreeNode> bigIdeasRoots = new LinkedList<TreeNode>();
+		
+		for(TreeNode l : tr){
+		
+			if (l.getConcept().getDefinition().equals("Big Idea")){
+				
+				bigIdeasRoots.add(l);
+			}		
+		}
+		
+		return bigIdeasRoots;
+	}
+	
+	public LinkedList<TreeNode> getContentAreas(){
+		
+		
+		TreeNode[] tr = getTreeRoots();
+		
+		LinkedList<TreeNode> contentAreaRoots = new LinkedList<TreeNode>();
+		
+		for(TreeNode l : tr){
+		
+			if (l.getConcept().getDefinition().equals("Content Area")){
+				
+				contentAreaRoots.add(l);
+			}		
+		}
+		
+		return contentAreaRoots;
+	}
+	
+	public LinkedList<TreeNode> getLanguages(){
+		
+		
+		TreeNode[] tr = getTreeRoots();
+		
+		LinkedList<TreeNode> contentAreaRoots = new LinkedList<TreeNode>();
+		
+		for(TreeNode l : tr){
+		
+			if (l.getConcept().getDefinition().equals("Language")){
+				
+				contentAreaRoots.add(l);
+			}		
+		}
+		
+		return contentAreaRoots;
+	}
+	
+	public LinkedList<TreeNode> getStati(){
+		
+		
+		TreeNode[] tr = getTreeRoots();
+		
+		LinkedList<TreeNode> contentAreaRoots = new LinkedList<TreeNode>();
+		
+		for(TreeNode l : tr){
+		
+			if (l.getConcept().getDefinition().equals("Status")){
+				
+				contentAreaRoots.add(l);
+			}		
+		}
+		
+		return contentAreaRoots;
+	}
+	
+	public LinkedList<TreeNode> getTypesOfResource(){
+		
+		
+		TreeNode[] tr = getTreeRoots();
+		
+		LinkedList<TreeNode> contentAreaRoots = new LinkedList<TreeNode>();
+		
+		for(TreeNode l : tr){
+		
+			if (l.getConcept().getDefinition().equals("Type of resource")){
+				
+				contentAreaRoots.add(l);
+			}		
+		}
+		
+		return contentAreaRoots;
+	}
+	
+	public LinkedList<TreeNode> getIntentions(){		
+		
+		TreeNode[] tr = getTreeRoots();
+		
+		LinkedList<TreeNode> contentAreaRoots = new LinkedList<TreeNode>();
+		
+		for(TreeNode l : tr){
+		
+			if (l.getConcept().getDefinition().equals("Intention")){
+				
+				contentAreaRoots.add(l);
+			}		
+		}
+		
+		return contentAreaRoots;
+	}
+	
+	public LinkedList<TreeNode> getAgeGroups(){		
+		
+		TreeNode[] tr = getTreeRoots();
+		
+		LinkedList<TreeNode> contentAreaRoots = new LinkedList<TreeNode>();
+		
+		for(TreeNode l : tr){
+		
+			if (l.getConcept().getDefinition().equals("Age Group")){
+				
+				contentAreaRoots.add(l);
+			}		
+		}
+		
+		return contentAreaRoots;
+	}
+	
 	
 	public String getSelectToRemoveMsg(){
 		return "artaround.error.technique_select_to_remove";
@@ -95,16 +221,127 @@ public class DkmsBigIdeasAction extends TreeChooserAction{
 		return null;
  	}
 	
+	public void setChosenBigIdeas(LinkedList<SKOSConcept> positions) {
+		this.chosenBigIdeas = positions;
+	}
+	
+	
+	public LinkedList<SKOSConcept> getBigIdeaSet(){
+		
+		if( chosenBigIdeas != null ){
+			LinkedList<SKOSConcept> bigIdeasSet = new LinkedList<SKOSConcept>();			
+			for(SKOSConcept l : chosenBigIdeas){
+				if (l.getDefinition().equals("Big Idea")){
+				bigIdeasSet.add(l);				
+				}
+			}
+			return bigIdeasSet;
+		}
+		else
+			return new LinkedList<SKOSConcept>();
+		
+	}
+	
+	public LinkedList<SKOSConcept> getContentAreaSet(){
+		
+		if( chosenBigIdeas != null ){
+			LinkedList<SKOSConcept> contentAreaSet = new LinkedList<SKOSConcept>();			
+			for(SKOSConcept l : chosenBigIdeas){
+				if (l.getDefinition().equals("Content Area")){
+					contentAreaSet.add(l);				
+				}
+			}
+			return contentAreaSet;
+		}
+		else
+			return new LinkedList<SKOSConcept>();		
+	}
+	
+	public LinkedList<SKOSConcept> getLanguageSet(){
+		
+		if( chosenBigIdeas != null ){
+			LinkedList<SKOSConcept> languageSet = new LinkedList<SKOSConcept>();			
+			for(SKOSConcept l : chosenBigIdeas){
+				if (l.getDefinition().equals("Language")){
+					languageSet.add(l);				
+				}
+			}
+			return languageSet;
+		}
+		else
+			return new LinkedList<SKOSConcept>();		
+	}
+	
+	public LinkedList<SKOSConcept> getStatusSet(){
+		
+		if( chosenBigIdeas != null ){
+			LinkedList<SKOSConcept> statusSet = new LinkedList<SKOSConcept>();			
+			for(SKOSConcept l : chosenBigIdeas){
+				if (l.getDefinition().equals("Status")){
+					statusSet.add(l);				
+				}
+			}
+			return statusSet;
+		}
+		else
+			return new LinkedList<SKOSConcept>();		
+	}
+	
+	
+	public LinkedList<SKOSConcept> getTypeOfResourceSet(){
+		
+		if( chosenBigIdeas != null ){
+			LinkedList<SKOSConcept> typeOfResourceSet = new LinkedList<SKOSConcept>();			
+			for(SKOSConcept l : chosenBigIdeas){
+				if (l.getDefinition().equals("Type of resource")){
+					typeOfResourceSet.add(l);				
+				}
+			}
+			return typeOfResourceSet;
+		}
+		else
+			return new LinkedList<SKOSConcept>();		
+	}
+	
+	
+	public LinkedList<SKOSConcept> getIntentionSet(){
+		
+		if( chosenBigIdeas != null ){
+			LinkedList<SKOSConcept> intentionSet = new LinkedList<SKOSConcept>();			
+			for(SKOSConcept l : chosenBigIdeas){
+				if (l.getDefinition().equals("Intention")){
+					intentionSet.add(l);				
+				}
+			}
+			return intentionSet;
+		}
+		else
+			return new LinkedList<SKOSConcept>();		
+	}
+	
+	public LinkedList<SKOSConcept> getAgeGroupSet(){
+		
+		if( chosenBigIdeas != null ){
+			LinkedList<SKOSConcept> ageGroupSet = new LinkedList<SKOSConcept>();			
+			for(SKOSConcept l : chosenBigIdeas){
+				if (l.getDefinition().equals("Age Group")){
+					ageGroupSet.add(l);				
+				}
+			}
+			return ageGroupSet;
+		}
+		else
+			return new LinkedList<SKOSConcept>();		
+	}
+	
+	
 	public LinkedList<SKOSConcept> getChosenBigIdeas() {
 		if( chosenBigIdeas != null )
 			return chosenBigIdeas;
 		else
 			return new LinkedList<SKOSConcept>();
-	}
-	
-	public void setChosenBigIdeas(LinkedList<SKOSConcept> positions) {
-		this.chosenBigIdeas = positions;
-	}
+	}	
+
 	
 	public void clear(){
 		chosenBigIdeas = new LinkedList<SKOSConcept>();

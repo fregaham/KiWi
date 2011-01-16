@@ -20,7 +20,7 @@
 			<li><s:link view="/edukms/abcmaths/searchKMS.xhtml"
 				value="Content Search" /></li>
 			<li><s:link view="/edukms/abcmaths/exerciseSheetPresentation.xhtml"
-				value="Exercise Sheet" /></li>
+				value="Content Presentation" /></li>
 		</ul>
 	</ui:define>
 
@@ -90,6 +90,31 @@ h4 {
 	width: 50px;
 }
 
+.rich-mpnl-controls img {
+	src: url("../../img/close.png");
+}
+
+.rich-stglpanel-header {
+background-color:#eee;
+border-color:#eee;
+height:15px;
+color:#666;
+font-size:12px;
+font-weight:bold;
+
+}
+
+.rich-stglpanel {
+background-color:#eee;
+border-color:#C0C0C0;
+}
+
+.rich-stglpanel-body {
+
+padding:0px;
+
+}
+
 </style>
 
 		 
@@ -97,26 +122,66 @@ h4 {
 		<div id="cover">
 		<h:form >
 		
-			<fieldset class="fieldsetborder"
-					style="float:left; width:100%; height: 700px; margin-left: -170px; border:1px solid #ddd">
+		 <rich:simpleTogglePanel  style="margin-left:-170px; margin-bottom: 10px; border-color: #eee; width:100% " opened="true" switchType="client"  >			
+				<ui:include src="./menu/menu_simpleResPresentation.xhtml" ></ui:include>			
+		 </rich:simpleTogglePanel>
+		</h:form>
+	
+	<h:form>	
+		
+	<div style="float:left; width:100%; height: 620px; margin-left: -170px; border:1px solid #ddd; padding-top:10px">
 			
 			
-			<div style="height:660px; overflow:auto; ">
-			 <h:panelGrid>
-           <rich:simpleTogglePanel  opened="false" switchType="client" label="Author's comment"  height="550" style="margin: 2px; width:763px">
-                     <rich:editor style="color:#537000" id="editor0" language="de" width="700" height="500"  value="#{dkmsContentItemBean.description}" theme="advanced" viewMode="visual" readonly="true">
+			<div style="height:610px; overflow:auto; ">
+		   <h:panelGrid>
+           <rich:simpleTogglePanel  opened="true" switchType="client" label="Resource Information"  height="550" style="margin: 3px; margin-top: 0px; margin-bottom: 5px; width:762px">
+            	<table border="0">
+            	<tr>
+            	<td>
+            	<h4><b>Title:</b> #{dkmsContentItemBean.dkmsContentItemName}&#160;&#160;|&#160;              						
+				<b>Author:</b> #{dkmsContentItemBean.authorName}&#160;&#160;|&#160;								
+				<b>Last update:</b> #{dkmsContentItemBean.lastUpdate}</h4>         
+                </td>
+                </tr>
+                <tr>
+                <td colspan="3">
+                <h4><b>Categories:</b>
+                <ui:repeat value="#{dkmsContentItemBean.bigIdeas}" var="pos">
+						#{pos.definition}: #{pos.preferredLabel}&#160;|&#160;
+				</ui:repeat>
+				</h4>
+                </td>
+                </tr></table>       
+            </rich:simpleTogglePanel>
+           </h:panelGrid> 
+              
+      	            
+		    <div style="margin-left:5px">
+			<rich:editor language="de" width="765"
+			height="580" value="#{dkmsContentItemBean.exerciseSheetContent}" theme="advanced"
+			viewMode="visual" readonly="true">
 
-					</rich:editor>  
+			</rich:editor>
+			</div>
+			
+			<h:panelGrid>
+           <rich:simpleTogglePanel  opened="false" switchType="client" label="Author's comment"  height="550" style="margin: 3px; margin-top:5px; width:762px">
+                <div style="margin:5px">
+                     <rich:editor style="color:#537000"  language="de" width="700" height="400"  value="#{dkmsContentItemBean.description}" theme="advanced" viewMode="visual" readonly="true">
+
+					</rich:editor> 
+				</div> 
             </rich:simpleTogglePanel>
            </h:panelGrid>
+           
            <h:panelGrid>
-            <rich:simpleTogglePanel  opened="false" switchType="client" label="Guest comments"  height="550" style="margin: 2px; width:763px">
+            <rich:simpleTogglePanel  opened="false" switchType="client" label="User comments"  height="550" style="margin: 3px; width:762px">
              <div style="height:400px; overflow:auto; ">
                   <rich:dataList var="col" value="#{dkmsContentItemBean.dkmsCommentList}">
             
 			   		 <h:commandLink action="#" style="margin-left:-5px; font-size:10px">#{col.version} by #{col.commentAuthor}</h:commandLink>
 			   	
-			   		 <rich:editor id="editor2" language="de" width="650"
+			   		 <rich:editor language="de" width="650"
 								height="20" value="#{col.commentContent}" theme="advanced"
 								viewMode="visual" readonly="true">
 						</rich:editor> 
@@ -127,95 +192,13 @@ h4 {
         </rich:dataList>
         </div>
             </rich:simpleTogglePanel>
-            </h:panelGrid>     
-              
-      	    <br/>         
-		    <div style="margin-left:5px">
-			<rich:editor id="editor" language="de" width="765"
-			height="580" value="#{dkmsContentItemBean.exerciseSheetContent}" theme="advanced"
-			viewMode="visual" readonly="true">
-
-			</rich:editor></div>
+            </h:panelGrid>
 			
-			<h:panelGrid style="margin-top:5px">
-           <rich:simpleTogglePanel  opened="false" switchType="client" label="Stepwise Solution"  height="300" style="margin: 5px; width:760px">
-      
-           
-           <h:form>
-			<rich:dataGrid id="gal" value="#{dkmsContentItemBean.dkmsSlideList}"  var="pic" columns="1" elements="1"  width="719" align="center">
-	
-				<img style="margin-left:100px; margin-top:10px; margin-bottom:5px" src="#{dkmsReadModusAction.getSlideshowMultimediaFilename(pic)}" title="Slide" alt="Slide" />
-					
-			<f:facet name="footer" style="margin-top:5px"><rich:datascroller></rich:datascroller></f:facet>
- 			</rich:dataGrid>
-			</h:form>          
-                      
-            </rich:simpleTogglePanel>
-            </h:panelGrid>  
+			
 		</div>
-			</fieldset>
-
-			 <fieldset class="fieldsetborder" style="float:right; width: 200px; height: 700px; margin-right: -160px; border:1px solid #ddd">
-			
-			
-			
-			<div id="buttons">
-			<c:if test="#{identity.loggedIn == true}">
-		   
-			<h:commandLink 
-				action = "#{identityManagerService.logout}" >
-				<img
-					src="#{facesContext.externalContext.requestContextPath}/view/img/logout_small.png"
-					style="valign: center; vertical-align: middle; margin-right: 7px; margin-left:-7px"/>Logout</h:commandLink>    
-			<div id="trennlinie"></div> 
-			<br/>
-		    </c:if>
-		    
-		    
-		    <c:if test="#{identity.loggedIn == true}">
-			<h:commandLink  class="buttonclass"
-			action="#{dkmsReadModusAction.insertComment()}">
-			<img
-				src="#{facesContext.externalContext.requestContextPath}/view/img/plus.png"
-				style="valign: center; vertical-align: middle; margin-right: 10px; margin-left:-4px" />Add Comment</h:commandLink>
-			
-			</c:if>
-			<c:if test="#{identity.loggedIn == false}">
-	   			<h:commandLink action="#" onclick="javascript:alert('Please go to platform home and login with your username and password!');" style="text-decoration:none">
-	    		
-	    	<img
-				src="#{facesContext.externalContext.requestContextPath}/view/img/plus.png"
-				style="valign: center; vertical-align: middle; margin-right: 11px; margin-left:-4px" />Add Comment</h:commandLink>
-		
-			
-			</c:if>	
-		    <br/><br/> 
-			<h:commandLink class="buttonclass"
-			action="#{dkmsReadModusAction.goToResultList()}">
-			<img
-				src="#{facesContext.externalContext.requestContextPath}/view/img/arrowleft_small.png"
-				style="valign: center; vertical-align: middle; margin-right: 14px;" /> Back to Result List</h:commandLink>
-			
-			
-	    		
-	    	  <br/><br/> 	
-			<div id="trennlinie"></div>
-		<br/>
-		<div id="comments" style="margin-left:4px">
-		<h3>Resource title:</h3>
-		<h4>#{dkmsContentItemBean.dkmsContentItemName}</h4>
-		<br/>
-		<h3>Author:</h3>
-		<h4>#{dkmsContentItemBean.authorName}</h4>
-		<br/>
-		<h3>Last update:</h3>
-		<h4>#{dkmsContentItemBean.lastUpdate}</h4>
-		<h3></h3>
-		</div>	
-			
-
 			</div>
-			</fieldset>
+
+			
 		</h:form>
 		</div>
 		

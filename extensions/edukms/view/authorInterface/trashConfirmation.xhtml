@@ -19,10 +19,10 @@
 				view="/edukms/authorInterface/home.xhtml" value="| Author Home" /></li>
 			<li><s:link
 				view="/edukms/authorInterface/userAdministrationArea.xhtml"
-				value="Administration" /></li>
+				value="Administration Area" /></li>
 			<li><s:link
 				view="/edukms/authorInterface/trashConfirmation.xhtml"
-				value="Trash Document" /></li>
+				value="Trash Resource" /></li>
 		</ul>
 	</ui:define>
 
@@ -69,14 +69,44 @@ h2 {
 	padding:10px;
 
 }
+
+.rich-mpnl-controls img {
+	src: url("../../img/close.png");
+}
+
+.rich-stglpanel-header {
+background-color:#eee;
+border-color:#eee;
+height:15px;
+color:#666;
+font-size:12px;
+font-weight:bold;
+
+}
+
+.rich-stglpanel {
+background-color:#eee;
+border-color:#C0C0C0;
+}
+
+.rich-stglpanel-body {
+
+padding:0px;
+
+}
 </style>
 
 
-		<h:form>
+		
 		<div id="cover">
+		
+		<h:form>
+		<rich:simpleTogglePanel  style="margin-left:-170px; margin-bottom: 10px; border-color: #FFE8C3; width:100% " opened="true" switchType="client"  >			
+				<ui:include src="./menu/menu_trashConfirmation.xhtml" ></ui:include>			
+		 </rich:simpleTogglePanel>
+		 </h:form>
 
-		<fieldset class="fieldsetborder"
-			style="float:left; width:100%; height: 570px; margin-left: -170px; border:1px solid #FFE8C3">		
+		<div style="float:left; width:100%; height: 580px; margin-left: -170px; border:1px solid #FFE8C3; padding-top:10px">
 		
 		<h2><img
 				src="#{facesContext.externalContext.requestContextPath}/view/img/trashbox.png"
@@ -85,43 +115,25 @@ h2 {
 		<br />
 		<table border="0"><tr><td valign="middle">
 		<h2 style="margin: 0 0 0 55px">I want to move this document to my trash-box:&#160;&#160; </h2></td><td valign="middle">
-			    <h:commandLink class="buttonclass"
+			    <h:form><h:commandLink class="buttonclass"
 				action="#{dkmsWriteModusAction.trashDkmsContentItem()}">
 				<img
 					src="#{facesContext.externalContext.requestContextPath}/view/img/ok_verysmall.png"
-					style="valign: center; vertical-align: middle; margin-right: 5px; " /> Yes, proceed</h:commandLink>
+					style="valign: center; vertical-align: middle; margin-right: 5px; " /> Yes, proceed</h:commandLink></h:form>
 <!--			<h:selectBooleanCheckbox id="trashbox"   value = "#{dkmsContentItemBean.trashState}"/>-->
 			</td></tr></table><br/>
 		
 		
 
 
-		</fieldset>
-		<fieldset class="fieldsetborder" style="float:right; width: 200px; height: 570px; margin-right: -160px; border:1px solid #FFE8C3">
-		<div id="buttons">
-		<h:commandLink class="buttonclass"
-			action="#{dkmsReadModusAction.exitTrashConfirmation()}">
-			<img
-				src="#{facesContext.externalContext.requestContextPath}/view/img/arrowleft_small.png"
-				style="valign: center; vertical-align: middle; margin-right: 5px;" />Cancel</h:commandLink>
-		<br />
-		<br />
-<!--		<h:commandLink class="buttonclass"-->
-<!--				action="#{dkmsWriteModusAction.changeDkmsContentItem()}">-->
-<!--				<img-->
-<!--					src="#{facesContext.externalContext.requestContextPath}/view/img/arrowright_small.png"-->
-<!--					style="valign: center; vertical-align: middle; margin-right: 5px; " /> Weiter</h:commandLink>-->
-		<br />
-		<br />
 		</div>
-		<div id="verzeichnis"></div>
-		</fieldset>
-
-		</div>
+		
+		<h:form>
+		 <rich:simpleTogglePanel  style="float:left; margin-left:-170px; margin-top: 10px; margin-bottom: 10px; border-color: #FFE8C3; width:100% " opened="true" switchType="client"  >
+			<ui:include src="./menu/menu_trashConfirmation.xhtml" ></ui:include>
+		 </rich:simpleTogglePanel>  
 		</h:form>
-
-
-
-
+		
+		</div>
 	</ui:define>
 </ui:composition>

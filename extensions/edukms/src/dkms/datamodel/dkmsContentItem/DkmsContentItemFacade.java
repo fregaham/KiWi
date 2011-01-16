@@ -85,6 +85,17 @@ public interface DkmsContentItemFacade extends ContentItemI{
 	
 	public String setTmpContentItem(String tmpContentItem);
 	
+	@RDF(Constants.DKMS_CORE + "contentItemStateBuffer")
+	public String getContentItemStateBuffer();
+	
+	public String setContentItemStateBuffer(String contentItemStateBuffer);
+	
+	@RDF(Constants.DKMS_CORE + "contentItemBuffer")
+	public DkmsContentItemFacade getContentItemBuffer();
+	
+	public DkmsContentItemFacade setContentItemBuffer(DkmsContentItemFacade contentItemBuffer);
+	
+	
 	@RDF(Constants.DKMS_CORE + "contentItemIdentifier")
 	public String getContentItemIdentifier();
 	

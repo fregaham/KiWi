@@ -1,0 +1,177 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:c="http://java.sun.com/jstl/core"
+    xmlns:rich="http://richfaces.org/rich">
+
+    <style>
+    .pic {
+        margin-bottom: -4px;
+        margin-right: 10px;
+        vertical-align: middle;
+    }
+    .search .rich-menu-item-hover{
+        background-color: transparent;
+        border-color: transparent;
+    }
+
+
+.rich-menu {
+white-space:nowrap;
+background-color:#ddd;
+color:#ffffff;
+border-color: #ffffff;
+}
+.rich-ddmenu{
+background-color:#ddd;
+color:#ffffff;
+border-color: #ffffff;
+}
+.rich-toolbar-item {
+background-color:#ddd;
+color:#ffffff;
+border-color: #ffffff;
+}
+
+rich-ddmenu-label rich-ddmenu-label-unselect{
+background-color:#ddd;
+color:#ffffff;
+border-color: #ffffff;
+}
+rich-label-text-decor{
+background-color:#ddd;
+color:#ffffff;
+border-color: #ffffff;
+}
+rich-menu-list-border{
+background-color:#ddd;
+color:#ffffff;
+border-color: #ffffff;
+}
+rich-menu-list-bg{
+background-color:#ddd;
+color:#ffffff;
+border-color: #ffffff;
+}
+rich-menu-item rich-menu-item-enabled{
+background-color:#ddd;
+color:#ffffff;
+border-color: #ffffff;
+}
+
+
+.rich-menu-item-disabled, .rich-menu-group-disabled {
+background-color:#ddd;
+color:#ffffff;
+border-color: #ffffff;
+}
+.rich-menu-item, .rich-menu-item a, .rich-menu-item a:hover, .rich-menu-item a:visited, .rich-menu-group, .rich-menu-group a, .rich-menu-group a:hover, .rich-menu-group a:visited {
+background-color:#ddd;
+color:#ffffff;
+border-color: #ffffff;
+}
+.rich-menu-item-disabled, .rich-menu-group-disabled {
+background-color:#ddd;
+color:#ffffff;
+border-color: #ffffff;
+}
+
+rich-menu-group rich-menu-group-enabled{
+background-color:#ddd;
+color:#ffffff;
+border-color: #ffffff;
+}
+
+rich-menu-item-label rich-menu-group-label{
+background-color:#ddd;
+color:#ffffff;
+border-color: #ffffff;
+}
+
+rich-menu-item rich-menu-item-enabled {
+background-color:#ddd;
+color:#ffffff;
+border-color: #ffffff;
+}
+
+.rich-menu-item, .rich-menu-group {
+background-color:#ddd;
+color:#ffffff;
+border-color: #ffffff;
+}
+
+.rich-menu-list-strut {
+background-color:#ddd;
+color:#ffffff;
+border-color: #ffffff;
+}
+
+.rich-ddmenu-label search rich-ddmenu-label-unselect{
+background-color:#ddd;
+color:#ffffff;
+border-color: #ffffff;
+}
+.rich-toolbar {
+background-color:#ddd;
+background-image:none;
+float:left;
+}
+
+
+
+
+
+
+    </style>
+    
+<!--    <h:form>-->
+
+        <rich:toolBar>
+			
+            
+            <rich:toolBarGroup location="right">
+             <rich:dropDownMenu>
+                <f:facet name="label"> 
+                    <h:panelGroup >
+                        <h:graphicImage value="../img/round_verysmall.png" styleClass="pic"/>
+                        <h:outputText value="Cancel"/>
+                        
+                    </h:panelGroup>
+                </f:facet>
+                
+                <rich:menuItem submitMode="ajax" value="Creation process"
+                   action="#{dkmsBasicAction.goToHome()}">
+                </rich:menuItem>
+              
+
+            </rich:dropDownMenu>
+            </rich:toolBarGroup>
+            
+            <rich:toolBarGroup location="right">
+            <rich:dropDownMenu>
+                <f:facet name="label"> 
+                    <h:panelGroup >
+                        <h:graphicImage value="../img/arrowright_small.png" styleClass="pic"/>
+                        <h:outputText value="Proceed"/>
+                        
+                    </h:panelGroup>
+                </f:facet>
+                
+                <rich:menuItem submitMode="ajax" value="Insert movie"
+                  action="#{dkmsBasicAction.insertMovieIntoSheet()}">
+                </rich:menuItem>
+                
+                
+           
+
+            </rich:dropDownMenu>
+		</rich:toolBarGroup>
+
+            
+        </rich:toolBar>
+<!--    </h:form>-->
+
+
+</ui:composition>

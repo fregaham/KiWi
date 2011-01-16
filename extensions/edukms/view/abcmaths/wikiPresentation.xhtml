@@ -96,6 +96,33 @@ h4 {
 	margin-left: -5px;
 }
 
+.rich-mpnl-controls img {
+	src: url("../../img/close.png");
+}
+
+.rich-stglpanel-header {
+background-color:#eee;
+border-color:#eee;
+height:15px;
+color:#666;
+font-size:12px;
+font-weight:bold;
+
+}
+
+.rich-stglpanel {
+background-color:#eee;
+border-color:#C0C0C0;
+}
+
+.rich-stglpanel-body {
+
+padding:0px;
+
+}
+
+
+
 </style>
 
 		 
@@ -103,31 +130,17 @@ h4 {
 		<div id="cover">
 		<h:form >
 		
-			<fieldset class="fieldsetborder"
-					style="float:left; width:100%; height: 700px; margin-left: -170px; border:1px solid #ddd">
-					
+		 <rich:simpleTogglePanel  style="margin-left:-170px; margin-bottom: 10px; border-color: #eee; width:100% " opened="true" switchType="client"  >			
+				<ui:include src="./menu/menu_wikiPresentation.xhtml" ></ui:include>			
+		 </rich:simpleTogglePanel>
+		</h:form>
+		
+		<h:form>		
+		<div style="float:left; width:100%; height: 620px; margin-left: -170px; border:1px solid #ddd; padding-top:10px">	
 			
+			<div style="height:610px; overflow:auto">
 			
-			<div style="height:680px; overflow:auto">
-			   <h:panelGrid>
-            <rich:simpleTogglePanel  opened="false" switchType="client" label="Guest comments"  height="550" style="margin: 2px; width:763px">
-             <div style="height:400px; overflow:auto; ">
-                  <rich:dataList var="col" value="#{dkmsContentItemBean.dkmsCommentList}">
-            
-			   		 <h:commandLink action="#" style="margin-left:-5px; font-size:10px">#{col.version} by #{col.commentAuthor}</h:commandLink>
-			   		
-			   		 <rich:editor id="editor2" language="de" width="650"
-								height="20" value="#{col.commentContent}" theme="advanced"
-								viewMode="visual" readonly="true">
-						</rich:editor>
-					<br/>
-			
-			   		 
-		           
-        </rich:dataList>
-        </div>
-            </rich:simpleTogglePanel>
-            </h:panelGrid>     
+		   
 			
             <h:panelGrid >
             
@@ -158,78 +171,34 @@ h4 {
 			height="580" value="#{dkmsContentItemBean.taskContent}" theme="advanced"
 			viewMode="visual" readonly="true">
 
-			</rich:editor></div>
-		</div>
-			</fieldset>
-
-			 <fieldset class="fieldsetborder" style="float:right; width: 200px; height: 700px; margin-right: -160px; border:1px solid #ddd">
-			
-			
-			<div id="buttons">
-			
-			
-			<c:if test="#{identity.loggedIn == true}">
-			<h:commandLink class="buttonclass"
-			action="#{dkmsReadModusAction.editWikiContent()}">
-			<img
-				src="#{facesContext.externalContext.requestContextPath}/view/img/editor_verysmall.png"
-				style="valign: center; vertical-align: middle; margin-right: 14px;" /> Edit Wiki Content</h:commandLink>
-			<br /><br />
-			</c:if>
-			<c:if test="#{identity.loggedIn == false}">
-	   			<h:commandLink action="#" onclick="javascript:alert('Please go to platform home and login with your username and password!');" style="text-decoration:none">
-	    	<img
-				src="#{facesContext.externalContext.requestContextPath}/view/img/editor_verysmall.png"
-				style="valign: center; vertical-align: middle; margin-right: 14px;" /> Edit Wiki Content</h:commandLink>
-			<br /><br />
-			</c:if>	
-			<c:if test="#{identity.loggedIn == true}">
-			<h:commandLink  class="buttonclass"
-			action="#{dkmsReadModusAction.insertComment()}">
-			<img
-				src="#{facesContext.externalContext.requestContextPath}/view/img/plus.png"
-				style="valign: center; vertical-align: middle; margin-right: 10px; margin-left:-4px" />Add Comment</h:commandLink>
-			<br/><br/>
-			</c:if>
-			<c:if test="#{identity.loggedIn == false}">
-	   			<h:commandLink action="#" onclick="javascript:alert('Please go to platform home and login with your username and password!');" style="text-decoration:none">
-	    	<img
-				src="#{facesContext.externalContext.requestContextPath}/view/img/plus.png"
-				style="valign: center; vertical-align: middle; margin-right: 10px; margin-left:-4px" />Add Comment</h:commandLink>
-			<br/><br/>
-			</c:if>
-			<h:commandLink class="buttonclass"
-			action="#{dkmsReadModusAction.goToResultList()}">
-			<img
-				src="#{facesContext.externalContext.requestContextPath}/view/img/arrowleft_small.png"
-				style="valign: center; vertical-align: middle; margin-right: 14px;" /> Back to Result List</h:commandLink>
-			<br /><br />
-			<div id="trennlinie"></div>
-		<br/>
-		<div id="comments" style="margin-left:4px">
-		<h3>Resource title:</h3>
-		<h4>#{dkmsContentItemBean.dkmsContentItemName}</h4>
-		<br/>
-		<h3>Author:</h3>
-		<h4>#{dkmsContentItemBean.authorName}</h4>
-		<br/>
-		<h3>Last update:</h3>
-		<h4>#{dkmsContentItemBean.lastUpdate}</h4>
-		<h3></h3>
-		</div>	
+			</rich:editor>
 			</div>
-			</fieldset>
+			
+			<h:panelGrid>
+            <rich:simpleTogglePanel  opened="false" switchType="client" label="User comments"  height="550" style="margin: 2px; width:763px">
+             <div style="height:400px; overflow:auto; ">
+                  <rich:dataList var="col" value="#{dkmsContentItemBean.dkmsCommentList}">
+            
+			   		 <h:commandLink action="#" style="margin-left:-5px; font-size:10px">#{col.version} by #{col.commentAuthor}</h:commandLink>
+			   		
+			   		 <rich:editor id="editor2" language="de" width="650"
+								height="20" value="#{col.commentContent}" theme="advanced"
+								viewMode="visual" readonly="true">
+						</rich:editor>
+					<br/>
+			
+			   		 
+		           
+        </rich:dataList>
+        </div>
+            </rich:simpleTogglePanel>
+            </h:panelGrid>     
+			
+		</div>
+			</div>
+		
 		</h:form>
 		</div>
-		
-<!--		test:-->
-<!--		<c:forEach items="#{dkmsContentItemBean.dkmsMediaList}" var="item">    	    -->
-<!--      	   -->
-<!--      	    <img src="#{dkmsReadModusAction.getMiniMultimediaFilename(item)}" style="margin: 0px 15px 0 5px; float: left; " /><br/>-->
-<!--			pic-->
-<!--			<div id="trennlinie"></div>-->
-<!--		-->
-<!--		</c:forEach> -->
 
 
 	</ui:define>

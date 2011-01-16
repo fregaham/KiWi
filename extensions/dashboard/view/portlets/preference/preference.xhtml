@@ -1,0 +1,26 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:p="http://primefaces.prime.com.tr/ui">
+
+
+	<p:panel id="preference" header="Preferences" toggleable="true" closable="true" widgetVar="preferenceWidget" closeListener="#{dashboardAction.removePortlet}">
+		
+			<p:tabView cache="false">
+				<p:tab title="Recommendation" id="recPrefId">
+					<ui:include src="preferenceRecommendation.xhtml" />
+				</p:tab>
+				<p:tab title="Browse" id="browsePrefId">
+					<ui:include src="preferenceBrowse.xhtml" />
+				</p:tab>
+			</p:tabView>
+		
+	</p:panel>
+</ui:composition>

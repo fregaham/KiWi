@@ -36,49 +36,64 @@
  * 
  */
 
-
 package kiwi.action.ontology;
 
 
+
+
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import kiwi.api.ontology.SKOSPrefixMapperService;
 import kiwi.api.ontology.SKOSService;
+import kiwi.api.search.SolrService;
+import kiwi.api.sun.SunTagMapperService;
+import kiwi.exception.NamespaceResolvingException;
+import kiwi.model.content.ContentItem;
+import kiwi.model.kbase.KiWiUriResource;
 import kiwi.model.ontology.SKOSConcept;
+import kiwi.util.MD5;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
-
 
 /**
  * @author Mihai
  * @version 1.01
  * @since 1.01
  */
-@Scope(ScopeType.APPLICATION)
 @Name("skosMapperAction")
+@Scope(ScopeType.APPLICATION)
 public class SKOSMapperAction {
 
     @Logger
     private Log log;
 
+    /**
+     * Sends messages to the uert interface.
+     */
     @In
+    private FacesMessages facesMessages;
+
+    @In(create = true)
+    private SunTagMapperService sunTagMapperService;
+
+    @In(create = true)
     private SKOSService skosService;
 
-    @In
-    private SKOSPrefixMapperService skosPrefixMapperService;
-
+    /**
+     * A SKOSConceptUIHelper can represent a SKOS Concept tree in a very simplistic way.
+     */
     private SKOSConceptUIHelper[] conceptHelpers;
-
-    private int conceptLevel;
 
     /**
      * Builds a <code>SkosMapperAction</code> instance.
@@ -87,51 +102,59 @@ public class SKOSMapperAction {
         // UNIMPLEMENTED
     }
 
+    /**
+     * Acts like a constructor in the Seam specific environment.
+     */
     @Create
     public void init() {
-        conceptLevel = 1;
+        updateMappings();
+    }
+
+    // FIXME : make the event key a constant!
+    @Observer("sunTagMapperService.updateMappings")
+    public void updateMappings() {
         final List<SKOSConcept> topConcepts = skosService.getTopConcepts();
         conceptHelpers = new SKOSConceptUIHelper[topConcepts.size()];
-        int coneptIdex = 0;
+        int index = 0;
         for (SKOSConcept concept : topConcepts) {
-            // mihai : I am not sure about the title, this can be
-            // that two different SKOS concepts have the same
-            // title.
-            final String title = concept.getTitle();
-            final int skosNestigLevel =
-                    skosPrefixMapperService.getSKOSNestigLevel(concept);
-
-            // this because the level count starts with 0
-            final int realLevel = skosNestigLevel + 1;
-            conceptHelpers[coneptIdex++] =
-                    new SKOSConceptUIHelper(concept, title, realLevel, title);
+            conceptHelpers[index++] = getConceptUIHelper(concept);
         }
     }
 
-    public void generateSKOSMap() {
-        skosPrefixMapperService.removeAllMapping();
-        final List<SKOSConcept> topConcepts = skosService.getTopConcepts();
+    /**
+     * Builds a <code>SKOSConceptUIHelper</code> for a given
+     * <code>SKOSConcept</code> instance.
+     *
+     * @param concept the SKOSConcept for the helper, it can not be null.
+     * @return a <code>SKOSConceptUIHelper</code> for a given
+     * <code>SKOSConcept</code> instance.
+     * @see SKOSConceptUIHelper
+     */
+    private SKOSConceptUIHelper getConceptUIHelper(SKOSConcept concept) {
 
-        Iterator<SKOSConcept> actual = topConcepts.iterator();
-        int level = 0;
-        // mihai : the Set guarantee no duuplicates
+        if (concept == null) {
+            throw new NullPointerException("The SKOS concept can not be null.");
+        }
+
+        final SKOSConceptUIHelper helper = new SKOSConceptUIHelper();
+        final String title = concept.getTitle();
+        helper.setTitle(title);
+        helper.setConcept(concept);
+
+        Iterator<SKOSConcept> actual = concept.getNarrower().iterator();
+        // I choose 1 because the level 1 is the top level concepts
+        int level = 1;
+
+        // FIXME : this loop is resource expensive,
+        // find an other way to get all the narrower.
         Set<SKOSConcept> allNarrower = new HashSet<SKOSConcept>();
         while (actual.hasNext()) {
-            // mihai : I know this loop in not efficent but I run
-            // out of time.
-            // I can imagine that are more elegant ways to get
-            // the top concept fro a given concept but I don't
-            // know so much about SKOS
             SKOSConcept nextConcept = actual.next();
+            final Set<SKOSConcept> nextNarrower = nextConcept.getNarrower();
 
-            final String defaultPrefix = nextConcept.getTitle() + "_prefix";
-            skosPrefixMapperService.assingSKOSToPrefix(nextConcept,
-                    defaultPrefix, level);
-
-            final HashSet<SKOSConcept> nextNarrower = nextConcept.getNarrower();
+            final Iterator<SKOSConcept> nextNarrowerIterator = nextNarrower
+                    .iterator();
             allNarrower.addAll(nextNarrower);
-            final Iterator<SKOSConcept> nextNarrowerIterator =
-                    nextNarrower.iterator();
             while (nextNarrowerIterator.hasNext()) {
                 final SKOSConcept nextC = nextNarrowerIterator.next();
                 final Set<SKOSConcept> narrower = nextC.getNarrower();
@@ -145,52 +168,21 @@ public class SKOSMapperAction {
             }
         }
 
-    }
+        final String[] prefixes = new String[level];
+        final String realTitle = title + "_prefix";
+        Arrays.fill(prefixes, realTitle);
+        helper.setPrefixes(prefixes);
+        helper.setRequired(true);
 
-    private SKOSConcept getTopConcept(SKOSConcept nextConcept) {
-        SKOSConcept top = nextConcept;
-        while (top.getBroader() != null) {
-            top = top.getBroader();
-        }
-
-        return top;
-    }
-
-//    private void show(Set<SKOSConcept> narrower) {
-//        for (SKOSConcept concept : narrower) {
-//            System.out.println("--->" + concept.getTitle());
-//        }
-//    }
-
-    private String buildPrefix(SKOSConcept concept) {
-        // mihai : use this method to customize the way how the
-        // prefix for each concept is builded.
-        final String preferredLabel = concept.getPreferredLabel();
-        final String title = concept.getTitle();
-
-        if (preferredLabel != null) {
-            return preferredLabel;
-        }
-
-        if (title != null) {
-            return title;
-        }
-
-        return "default prefix";
+        return helper;
     }
 
     /**
-     * @return the conceptLevel
+     * Generated the default mapping for all the SKOS Concepts. This method may
+     * require a lot of time/resources.
      */
-    public int getConceptLevel() {
-        return conceptLevel;
-    }
-
-    /**
-     * @param conceptLevel the conceptLevel to set
-     */
-    public void setConceptLevel(int conceptLevel) {
-        this.conceptLevel = conceptLevel;
+    public void generateSKOSMap() {
+        sunTagMapperService.defaultMapping();
     }
 
     /**
@@ -201,22 +193,64 @@ public class SKOSMapperAction {
     }
 
     /**
-     * @param conceptHelpers the conceptHelpers to set
+     * @param conceptHelpers
+     *            the conceptHelpers to set
      */
     public void setConceptHelpers(SKOSConceptUIHelper[] conceptHelpers) {
         this.conceptHelpers = conceptHelpers;
     }
 
+    /**
+     * Commits all the changes done in the user interface. <br>
+     * This method may requires time and/or resources use it properly.
+     */
     public void commitAll() {
         for (SKOSConceptUIHelper helper : conceptHelpers) {
-            log.debug("Do #0 mapping.", helper);
-            final String conceptURI = helper.getPatrentConceptURI();
+            final SKOSConcept topConcept = helper.getConcept();
             final String[] prefixes = helper.getPrefixes();
-            int level = 0;
-            for (String prefix : prefixes) {
-                skosPrefixMapperService.assingAllSKOSToPrefix(conceptURI, prefix, level);
-                level++;
+            final boolean required = helper.isRequired();
+
+            for (int prefIndex = 0; prefIndex < prefixes.length; prefIndex++) {
+                final Set<SKOSConcept> search = sunTagMapperService.search(
+                        topConcept, prefIndex);
+                for (SKOSConcept toAssing : search) {
+                    final String prefix = prefixes[prefIndex];
+                    logAssigng(topConcept, prefIndex, toAssing, prefix);
+                    try {
+                        sunTagMapperService.assignResource(toAssing, prefix,
+                                -1, required);
+                    } catch (NamespaceResolvingException e) {
+                        log.error(e.getMessage(), e);
+                    }
+                }
             }
         }
+    }
+
+    /**
+     * @param topConcept
+     * @param nestLevel
+     * @param toAssing
+     * @param prefix
+     */
+    private void logAssigng(final SKOSConcept topConcept, int nestLevel,
+            SKOSConcept toAssing, final String prefix) {
+
+        final String topConceptTitle = topConcept.getTitle();
+        final String topUri = ((KiWiUriResource)topConcept.getResource()).getUri();
+        final String md5 = MD5.md5sum(topUri);
+        final String title = toAssing.getTitle();
+        log.debug("Assignment pramters[Top concent : #0 Top concent URI :#1, Top concent URI-md5:#2, Concept title:#3, Prefix for concept #4, Nesting level :#5",topConceptTitle, topUri, md5, title, prefix, nestLevel);
+
+//        System.out.println("======================");
+//        System.out.println("Top concent : " + topConceptTitle);
+//        System.out.println("Top concent URI : " + topUri);
+//
+//        System.out.println("Top concent URI-md5 : " + md5);
+//
+//        System.out.println("Concept title : " + title);
+//        System.out.println("Prefix : " + prefix);
+//        System.out.println("Prefix index " + nestLevel);
+//        System.out.println("======================");
     }
 }

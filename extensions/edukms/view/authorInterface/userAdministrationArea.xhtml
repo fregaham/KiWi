@@ -20,23 +20,11 @@ Copyright © Michael Schneider, 2010
 				view="/edukms/authorInterface/home.xhtml" value="| Author Home" /></li>
 			<li><s:link
 				view="/edukms/authorInterface/userAdministrationArea.xhtml"
-				value="Administration" /></li>
+				value="Administration Area" /></li>
 		</ul>
 	</ui:define>
 	<ui:define name="body">
-		<!-- default set of jQuery Tools + jQuery 1.3.2 -->
-		<script
-			src="#{facesContext.externalContext.requestContextPath}/view/js/jQueryMain/jquery.tools.min.js"></script>
 
-		<!-- activate tabs with JavaScript -->
-		<script>
-	
-		jQuery(function() { 
-	
-		jQuery("#vert_accordion").tabs("#vert_accordion div.pane", {tabs: 'h2', effect: 'slide', initialIndex: null});
-	});
-		
-	</script>
 		<style>
 /* root element for vert_accordion. decorated with rounded borders and gradient background image */
 #vert_accordion {
@@ -97,9 +85,10 @@ h2 {
 
 h3 {
 	color: #6f91c0;
-	font-size: 12px;
+	font-size: 16px;
 	margin-left: 20px;
 	margin-top: -15px;
+	font-weight: 300;
 }
 
 #accordionTitle {
@@ -120,101 +109,123 @@ h3 {
 	border-bottom: 1px solid #FFE8C3;
 	margin: 10px;
 }
+.rich-mpnl-controls img {
+	src: url("../../img/close.png");
+}
+
+.rich-stglpanel-header {
+background-color:#eee;
+border-color:#eee;
+height:15px;
+color:#666;
+font-size:12px;
+font-weight:bold;
+
+}
+
+.rich-stglpanel {
+background-color:#eee;
+border-color:#C0C0C0;
+}
+
+.rich-stglpanel-body {
+
+padding:0px;
+
+}
 </style>
 
 
 		<div id="cover">
-		<fieldset class="fieldsetborder"
-			style="float:left; width:100%; height: 570px; margin-left: -170px; border:1px solid #FFE8C3">		
+		<h:form>
+		 <rich:simpleTogglePanel  style="margin-left:-170px; margin-bottom: 10px; border-color: #FFE8C3; width:100% " opened="true" switchType="client"  >			
+				<ui:include src="./menu/menu_userAdministrationArea.xhtml" ></ui:include>			
+		 </rich:simpleTogglePanel>
+		 </h:form>
+
+		<div style="float:left; width:100%; height: 620px; margin-left: -170px; border:1px solid #FFE8C3; padding-top:10px">
 
 		<!-- vert_accordion -->
 		<div id="vert_accordion"><!--  Folder  -->
 		<div id="accordionTitle"><img
 			src="#{facesContext.externalContext.requestContextPath}/view/img/folder_small.png"
 			style="margin: 0px 15px 0 5px; float: left; vertical-align: middle" /><br/>
-		<h3>In this area you may administrate all your own documents and shares:</h3>
+		<h3>In this area you may administrate all your own resources:</h3>
 		</div>
-		<br/><br/>
-		<!--  Tab 1 Header -->
-		<h2><img
-			src="#{facesContext.externalContext.requestContextPath}/view/img/angabe_verysmall.png"
-			style="valign: center; vertical-align: middle; margin-right: 5px" />
-		My simple resources</h2>
-		<!--  Tab 1 Content -->
-		<div class="pane"><h:form>
+		
+		 <div style="width:770px; height:550px; overflow:auto;">
+
+			<rich:simpleTogglePanel  opened="false" switchType="client" label="My simple resources"  height="550" style="margin: 10px; width:740px">
+			<h:form>	
 			<div style="height:250px; overflow:auto; margin-left:25px; margin-top:10px ">
 			<table cellspacing="1">
-				<c:forEach items="#{dkmsReadModusAction.dkmsContentItems}"
+				<c:forEach items="#{dkmsReadModusAction.getSimpleResources()}"
 					var="dci" id="dciList">
-				<c:if test="#{dci.dkmsContentItemType == '1'}">
-				<c:if test="#{dci.trashState == false}">
+<!--				<c:if test="#{dci.dkmsContentItemType == '1'}">-->
+<!--				<c:if test="#{dci.trashState == false}">-->
 					<tr>
 						<td style="border:1px solid #FFE8C3; width:200px">
 						<h5 style="margin:5px">#{dci.title}</h5>
 						</td >
 						<td style="border:1px solid #FFE8C3; width:30px">
-						<h:commandLink action="#{dkmsReadModusAction.showExerciseSheetDetails(dci)}"><img src="#{facesContext.externalContext.requestContextPath}/view/img/vorschau_verysmall.png" title="Details" style="margin:3px"/></h:commandLink>
+						<h:commandLink action="#{dkmsReadModusAction.showExerciseSheetDetails(dci)}"><img src="#{facesContext.externalContext.requestContextPath}/view/img/vorschau_verysmall.png" title="Preview resource" style="margin:3px"/></h:commandLink>
 						</td>
 						<td style="border:1px solid #FFE8C3; width:30px">
-						<h:commandLink action="#{dkmsReadModusAction.editExerciseSheetContent(dci)}"><img src="#{facesContext.externalContext.requestContextPath}/view/img/editor_verysmall.png" title="Edit" style="margin:3px"/></h:commandLink>
+						<h:commandLink action="#{dkmsReadModusAction.editExerciseSheetContent(dci)}"><img src="#{facesContext.externalContext.requestContextPath}/view/img/editor_verysmall.png" title="Edit resource" style="margin:3px"/></h:commandLink>
 						</td>
 						<td style="border:1px solid #FFE8C3; width:30px">
 						<h:commandLink style="margin:5px" reRender="dciList"
-							action="#{dkmsReadModusAction.trashDkmsContentItem(dci)}" ><img src="#{facesContext.externalContext.requestContextPath}/view/img/trashbox_veryverysmall.png" title="To Trash-Box" style="margin:3px"/></h:commandLink>
+							action="#{dkmsReadModusAction.trashDkmsContentItem(dci)}" ><img src="#{facesContext.externalContext.requestContextPath}/view/img/trashbox_veryverysmall.png" title="Trash resource" style="margin:3px"/></h:commandLink>
 						</td>						
 					</tr>
-				</c:if>
-				</c:if>
+<!--				</c:if>-->
+<!--				</c:if>-->
 				</c:forEach>
 			</table>
 			</div>
-		</h:form></div>
-		<h2><img
-			src="#{facesContext.externalContext.requestContextPath}/view/img/dokumente_verysmall.png"
-			style="valign: center; vertical-align: middle; margin-right: 5px" />
-		My segmented resources</h2>
-		<div class="pane">
-		<h:form>
+			</h:form>
+	    	</rich:simpleTogglePanel>
+	    	
+	    	<rich:simpleTogglePanel  opened="false" switchType="client" label="My segmented resources"  height="550" style="margin: 10px; width:740px">	
+	    	<h:form>	
 			<div style="height:250px; overflow:auto; margin-left:25px; margin-top:10px ">
 			<table cellspacing="1">
-				<c:forEach items="#{dkmsReadModusAction.dkmsContentItems}"
+				<c:forEach items="#{dkmsReadModusAction.getSegmentedResources()}"
 					var="dci" id="dciList">
-				<c:if test="#{dci.dkmsContentItemType == '2'}">
-				<c:if test="#{dci.trashState == false}">
+<!--				<c:if test="#{dci.dkmsContentItemType == '2'}">-->
+<!--				<c:if test="#{dci.trashState == false}">-->
 					<tr>
 						<td style="border:1px solid #FFE8C3; width:200px">
 						<h5 style="margin:5px">#{dci.title}</h5>
 						</td >
 						<td style="border:1px solid #FFE8C3; width:30px">
-						<h:commandLink action="#{dkmsReadModusAction.showSequenceDetails(dci)}"><img src="#{facesContext.externalContext.requestContextPath}/view/img/vorschau_verysmall.png" title="Details" style="margin:3px"/></h:commandLink>
+						<h:commandLink action="#{dkmsReadModusAction.showSequenceDetails(dci)}"><img src="#{facesContext.externalContext.requestContextPath}/view/img/vorschau_verysmall.png" title="Preview resource" style="margin:3px"/></h:commandLink>
 						</td>
 						<td style="border:1px solid #FFE8C3; width:30px">
-						<h:commandLink action="#{dkmsReadModusAction.editSequence(dci)}"><img src="#{facesContext.externalContext.requestContextPath}/view/img/editor_verysmall.png" title="Edit" style="margin:3px"/></h:commandLink>
+						<h:commandLink action="#{dkmsReadModusAction.editSequence(dci)}"><img src="#{facesContext.externalContext.requestContextPath}/view/img/editor_verysmall.png" title="Edit resource" style="margin:3px"/></h:commandLink>
 						</td>
 						<td style="border:1px solid #FFE8C3; width:30px">
 						<h:commandLink style="margin:5px" reRender="dciList"
-							action="#{dkmsReadModusAction.trashDkmsContentItem(dci)}" ><img src="#{facesContext.externalContext.requestContextPath}/view/img/trashbox_veryverysmall.png" title="To Trash-Box" style="margin:3px"/></h:commandLink>
+							action="#{dkmsReadModusAction.trashDkmsContentItem(dci)}" ><img src="#{facesContext.externalContext.requestContextPath}/view/img/trashbox_veryverysmall.png" title="Trash resource" style="margin:3px"/></h:commandLink>
 						</td>						
 					</tr>
-				</c:if>
-				</c:if>
+<!--				</c:if>-->
+<!--				</c:if>-->
 				</c:forEach>
 			</table>
 			</div>
-		</h:form>
-		</div>
-		<h2><img
-			src="#{facesContext.externalContext.requestContextPath}/view/img/pdf_dokument_verysmall.png"
-			style="valign: center; vertical-align: middle; margin-right: 5px" />
-		My uploaded resources</h2>
-		<div class="pane">
-		<h:form>
+			</h:form>	
+			</rich:simpleTogglePanel>
+		
+		
+			<rich:simpleTogglePanel  opened="false" switchType="client" label="My uploaded resources"  height="550" style="margin: 10px; width:740px">	
+			<h:form>
 			<div style="height:250px; overflow:auto; margin-left:25px; margin-top:10px ">
 			<table cellspacing="1">
-				<c:forEach items="#{dkmsReadModusAction.dkmsContentItems}"
+				<c:forEach items="#{dkmsReadModusAction.getUploadedResources()}"
 					var="dci" id="dciList">
-				<c:if test="#{dci.dkmsContentItemType == '3'}">
-				<c:if test="#{dci.trashState == false}">
+<!--				<c:if test="#{dci.dkmsContentItemType == '3'}">-->
+<!--				<c:if test="#{dci.trashState == false}">-->
 					<tr>
 						<td style="border:1px solid #FFE8C3; width:200px">
 						<h5 style="margin:5px">#{dci.title}</h5>
@@ -222,81 +233,66 @@ h3 {
 <!--						<td style="border:1px solid #FFE8C3; width:30px">-->
 <!--						<h:commandLink action="#{dkmsReadModusAction.showDocumentDetails(dci)}"><img src="#{facesContext.externalContext.requestContextPath}/view/img/vorschau_verysmall.png" title="Details" style="margin:3px"/></h:commandLink>-->
 <!--						</td>-->
-<!--						<td style="border:1px solid #FFE8C3; width:30px">-->
-<!--						<h:commandLink action="#{dkmsReadModusAction.editDocument(dci)}"><img src="#{facesContext.externalContext.requestContextPath}/view/img/editor_verysmall.png" title="Edit" style="margin:3px"/></h:commandLink>-->
-<!--						</td>-->
+						<td style="border:1px solid #FFE8C3; width:30px">
+						<h:commandLink action="#{dkmsReadModusAction.editDocument(dci)}"><img src="#{facesContext.externalContext.requestContextPath}/view/img/editor_verysmall.png" title="Edit resource" style="margin:3px"/></h:commandLink>
+						</td>
 						<td style="border:1px solid #FFE8C3; width:30px">
 						<h:commandLink style="margin:5px" reRender="dciList"
-							action="#{dkmsReadModusAction.trashDkmsContentItem(dci)}" ><img src="#{facesContext.externalContext.requestContextPath}/view/img/trashbox_veryverysmall.png" title="To Trash-Box" style="margin:3px"/></h:commandLink>
+							action="#{dkmsReadModusAction.trashDkmsContentItem(dci)}" ><img src="#{facesContext.externalContext.requestContextPath}/view/img/trashbox_veryverysmall.png" title="Trash resource" style="margin:3px"/></h:commandLink>
 						</td>						
 					</tr>
-				</c:if>
-				</c:if>
+<!--				</c:if>-->
+<!--				</c:if>-->
 				</c:forEach>
 			</table>
 			</div>
-		</h:form>
-		</div>
-		<h2><img
-			src="#{facesContext.externalContext.requestContextPath}/view/img/chain_small.PNG"
-			style="valign: center; vertical-align: middle; margin-right: -1px" />
-		My combined resources</h2>
-		<div class="pane">
-		<h:form>
+			</h:form>
+			</rich:simpleTogglePanel>
+			
+			
+			
+			<rich:simpleTogglePanel  opened="false" switchType="client" label="My combined resources"  height="550" style="margin: 10px; width:740px">	
+			<h:form>	
 			<div style="height:250px; overflow:auto; margin-left:25px; margin-top:10px ">
 			<table cellspacing="1">
-				<c:forEach items="#{dkmsReadModusAction.dkmsContentItems}"
+				<c:forEach items="#{dkmsReadModusAction.getCombinedResources()}"
 					var="dci" id="dciList">
-				<c:if test="#{dci.dkmsContentItemType == '6'}">
-				<c:if test="#{dci.trashState == false}">
+<!--				<c:if test="#{dci.dkmsContentItemType == '6'}">-->
+<!--				<c:if test="#{dci.trashState == false}">-->
 					<tr>
 						<td style="border:1px solid #FFE8C3; width:200px">
 						<h5 style="margin:5px">#{dci.title}</h5>
 						</td >
 <!--						<td style="border:1px solid #FFE8C3; width:30px">-->
-<!--						<h:commandLink action="#{dkmsReadModusAction.showDocumentDetails(dci)}"><img src="#{facesContext.externalContext.requestContextPath}/view/img/vorschau_verysmall.png" title="Details" style="margin:3px"/></h:commandLink>-->
-<!--						</td>-->
-<!--						<td style="border:1px solid #FFE8C3; width:30px">-->
-<!--						<h:commandLink action="#{dkmsReadModusAction.editDocument(dci)}"><img src="#{facesContext.externalContext.requestContextPath}/view/img/editor_verysmall.png" title="Edit" style="margin:3px"/></h:commandLink>-->
+<!--						<h:commandLink action="#{dkmsReadModusAction.showCombinedResourceDetails(dci)}"><img src="#{facesContext.externalContext.requestContextPath}/view/img/vorschau_verysmall.png" title="Details" style="margin:3px"/></h:commandLink>-->
 <!--						</td>-->
 						<td style="border:1px solid #FFE8C3; width:30px">
+						<h:commandLink action="#{dkmsReadModusAction.editCombinedResource(dci)}"><img src="#{facesContext.externalContext.requestContextPath}/view/img/editor_verysmall.png" title="Edit resource" style="margin:3px"/></h:commandLink>
+						</td>
+						<td style="border:1px solid #FFE8C3; width:30px">
 						<h:commandLink style="margin:5px" reRender="dciList"
-							action="#{dkmsReadModusAction.trashDkmsContentItem(dci)}" ><img src="#{facesContext.externalContext.requestContextPath}/view/img/trashbox_veryverysmall.png" title="To Trash-Box" style="margin:3px"/></h:commandLink>
+							action="#{dkmsReadModusAction.trashDkmsContentItem(dci)}" ><img src="#{facesContext.externalContext.requestContextPath}/view/img/trashbox_veryverysmall.png" title="Trash resource" style="margin:3px"/></h:commandLink>
 						</td>						
 					</tr>
-				</c:if>
-				</c:if>
+<!--				</c:if>-->
+<!--				</c:if>-->
 				</c:forEach>
 			</table>
 			</div>
-		</h:form>
-		</div>
-		</div>
-		</fieldset>
-		<fieldset class="fieldsetborder" style="float:right; width: 200px; height: 570px; margin-right: -160px; border:1px solid #FFE8C3">
+			</h:form>
+			</rich:simpleTogglePanel>
 		
-		<div id="buttons">
+		</div>
+		</div>
+		</div>
 		<h:form>
-
-			<h:commandLink 
-				action="#{dkmsBasicAction.goToHome()}">
-				<img
-					src="#{facesContext.externalContext.requestContextPath}/view/img/editor_verysmall.png"
-					style="valign: center; vertical-align: middle; margin-right: 5px; margin-top: 5px"/>Create new share</h:commandLink>
-			<br/><br/>
-			<h:commandLink 
-				action="#{dkmsReadModusAction.goToTrashContainer()}">
-				<img
-					src="#{facesContext.externalContext.requestContextPath}/view/img/trashbox_verysmall.png"
-					style="valign: center; vertical-align: middle; margin-right: 7px; margin-top: 5px" />Trash-Box</h:commandLink>
-		
+		 <rich:simpleTogglePanel  style="float:left; margin-left:-170px; margin-top: 10px; margin-bottom: 10px; border-color: #FFE8C3; width:100% " opened="true" switchType="client"  >
+			<ui:include src="./menu/menu_userAdministrationArea.xhtml" ></ui:include>
+		 </rich:simpleTogglePanel>  
 		</h:form>
-		</div>
-		
-		</fieldset>
-
 		</div>
 		<!-- end cover -->
+		
 	</ui:define>
 
 </ui:composition>

@@ -1,5 +1,10 @@
 (function( $ ) {
 	$.Suggester = function(isSecondary){
+                // Initiate the WS endpoint ref
+                this.ENDPOINT_TAGGING = document.location.protocol + "//" + document.location.host
+                    + "/KiWi/seam/resource/services/widgets/tagging/";
+
+                // Initiate variables
 		var selectedResult = null;
 		var selectedSuggestions = null;
 
@@ -47,7 +52,7 @@
 		 *
 		 */
 		var showProgressIndication = $.proxy(function(){
-			this.resultsContainer.append("<span class=\"progress_bar\">Please wait... <img src=\"img/wait.gif\" ></span> ");
+			this.resultsContainer.append("<span class=\"progress_bar\">Please wait... </span><span class='wait_icon'></span>");
 			this.resultsContainer.css("visiblity", "visible");
 		}, this);
 
@@ -123,12 +128,12 @@
 			// If "below" property was specified, position the component below
 			// the specified element
 			if (options && options.below) {
-				var offset = $(options.below).offset();
-				offset.top += 19;
+                            this.positionAnchorEl = options.below;
 
-				this.el.css("left", offset.left + "px");
-				this.el.css("top", offset.top + "px");
-				this.el.css("position", "absolute");
+                            var offset = $(this.positionAnchorEl).position();
+                            offset.top += 19;
+
+                            this.reposition(offset);
 			}
 
 
@@ -157,7 +162,14 @@
 			this.elTxt.focus();
 		}
 
-		
+                /**
+                 *
+                 */
+                this.reposition = function(offset){
+                    this.el.css("left", offset.left + "px");
+                    this.el.css("top", offset.top + "px");
+                    this.el.css("position", "absolute");
+                }
 
 		/**
 		* Initialize DOM elements
@@ -171,6 +183,7 @@
 				+ "<div tabindex=\"100\" class=\"invis\"></div>"
 				+ "<div class=\"resultsContainer\"></div>");
 			this.elTxt = $(this.el.children("input[type='text']")[0]);
+                        this.addButton = $(this.el.children("input[type='button']")[0]);
 
 			// Hookup keydown handler for the text field
 			this.bindTextFieldHandler();
@@ -219,7 +232,7 @@
 		this.bindInvisHandler = function(){
 			var self = this;
 			
-			this.invisDiv.keydown(function(e){
+			this.invisDiv.keypress(function(e){
 				// TODO: Move these where they're needed (e.g. handling keydown/up)
 				//Getting number of results
 				var childrenNumber = self.suggestions.length;
@@ -234,8 +247,14 @@
 				//40 = down arrow, 38 = up arrow, 37 = left arrow, 39 = right arrow
 
 
-				// key down
-				if (e.keyCode == 40){
+				// backspace - need to prevent default;
+                                // otherwise the browser will go back in history
+                                // Also need to prevent Tab as it breaks workflow
+                                if ((e.keyCode == 8) || (e.keyCode == 9)) {
+                                    e.preventDefault();
+                                }
+                                // key down
+                                else if (e.keyCode == 40){
 					if (selectedResult == null){
 						selectedResult = 0;
 						self.resultsContainer.children("div").eq(selectedResult).addClass("highlighted");
@@ -253,6 +272,7 @@
 							trueResultHeight *(selectedResult-Math.floor(resultsPerPage/2)));
 						}
 					}
+                                        e.preventDefault();
 				}
 				// key up
 				else if(e.keyCode==38){
@@ -266,9 +286,12 @@
 							self.el.children("div").scrollTop(trueResultHeight *(selectedResult-Math.floor(resultsPerPage/2)));
 						}
 					}
+                                        e.preventDefault();
 				}
 				// key left
-				else if(e.keyCode==37 && selectedResult!=null && self.suggestions[selectedResult].controlled==1){
+				else if(e.keyCode==37 && selectedResult!=null && self.suggestions[selectedResult].controlled==1
+                                    && (self.resultsContainer.children("div").eq(selectedResult).hasClass("hasParent")))
+                                {
 					e.preventDefault();
 					startLoadingParents(selectedResult);
 					selectedResult = null;
@@ -281,8 +304,8 @@
 					this.parent = self.suggestions[selectedResult];
 					selectedResult = null;
 				}
-				//SPACE
-				else if(e.keyCode==32){
+				//SPACE or SHIFT+ENTER adds a tag but keeps the suggester opened
+				else if ((e.charCode==32) || ((e.keyCode == 13) && e.shiftKey)) {
 					//Selecting suggestion
 					if(selectedResult != null){
 						var uri = self.suggestions[selectedResult].uri;
@@ -308,11 +331,11 @@
 						if (uri) {
 							self.selectSuggestion(uri);
 							$(self.elTxt).attr("value", "");
+                                                        self.hide(true);
 						} else {
 							self.elTxt.attr("value", self.suggestions[selectedResult].prefix + ":");
 							startLoadingSuggestions();
 						}
-						self.hide(true);
 						selectedResult = null;
 						self.elTxt.focus();
 					}
@@ -343,18 +366,7 @@
 		this.bindTextFieldHandler = function() {
 			var self = this;
 
-			// NOte: This is a hot fix for Macs
 			this.elTxt.keypress(function(e){
-				// ":"
-				if (e.charCode == 58) {
-					self.loadingTimer = window.setTimeout(function(){
-						startLoadingSuggestions();
-					}, 500);
-				}
-			});
-
-			this.elTxt.keydown(function(e){
-
 				// Need to cancel loading suggestions, because:
 				// - either entry will be confirmed (hence no suggestions needed)
 				// - or entry is invalid, and fresher suggestions will be loaded
@@ -364,21 +376,33 @@
 				//input value before anyKeyDown
 				var textFieldValue = self.elTxt.attr("value");
 				
+                                // Tab places focus on the Add button
+                                if (e.keyCode == 9) {
+                                    self.addButton.focus();
+                                    e.preventDefault();
+                                }
 				//Checking not-allowed characters
 				// 188 = ,
-				if(e.keyCode == 188){
+				else if(e.keyCode == 188){
 					e.preventDefault();
 				}
 
-				//            a       -      z  or       space     or               ;                ENTER               ESC                  DOWN             BACKSPACE
-				if(e.keyCode>=65 && e.keyCode<=90 || e.keyCode == 32 || e.keyCode == 59 || e.keyCode == 13 || e.keyCode == 27 || e.keyCode == 40 || e.keyCode == 8){
+				// ":"
+				if (e.charCode == 58) {
+					self.loadingTimer = window.setTimeout(function(){
+						startLoadingSuggestions();
+					}, 500);
+				}
+
+				//            A       -      Z  or         a          -      z          or   space     or               ;                ENTER               ESC                  DOWN             BACKSPACE
+				if(e.charCode>=65 && e.charCode<=90 || e.charCode>=97 && e.charCode<=122 ||  e.charCode == 32 || e.charCode == 59 || e.keyCode == 13 || e.keyCode == 27 || e.keyCode == 40 || e.keyCode == 8){
 					//console.log($(e.currentTarget).parent());
 					//59 = ";" - few things can happen:
 
 					if((e.charCode == 59)){
 						//Textfield is empty -> load all prefixes
 						if(self.elTxt.attr("value")==""){
-							console.log("Only one \":\" => loading prefixes - temporary disabled");
+//							console.log("Only one \":\" => loading prefixes - temporary disabled");
 //							self.loadingTimer = window.setTimeout(function(){
 //								startLoadingSuggestions();
 //							}, 2000);
@@ -392,7 +416,7 @@
 									startLoadingSuggestions();
 								}, 500);
 							}else{
-								console.log("Second semicolon - gotcha!");
+								//console.log("Second semicolon - gotcha!");
 								e.preventDefault();
 							}
 						}
@@ -407,11 +431,11 @@
 					//27 = ESC
 					//40 = DOWN
 					//8 = BACKSPACE
-					//              a         -        z                 space
-					if(e.keyCode >= 65 && e.keyCode <= 90 || e.keyCode == 32){
+					//              a         -        z     or A  - Z or          space
+					if(e.charCode >= 65 && e.charCode <= 90 || e.charCode>=97 && e.charCode<=122 || e.charCode == 32){
 						//Checking if there isn't any semicolon on the first place
 						if(self.hasSemicolon(textFieldValue) && textFieldValue.indexOf(":")==0){
-							console.log("Already has semicolon on first place - loading prefixes, stop bothering me!")
+//							console.log("Already has semicolon on first place - loading prefixes, stop bothering me!")
 							e.preventDefault();
 						}else{
 							// Starts "sugestions loading timer". If there was a timer set before,
@@ -435,9 +459,18 @@
 							self.resultsContainer.children("div").eq(0).addClass("highlighted");
 							selectedResult = 0;
 							self.resultsContainer.scrollTop(0);
+                                                        e.preventDefault();
 						} else if(self.resultsContainer.children().length == 0){
 							//self.invisDiv.focus();
-							startLoadingSuggestions();
+                                                        if (textFieldValue.empty()) {
+                                                            self.onLoadSuggestions(self.allPrefixes);
+                                                            selectedResult = 0;
+                                                            self.invisDiv.focus();
+                                                            self.resultsContainer.children().removeClass("highlighted");
+                                                            self.resultsContainer.children("div").eq(selectedResult).addClass("highlighted");
+                                                        } else {
+                                                            startLoadingSuggestions();
+                                                        }
 						}else if(selectedResult > 0){
 							self.invisDiv.focus();
 							selectedResult++;
@@ -451,16 +484,17 @@
 						// Note: This is a hotfix; shouldn't be necessary
 						// once we bind to correct event?
 						window.setTimeout(function(){
-							$(self.elTxt).attr("value", "");
+                                                    $(self.elTxt).attr("value", "");
 						},0);
-						
+
 						self.hide(true);
 						selectedResult = null;
 					}
 					//ENTER key
 					else if(e.keyCode==13){
 						//Adding customTag
-						if(self.elTxt.attr("value") != ""){
+                                                var val =  self.elTxt.attr("value");
+						if((val != "") && (val.indexOf(":") == -1)){
 							self.hideSuggestions(true);
 							self.setEnabled(false);
 							self.addCustomTag(self.elTxt.attr("value"), self);
@@ -522,9 +556,9 @@
 		this.hide = function(keepFocus){
 			if (!this.isSecondary) {
 				this.hideSuggestions(keepFocus);
-
 			} else {
 				this.hideSuggester();
+                                this.editingMode = false;
 			}
 		}
 
@@ -554,17 +588,31 @@
 			this.focusLostTimer = null;
 			// If focus is going away ...
 			this.el.focusout(function(e){
+                            var el = e.target;
+//                            console.log("Focus lost from element " + el.tagName + "." + el.className + "#" + el.id);
+
 				// ... it may still come back (in a different part of the component)
 				// (but if it won't, close the suggester)
 				self.focusLostTimer = window.setTimeout(function(){
-					self.hide(false);
-				},100);
+                                    self.focusLostTimer = null;
+                                    self.hide(false);
+				},500);
+
 			});
 
 			this.el.focusin(function(e){
+//                            console.log("focus in");
+//                            console.log(e);
+                            var el = e.target;
+//                            console.log("Focus in on element " + el.tagName + "." + el.className + "#" + el.id);
 				// ... so if it did, don't close the suggester
-				if (self.focusLostTimer)
-					window.clearTimeout(self.focusLostTimer);
+				if (self.focusLostTimer) {
+//                                    console.log("Canceling 'hide-suggester' timer " + self.focusLostTimer);
+                                    window.clearTimeout(self.focusLostTimer);
+                                    self.focusLostTimer = null;
+                                } else {
+//                                    console.log("No timer, nothing to cancel");
+                                }
 			});
 
 			var hasFocus = false;
@@ -574,7 +622,7 @@
 				if (($(self.elTxt).attr("value") == "") && (!hasFocus)){
 					self.catTimer = window.setTimeout(function(){
 						// TODO: This was problematic, so excluding...
-						self.onLoadSuggestions(self.categories);
+						self.onLoadSuggestions(self.allPrefixes);
 					},3000);
 					// in keyhandler: if(this.catTimer) window.cancelTimeout(this.catTimer)
 				}
@@ -590,20 +638,63 @@
 			});
 		}
 
+                /**
+                 * Sorts suggestions by label (or prefix)
+                 */
+                var sort = function(items){
+                    try {
+                        return items.sort(function(a,b){
+                            // If there is a label in the item, sort by label
+                            if (typeof a.label != "undefined") {
+                                if (a.label < b.label)
+                                    return -1
+                                else if (a.label > b.label)
+                                    return 1
+                                else
+                                    return 0;
+                            }
+                            // Make this function work for sorting prefixes too
+                            else {
+                                if (a.prefix < b.prefix)
+                                    return -1
+                                else if (a.prefix > b.prefix)
+                                    return 1
+                                else
+                                    return 0;
+                            }
+                        });
+                    } catch (e) {
+                        // Don't crash, return original array in case of error
+                        return items;
+                    }
+                }
+
 		///////////////
 		// Public interface - to be overriden by implementors
 		///////////////
 
 		/**
 		 * This method is called by the compoment when it needs to load suggestions;
-		 * integrators need to override this method
+		 * integrators may need to override this method
 		*
 		*/
 		this.loadSuggestions = function(txt){
-			// This is dummy implementation;
-			// In reality, this method should use AJAX to start fetching
-			// data and call onLoadSuggestions in a success callback
-			this.onLoadSuggestions([]);
+                    var self = this;
+                    return $.ajax({
+                        url: this.ENDPOINT_TAGGING + "searchTags",
+                        type : "GET",
+                        data : {
+                            q : txt
+                        },
+                        success: function(data){
+                            self.onLoadSuggestions(data.items);
+                        },
+                        error: function(xhr, textStatus, errorThrown){
+                            // Not completely right, but let's assume now
+                            // the WS will never fail
+                            self.onLoadSuggestions([]);
+                        }
+                    });
 		}
 
 		/**
@@ -616,19 +707,34 @@
 			
 			//Hiding progress indication
 			this.el.children("div").empty();
-			this.suggestions = suggestions;
+			this.suggestions = sort(suggestions);
 			this.fillTheDiv("suggestions");
 			this.resultsContainer.css("visibility","visible");
 		}
 
 		/**
-		 * Dummy implementation, to be overriden by integrators
+		 * Initial implementation, integrators may override this
 		 */
 		this.loadSiblings = function(uri){
-			// Integrators need to call onLoadSuggestions to provide data
-			// in a callback
-			this.onLoadSuggestions([]);
+                    var self = this;
+                    $.ajax({
+                        url: this.ENDPOINT_TAGGING + "getSiblings",
+                        type : "GET",
+                        data : {
+                            uri : uri
+                        },
+                        success: function(data){
+                            self.onLoadChildren(data.items);
+                        },
+                        error: function(xhr, textStatus, errorThrown){
+                            // Not completely right, but let's assume now
+                            // the WS will never fail
+                            self.onLoadChildren([]);
+                        }
+                    });
 		}
+
+
 
 		var startLoadingChildren = $.proxy(function(selRes){
 			if(this.pendingRequest){
@@ -640,15 +746,48 @@
 			//_child.empty();
 			//Showing hidden waitin spinner
 			this.resultsContainer.children("div").eq(selRes).children(".result_wait_icon").css("visibility","visible");
-			this.loadChildren(this.suggestions[selRes].uri);
+
+                        if (this.suggestions[selRes].uri) {
+                            this.loadChildren(this.suggestions[selRes].uri);
+                        }
+                        // "prefix" suggestions also have "right arrow", but need
+                        // to trigger loadSuggestions (i.e. search), instead of
+                        // loadChildren
+                        else {
+                            var val = this.suggestions[selRes].prefix + ":";
+                            this.loadSuggestions(val);
+                            this.elTxt.attr("value", val);
+                        }
 		},this);
+
+                /*
+                 * Initial implementation, integrators may override this
+                 */
+                this.loadChildren = function(uri) {
+                    var self = this;
+                    $.ajax({
+                        url: this.ENDPOINT_TAGGING + "getChildren",
+                        type : "GET",
+                        data : {
+                            uri : uri
+                        },
+                        success: function(data){
+                            self.onLoadChildren(data.items);
+                        },
+                        error: function(xhr, textStatus, errorThrown){
+                            // Not completely right, but let's assume now
+                            // the WS will never fail
+                            self.onLoadChildren([]);
+                        }
+                    });
+                }
 
 
 		this.onLoadChildren = function(children){
 			//After simulated 2s hide the parents
 			this.el.find("div.resultsContainer").empty();
 			//Load children into the divs
-			this.suggestions = children;
+			this.suggestions = sort(children);
 			this.fillTheDiv("children");
 		}
 
@@ -667,14 +806,69 @@
 			this.loadParents(this.suggestions[selRes].parent);
 		},this);
 
+                /*
+                 * 
+                 */
+                this.loadParents = function(uri) {
+                    var self = this;
+                    $.ajax({
+                        url: this.ENDPOINT_TAGGING + "getSiblings",
+                        type : "GET",
+                        data : {
+                            uri : uri
+                        },
+                        success: function(data){
+                            self.onLoadParents(data.items);
+                        },
+                        error: function(xhr, textStatus, errorThrown){
+                            // Not completely right, but let's assume now
+                            // the WS will never fail
+                            self.onLoadParents([]);
+                        }
+                    });
+                }
 
 		this.onLoadParents = function(parents){
 			//After simulated 2s hide the parents
 			this.el.find("div.resultsContainer").empty();
 			//Load children into the divs
-			this.suggestions = parents;
+			this.suggestions = sort(parents);
 			this.fillTheDiv("parents");
 		}
+
+                /**
+                 * Returns true if given URI is root of a taxonomy
+                 */
+                var isTaxonomyRoot = $.proxy(function(uri){
+                    if (!this.categories)
+                        return false;
+
+                    for (var i = 0; i < this.categories.length; i++) {
+                        if (this.categories[i].uri == uri)
+                            return true;
+                    }
+
+                    return false;
+                },this);
+
+                this.setTaxonomies = function(taxonomies) {
+                    this.categories = taxonomies;
+                    this.allPrefixes = [];
+
+                    // Collect prefixes from all taxonomies
+                    for (var i = 0; i < taxonomies.length; i++) {
+                        this.allPrefixes.push({
+                            prefix: taxonomies[i].prefix
+                        });
+                    }
+
+                    this.allPrefixes = sort(this.allPrefixes);
+                }
+
+                this.setPrefixes = function(prefixes) {
+                    // This is a more precise WS response; use this one
+                    this.allPrefixes = sort(prefixes);
+                }
 
 		/**
 		 * Function to be overriden by integrators;
@@ -694,7 +888,9 @@
 
 		this.fillTheDiv = function(type){
 			if(this.suggestions.length == 0){
-				this.resultsContainer.append("<div style=\"text-align:center\">Your query does not match any tags</div>");
+				this.resultsContainer.append("<div style=\"text-align:center;font-size:0.9em\">Your query does not match any controlled tags;<br/>"
+                                    + "You may add '" + this.elTxt.attr("value") + "' as a free tag with Enter."
+                                    + "</div>");
 				return;
 			}
 			//Feeding up resultsContainer
@@ -736,10 +932,13 @@
 					}
 
 					//If suggestion has a parent, left arrow get visible condition via class
-					if(this.suggestions[i].parent!=null){
+					if((this.suggestions[i].parent!=null) && (!isTaxonomyRoot(this.suggestions[i].parent))) {
 						classNames += "hasParent ";
 					}
 				}
+                                else if (this.suggestions[i].uri == null) {
+                                    classNames += "notControlled isPrefix";
+                                }
 				// Free tags may need something too
 				else{
 					classNames += "notControlled";
@@ -747,9 +946,9 @@
 
 				// And create it!
 				this.resultsContainer.append(
-					"<div class=\"result_item " + classNames + " \">   <span class=\"left_arrow\"></span>   <span class=\"label\">"
+					"<div class=\"result_item " + classNames + " \">   <span class=\"left_arrow\" title='Show parent tags'></span>   <span class=\"label\">"
 						+ label
-						+"</span>   <span class=\"result_wait_icon\"></span>   <span class=\"right_arrow\"></span>   </div>");
+						+"</span>   <span class=\"result_wait_icon\"></span>   <span class=\"right_arrow\" title='Show children tags'></span>   </div>");
 
 			}
 
@@ -778,9 +977,18 @@
 			var self = this;
 			//Mouseclick action on suggestion's parts (label and arrows)
 			this.resultsContainer.click(function(event){
+//                                console.log("Click within container");
+
+                                self.invisDiv.focus();
+
 				// Click on list shouldn't be considered as focus lost; cancel hideout timer
-				if (self.focusLostTimer)
-					window.clearTimeout(self.focusLostTimer);
+				if (self.focusLostTimer){
+//                                    console.log("... cancelling timer " + self.focusLostTimer);
+                                    window.clearTimeout(self.focusLostTimer);
+                                    self.focusLostTimer = null;
+                                } else {
+//                                    console.log("no timer to cancel within resultsContainer.click");
+                                }
 
 				var el = $(event.target);
 				//Clicking on the suggestion label makes it selected
@@ -791,7 +999,6 @@
 					el.parent().addClass("highlighted");
 					selectedResult = el.parent().parent().children("div").index(el.parent());
 					labelClicked();
-					$(this).parent().children("div.invis").focus();
 				}
 				//Clicking on the LEFT-ARROW loads the PARENTS of the hovered suggestion
 				else if(el.hasClass("left_arrow")) {
@@ -812,7 +1019,9 @@
 
 			this.el.children("input").click(function(event){
 				var el = $(event.target)
-				if(el.attr("type") == "button" && self.elTxt.attr("value") != ""){
+                                var val =  self.elTxt.attr("value");
+
+				if(el.attr("type") == "button" && ((val != "") && (val.indexOf(":") == -1))){
 					self.hideSuggestions(true);
 					self.setEnabled(false);
 					self.addCustomTag(self.elTxt.attr("value"), self);
@@ -847,7 +1056,8 @@
 				}
 
 				// TODO: hide suggestions, hide the component
-				
+                                this.hide(true);
+                                selectedResult = null;
 			}
 		}
 

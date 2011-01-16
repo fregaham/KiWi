@@ -75,10 +75,22 @@ public class ArtWorkService {
 	public List<ArtWorkFacade> getAllArtWorks(){
 		KiWiSearchCriteria criteria = new KiWiSearchCriteria();
 		criteria.getTypes().add(tripleStore.createUriResource(Constants.ART_AROUND_CORE + "ArtWork").getKiwiIdentifier());
-		criteria.setLimit(Integer.MAX_VALUE);
+		criteria.setLimit(Integer.MAX_VALUE);			
 		List <ArtWorkFacade> allArtWorks = getArtWoksWithCriteria(criteria);		
 		return allArtWorks;
 	}
+	
+	public List<ArtWorkFacade> getAllNewArtWorks(){
+		KiWiSearchCriteria criteria = new KiWiSearchCriteria();
+		criteria.getTypes().add(tripleStore.createUriResource(Constants.ART_AROUND_CORE + "ArtWork").getKiwiIdentifier());
+		criteria.setLimit(Integer.MAX_VALUE);	
+		criteria.setSortField("modified");
+		List <ArtWorkFacade> allArtWorks = getArtWoksWithCriteria(criteria);		
+		return allArtWorks;
+	}
+	
+	
+	
 	
 	/**
 	 * This class <b>returns all Artworks</b>

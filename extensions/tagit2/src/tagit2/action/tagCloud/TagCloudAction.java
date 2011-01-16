@@ -97,7 +97,7 @@ public class TagCloudAction implements Serializable {
 	 */
 	public List<ExtendedTagCloudEntry> getTagCloud() {
 		if(tagCloud == null) {
-			tagCloud = tagCloudService.aggregateTags(taggingService.getTags(currentContentItem));
+			tagCloud = tagCloudService.aggregateTags(taggingService.getTaggings(currentContentItem));
 		}
 		
 		return tagCloud;

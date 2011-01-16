@@ -75,6 +75,7 @@ import kiwi.model.content.ContentItem;
 import kiwi.model.kbase.KiWiTriple;
 import kiwi.model.recommendation.ContactRecommendation;
 import kiwi.model.recommendation.MySimilarRecommendation;
+import kiwi.model.recommendation.RuleBasedRecommendation;
 import kiwi.model.recommendation.SocialCapital;
 import kiwi.model.recommendation.SocialCapitalRecommendation;
 import kiwi.model.tagging.Tag;
@@ -164,7 +165,7 @@ public class RecommendationServiceImpl implements RecommendationServiceLocal, Re
 	public List<ContentItem> getRecommendations(ContentItem currentItem, User currentUser) {
 		log.info("Calculating similar recommendations");
 
-		Collection<Tag> tags = taggingService.getTags(currentItem);
+		Collection<Tag> tags = taggingService.getTaggings(currentItem);
 
 		
 		List<ContentItem> result = new LinkedList<ContentItem>();
@@ -232,8 +233,30 @@ public class RecommendationServiceImpl implements RecommendationServiceLocal, Re
 		return result;
 	}
 	
+	/**
+	 * @param ruleType
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private List<RuleBasedRecommendation> loadRuleBasedRecommendationsByType(String ruleType) {
+		List<RuleBasedRecommendation> ruleBasedRecommendations  = null;
+		String s = "select u from RuleBasedRecommendation u where u.user =:user and u.ruleType=:ruleType";
+		javax.persistence.Query q = entityManager.createQuery(s);
+        q.setParameter("user", currentUser);
+        q.setParameter("ruleType", ruleType);
+        try {
+        	ruleBasedRecommendations = (List<RuleBasedRecommendation>)q.getResultList();
+ 		} catch (NoResultException ex) {
+ 			//
+		}
+		return ruleBasedRecommendations;
+	}
 
-
+	private String RECOMMEND_ME_PAGES_WITH_TAGS="recTag";
+	
+	/* (non-Javadoc)
+	 * @see kiwi.api.recommendation.RecommendationService#getRuleBasedRecommendations(kiwi.model.user.User)
+	 */
 	@SuppressWarnings("unchecked")
 	public List<ContentItem> getRuleBasedRecommendations(User currentUser) {
 		log.info("Retrieving rule based recommendations");
@@ -242,6 +265,12 @@ public class RecommendationServiceImpl implements RecommendationServiceLocal, Re
 		for (KiWiTriple kiwTriple : triples) {
 			result.add(kiwTriple.getSubject().getContentItem());
 		}
+		
+		for (RuleBasedRecommendation ruleBasedRecommendation : loadRuleBasedRecommendationsByType(RECOMMEND_ME_PAGES_WITH_TAGS) ) {
+			result.addAll(getRecommendationsByTag(ruleBasedRecommendation.getTagRec(), currentUser));
+		}
+
+		
 		result = removeDuplicates(result);
 		return result;
 	}	
@@ -339,7 +368,7 @@ public class RecommendationServiceImpl implements RecommendationServiceLocal, Re
 	public List<Map.Entry<ContentItem,List<ContentItem>>> getTagGroupedRecommendations(ContentItem currentItem, User currentUser) {
 		log.info("Calculating grouped recommendations");
 
-		Collection<Tag> tags = taggingService.getTags(currentItem);
+		Collection<Tag> tags = taggingService.getTaggings(currentItem);
 
 		List<Tag> qresult = new LinkedList<Tag>();
 
@@ -888,7 +917,7 @@ public class RecommendationServiceImpl implements RecommendationServiceLocal, Re
 		long tagWeight = 0l;
 		for (ContentItem resultItem : result) {
 			ds = calculateCosineSimilarity(resultItem, currentItem);
-			for (Tag tag : taggingService.getTags(currentItem)) {
+			for (Tag tag : taggingService.getTaggings(currentItem)) {
 					String tagLabel = tag.getTaggingResource().getTitle();
 					if (!tagSet.contains(tagLabel)) {
 						userAffinity = calculateTagUserAffinity(tagLabel, currentUser);
@@ -1438,7 +1467,7 @@ public class RecommendationServiceImpl implements RecommendationServiceLocal, Re
 		
         KiWiSearchResults searchResults;
         
-		if(query != null && query!="" && currentUser.getId()!=1l &&  currentUser.getId()!=2l ){
+		if(query != null && query!="" && !currentUser.getLogin().equals("admin") &&  !currentUser.getLogin().equals("anonymous") && currentUser.getUserPreference()!=null){
 			kiwiSearchEngine.setPageSize(currentUser.getUserPreference().getRecommendationSize());
 		    kiwiSearchEngine.setSearchQuery(query);
 		    kiwiSearchEngine.runSearch();

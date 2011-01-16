@@ -57,7 +57,7 @@ public interface LabelService {
 	
 	/**
 	 * Retrive all the labels and their resource (String label, Long resource_id) 
-	 * @return List of pairs (String label, Long resource_id)
+	 * @return List of pairs (String label, Long resource_id, Long label_id)
 	 */
 	public List<Object[]> getLabels();
 	
@@ -74,6 +74,13 @@ public interface LabelService {
 	 * @return
 	 */
 	public List<Label> getLabels(ContentItem ci);
+	
+	/**
+	 * Get the list of stored labels by associated resource 
+	 * @param resource
+	 * @return
+	 */
+	public List<Label> getLabelsByResource(KiWiResource resource);
 
 	/**
 	 * Creates the label entities for a particular content item.
@@ -85,4 +92,6 @@ public interface LabelService {
 	public void onTitleEvent(ContentItem item);
 
 	public void onTitleUpdated(ContentItem ci);
+	
+	public Label storeLabel(Label l);
 }

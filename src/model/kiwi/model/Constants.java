@@ -141,7 +141,7 @@ public class Constants {
 	/**
 	 * The name space for all the sun space related items.
 	 */
-	public static final String NS_SUN_SPACE                 = "http://www.sun.org/";
+	public static final String NS_SUN_SPACE                 = "http://www.kiwi-project.eu/kiwi/sunspace";
 	
 	// 192.168.2.41:8080/KiWi
 //	public static final String GOOGLE_KEY = "ABQIAAAA2EQ2uSxB8zXya_KFGNf4dBTE9MOBMr_EtGSFfj65oc_vlSY_WBQ-bY74M1N7buhiD7d1I0W-pz5xZg";

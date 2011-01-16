@@ -1,22 +1,36 @@
 body{
+    /*
 	font-family:arial,helvetica,sans-serif;
 	color: black;
 	font-size: 12px;
+    */
 }
 
-img{
+.tagsEditor img{
 	margin: 0;
 	padding: 0;
 	border: none;
 }
 
-h1,h2,h3,h4{
+.tagsEditor h1,
+.tagsEditor h2,
+.tagsEditor h3,
+.tagsEditor h4{
 	color: #EB8000;
 	margin: 0;
 	padding: 0;
 }
 
-a{
+.tagsEditor h4 {
+    text-align:center;
+}
+
+.tagsEditor h3 {
+    font-size:0.8em;
+    padding-top:5px;
+}
+
+.tagsEditor a{
 	cursor: pointer;
 }
 
@@ -27,7 +41,11 @@ a{
 	border: 1px solid lightGray;
 }
 	div.tagsEditor{
-		position: relative;
+                bottom:20px;
+                left:47px;
+                position:absolute;
+                right:30px;
+                top:43px;
 	}
 
 	div.tagsEditor div.delete {
@@ -66,7 +84,9 @@ a{
 		}
 
 		div.tagsEditor_requiredTags{
-			margin-top: 5px;
+                    margin-top:5px;
+                    padding-bottom:5px;
+                    border-bottom:1px dashed #CECECE;
 		}
 
 			div.tagsEditor_requiredTags select{
@@ -88,7 +108,8 @@ a{
 			}
 
 		div.tagsEditor_freeTags{
-			margin-top: 20px;
+                    padding-top:15px;
+                    border-bottom:1px dashed #CECECE;
 		}
 
 		div.tagsEditor_freeTagsEditor #tagsEditor_inputText{
@@ -101,13 +122,24 @@ a{
 		}
 
 		div.tagsEditor_addTags{
-			color: grey;
-			margin-top: 20px;
+			margin-top: 10px;
 		}
+                div.tagsEditor_addTags a {
+                    color: #EE6523;
+                }
+                div.tagsEditor_addTags a:hover {
+                    text-decoration:underline;
+                }
 		div.tagsEditor_recommendTags{
-			color: grey;
+			color: gray;
 			margin-top: 5px;
 		}
+                div.tagsEditor_recommendTags a {
+                    color: #EE6523;
+                }
+                div.tagsEditor_recommendTags a:hover {
+                    text-decoration:underline;
+            }
 		div.tagsEditor_optional{
 			color: grey;
 			margin-top: 5px;
@@ -116,19 +148,36 @@ a{
 			div.tagsEditor_optional div a{
 				color: #666666;
 				margin-right: 10px;
+                                white-space: nowrap;
+                                cursor: pointer;
+                                padding:5px;
 			}
+                        div.tagsEditor_optional div a:hover {
+                            text-decoration: underline;
+                        }
+
 
 			div.tagsEditor_optional div a.selectedTag{
 				color: black;
+                                text-decoration: underline;
+                                background-color:#999999;
 			}
 
 				/*Must be for orange color of .tagsEditor_controlled class inside <a> (wich has grey color from line 76*/
 				div.tagsEditor_optional div a.tagsEditor_controlled{
-					color: #EB8000;
+					color: #EB7070;
 				}
 				div.tagsEditor_optional div a.selectedTag.tagsEditor_controlled{
-					color: #EB5020;
+					color: #EB0000;
+                                        background-color:#EBC0C0;
 				}
+
+                                div.tagsEditor_optional span.categorytags_label{
+                                    color: #EB0000;
+                                }
+                                div.tagsEditor_optional span.freetags_label {
+                                    color: black;
+                                }
 		
 		.tagsEditor_controlled{
 			color: #EB8000;
@@ -168,10 +217,10 @@ div.categoryContainer{
 		text-align: left;
 		margin-right: 5px;
 		float: left;
-		
+		font-weight:bold;
 	}
 	div.categoryContainer div.categoryTags{
-		width: 435px;
+		/*width: 435px;*/
 		float: left;
 	}
 
@@ -185,10 +234,10 @@ div.categoryContainer{
 			display: inline;
 		}
 		/* on hover above empty category, show "add" and hide "none" */
-		div.categoryContainer div.categoryTags:hover span.add {
+		div.categoryContainer:hover div.categoryTags span.add {
 			display: inline;
 		}
-		div.categoryContainer div.categoryTags:hover span.none{
+		div.categoryContainer:hover div.categoryTags span.none{
 			display: none;
 		}
 		
@@ -202,3 +251,22 @@ div.categoryContainer{
 		height: 1px;
 		visibility: hidden;
 	}
+
+div.tagsEditor_tagCloud {
+    overflow-y:auto;
+    border-top:1px dashed #CECECE;
+}
+
+div.tagsEditor_tagCloud div.noTags {
+    display:none;
+}
+div.tagsEditor_tagCloud.noTags div.noTags {
+    display:block;
+}
+
+div.suntagEditor_inlineTags span.free {
+    color: black;
+}
+div.suntagEditor_inlineTags span.controlled {
+    color: #EB0000;
+}

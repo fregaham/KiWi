@@ -1,128 +1,98 @@
-<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-                             "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:s="http://jboss.com/products/seam/taglib"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:rich="http://richfaces.org/rich"
-                xmlns:a="http://richfaces.org/a4j"
-                xmlns:m="http://code.google.com/p/gmaps4jsf/"
-			 	xmlns:c="http://java.sun.com/jstl/core"
-			 	xmlns:a4j="http://richfaces.org/a4j"			 	
-                xmlns:kiwi="http://www.kiwi-project.eu/jsf"
-                template="layout/main.xhtml">               	
-		 
-	 <ui:define name="breadcrumps">
-	 	<ul>
-	 		<li class="first">				 			
-				<s:link view="/dkms/authorInterface/home.xhtml" value="AI Startseite"/>
-	 		</li>
-	 		<li>				 			
-				<s:link view="/dkms/authorInterface/startSequence.xhtml" value="Aufgaben/Lernsequenz"/>
-	 		</li>	 			 		
-	 	</ul>
-	 </ui:define>
-	 
-	 <ui:define name="body">
-	 
-	 <style>
-	 
-	 h1 {  
-	 	 	
-	 	color: #6f91c0;
-	 	font-size: 16px;
-	 	margin-left:20px;
-	 	margin-right: 10px;
-	 	line-hight:20px;	 	
-	 
-	 }
-	 
-	 ul li {
-		list-style-image:url(../img/li.png);
-		color: #6f91c0;
-	 	font-size: 14px;
-	 	margin-left: 30px;
-	 	margin-top: 5px;
-	}	
-	
-	li img {
-		vertical-align: center;	
-	}
-	
-	h2 {  
-	 	 	
-	 	color: #6f91c0;
-	 	font-size: 14px;
-	 	margin-left:20px;
-	 	margin-bottom: 5px;	 	
-	 
-	 }
-	 
-	 #cover {
-	 
-		 margin: 10px -40px 0 0;
-		 width: 500px;
-	 
-	 }	
-	 
-	 #arrows {
-	 	width: 500px;
-	 	margin: 20px;
-	 	
-	 } 
-	 
-	</style>
-	 
-	 <div id="cover">
-	 
-	 <fieldset class="fieldsetborder">
-			<legend>Information: Bausteine einer Aufgaben/Lernsequenz</legend>
-	 	<div>
-		 	<img style="margin:10px 15px 0 15px; float:left;" src="#{facesContext.externalContext.requestContextPath}/view/img/information.png"/><br/>
-		 	<h1>Bei der Erstellung einer Aufgaben- bzw. Lernsequenz ist eine bestimmte Grundstruktur vorgegeben. </h1><br/>
-		 	<h2>Es stehen Ihnen folgende Bausteine zur Verfuegung:</h2>
-		 	<ul>
-		 		<li>Angabe bzw. Lerninhalt</li>
-		 		<li>Zusaetzliche Information(en) zur Angabe bzw. Lerninhalt</li>
-		 		<li>Aufgabenstellung(en)</li>
-		 		<li>Zusatzinformation(en) zu jeder Aufgabenstellung</li>
-		 		<li>Loesungsweg</li>
-		 	</ul>
-		 	<h2>Jeder dieser Bausteine kann durch</h2>
-		 	<ul>
-		 		<li>die Eingabe von Text und Bild in einem einfachen Editor</li>
-		 		<li>das Hochladen von Praesentationsfolien</li>
-		 		<li>das Hochladen von Movie(Film)-Dateien</li>		 		
-		 	</ul>
-		 	<h2>erstellt werden.</h2>
-		</div>
-		<div id="arrows">
-			<table width="500px">
-				<tr>					
-					<td align="left">
-						<s:link view="/dkms/authorInterface/startSequence.xhtml">
-							<img title="Zurueck" src="#{facesContext.externalContext.requestContextPath}/view/img/arrowleft.png"/>
-						</s:link>
-					</td>
-					<td align="right">
-						<s:link view="/dkms/authorInterface/step1.xhtml">
-							<img title="Weiter" src="#{facesContext.externalContext.requestContextPath}/view/img/arrowright.png"/>
-						</s:link>
-					</td>
-				</tr>			
-			</table>
-			
-			
-		</div>
-	 
-	 
-	 </fieldset>	
-	 
-	 </div>
-	 
-	 
-	 
-	 
-  </ui:define>
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich">
+
+    <style>
+    .pic {
+        margin-bottom: -4px;
+        margin-right: 2px;
+    }
+    .search .rich-menu-item-hover{
+        background-color: transparent;
+        border-color: transparent;
+    }
+    </style>
+    
+    <h:form>
+
+        <rich:toolBar>
+
+            <rich:dropDownMenu>
+                <f:facet name="label"> 
+                    <h:panelGroup>
+                        <h:graphicImage value="/images/icons/copy.gif" styleClass="pic"/>
+                        <h:outputText value="File"/>
+                    </h:panelGroup>
+                </f:facet>
+                <rich:menuItem submitMode="ajax" value="New"
+                    action="#{ddmenu.doNew}" icon="/images/icons/create_doc.gif">
+                </rich:menuItem>
+                <rich:menuItem submitMode="ajax" value="Open"
+                    action="#{ddmenu.doOpen}" icon="/images/icons/open.gif" />
+                <rich:menuGroup value="Save As...">
+                    <rich:menuItem submitMode="ajax" value="Save" 
+                        action="#{ddmenu.doSave}" icon="/images/icons/save.gif" />
+                    <rich:menuItem submitMode="ajax" value="Save All"
+                        action="#{ddmenu.doSaveAll}">
+                        <f:facet name="icon">
+                            <h:graphicImage value="/images/icons/save_all.gif" />
+                        </f:facet>
+                    </rich:menuItem>
+                </rich:menuGroup>
+                <rich:menuItem submitMode="ajax" value="Close"
+                    action="#{ddmenu.doClose}" />
+                <rich:menuSeparator id="menuSeparator11" />
+                <rich:menuItem submitMode="ajax" value="Exit"
+                    action="#{ddmenu.doExit}" />
+
+            </rich:dropDownMenu>
+
+            <rich:dropDownMenu>
+
+                <f:facet name="label">
+                    <h:panelGrid cellpadding="0" cellspacing="0" columns="2"
+                        style="vertical-align:middle">
+                        <h:outputText value="Links" />
+                    </h:panelGrid>
+                </f:facet>
+
+                <rich:menuItem submitMode="none"
+                    onclick="document.location.href='http://labs.jboss.com/jbossrichfaces/'">
+                    <h:outputLink value="http://labs.jboss.com/jbossrichfaces/">
+                        <h:outputText value="RichFaces Home Page"></h:outputText>
+                    </h:outputLink>
+                </rich:menuItem>
+
+                <rich:menuItem submitMode="none"
+                    onclick="document.location.href='http://jboss.com/index.html?module=bb&amp;op=viewforum&amp;f=261'">
+                    <h:outputLink
+                        value="http://jboss.com/index.html?module=bb&amp;op=viewforum&amp;f=261">
+                        <h:outputText value="RichFaces Forum"></h:outputText>
+                    </h:outputLink>
+                </rich:menuItem>
+
+            </rich:dropDownMenu>
+            <rich:toolBarGroup location="right">
+                <rich:dropDownMenu value="Search" direction="bottom-left" jointPoint="br" styleClass="search">
+                    <rich:menuItem submitMode="none">
+                        <h:inputText value="" id="searchinput"/>
+                        <button type="button">Search</button>
+                    </rich:menuItem>
+                    <rich:menuItem value="Enter your search criteria here" disabled="true"></rich:menuItem>
+                </rich:dropDownMenu>
+            </rich:toolBarGroup>
+        </rich:toolBar>
+    </h:form>
+    <rich:spacer width="1" height="5"/>
+    <br />
+    <a4j:outputPanel ajaxRendered="true">
+        <h:outputText value="Current Selection: "></h:outputText>
+        <h:outputText style="font-weight:bold" value="#{ddmenu.current}"></h:outputText>
+    </a4j:outputPanel>
+    <br />
+    <rich:spacer width="1" height="25" />
+
 </ui:composition>

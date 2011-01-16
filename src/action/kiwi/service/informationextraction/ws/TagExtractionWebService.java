@@ -67,6 +67,8 @@ import kiwi.model.kbase.KiWiResource;
 import kiwi.model.kbase.KiWiUriResource;
 import kiwi.model.ontology.SKOSConcept;
 import kiwi.model.tagging.Tag;
+import kiwi.model.Constants;
+import kiwi.service.sun.SunSkosUtils;
 
 import nu.xom.Builder;
 import nu.xom.Document;
@@ -268,7 +270,6 @@ public class TagExtractionWebService {
 		Collection<Suggestion> suggestions = extractSuggestions(dataMap);
 		
 		JSONArray optionalArray = new JSONArray();
-		
 		for (Suggestion suggestion : suggestions) {
 			if (suggestion.getKind() == Suggestion.TAG) {
 				String id = "tag_" + UUID.randomUUID().toString();
@@ -298,7 +299,7 @@ public class TagExtractionWebService {
 									// found a concept in the list!
 									// from a possible ambigous suggestion, select this one.
 									jsonSuggestion.put("uri", uri);
-
+                                                                        
 									// and also remember the found upper level concept for the required list... 
 									// best.put(up.get(cResource), cResource);
 									if (!scores.containsKey(cResource)) {
@@ -360,6 +361,53 @@ public class TagExtractionWebService {
 			return ret.toString(4);
 		}
 	}
+
+        private ContentItem getParent(ContentItem item) {
+            final SKOSConcept facade =
+                    kiwiEntityManager.createFacade(item, SKOSConcept.class);
+            final SKOSConcept broader = facade.getBroader();
+
+            return broader == null ? null : broader.getDelegate();
+        }
+
+        private boolean hasChildern(ContentItem item) {
+            final SKOSConcept facade =
+                    kiwiEntityManager.createFacade(item, SKOSConcept.class);
+            final HashSet<SKOSConcept> narrower = facade.getNarrower();
+            return !narrower.isEmpty();
+        }
+
+        /**
+         * proves if a given <code>KiWiUriResource</code> has a
+         * certain type, the type is defined like URI. <br>
+         * This is a work-around for the :
+         *
+         * <pre>
+         * KiWiUriResource uriResource = ...
+         * String controlledTypeUri = Constants.NS_SKOS + "Concept";
+         * boolean isControlled = uriResource.hasType(controlledTypeUri);
+         * </pre>
+         *
+         * @param uriResource the resource for the type check
+         * @param typeUri the uri for the type.
+         * @return true if the given resource is from the specified
+         *         type.
+         */
+        private boolean containsType(KiWiUriResource uriResource, String typeUri) {
+            final Collection<KiWiResource> types = uriResource.getTypes();
+
+            for (KiWiResource type : types) {
+                if (type.isUriResource()) {
+                    final KiWiUriResource uriType = (KiWiUriResource) type;
+                    final String uri = uriType.getUri();
+                    if (uri.equals(typeUri)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
 	
 	@GET
 	@Path("/extractTaxonomyTags")
@@ -410,7 +458,7 @@ public class TagExtractionWebService {
 		Collection<Suggestion> suggestions = informationExtractionService.extractTags(null, tc, Locale.ENGLISH);
 				
 		JSONArray optionalArray = new JSONArray();
-		
+                final String controlledTypeUri = Constants.NS_SKOS + "Concept";
 		for (Suggestion suggestion : suggestions) {
 			if (suggestion.getKind() == Suggestion.TAG) {
 				String id = "tag_" + UUID.randomUUID().toString();
@@ -440,6 +488,22 @@ public class TagExtractionWebService {
 									// from a possible ambigous suggestion, select this one.
 									jsonSuggestion.put("uri", rUri);
 
+                                                                        KiWiUriResource uriResource = (KiWiUriResource) resource;
+                                                                        boolean isControlled = containsType(uriResource, controlledTypeUri);
+                                                                        jsonSuggestion.put("controlled", isControlled ? "1" : "0");
+                                                                        if (isControlled) {
+                                                                            final ContentItem tagCi = new ContentItem(uriResource);
+                                                                            final ContentItem parent = getParent(tagCi);
+                                                                            String parentURI = null;
+                                                                            if (parent != null) {
+                                                                                parentURI = ((KiWiUriResource)parent.getResource()).getUri();
+                                                                            }
+                                                                            jsonSuggestion.put("parent", parentURI);
+
+                                                                            final boolean hasChildren = hasChildern(tagCi);
+                                                                            jsonSuggestion.put("hasChildren", hasChildren);
+                                                                        }
+
 									// and also remember the found upper level concept for the required list... 
 									// best.put(up.get(cResource), cResource);
 									if (!scores.containsKey(cResource)) {
@@ -456,6 +520,27 @@ public class TagExtractionWebService {
 						// set unambiguous uri only if it hasn't been found previously...
 						if (!jsonSuggestion.has("uri")) {
 							jsonSuggestion.put("uri", rUri);
+
+                                                        KiWiUriResource uriResource = (KiWiUriResource) resource;
+                                                        boolean isControlled = containsType(uriResource, controlledTypeUri);
+                                                        jsonSuggestion.put("controlled", isControlled ? "1" : "0");
+                                                        if (isControlled) {
+                                                            final ContentItem tagCi = new ContentItem(uriResource);
+                                                            final ContentItem parent = getParent(tagCi);
+                                                            String parentURI = null;
+                                                            if (parent != null) {
+                                                                parentURI = ((KiWiUriResource)parent.getResource()).getUri();
+                                                            }
+                                                            jsonSuggestion.put("parent", parentURI);
+
+                                                            final boolean hasChildren = hasChildern(tagCi);
+                                                            jsonSuggestion.put("hasChildren", hasChildren);
+
+                                                            final String prefixProp =
+                                                                    SunSkosUtils.getPropertyName("sunspaceSkosPrefix");
+                                                            final String realPrefix = resource.getProperty(prefixProp);
+                                                            jsonSuggestion.put("prefix", realPrefix);
+                                                        }
 						}
 					}
 				}
@@ -551,7 +636,7 @@ public class TagExtractionWebService {
 			log.info("content item #0 not found.", uri);
 		}
 		else {
-			for(Tag tag : taggingService.getTags(item)) {
+			for(Tag tag : taggingService.getTaggings(item)) {
 				if (tag.getTaggingResource().getResource().isUriResource()) {
 					tagUris.add(((KiWiUriResource)tag.getTaggingResource().getResource()).getUri());
 				}

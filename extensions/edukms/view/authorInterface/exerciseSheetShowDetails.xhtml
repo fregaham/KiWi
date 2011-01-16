@@ -19,10 +19,10 @@
 				view="/edukms/authorInterface/home.xhtml" value="| Author Home" /></li>
 			<li><s:link
 				view="/edukms/authorInterface/userAdministrationArea.xhtml"
-				value="Administration" /></li>
+				value="Administration Area" /></li>
 			<li><s:link
 				view="/edukms/authorInterface/exerciseSheetShowDetails.xhtml"
-				value="Exercise Sheet Details" /></li>
+				value="Resource Details" /></li>
 		</ul>
 	</ui:define>
 
@@ -69,43 +69,64 @@ h2 {
 	padding:10px;
 
 }
+
+.rich-mpnl-controls img {
+	src: url("../../img/close.png");
+}
+
+.rich-stglpanel-header {
+background-color:#eee;
+border-color:#eee;
+height:15px;
+color:#666;
+font-size:12px;
+font-weight:bold;
+
+}
+
+.rich-stglpanel {
+background-color:#eee;
+border-color:#C0C0C0;
+}
+
+.rich-stglpanel-body {
+
+padding:0px;
+
+}
 </style>
 
 
 		<h:form>
 		<div id="cover">
 
-		<fieldset class="fieldsetborder"
-			style="float:left; width:100%; height: 700px; margin-left: -170px; border:1px solid #FFE8C3">		
+		 <rich:simpleTogglePanel  style="margin-left:-170px; margin-bottom: 10px; border-color: #FFE8C3; width:100% " opened="true" switchType="client"  >			
+				<ui:include src="./menu/menu_simpleResourceShowDetails.xhtml" ></ui:include>			
+		 </rich:simpleTogglePanel>
+
+		<div style="float:left; width:100%; height: 620px; margin-left: -170px; border:1px solid #FFE8C3; padding-top:10px">
 		
-		<h2><img
-				src="#{facesContext.externalContext.requestContextPath}/view/img/vorschau_symbol.png"
-				style="valign: center; vertical-align: middle; margin-right: 10px;" />Preview: #{dkmsContentItemBean.dkmsContentItemName}</h2>
+		
+<!--		<img-->
+<!--				src="#{facesContext.externalContext.requestContextPath}/view/img/vorschau_symbol.png"-->
+<!--				style="valign: center; vertical-align: middle; margin-right: 10px;" />-->
+		<h2 style="margin-left:10px">Preview: #{dkmsContentItemBean.dkmsContentItemName}</h2>
 		
 		<br />
 		
 		
-		<rich:editor id="editor" language="de" width="730"
-			height="630" value="#{dkmsContentItemBean.exerciseSheetContent}" theme="advanced"
+		<rich:editor style="margin-left:10px" id="editor" language="de" width="770"
+			height="580" value="#{dkmsContentItemBean.exerciseSheetContent}" theme="advanced"
 			viewMode="visual" readonly="true">
 
 		</rich:editor>
 
 
-		</fieldset>
-		<fieldset class="fieldsetborder" style="float:right; width: 200px; height: 700px; margin-right: -160px; border:1px solid #FFE8C3">
-		<div id="buttons">
-		<h:commandLink class="buttonclass"
-			action="#{dkmsReadModusAction.exitExerciseSheetDetails()}">
-			<img
-				src="#{facesContext.externalContext.requestContextPath}/view/img/arrowleft_small.png"
-				style="valign: center; vertical-align: middle; margin-right: 5px;" />Back</h:commandLink>
-		<br />
-		<br />
-
 		</div>
 		
-		</fieldset>
+		<rich:simpleTogglePanel  style="float:left; margin-left:-170px; margin-top: 10px; margin-bottom: 10px; border-color: #FFE8C3; width:100% " opened="true" switchType="client"  >
+			<ui:include src="./menu/menu_simpleResourceShowDetails.xhtml" ></ui:include>
+		 </rich:simpleTogglePanel>   
 
 		</div>
 		</h:form>

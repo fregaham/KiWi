@@ -216,6 +216,16 @@ public interface UserService {
 	public void removeRole(User user, String rolename);
 
 	public boolean changePassword(User users, String string);
+	
+/**
+	 * Return all users who are contributing on a give contentItem
+	 * @param contentItem
+	 * @return
+	 */
+	public List<User> getContributorsOfContentItem(ContentItem contentItem);		
+
+	
+
 
 
 }

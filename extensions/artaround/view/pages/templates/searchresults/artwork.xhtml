@@ -7,19 +7,25 @@
     xmlns:kiwi="http://www.kiwi-project.eu/jsf"
     xmlns:c="http://java.sun.com/jstl/core"
     xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:p="http://primefaces.prime.com.tr/ui"
 	xmlns:a="http://richfaces.org/a4j">
+	
+	
 		<div class="sr_artwork">
 		   <h:form>
 		   		
 			<!--  	<kiwi:link value="#{ci.title}" contentItem="#{ci}" styleClass="sr_title" refView="/artaround/pages/artworks/imagesOfArtwork.seam?" /> -->
 				<table cellspacing="10" cellpadding="10"><tr><td>
-				
-			  	<img src="#{showArtWorkAction.getThumbMasterFileNameFromArtwork(ci)}"/>
-				
+				<p:lightBox> 
+				<h:outputLink value="#{showArtWorkAction.getMasterFileNameFromArtwork(ci)}">  
+				 <h:graphicImage value="#{showArtWorkAction.getThumbMasterFileNameFromArtwork(ci)}"/> 
+
+			  	</h:outputLink>
+				</p:lightBox>
 				</td><td>
 				<h1 style="color:#aaa; font-weight: normal; font-size: 14px;">#{ci.title}</h1>	
 								
-				<h:outputText value="von #{ci.author.login}"/>
+				<h:outputText value="Autor: #{ci.author.login}" style="font-size:13px; font-weight:normal; color:#aaa" />
 		                           <!--
 								   <a:commandLink 
 		                               action="#{searchAction.searchEngine.addSearchPerson(ci.author.login)}" 
@@ -27,12 +33,19 @@
 		                               value="#{ci.author.login}" 
 		                               reRender="searchresults,search-keyword,articlemeta"/>
 									-->
-				<br/>
-				<h:outputText value="#{ci.modified}">
-					<f:convertDateTime type="both"/>
-				</h:outputText>
+				
+<!--				<h:outputText value="zu#{ci.modified}">-->
+<!--					<f:convertDateTime type="both"/>-->
+<!--				</h:outputText>-->
 				<br/><br/>
-				<a4j:commandButton value="Details" action="#{artSearchAction.detailPage(ci)}"/>
+				<a4j:commandButton value="Details" action="#{artSearchAction.detailPage(ci)}"/>&#160;&#160;
+				<c:if test="#{identity.loggedIn}">
+				<a4j:commandButton value="Loeschen" action ="#{artSearchAction.deleteArtWork(ci)}" rendered="#{credentials.username == 'admin'}"/>&#160;&#160;
+				<a4j:commandButton value="Sperren" action="#{artSearchAction.lockArtWork(ci,false)}" rendered="#{credentials.username == 'admin'}"/>&#160;&#160;
+				<a4j:commandButton value="Entsperren" action="#{artSearchAction.lockArtWork(ci,true)}" rendered="#{credentials.username == 'admin'}"/>
+				</c:if>
+				
+				
 				
 			
 				

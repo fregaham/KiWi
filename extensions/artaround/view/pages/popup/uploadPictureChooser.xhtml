@@ -13,6 +13,7 @@
                 xmlns:rich="http://richfaces.org/rich"
                 xmlns:a="http://richfaces.org/a4j"
 			 	xmlns:c="http://java.sun.com/jstl/core"
+			 	xmlns:p="http://primefaces.prime.com.tr/ui"
                 template="../../layout/box_template.xhtml">
                 	
 <ui:define name="box_header">
@@ -49,26 +50,30 @@
 	
 	
 		<h:form class="exposePopup">
+		
+			<p:fileUpload fileUploadListener="#{artWorkMediaAction.listener}" 
+				multiple="true" label="Choose file" allowTypes="*.jpg;*.png;*.gif;" description="Images" language="de" update="messages"/>
+			<br/><br/>
 				
-			<rich:fileUpload 
-						fileUploadListener="#{artWorkEditAction.listener}"
-						immediateUpload="false"
-						maxFilesQuantity="#{artWorkEditAction.uploadsAvailable}"
-						listHeight="200pt"
-						listWidth="auto"
-				        allowFlash="true"
-				        acceptedTypes="jpg, gif, png" 
-						addControlLabel="#{messages['artaround.addFile']}..." 
-						clearAllControlLabel="#{messages['artaround.clearAll']}" 
-						clearControlLabel="#{messages['artaround.clear']}"
-                        stopEntryControlLabel="#{messages['artaround.stopProcess']}" 
-						uploadControlLabel="#{messages['artaround.upload']}...">
-				        	
-			        <a:support event="onuploadcomplete" reRender="gal" />
-		            <f:facet name="label">
-		                <h:outputText value="#{messages['artaround.upload.state']}" />
-		        	</f:facet>					
-		   		</rich:fileUpload>	
+<!--			<rich:fileUpload -->
+<!--						fileUploadListener="#{artWorkEditAction.listener}"-->
+<!--						immediateUpload="false"-->
+<!--						maxFilesQuantity="#{artWorkEditAction.uploadsAvailable}"-->
+<!--						listHeight="200pt"-->
+<!--						listWidth="auto"-->
+<!--				        allowFlash="true"-->
+<!--				        acceptedTypes="jpg, gif, png" -->
+<!--						addControlLabel="#{messages['artaround.addFile']}..." -->
+<!--						clearAllControlLabel="#{messages['artaround.clearAll']}" -->
+<!--						clearControlLabel="#{messages['artaround.clear']}"-->
+<!--                        stopEntryControlLabel="#{messages['artaround.stopProcess']}" -->
+<!--						uploadControlLabel="#{messages['artaround.upload']}...">-->
+<!--				        	-->
+<!--			        <a:support event="onuploadcomplete" reRender="gal" />-->
+<!--		            <f:facet name="label">-->
+<!--		                <h:outputText value="#{messages['artaround.upload.state']}" />-->
+<!--		        	</f:facet>					-->
+<!--		   		</rich:fileUpload>	-->
 
 		</h:form>
 </ui:define>

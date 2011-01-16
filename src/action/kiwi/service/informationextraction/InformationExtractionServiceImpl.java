@@ -37,7 +37,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.Semaphore;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -85,10 +84,6 @@ import org.jboss.seam.log.Log;
  *  to classify potential instances. The assignment is represented by a 
  *  "Classifier" entity.
  * 
- * TODO:
- * 	  cleanup
- *    documentation
- * 
  * @author Marek Schmidt
  *
  */
@@ -99,43 +94,31 @@ import org.jboss.seam.log.Log;
 public class InformationExtractionServiceImpl implements
 		InformationExtractionServiceLocal, InformationExtractionServiceRemove {
 	
-	public static interface Task {
-		public void waitForCompletition() throws InterruptedException;
-	}
-	
-	public static abstract class InformationExtractionTask implements Task {
+	/**
+	 * An abstract class representing an information extraction task.
+	 * 
+	 *  The task may be started synchronously (e.g. in a faces request), 
+	 *  or asynchronously by putting it into information extraction processor task queue.
+	 *  
+	 *  Note that asynchronous task will be running in a different context.
+	 * 
+	 */
+	public static abstract class InformationExtractionTask {
 		abstract void run(InformationExtractionProcessor service);
 		
-		// A very simple synchronization mechanism... 
-		// We can't use Lock, because we create the lock in a different thread than the one that will be unlocking it...
-		Semaphore running;
-		
 		public InformationExtractionTask () {
-			running = new Semaphore(0);
 		}
-		
-		@Override
-		public void waitForCompletition() throws InterruptedException {
-			try{
-				running.acquire();
-			}
-			finally{
-				running.release();
-			}
-		}
-		
 		
 		public void start(InformationExtractionProcessor service) {
 			try {
 				run(service);
 			}
-			finally{
+			finally {
 				complete();
 			}
 		}
 		
 		public void complete() {
-			running.release();
 		}
 	}
 	
@@ -226,7 +209,7 @@ public class InformationExtractionServiceImpl implements
 	}
 
 	/**
-	 * Deprecated interface for getting suggestions. It just wraps the new suggestion API.
+	 * The original interface for getting suggestions. It just wraps the new suggestion API.
 	 */
 	@Override
 	public Collection<kiwi.model.informationextraction.Suggestion> extractEntities(KiWiResource context,
@@ -248,7 +231,7 @@ public class InformationExtractionServiceImpl implements
 	}
 
 	/**
-	 * Deprecated interface for getting suggestions. It just wraps the new suggestion API.
+	 * The original interface for getting suggestions. It just wraps the new suggestion API.
 	 */
 	@Override
 	public Collection<kiwi.model.informationextraction.Suggestion> extractTags(KiWiResource context,
@@ -289,19 +272,6 @@ public class InformationExtractionServiceImpl implements
 				
 		return (Collection<ClassifierEntity>) q.getResultList();
 	}
-	
-	/*
-	@Override
-	public Task initExamples(final ClassifierEntity classifier) {
-		return enqueueTask (new InformationExtractionTask() {
-			@Override
-			public void run(InformationExtractionProcessor service) {
-				service._initExamples(classifier);
-				// service._initTagExamples(classifier, classifier.getResource().getContentItem());
-			}
-		});
-		//initTagExamples(classifier, classifier.getResource().getContentItem());
-	}*/
 	
 	@Override
 	public void initExamplesForClassifierResource(final KiWiResource resource, boolean async) {
@@ -360,7 +330,6 @@ public class InformationExtractionServiceImpl implements
 	}
 
 	@Override
-//	@Transactional(TransactionPropagationType.REQUIRED)
 	public void acceptSuggestion(kiwi.model.informationextraction.Suggestion s, User user) {
 
 		log.info("acceptSuggestion");
@@ -396,7 +365,6 @@ public class InformationExtractionServiceImpl implements
 	}
 
 	@Override
-//	@Transactional(TransactionPropagationType.REQUIRED)
 	public void rejectSuggestion(kiwi.model.informationextraction.Suggestion s, User user) {
 		log.info("rejectSuggestion");
 		
@@ -472,8 +440,6 @@ public class InformationExtractionServiceImpl implements
 		else {
 			task.start(informationExtractionProcessor);
 		}
-		
-		// return task;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -575,7 +541,6 @@ public class InformationExtractionServiceImpl implements
 	
 	@SuppressWarnings("unchecked")
 	@Override
-//	@Transactional(TransactionPropagationType.REQUIRED)
 	public void deleteClassifier(ClassifierEntity classifier) {		
 		Query q;
 		
@@ -601,7 +566,6 @@ public class InformationExtractionServiceImpl implements
 	}
 		
 	@Override
-//	@Transactional(TransactionPropagationType.REQUIRED)
 	public ClassifierEntity createClassifier(KiWiResource resource, String extractletName) {
 		log.info("creating classifier #0 #1", resource, extractletName);
 		
@@ -632,9 +596,7 @@ public class InformationExtractionServiceImpl implements
 		}
 	}
 	
-	private Task enqueueTask (InformationExtractionTask task) {
-		// enqueue tasks only if we have enabled information extraction in config...
-		// otherwise, simply drop them.
+	private InformationExtractionTask enqueueTask (InformationExtractionTask task) {
 		informationExtractionProcessor.enqueueTask(task);
 		return task;
 	}
@@ -652,7 +614,6 @@ public class InformationExtractionServiceImpl implements
 		
 		if (s.getKind() == Suggestion.DATATYPE) {
 			KiWiResource subject = s.getInstance().getSourceResource();
-			// KiWiUriResource predicate = (KiWiUriResource)s.getClassifier().getResource();
 			KiWiUriResource predicate = (KiWiUriResource)s.getRoles().get(0);
 			
 			KiWiLiteral object = null;
@@ -678,7 +639,6 @@ public class InformationExtractionServiceImpl implements
 			KiWiResource object = s.getClassifier().getResource();
 			tripleStore.createTriple(subject, property, object);
 		}
-		// s.getClassifier().getInstanceType().realizeInstance(s.getClassifier(), user, s.getInstance());
 	}
 	
 	@Override
@@ -703,7 +663,7 @@ public class InformationExtractionServiceImpl implements
 			KiWiResource subject = s.getInstance().getSourceResource();
 			
 			// taggingService.createTagging(s.getLabel(), subject.getContentItem(), s.getClassifier().getResource().getContentItem(), user);
-			for (Tag tag : taggingService.getTags(subject.getContentItem())) {
+			for (Tag tag : taggingService.getTaggings(subject.getContentItem())) {
 				if (tag.getTaggedBy().equals(user) && tag.getTaggingResource().equals(s.getClassifier().getResource().getContentItem())) {
 					taggingService.removeTagging(tag);
 					break;

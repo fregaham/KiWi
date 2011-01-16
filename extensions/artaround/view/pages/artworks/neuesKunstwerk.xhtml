@@ -16,7 +16,7 @@
                 xmlns:m="http://code.google.com/p/gmaps4jsf/"
 			 	xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:kiwi="http://www.kiwi-project.eu/jsf"
-                template="../../layout/template-2col.xhtml">		    		
+                template="../../layout/template-3col.xhtml">		    		
 
 	<ui:define name="breadcrumps">
 		<ul>
@@ -207,11 +207,9 @@
 							  <h:outputLabel for="waehrung">
 							  		#{messages['artaround.currency']}:
 							  </h:outputLabel>								
-						      <rich:comboBox defaultLabel="EUR" 
-							  	id = "waehrung" value = "#{artWorkBean.currency}" width="100px">
-						      			 <f:selectItem itemValue="USD"/>
+						      <rich:comboBox  	id = "waehrung" value = "#{artWorkBean.currency}" width="100px">
 						      			 <f:selectItem itemValue="EUR"/>
-						      			 <f:selectItem itemValue="Alpen $"/>
+						      			 <f:selectItem itemValue="USD"/>					      			 
 	       					  </rich:comboBox>							
 					        </h:panelGrid>  
 					      </div> 							

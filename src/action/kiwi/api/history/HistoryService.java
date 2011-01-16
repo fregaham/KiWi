@@ -41,6 +41,7 @@ import kiwi.model.activity.CommentActivity;
 import kiwi.model.activity.EditActivity;
 import kiwi.model.activity.SearchActivity;
 import kiwi.model.activity.VisitActivity;
+import kiwi.model.content.ContentItem;
 import kiwi.model.user.User;
 
 
@@ -85,6 +86,12 @@ public interface HistoryService {
 	 */
 	public List<EditActivity> listEditsByUser(User user);
 	
+	/**
+	 * return  edits for given contentItem
+	 * @param contentItem
+	 * @return
+	 */
+	public List<EditActivity> listEditsByContentItem(ContentItem contentItem);
 	/**
 	 * return last comments of given user
 	 * @param user

@@ -69,11 +69,7 @@ public class SearchAction implements Serializable {
     	searchEngine.runSearch();
     }
 
-    public List<String> autocomplete(Object param) {
-    	return searchEngine.autocomplete(param);
-    }
-    
-	/**
+ 	/**
 	 * Initialise the SearchAction and start a conversation. 
 	 * Triggered as page action when search.xhtml is displayed. 
 	 */

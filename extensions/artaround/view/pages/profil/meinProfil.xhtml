@@ -21,7 +21,7 @@
 			</li>
 			<li>				 			
 				<s:link view="/artaround/pages/profil/meinProfil.seam" 
-					value="#{messages['artaround.breadcrumps.myPage']}"/>
+					value="mein Adminbereich"/>
 			</li>		
 		</ul>
 	</ui:define>	
@@ -123,7 +123,7 @@
 			
 				<div>
 	
-					<h:commandLink  action="neuesKunstwerk" style="text-decoration:none"><img src="#{facesContext.externalContext.requestContextPath}/view/img/neues_kunstwerk.png" /></h:commandLink>
+					<h:commandLink  action="#{artWorkAction.neuesKunstwerk}" style="text-decoration:none"><img src="#{facesContext.externalContext.requestContextPath}/view/img/neues_kunstwerk.png" /></h:commandLink>
 				
 					<h3>#{messages['artaround.myProfil.newArtwork']}</h3>
 					
@@ -131,7 +131,7 @@
 						#{messages['artaround.menutext.text2']}
 					</h5>
 					
-					<h:commandLink value= "Weiter ..." action="neuesKunstwerk" style="text-decoration:none"/>
+					<h:commandLink value= "Weiter ..." action="#{artWorkAction.neuesKunstwerk}" style="text-decoration:none"/>
 									
 				</div>
 			

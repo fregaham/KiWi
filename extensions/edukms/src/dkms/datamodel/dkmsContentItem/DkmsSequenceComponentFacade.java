@@ -20,9 +20,7 @@ public interface DkmsSequenceComponentFacade extends ContentItemI{
 	
 	@RDF(Constants.DKMS_CORE + "isMaster")
 	public boolean isMaster();
-	
-	
-	
+		
 	/**
 	 * @return the dkmsContentItem
 	 */
@@ -82,14 +80,14 @@ public interface DkmsSequenceComponentFacade extends ContentItemI{
 	 */
 	public void setSequenceContent(String sequenceContent) ;
 	/**
-	 * set to true if the media content has public access
-	 * @return the publicAccess
+	 * the viewStatus
+	 * @return the viewStatus
 	 */
-	@RDF(Constants.DKMS_CORE + "isPublicAccess")	
-	public Boolean getPublicAccess() ;
+	@RDF(Constants.DKMS_CORE + "viewStatus")	
+	public int getViewStatus() ;
 	/**
-	 * @param publicAccess the publicAccess to set
+	 * @param  the taskId to set
 	 */
-	public void setPublicAccess(Boolean publicAccess) ;
-		
+	public void setViewStatus(int viewStatus) ;
+			
 }

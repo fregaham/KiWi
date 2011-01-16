@@ -34,6 +34,7 @@
 package kiwi.service.skill;
 
 import static kiwi.model.kbase.KiWiQueryLanguage.SPARQL;
+import kiwi.model.informationextraction.Suggestion;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -55,6 +57,7 @@ import javax.persistence.PersistenceException;
 import kiwi.api.content.ContentItemService;
 import kiwi.api.entity.KiWiEntityManager;
 import kiwi.api.history.HistoryService;
+import kiwi.api.informationextraction.InformationExtractionService;
 import kiwi.api.ontology.SKOSService;
 import kiwi.api.skill.SkillServiceLocal;
 import kiwi.api.skill.SkillServiceRemote;
@@ -114,6 +117,9 @@ public class SkillServiceImpl implements SkillServiceLocal, SkillServiceRemote  
 	@In
 	private UserService userService;
 	
+	@In(create=true, value="kiwi.informationextraction.informationExtractionService")
+	private InformationExtractionService informationExtractionService;
+	
 	@In
 	private User currentUser;		
 	
@@ -146,11 +152,23 @@ public class SkillServiceImpl implements SkillServiceLocal, SkillServiceRemote  
 				if (ci.getTitle() == null || ci.getTextContent()==null || ci.getTextContent().getPlainString()==null) {
 					continue;
 				}
-				String textUnderEvaluation = ci.getTextContent().getPlainString().concat(" ").concat(ci.getTitle()).toLowerCase();
+				
+				Collection<Suggestion> suggestions =  informationExtractionService.extractTags(ci.getResource(), ci.getTextContent(), Locale.ENGLISH);
+				
+				//String textUnderEvaluation = ci.getTextContent().getPlainString().concat(" ").concat(ci.getTitle()).toLowerCase();
+				
+				
 				//textUnderEvaluation.concat("Help trickled in Thursday, three days after a magnitude-7.7 earthquake struck off Indonesia, triggering a tsunami that has killed at least 311 people and left more than 400 missing.");
 				//textUnderEvaluation.concat("An assessment team from the nonprofit group SurfAid International has begun surveying damaged villages on the islands of North Pagai and South Pagai, the group said Thursday.");
 				//System.out.println(textUnderEvaluation);
-				map.putAll(customTermTokenizer.getFrequencyMap(new StringReader(textUnderEvaluation), new HashSet(getFakeSkills())));
+				// map.putAll(customTermTokenizer.getFrequencyMap(new StringReader(textUnderEvaluation), new HashSet(getFakeSkills())));
+				
+				for (Suggestion suggestion : suggestions) {
+					if (!suggestion.getLabel().trim().isEmpty() && suggestion.getLabel().trim().length()>2) {
+						map.put(suggestion.getLabel(), suggestion.getScore());	
+					}
+					
+				}
 
 				Collection<String> tagLabels = new ArrayList<String>();
 				tagLabels = contentItemService.getTagLabelsByContentItemAndAuthor(ci,currentUser);
@@ -287,20 +305,21 @@ public class SkillServiceImpl implements SkillServiceLocal, SkillServiceRemote  
 		if (deleteUserSkills()) {
 			List<User> users = userService.getAllCreatedUsers();
 			for (User user : users) {
-//				System.out.println("computeUserSkills... "+user.getFirstName());
 				computeUserSkill(user);
-									
 			}
 		}		
 	}
 
+	/* (non-Javadoc)
+	 * @see kiwi.api.skill.SkillService#computeUserSkill(kiwi.model.user.User)
+	 */
 	public void computeUserSkill(User user){
 			Map<String, Float> map = computeSkillsByUser(user);
 			if (map!=null && !map.isEmpty()) {
 //				System.out.println("map for use "+user.getFirstName()+" is "+map);
 				UserSkill userSkill = new UserSkill(user,map);
-				kiwiEntityManager.persist(userSkill);
-//				kiwiEntityManager.flush();
+				entityManager.persist(userSkill);
+				entityManager.flush();
 			}else{
 //				System.out.println("map is null or empty or existssssssssssssss");
 			}
@@ -313,9 +332,7 @@ public class SkillServiceImpl implements SkillServiceLocal, SkillServiceRemote  
 		List<UserSkill> uss = this.listUserSkills();
 		for (UserSkill us : uss) {
 			entityManager.remove(us);
-			//entityManager.flush();
 		}
-//		entityManager.flush();
 		return listUserSkills().isEmpty();
 	} 	
 
@@ -335,10 +352,6 @@ public class SkillServiceImpl implements SkillServiceLocal, SkillServiceRemote  
 			} catch (PersistenceException ex) {
 				ex.printStackTrace();
 				log.warn("error while listing user skills: query failed");
-			}
-			System.out.println("Current skills for this user" + user.getLogin());
-			for (String skill :result.getSkills().keySet()){
-				System.out.println(skill);
 			}
 			return result;
 	}
@@ -648,7 +661,7 @@ public class SkillServiceImpl implements SkillServiceLocal, SkillServiceRemote  
 	 */
 	public boolean removeSkill(String skillName) {
 		addFakeSkill(skillName,currentUser);
-		this.computeUserSkills();
+		//this.computeUserSkills();
 		return this.getFakeSkillsBySkillName(skillName)!=null;
 	}
 	/* (non-Javadoc)
@@ -656,8 +669,8 @@ public class SkillServiceImpl implements SkillServiceLocal, SkillServiceRemote  
 	 */
 	public boolean removeSkillByUser(Map<String,Float> skill,User user){
 		addFakeSkill(skill.entrySet().iterator().next().getKey(),user);
-		deleteUserSkills();
-		computeUserSkills();
+		//deleteUserSkills();
+		//computeUserSkills();
 		return true;
 	}
 	/**

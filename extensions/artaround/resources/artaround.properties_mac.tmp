@@ -28,8 +28,8 @@ artaround.img_file_dir=/KiWi/images/cache
 # Bilder width und height
 ###########################################
 # max size of a thumbnail picture in pixels
-artaround.image.thumbSize.x=150
-artaround.image.thumbSize.y=130
+artaround.image.thumbSize.x=100
+artaround.image.thumbSize.y=75
 
 # max size of a preview picture in pixels
 artaround.image.previewSize.x=400

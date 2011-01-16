@@ -78,18 +78,58 @@ h1 {
 	margin-left: -5px;
 }
 
+.rich-mpnl-controls img {
+	src: url("../../img/close.png");
+}
+
+.rich-stglpanel-header {
+background-color:#eee;
+border-color:#eee;
+height:15px;
+color:#666;
+font-size:12px;
+font-weight:bold;
+
+}
+
+.rich-stglpanel {
+background-color:#eee;
+border-color:#C0C0C0;
+}
+
+.rich-stglpanel-body {
+
+padding:0px;
+
+}
+
 </style>
 
 		 
      
 		<div id="cover">
-		<h:form >
+		<h:form>
 		
-			<fieldset class="fieldsetborder"
-					style="float:left; width:100%; height: 700px; margin-left: -170px; border:1px solid #ddd">
+		 <rich:simpleTogglePanel  style="margin-left:-170px; margin-bottom: 10px; border-color: #eee; width:100% " opened="true" switchType="client"  >			
+				<ui:include src="./menu/menu_blogPresentation.xhtml" ></ui:include>			
+		 </rich:simpleTogglePanel>
+		</h:form>
+	
+		<h:form>	
+		
+		<div style="float:left; width:100%; height: 620px; margin-left: -170px; border:1px solid #ddd; padding-top:10px">
 			
 			<br/><h2 style="margin-left:20px">Blog Title: #{dkmsContentItemBean.dkmsContentItemName}&#160;|&#160; created by #{dkmsContentItemBean.authorName}</h2><br/>
-			<div style="height:680px; overflow:auto; margin-top:-8px">
+			<ui:repeat value="#{dkmsBigIdeasAction.bigIdeaSet}" var="pos">
+						<ul>
+						<li style="line-height:0.8em; list-style-image:none">
+							<a:commandLink action="#{dkmsBigIdeasAction.setSelectedBigIdea(pos)}" onclick="jQuery('.selectedTechniqueBox').css('background-color','white');jQuery(this).parent().parent().css('background-color','lightgray')">
+								#{pos.preferredLabel}
+							</a:commandLink>
+						</li>	
+						</ul>						
+					</ui:repeat>
+			<div style="height:600px; overflow:auto; margin-top:-8px">
 			
 			<div id="editor" style="margin-left:20px">
 						<rich:editor id="editor1" language="de" width="500"
@@ -132,56 +172,12 @@ h1 {
 			</c:if>       
 		   
 		</div>
-			</fieldset>
-
-			 <fieldset class="fieldsetborder" style="float:right; width: 200px; height: 700px; margin-right: -160px; border:1px solid #ddd">
-
-			
-			<div id="buttons">
-			
-			 <c:if test="#{identity.loggedIn == true}">
-			<h:commandLink class="buttonclass"
-			action="#{dkmsReadModusAction.insertBlogComment()}">
-			<img
-				src="#{facesContext.externalContext.requestContextPath}/view/img/plus.png"
-				style="valign: center; vertical-align: middle; margin-right: 10px;  margin-left:-3px" />Add Blog Entry</h:commandLink>
-			<br /><br />
-			</c:if>
-			<c:if test="#{identity.loggedIn == false}">
-	   			<h:commandLink action="#" onclick="javascript:alert('Please go to platform home and login with your username and password!');" style="text-decoration:none">
-	    	<img
-				src="#{facesContext.externalContext.requestContextPath}/view/img/plus.png"
-				style="valign: center; vertical-align: middle; margin-right: 10px;  margin-left:-3px" />Add Blog Entry</h:commandLink>
-			<br /><br />
-			</c:if> 
-			<h:commandLink class="buttonclass"
-			action="#{dkmsReadModusAction.goToResultList()}">
-			<img
-				src="#{facesContext.externalContext.requestContextPath}/view/img/arrowleft_small.png"
-				style="valign: center; vertical-align: middle; margin-right: 14px;" /> Back to Result List</h:commandLink>
-			<br /><br />
-			<div id="trennlinie"></div>
-		<br/>
-		
-<!--			<h:commandLink -->
-<!--				action="#{identity.logout()}">-->
-<!--				<img-->
-<!--					src="#{facesContext.externalContext.requestContextPath}/view/img/logout_small.png"-->
-<!--					style="valign: center; vertical-align: middle; margin-right: 5px; margin-left:-8px" /> Logout</h:commandLink>-->
 			</div>
-			</fieldset>
+
+			
 		</h:form>
 		</div>
 		
-<!--		test:-->
-<!--		<c:forEach items="#{dkmsContentItemBean.dkmsMediaList}" var="item">    	    -->
-<!--      	   -->
-<!--      	    <img src="#{dkmsReadModusAction.getMiniMultimediaFilename(item)}" style="margin: 0px 15px 0 5px; float: left; " /><br/>-->
-<!--			pic-->
-<!--			<div id="trennlinie"></div>-->
-<!--		-->
-<!--		</c:forEach> -->
-
 
 	</ui:define>
 </ui:composition>

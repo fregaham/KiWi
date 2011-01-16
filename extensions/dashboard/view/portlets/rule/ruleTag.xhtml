@@ -1,0 +1,51 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:p="http://primefaces.prime.com.tr/ui">
+
+	<h4><h:outputText value="To all pages tagged with: " /></h4>
+	<h:inputText id="fqueryRuleTag"
+		value="#{kiwi.dashboard.ruleAction.firstQuery}" />
+	<h4><h:outputText value="assign such additional tag: " /></h4>
+	<h:inputText id="squeryRuleTag"
+		value="#{kiwi.dashboard.ruleAction.secondQuery}" />
+	<p:commandButton value="Save" ajax="false"
+		action="#{kiwi.dashboard.ruleAction.createRule('ruleTag')}" />
+	<h:outputText value=" " />
+	<s:span id="myTagRuleSpan"
+		rendered="#{kiwi.dashboard.ruleAction.ruleBasedRecommendations.size() &gt; 0}">
+		<c:forEach var="rule"
+			items="#{kiwi.dashboard.ruleAction.ruleBasedRecommendations}"
+			id="myrules2">
+			<div class="myRule" style="padding: 10px 0;"><s:span
+				rendered="#{not empty rule.firstQuery and not empty rule.secondQuery}">
+				<h:outputText
+					value="To all my pages tagged with: '#{rule.firstQuery}', must be assigned with the tag '#{rule.secondQuery}'." />
+				<h:outputText value=" " />
+				<p:commandLink
+					action="#{kiwi.dashboard.ruleAction.removeRule(rule)}"
+					value="Remove" ajax="false">
+				<h:outputText value="Remove" />
+				 </p:commandLink> 
+				<h:outputText value=" " />
+				<p:commandLink
+					actionListener="#{kiwi.dashboard.ruleAction.generateRule(rule)}"
+					value="Enable it!" ajax="false">
+				<h:outputText value="Enable it!" />
+				 </p:commandLink> 
+				<h:outputText value=" " />
+			</s:span></div>
+		</c:forEach>
+	</s:span>
+	<s:span id="myTagNonRuleSpan"
+		rendered="#{kiwi.dashboard.ruleAction.ruleBasedRecommendations.size() == 0}">
+		<h:outputText value="You still have no personal rules." />
+	</s:span>
+</ui:composition>

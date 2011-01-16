@@ -23,7 +23,7 @@ div.suggester{
 	}
 	div.suggester div.resultsContainer{
 		visibility: hidden;
-		width: 240px;
+		width: 284px;
 		max-height: 200px;
 		overflow: auto;
 		position: absolute;
@@ -35,7 +35,7 @@ div.suggester{
 	}
 		div.suggester div.resultsContainer span.progress_bar{
 			display: inline-block;
-			width: 100%;
+			margin-right:10px;
 			height: 30px;
 			line-height: 30px;
 		}
@@ -47,7 +47,8 @@ div.suggester{
 				border: 1px solid white;
 				color: green;
 			}
-			div.suggester div.resultsContainer .isControlled > span:first-child,.isControlled > span:last-child{
+			div.suggester div.resultsContainer .isControlled > span.left_arrow,
+                        div.suggester div.resultsContainer .isControlled > span.right_arrow{
 				visibility: hidden;
 			}
 
@@ -55,15 +56,20 @@ div.suggester{
 				border: 1px solid white;
 				color: black;
 			}
-			div.suggester div.resultsContainer .notControlled > span:first-child,.notControlled > span:last-child{
+			div.suggester div.resultsContainer .notControlled > span.left_arrow,
+                        div.suggester div.resultsContainer .notControlled > span.right_arrow{
 				visibility: hidden;
 			}
 
-			div.suggester div.resultsContainer .hasParent > span:first-child{
+			div.suggester div.resultsContainer .hasParent > span.left_arrow{
 				visibility: visible;
 			}
 
-			div.suggester div.resultsContainer .hasChildren > span:last-child{
+			div.suggester div.resultsContainer .hasChildren > span.right_arrow{
+				visibility: visible;
+			}
+
+			div.suggester div.resultsContainer .isPrefix > span.right_arrow{
 				visibility: visible;
 			}
 
@@ -89,12 +95,13 @@ div.suggester{
 				}
 
 			div.suggester div.resultsContainer div.result_item span.label{
-				width: 120px;
+				width: 185px;
 				height: 15px;
 				margin-right: 10px;
 				vertical-align: top;
 				cursor: pointer;
 				display: inline-block;
+                                overflow:hidden;
 			}
 
 			div.suggester div.resultsContainer div.result_item span.result_wait_icon{
@@ -104,6 +111,13 @@ div.suggester{
 				visibility: hidden;
 				background-image:url("../img/wait.gif");
 			}
+
+                        div.suggester div.resultsContainer span.wait_icon {
+				width: 15px;
+				height: 15px;
+				display: inline-block;
+				background-image:url("../img/wait.gif");
+                        }
 
 			div.suggester div.resultsContainer div.result_item span.right_arrow{
 				width: 15px;

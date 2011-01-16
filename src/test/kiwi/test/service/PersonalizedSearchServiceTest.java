@@ -253,7 +253,7 @@ public class PersonalizedSearchServiceTest extends KiWiTest {
                 	Assert.assertNotNull(ci2.getResource());
                 	//Assert.assertEquals(taggingService.getTags(ci1).size(),1);
                 	//java.lang.AssertionError: expected:<1> but was:<2>
-                	Assert.assertEquals(taggingService.getTags(ci2).size(),2);
+                	Assert.assertEquals(taggingService.getTaggings(ci2).size(),2);
                 	
                 	
                 	ContentItem ti1 =  ciService.getContentItemByTitle("myTag");
@@ -340,8 +340,8 @@ public class PersonalizedSearchServiceTest extends KiWiTest {
         	ContentItem contentForOnlyTags1 =  ciService.getContentItemByTitle("content for tags1");
         	ContentItem contentForOnlyTags2 =  ciService.getContentItemByTitle("content for tags2");	    	
 	    	
-        	Assert.assertEquals(taggingService.getTags(contentForOnlyTags1).size(),1);
-        	Assert.assertEquals(taggingService.getTags(contentForOnlyTags2).size(),2);	
+        	Assert.assertEquals(taggingService.getTaggings(contentForOnlyTags1).size(),1);
+        	Assert.assertEquals(taggingService.getTaggings(contentForOnlyTags2).size(),2);	
         	
         	Assert.assertNotNull(contentForOnlyTags1.getResource());
         	Assert.assertNotNull(contentForOnlyTags2.getResource());        	
@@ -375,8 +375,8 @@ public class PersonalizedSearchServiceTest extends KiWiTest {
         	Assert.assertEquals(t7.getTaggedBy(), user);
    	        	
         	
-        	Assert.assertEquals(taggingService.getTags(contentForOnlyTags1).size(),1);
-        	Assert.assertEquals(taggingService.getTags(contentForOnlyTags2).size(),2);
+        	Assert.assertEquals(taggingService.getTaggings(contentForOnlyTags1).size(),1);
+        	Assert.assertEquals(taggingService.getTaggings(contentForOnlyTags2).size(),2);
         	
         }
 	}.run();           	

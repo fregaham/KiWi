@@ -317,8 +317,11 @@ public class KiWiGATEServiceImpl implements KiWiGATEServiceLocal {
 			
 			for (Object[] item : labelService.getLabels()) {
 				Long resourceId = (Long)item[1];
+				Long labelId = (Long)item[2];
 				// We represent resources by their ids, shorter and faster to retrieve then kiwiids or uris.
 				Lookup l = new Lookup("terms", "ontology", Long.toHexString(resourceId), "english");
+				contentItemTitlesGazetteer.add((String)item[0], l);
+				l = new Lookup("terms", "label", Long.toHexString(labelId), "english");
 				contentItemTitlesGazetteer.add((String)item[0], l);
 			}
 

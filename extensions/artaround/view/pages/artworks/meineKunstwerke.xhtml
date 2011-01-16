@@ -3,40 +3,51 @@
  */
  -->
 
-<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-                             "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-                             	
+  <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:s="http://jboss.com/products/seam/taglib"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:rich="http://richfaces.org/rich"
-                xmlns:a="http://richfaces.org/a4j"
-                xmlns:m="http://code.google.com/p/gmaps4jsf/"
-			 	xmlns:c="http://java.sun.com/jstl/core"
-                xmlns:kiwi="http://www.kiwi-project.eu/jsf"
-                template="../../layout/template-3col.xhtml"
-                xmlns:a4j="http://richfaces.org/a4j">
-	
-	<ui:define name="breadcrumps">
-		<ul>
-			<li class="first">				 			
-				<s:link view="/artaround/home.seam" 
-					value="#{messages['artaround.breadcrumps.home']}"/>
+		    	xmlns:rich="http://richfaces.org/rich"
+		    	xmlns:a="http://richfaces.org/a4j"
+		    	template="../../layout/template-3col.xhtml"
+		    	xmlns:a4j="http://richfaces.org/a4j"
+		    	xmlns:c="http://java.sun.com/jstl/core">	
+		    		    	
+	 <ui:define name="breadcrumps">
+	 	<ul>
+	 		<li class="first">				 			
+				<s:link view="/artaround/home.xhtml" value="#{messages['artaround.breadcrumps.home']}"/>
+	 		</li>
+	 		<li>				 			
+				<s:link view="/artaround/pages/frontend/artWorks.xhtml" 
+					value="#{messages['artaround.artworks.artworks']}"/>
 			</li>
-			<li>				 			
-				<s:link view="/artaround/pages/profil/meinProfil.seam" 
-					value="mein ArtAround"/>
-			</li>	
-			<li>				 			
-				<s:link view="/artaround/pages/profil/meineKunstwerke.seam" 
-					value="#{messages['artaround.myArtworks']}"/>
-			</li>			
-		</ul>
-	</ui:define>
-	
-	<ui:define name="navigation">
+	 	</ul>
+	 </ui:define>
+    	
+     <ui:define name="body"> 
+	 
+	 <!-- Full version of jQuery Tools + jQuery 1.3.2 -->
+	 <script src="http://cdn.jquerytools.org/1.1.2/full/jquery.tools.min.js"></script>
+	 	
+	 
+	<script>
+	// execute your scripts when DOM is ready. this is a good habit
+	jQuery(function() {		
+			
+		// initialize scrollable 
+		jQuery("div.scrollable").scrollable({
+			vertical:true, 
+			size: 3
+			
+		// use mousewheel plugin
+		}).mousewheel();	
+		
+	});
+	</script>
 	
 	<style>
 	
@@ -78,6 +89,7 @@
 		.items img {
 			float:left;
 			margin-right:20px;
+			margin-bottom:20px;
 			
 			
 		}		
@@ -141,33 +153,11 @@
 	
 	</style>
 	
-	<!-- Full version of jQuery Tools + jQuery 1.3.2 -->
-	<script src="#{facesContext.externalContext.requestContextPath}/view/js/jQueryMain/jquery.tools.min.js"></script>
-		 
-	<script>
-	// execute your scripts when DOM is ready. this is a good habit
-	jQuery(function() {		
-			
-		// initialize scrollable 
-		jQuery("div.scrollable").scrollable({
-			vertical:true, 
-			size: 3
-			
-		// use mousewheel plugin
-		}).mousewheel();	
-		
-	});
-	</script>
-	
-	</ui:define>	
-	
-	<ui:define name="body">		
-		    	
 	<div id="cover">
 
 	<!-- HTML structures -->
 	<div id="actions">
-		<a class="prevPage"><img src="#{facesContext.externalContext.requestContextPath}/view/img/li_vv.gif"/> <img src="#{facesContext.externalContext.requestContextPath}/view/img/li_vv.gif" /> &#160;#{messages['artaround.back']}</a>
+		<a class="prevPage"><img src="#{facesContext.externalContext.requestContextPath}/view/img/li_vv.gif"/> <img src="#{facesContext.externalContext.requestContextPath}/view/img/li_vv.gif" /> &#160;zurueck</a>
 		<a class="nextPage">#{messages['artaround.forward']} <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" /> <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" /></a>
 	</div>
 	
@@ -175,139 +165,29 @@
 	<div class="scrollable vertical">	
 		 
 		<!-- root element for the items -->
-		<div class="items">
-				<h:form>
-				<c:forEach items="#{showArtWorkAction.artWorks}" var="artWork" id = "gal">
+		<div class="items">		
+			
+				<c:forEach items="#{showArtWorkAction.artWorks}" var="artWork">
 					<div>
-					    	<img src="#{showArtWorkAction.getThumbMasterFileNameFromArtwork(artWork)}"/>
-					    	<h3>#{artWork.title}</h3> 
-					    	<h5>#{artWork.description}</h5>
-					    	<h4>#{artWork.authorName}</h4>
-					    	<br/>
-					    	
-								<h:commandLink value="#{messages['artaround.artworks.changeDetails']}" action="#{showArtWorkAction.view(artWork)}"/>&#160;&#160;&#160;
-								<h:commandLink value = "#{messages['artaround.clear']}" reRender="gal" action ="#{showArtWorkAction.deleteArtWork(artWork)}"/>						          		       					     		
-													
+				    	<img src="#{showArtWorkAction.getThumbMasterFileNameFromArtwork(artWork)}"/>
+				    	<h3>#{artWork.title}</h3> 
+				    	<h5>#{artWork.description}</h5>
+				    	<h4>#{artWork.authorName}</h4>
+				    	<br/>
+				    	<h:form>
+							<h:commandLink value="#{messages['artaround.artworks.changeDetails']}" action="#{showArtWorkAction.view(artWork)}"/>&#160;&#160;&#160;
+							<h:commandLink value = "#{messages['artaround.clear']}" reRender="gal" action ="#{showArtWorkAction.deleteArtWork(artWork)}"/>						          		       					     		
+						</h:form>							
 					</div>
-				</c:forEach>		
-				</h:form>	
-				<!-- Dummy Pics zur Darstellung der jQuery Komponente -->
-				<div>
-					<img src="http://farm1.static.flickr.com/3650/3323058611_d35c894fab_m.jpg" width="150px"/>
-					
-					<h3>Lust Pavilion</h3>
-					
-					<h5>
-						Dies ist ein Text bzw. eine Beschreibung, die es in sich hat - ha - ha.
-					</h5>
-					
-					<h4>
-	
-						Rodolfus Sintifaxus, Tirol
-					</h4>
-					<br/>						
-					
-				</div>
-			
-				<div>
-	
-					<img src="http://farm1.static.flickr.com/3635/3323893254_3183671257_m.jpg" width="150px"/>
-					
-					<h3>Morgensterne</h3>
-					
-					<h5>
-						The German Pavilion in Barcelona, designed by Ludwig Mies van der Rohe 
-						and built for the International Exposition in 1929.
-					</h5>
-					
-					<h4>
-	
-						Mike Gonzales Schneider, Palermo
-					</h4>
-					<br/>						
-					
-				</div>
-			
-				<div>
-					<img src="http://farm1.static.flickr.com/3624/3323893148_8318838fbd_m.jpg" width="150px"/>
-					
-					<h3>Architektur</h3>
-					
-					<h5>
-						The German Pavilion in Barcelona, designed by Ludwig Mies van der Rohe 
-						and built for the International Exposition in 1929.
-					</h5>
-					
-					<h4>
-	
-						CapCoster, Lungau
-					</h4>
-					<br/>						
-					
-				</div>
-			
-				<div>
+				</c:forEach>
 				
-					<img src="http://farm1.static.flickr.com/28/66523124_b468cf4978_m.jpg" width="150px"/>
-					
-					<h3>Weltuntergang</h3>
-					
-					<h5>
-						The German Pavilion in Barcelona, designed by Ludwig Mies van der Rohe 
-						and built for the International Exposition in 1929.
-					</h5>
-					
-					<h4>
-	
-						Gustaf Huber, Lungau
-					</h4>
-					<br/>						
-					
-				</div>
-			
-				<div>
-	
-					<img src="http://farm1.static.flickr.com/164/399223606_b875ddf797_m.jpg" width="150px"/>
-					
-					<h3>Blaumantel</h3>
-					
-					<h5>
-						The German Pavilion in Barcelona, designed by Ludwig Mies van der Rohe 
-						and built for the International Exposition in 1929.
-					</h5>
-					
-					<h4>
-	
-						Else Rainer Rielke, Oberndorf
-					</h4>
-					<br/>						
-					
-				</div>
-			
-				<div>
-					<img src="http://farm1.static.flickr.com/163/399223609_db47d35b7c_m.jpg" width="150px"/>
-					
-					<h3>Blattsalat</h3>
-					
-					<h5>
-						The German Pavilion in Barcelona, designed by Ludwig Mies van der Rohe 
-						and built for the International Exposition in 1929.
-					</h5>
-					
-					<h4>
-	
-						Herbert Fuerte, London
-					</h4>
-					<br/>				    	
-					
-				</div>	 
+						 
 			</div>	
-		</div>
+		</div>	
 		<div id="actions">
-			<a class="prevPage"><img src="#{facesContext.externalContext.requestContextPath}/view/img/li_vv.gif"/> <img src="#{facesContext.externalContext.requestContextPath}/view/img/li_vv.gif" /> &#160;#{messages['artaround.back']}</a>
+			<a class="prevPage"><img src="#{facesContext.externalContext.requestContextPath}/view/img/li_vv.gif"/> <img src="#{facesContext.externalContext.requestContextPath}/view/img/li_vv.gif" /> &#160;zurueck</a>
 			<a class="nextPage">#{messages['artaround.forward']} <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" /> <img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif" /></a>
 		</div>	
-		
 	</div>	 		    
-	</ui:define>			
-</ui:composition>
+  </ui:define>			
+</ui:composition> 

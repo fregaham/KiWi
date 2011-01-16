@@ -462,13 +462,12 @@ public class UserServiceImpl implements UserServiceLocal, UserServiceRemote {
 		return q.getResultList();
 	}
 
-
 	/* (non-Javadoc)
 	 * @see kiwi.api.user.UserService#getAllCreatedUsers()
 	 */
 	public List<User> getAllCreatedUsers() {
 		javax.persistence.Query q = entityManager
-			.createQuery("select t from kiwi.model.user.User t where t.id!=1 order by t.login");
+			.createQuery("select t from kiwi.model.user.User t where t.login <> 'anonymous' order by t.login");
 		return q.getResultList();
 	}
 	
@@ -702,6 +701,12 @@ public class UserServiceImpl implements UserServiceLocal, UserServiceRemote {
 		}
 
 	}
+	
+	public List<User> getContributorsOfContentItem(ContentItem contentItem) {
+		javax.persistence.Query q = entityManager.createNamedQuery("userService.listContributorOfContentItem");
+		q.setParameter("ci", contentItem);
+	return q.getResultList();
+	}	
 	
 	// to much work to do... there must be a simpler solution
 //public User getAdminUser() {

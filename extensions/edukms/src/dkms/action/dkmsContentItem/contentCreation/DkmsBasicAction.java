@@ -36,24 +36,27 @@ public class DkmsBasicAction implements Serializable {
 	private DkmsRepresentationTypeAction dkmsRepresentationTypeAction;
 	
 	@In(create = true)
-	private DkmsContentItemBean dkmsContentItemBean;	
-        
-    @Logger
+	private DkmsContentItemBean dkmsContentItemBean;
+	
+	@Logger
     private Log log;
     
 	
     public String newExerciseSheet(){    	
     	dkmsContentItemBean.clear();
+    	dkmsContentItemBean.setContentItemState("N");
     	return "/edukms/authorInterface/exerciseSheetEditor.xhtml";
     }
     
     public String newWikiEntry(){    	
     	dkmsContentItemBean.clear();
+    	dkmsContentItemBean.setContentItemState("N");
     	return "/edukms/abcmaths/wikiEditor.xhtml";
     }
     
     public String newBlogEntry(){    	
     	dkmsContentItemBean.clear();
+    	dkmsContentItemBean.setContentItemState("N");
     	return "/edukms/abcmaths/blogEditor.xhtml";
     }
     
@@ -65,11 +68,14 @@ public class DkmsBasicAction implements Serializable {
     
     public String newResourceCombination(){    	
     	dkmsContentItemBean.clear();
+    	dkmsContentItemBean.setContentItemState("N");
+    	dkmsContentItemBean.setContentItemStateBuffer("6");
     	return "/edukms/authorInterface/combineRessourcesController.xhtml";
     }
     
     public String newDocument(){    
     	dkmsContentItemBean.clear();
+    	dkmsContentItemBean.setContentItemState("N");
     	return "/edukms/authorInterface/documentUploadEditor.xhtml";
     }
     
@@ -142,27 +148,61 @@ public class DkmsBasicAction implements Serializable {
 		
 	}	
 	
+	public String reloadImageInserter(){
+		return "/edukms/authorInterface/imageInserter.seam";
+		
+	}	
+	
+	
 	@Begin(join=true)
 	public String nextStepSheet() {
 		dkmsContentItemBean.setDkmsContentItemType("1");
 		dkmsContentItemBean.setLastUpdate((new Date()).toString());
+		dkmsBigIdeasAction.setChosenBigIdeas(dkmsContentItemBean.getBigIdeas());
 		return "/edukms/authorInterface/contentItemData.xhtml";
 	}
 	
 	
 	
 	
-	public void insertPicIntoSheet(String filename){
+	public String insertPicIntoSheet(String filename){
+		String temp;
+		String text;
+		String imgInsertion; 
+		if (dkmsContentItemBean.getDkmsContentItemType().equals("1")){
+		imgInsertion = "<img src='" + filename + " ' /	>";			
+		temp = dkmsContentItemBean.getExerciseSheetContent();
+		text = temp + imgInsertion;
+		dkmsContentItemBean.setExerciseSheetContent(text);	
+		return "/edukms/authorInterface/exerciseSheetEditor.xhtml";
+		} 
+		else return "";
+	
+	}
+	
+	public String insertPicIntoTaskContent(String filename){
 		String temp;
 		String text;
 		String imgInsertion;
 		imgInsertion = "<img src='" + filename + " ' /	>";
-		temp = dkmsContentItemBean.getExerciseSheetContent();
+		temp = dkmsContentItemBean.getTaskContent();
 		text = temp + imgInsertion;
-		dkmsContentItemBean.setExerciseSheetContent(text);		
+		dkmsContentItemBean.setTaskContent(text);	
+		return "/edukms/authorInterface/sequenceEditor.xhtml";
 	}
 	
-	public void insertMovieIntoSheet(){
+	public String insertPicIntoWikiContent(String filename){
+		String temp;
+		String text;
+		String imgInsertion;
+		imgInsertion = "<img src='" + filename + " ' /	>";
+		temp = dkmsContentItemBean.getTaskContent();
+		text = temp + imgInsertion;
+		dkmsContentItemBean.setTaskContent(text);	
+		return "/edukms/abcmaths/wikiEditor.xhtml";
+	}
+	
+	public String insertMovieIntoSheet(){
 		String filename= "";
 		String filetype="";
 		String temp;
@@ -173,7 +213,7 @@ public class DkmsBasicAction implements Serializable {
 		ll = dkmsContentItemBean.getDkmsMovieList();
 		if (ll.size() > 0) {
 			DkmsMovieManager mf = ll.getFirst();	
-			filename = "../../../images/" + mf.getFileName();
+			filename = "../../images/" + mf.getFileName();
 			filetype = mf.getMimeType();
 		}
 		if (filetype.equals("application/octet-stream")){
@@ -182,25 +222,69 @@ public class DkmsBasicAction implements Serializable {
 			text = temp + movieInsertion;
 			dkmsContentItemBean.setExerciseSheetContent(text);	
 		}
+		return "/edukms/authorInterface/exerciseSheetEditor.xhtml";
+	}
+	
+	public String insertMovieIntoTaskContent(){
+		String filename= "";
+		String filetype="";
+		String temp;
+		String text;
+		String movieInsertion;
+		
+		LinkedList<DkmsMovieManager> ll = new LinkedList<DkmsMovieManager>();
+		ll = dkmsContentItemBean.getDkmsMovieList();
+		if (ll.size() > 0) {
+			DkmsMovieManager mf = ll.getFirst();	
+			filename = "../../images/" + mf.getFileName();
+			filetype = mf.getMimeType();
+		}
+		if (filetype.equals("application/octet-stream")){
+			movieInsertion = "<object data='" + filename + "' type='application/x-shockwave-flash'><param name='movie' value='" + filename + "'></object>  ";
+			temp = dkmsContentItemBean.getTaskContent();
+			text = temp + movieInsertion;
+			dkmsContentItemBean.setTaskContent(text);	
+		}
+		return "/edukms/authorInterface/sequenceEditor.xhtml";
 	}
 	
 	
-	public void insertPicIntoTaskContent(String filename){
+	public String insertMovieIntoWikiContent(){
+		String filename= "";
+		String filetype="";
 		String temp;
 		String text;
-		String imgInsertion;
-		imgInsertion = "<img src='" + filename + " ' /	>";
-		temp = dkmsContentItemBean.getTaskContent();
-		text = temp + imgInsertion;
-		dkmsContentItemBean.setTaskContent(text);		
+		String movieInsertion;
+		
+		LinkedList<DkmsMovieManager> ll = new LinkedList<DkmsMovieManager>();
+		ll = dkmsContentItemBean.getDkmsMovieList();
+		if (ll.size() > 0) {
+			DkmsMovieManager mf = ll.getFirst();	
+			filename = "../../images/" + mf.getFileName();
+			filetype = mf.getMimeType();
+		}
+		if (filetype.equals("application/octet-stream")){
+			movieInsertion = "<object data='" + filename + "' type='application/x-shockwave-flash'><param name='movie' value='" + filename + "'></object>  ";
+			temp = dkmsContentItemBean.getTaskContent();
+			text = temp + movieInsertion;
+			dkmsContentItemBean.setTaskContent(text);	
+		}
+		return "/edukms/abcmaths/wikiEditor.xhtml";
 	}
 	
 		
 	@Begin(join=true)
 	public String nextStepSequence() {
 		dkmsContentItemBean.setDkmsContentItemType("2");
+		dkmsContentItemBean.setLastUpdate((new Date()).toString());	
+		dkmsBigIdeasAction.setChosenBigIdeas(dkmsContentItemBean.getBigIdeas());
+		return "/edukms/authorInterface/contentItemData.xhtml";
+	}
+	
+	public String nextStepChangeSequence() {
+		dkmsContentItemBean.setContentItemState("C");
 		dkmsContentItemBean.setLastUpdate((new Date()).toString());
-		String tmp = (new Date()).toString();
+		dkmsBigIdeasAction.setChosenBigIdeas(dkmsContentItemBean.getBigIdeas());
 		return "/edukms/authorInterface/contentItemData.xhtml";
 	}
 	
@@ -208,20 +292,36 @@ public class DkmsBasicAction implements Serializable {
 	public String nextStepDocument() {
 		dkmsContentItemBean.setDkmsContentItemType("3");
 		dkmsContentItemBean.setLastUpdate((new Date()).toString());
+		dkmsBigIdeasAction.setChosenBigIdeas(dkmsContentItemBean.getBigIdeas());
 		return "/edukms/authorInterface/contentItemData.xhtml";
+	}
+	
+	
+	public String nextStepDocumentUploadWizard() {
+		
+		return "/edukms/authorInterface/documentUploader.xhtml";
+	}
+	
+	public String nextStepDocumentUpload() {
+		
+		return "/edukms/authorInterface/documentUploadEditor.xhtml";
 	}
 	
 	@Begin(join=true)
 	public String nextStepWiki() {
 		dkmsContentItemBean.setDkmsContentItemType("4");
+		dkmsContentItemBean.setDkmsContentItemName(dkmsContentItemBean.getDkmsContentItemName() + " (Wiki)" );
 		dkmsContentItemBean.setLastUpdate((new Date()).toString());
+		dkmsBigIdeasAction.setChosenBigIdeas(dkmsContentItemBean.getBigIdeas());
 		return "/edukms/abcmaths/infoPlatformItemData.xhtml";
 	}
 	
 	@Begin(join=true)
 	public String nextStepBlog() {
 		dkmsContentItemBean.setDkmsContentItemType("5");
+		dkmsContentItemBean.setDkmsContentItemName(dkmsContentItemBean.getDkmsContentItemName() + " (Blog)" );
 		dkmsContentItemBean.setLastUpdate((new Date()).toString());
+		dkmsBigIdeasAction.setChosenBigIdeas(dkmsContentItemBean.getBigIdeas());
 		return "/edukms/abcmaths/infoPlatformItemData.xhtml";
 	}
 	
@@ -229,6 +329,7 @@ public class DkmsBasicAction implements Serializable {
 	public String nextStepCombinedResource() {
 		dkmsContentItemBean.setDkmsContentItemType("6");
 		dkmsContentItemBean.setLastUpdate((new Date()).toString());
+		dkmsBigIdeasAction.setChosenBigIdeas(dkmsContentItemBean.getBigIdeas());
 		return "/edukms/authorInterface/contentItemData.xhtml";
 	}
 	
@@ -274,6 +375,67 @@ public class DkmsBasicAction implements Serializable {
 	public String nextForChange() {
 		return "/edukms/authorInterface/exerciseSheetChangeData.xhtml";
 	}
+	
+	@Begin(join=true)
+	public String nextToSimpleResImageUploader() {
+		dkmsContentItemBean.setDkmsContentItemType("1");
+		return "/edukms/authorInterface/imageUploader.xhtml";
+	}
+	
+	@Begin(join=true)
+	public String nextToSegmentedResImageUploader() {
+		dkmsContentItemBean.setDkmsContentItemType("2");
+		return "/edukms/authorInterface/imageUploader.xhtml";
+	}
+	
+	@Begin(join=true)
+	public String nextToWikiImageUploader() {
+		dkmsContentItemBean.setDkmsContentItemType("4");
+		return "/edukms/authorInterface/imageUploader.xhtml";
+	}
+	
+	public String nextToImageInserter() {
+		return "/edukms/authorInterface/imageInserter.xhtml";
+	}
+	
+	@Begin(join=true)
+	public String nextToSimpleResMovieWizard() {
+		dkmsContentItemBean.setDkmsContentItemType("1");
+		return "/edukms/authorInterface/movieWizard.xhtml";
+	}
+	
+	@Begin(join=true)
+	public String nextToSegmentedResMovieWizard() {
+		dkmsContentItemBean.setDkmsContentItemType("2");
+		return "/edukms/authorInterface/movieWizard.xhtml";
+	}
+	
+	@Begin(join=true)
+	public String nextToWikiMovieWizard() {
+		dkmsContentItemBean.setDkmsContentItemType("4");
+		return "/edukms/authorInterface/movieWizard.xhtml";
+	}
+	
+	public String updateViewStatus(DkmsSequenceComponentManager item) {
+		
+		LinkedList<DkmsSequenceComponentManager> dkmsContentItemList = dkmsContentItemBean.getDkmsSequenceComponentList();
+		int cnt = 0;
+		
+		for (DkmsSequenceComponentManager sequenceComponentTmp : dkmsContentItemList) {
+			if (sequenceComponentTmp.equals(item)){
+				if (sequenceComponentTmp.getViewStatus()==1){
+					sequenceComponentTmp.setViewStatus(0);
+					dkmsContentItemBean.getDkmsSequenceComponentList().set(cnt, sequenceComponentTmp);
+				}else{
+					sequenceComponentTmp.setViewStatus(1);
+					dkmsContentItemBean.getDkmsSequenceComponentList().set(cnt, sequenceComponentTmp);
+				}
+			}
+			cnt = cnt + 1;			
+		}
+		return "/edukms/authorInterface/sequenceController.xhtml";
+	}
+	
 	
 	
 }

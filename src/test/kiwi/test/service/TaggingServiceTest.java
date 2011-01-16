@@ -129,10 +129,10 @@ public class TaggingServiceTest extends KiWiTest {
             	ContentItem ci2 = ciService.getContentItemByTitle("ci2");
             	User user       = userService.getUserByLogin("mustermann");
             	
-            	Assert.assertEquals(taggingService.getTags(ci1).size(),1);
+            	Assert.assertEquals(taggingService.getTaggings(ci1).size(),1);
             	
             	// create a new tag and check its properties
-            	Tag t = taggingService.getTags(ci1).iterator().next();
+            	Tag t = taggingService.getTaggings(ci1).iterator().next();
             	
             	
              	// check whether listApplicableDataTypeProperties gives results.

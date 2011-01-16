@@ -104,14 +104,18 @@
                         inputWidth="400"
                         showControls="true"
                     />
+                     </a:outputPanel>
+                    <br/>	
                     <h3>Suggested interests:</h3>
                     	<div id="suggestedInterests" style="width:550px;">
                 		<ui:repeat var="suggestedInterest" value="#{kiwi.dashboard.profileAction.inferredInterests}" >
-                		<h:outputText value="#{suggestedInterest}" />
-                		<a:commandButton action="#{kiwi.dashboard.profileAction.addInterest(suggestedInterest)}" image="img/type_add.png" reRender="userInterests"/>
+                			<h:outputText value="#{suggestedInterest} " />
+                			<a:commandButton action="#{kiwi.dashboard.profileAction.addInterest(suggestedInterest)}" image="img/type_add.png" reRender="userInterests"/>
+                			<h:outputText value="  "/>
                 		</ui:repeat>
                 		</div>
-                	</a:outputPanel>	
+            
+                	<br/>	
                     <h:outputText value="About Me:"/>
                     <rich:editor id="profileDescriptionEditor"
                                  required = "false"

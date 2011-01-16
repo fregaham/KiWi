@@ -33,6 +33,8 @@ import dkms.datamodel.dkmsContentItem.DkmsSequenceComponentFacade;
 import dkms.datamodel.dkmsContentItem.DkmsSlideFacade;
 import dkms.datamodel.dkmsContentItem.DkmsWikiFacade;
 
+import org.hibernate.validator.NotEmpty;
+
 @Name("dkmsContentItemBean")
 @Scope(ScopeType.CONVERSATION)
 @Transactional
@@ -64,6 +66,10 @@ public class DkmsContentItemBean implements Serializable {
 	
 	private String tmpContentItem;
 	
+	private String contentItemStateBuffer;
+	
+	private DkmsContentItemFacade contentItemBuffer;
+
 	private String contentItemIdentifier;
 	
 	private String lastUpdate;
@@ -76,7 +82,9 @@ public class DkmsContentItemBean implements Serializable {
 	//N == New ContentItem, C == Change Content Item
 	private String contentItemState;
 	
-	private String dkmsContentItemName, authorName, description, exerciseSheetContent, 
+	private String dkmsContentItemName;
+	
+	private String authorName, description, exerciseSheetContent, 
 			taskContent, taskTitle, commentText;   
 
 	private double longitude, latitude;   
@@ -119,6 +127,8 @@ public class DkmsContentItemBean implements Serializable {
 		seqTaskState  = "";
 		contentItemState = "";
 	    tmpContentItem = "";
+	    contentItemStateBuffer="";
+	    contentItemBuffer=null;
 		longitude = 0;
 		latitude = 0;
 		trashState = false;
@@ -173,7 +183,7 @@ public class DkmsContentItemBean implements Serializable {
 		LinkedList<DkmsSequenceComponentFacade> ll6 = selectedDkmsContentItem.getDkmsSequenceComponentList();
 		dkmsSequenceComponentList = new LinkedList<DkmsSequenceComponentManager>();
 		for (DkmsSequenceComponentFacade dkmsSequenceComponentFacade : ll6) {
-			dkmsSequenceComponentList.add(new DkmsSequenceComponentManager(dkmsSequenceComponentFacade.getTaskId(), dkmsSequenceComponentFacade.getTaskTitle(), dkmsSequenceComponentFacade.getVersion(), dkmsSequenceComponentFacade.getSequenceContent()));
+			dkmsSequenceComponentList.add(new DkmsSequenceComponentManager(dkmsSequenceComponentFacade.getTaskId(), dkmsSequenceComponentFacade.getTaskTitle(), dkmsSequenceComponentFacade.getVersion(), dkmsSequenceComponentFacade.getSequenceContent(), dkmsSequenceComponentFacade.getViewStatus()));
 		}
 		
 		LinkedList<DkmsCombinedComponentFacade> ll7 = selectedDkmsContentItem.getDkmsCombinedComponentList();
@@ -197,9 +207,11 @@ public class DkmsContentItemBean implements Serializable {
 		this.seqTaskState = selectedDkmsContentItem.getSeqTaskState();		
 		this.contentItemState = selectedDkmsContentItem.getContentItemState();	
 		this.tmpContentItem = selectedDkmsContentItem.getTmpContentItem();
+		this.contentItemStateBuffer = selectedDkmsContentItem.getContentItemStateBuffer();
+		this.contentItemBuffer = selectedDkmsContentItem.getContentItemBuffer();
 		this.contentItemIdentifier = selectedDkmsContentItem.getContentItemIdentifier();
 		this.lastUpdate = selectedDkmsContentItem.getLastUpdate();
-		
+				
 		
 		if(this.bigIdeas != null)
 		{
@@ -480,5 +492,22 @@ public class DkmsContentItemBean implements Serializable {
 		this.lastUpdate = lastUpdate;
 	}
 	
+	public String getContentItemStateBuffer() {
+		return contentItemStateBuffer;
+	}
+
+
+	public void setContentItemStateBuffer(String contentItemStateBuffer) {
+		this.contentItemStateBuffer = contentItemStateBuffer;
+	}
 	
+	public DkmsContentItemFacade getContentItemBuffer() {
+		return contentItemBuffer;
+	}
+
+
+	public void setContentItemBuffer(DkmsContentItemFacade contentItemBuffer) {
+		this.contentItemBuffer = contentItemBuffer;
+	}
+			
 }

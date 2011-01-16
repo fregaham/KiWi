@@ -160,15 +160,21 @@ public class ContactsAction implements Serializable {
 			currentUser = entityManager.find(User.class, currentUser.getId());
 			entityManager.refresh(currentUser);
 		}
-		if(friend != null && currentUser.getId()!=friend.getId()) {
-			currentUser.getFriends().add(friend);
-			entityManager.persist(currentUser);
-			entityManager.flush();			
-			allUsers = null;
-			friends  = null;
-			selectedUser=null;
-			Events.instance().raiseEvent("activity.addFriend", currentUser, friend);
-			facesMessages.add("You have a new kiwi friend!");
+		if(friend != null) {
+			if(currentUser.getId()!= friend.getId()) {
+				currentUser.getFriends().add(friend);
+				entityManager.persist(currentUser);
+				entityManager.flush();			
+				allUsers = null;
+				friends  = null;
+				selectedUser=null;
+				Events.instance().raiseEvent("activity.addFriend", currentUser, friend);
+				facesMessages.add("You have a new kiwi friend!");
+			}else{
+				facesMessages.add("Sorry, you cannot be friend of yourself :)");
+			}
+		}else{
+			facesMessages.add("User is null.");
 		}
 	}
 	

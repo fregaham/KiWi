@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 import kiwi.model.content.ContentItem;
+import kiwi.model.skill.FakeSkill;
 import kiwi.model.skill.UserSkill;
 import kiwi.model.user.User;
 
@@ -114,4 +115,6 @@ public interface SkillService {
 	 * 
 	 */
 	public void loadFakeSkillList();
+	
+	public FakeSkill getFakeSkillsBySkillName(String skillName);	
 }

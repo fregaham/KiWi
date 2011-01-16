@@ -412,7 +412,7 @@ public class KiWiSearchEngine implements Serializable, SearchEngine {
 
 	
 	public List<Tag> getCITags(ContentItem ci){
-		return taggingService.getTags(ci);
+		return taggingService.getTaggings(ci);
 	}
 
 	
@@ -622,13 +622,6 @@ public class KiWiSearchEngine implements Serializable, SearchEngine {
 		return "/search.xhtml";
 	}
 	
-	public List<String> autocomplete(Object param) {
-		javax.persistence.Query q = 
-			entityManager.createNamedQuery("searchAction.autocomplete");
-        q.setParameter("n", param.toString().toLowerCase()+"%");
-        q.setHint("org.hibernate.cacheable", true);
-        return q.getResultList();
-	}
 
 	/**
 	 * An aggregator for displaying users together with the number of times they occur in the 

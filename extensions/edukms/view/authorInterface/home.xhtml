@@ -154,7 +154,7 @@
 	 <h:form>
 	 <div id="cover">
 	 
-	 <fieldset class="fieldsetborder" style="float:left; width:100%; height: 570px; margin-left: -170px; border:1px solid #FFE8C3">
+	<div style="float:left; width:100%; height: 580px; margin-left: -170px; border:1px solid #FFE8C3; padding-top:10px">
 	 
 	 <h1>This application supports you in creating exercises and educational learning material.</h1>
 	 	<h2>The system provides you several wizards to create adequate teaching material:</h2><br/>
@@ -228,80 +228,8 @@
 	 	
 	 </div>
 	 <div id="dynatip">&nbsp;</div>
-	 </fieldset>
-	 <fieldset class="fieldsetborder" style="float:right; width: 200px; height: 570px; margin-right: -160px; border:1px solid #FFE8C3">
+	 </div>
 	 
-	 <!--	  [start] menue for logged in user -->
-		<c:if test="#{identity.loggedIn == true}">
-			<div class="buttons">
-			
-				<div style="margin-left:6px"><img
-					src="#{facesContext.externalContext.requestContextPath}/view/img/welcome.png"
-					style="valign: center; vertical-align: middle; margin-right: 10px; margin-top: 5px; margin-left:-3px"/><h:outputText style="color: #6f91c0; font-size: 12px; font-weight:bold; text-align:center" value="Hello #{identity.username}!"
-			                       rendered="#{identity.loggedIn}" /></div>
-			    
-			    <div id="trennlinie"></div>
-				
-				<h:commandLink 
-				
-					action = "#{identityManagerService.logout}">
-				<img
-					src="#{facesContext.externalContext.requestContextPath}/view/img/logout_small.png"
-					style="valign: center; vertical-align: middle; margin-right: 5px;" /> Logout</h:commandLink>
-			<br />
-			
-			</div>
-			<div id="trennlinie"></div>
-			<h:commandLink 
-					action="#{dkmsBasicAction.goToAdminArea()}">
-					<img
-						src="#{facesContext.externalContext.requestContextPath}/view/img/images_ordner_small.png"
-						style="valign: center; vertical-align: middle; margin-right: 12px; margin-top: 5px; margin-left:17px;" />My resources</h:commandLink>
-				<br/>
-			
-		</c:if>
-<!--		 [end] menue for logged in user -->
-<!--		 [start] menue for not logged in user -->
-		<c:if test="#{identity.loggedIn == false}">
-			<div class="buttons">
-			
-	
-				<table>
-				<tr>
-				<td></td>
-				<td><br/>
-				<div class="loginBox" style="margin-left: 0px" >
-				
-							<h:outputLabel for="username">Username</h:outputLabel><br/>
-							<h:inputText id="username" value="#{credentials.username}" /><br/><br/>
-							<h:outputLabel for="password">Password</h:outputLabel><br/>
-							<h:inputSecret id="password" value="#{credentials.password}" /><br/><br/>
-							<h:outputLabel for="rememberMe">remember&#160;</h:outputLabel>
-							<h:selectBooleanCheckbox id="rememberMe" value="#{rememberMe.enabled}" style="vertical-align:middle"/>
-							<h:outputLabel for="loginButton"></h:outputLabel>
-							<h:commandButton id="loginButton" value="Login" action="#{identity.login}" rendered="#{not identity.loggedIn}" style="float:right"/>
-			
-				</div>
-				<br/>
-<!--				<div class="loginBox">-->
-<!--							<s:link view="/dkms/forgotPassword.xhtml" value="#{messages['artaround.login.forgotPassword']}"/>-->
-<!--						</div><br/>				-->
-<!--				        <div class="loginBox">-->
-<!--							<h:outputText value=" " /><s:link view="/dkms/register.xhtml" value="Noch nicht registriert?"/>-->
-<!--						</div>-->
-				</td>
-				</tr></table>
-			
-	
-				
-			
-			</div>
-			
-			
-		</c:if>
-<!--		 [end] menue for not logged in user -->
-		
-	 </fieldset>
 	 
 	 </div>
 	</h:form> 

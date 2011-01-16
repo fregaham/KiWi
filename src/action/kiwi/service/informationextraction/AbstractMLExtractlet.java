@@ -261,11 +261,13 @@ public abstract class AbstractMLExtractlet extends AbstractExtractlet {
 				
 			ilist.addThruPipe(malletInstance);
 		}
-			
-		ClassifierTrainer<NaiveBayes> trainer = new NaiveBayesTrainer();
-		NaiveBayes malletClassifier = trainer.train(ilist);
+		
+		if (ilist.size() > 0) {
+			ClassifierTrainer<NaiveBayes> trainer = new NaiveBayesTrainer();
+			NaiveBayes malletClassifier = trainer.train(ilist);
 
-		classifier.setMallet(malletClassifier);
+			classifier.setMallet(malletClassifier);
+		}
 		
 		log.info("trainClassifier end");
 	}

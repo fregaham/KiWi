@@ -1,0 +1,281 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                             "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:m="http://code.google.com/p/gmaps4jsf/"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+	template="layout/main.xhtml">
+
+	<ui:define name="breadcrumps">
+		<ul>
+			<li class="first"><s:link view="/edukms/abcmaths/home.xhtml"
+				value="| Information Platform Home" /></li>
+			<li><s:link view="/edukms/abcmaths/searchKMS.xhtml"
+				value="Content Search" /></li>
+			<li><s:link view="/edukms/abcmaths/informationRetrievalResult.xhtml"
+				value="Search Result" /></li>
+		</ul>
+	</ui:define>
+
+	<ui:define name="body">
+
+		
+
+<style>
+/* root element for vert_accordion. decorated with rounded borders and gradient background image */
+#vert_accordion {
+	/*background:#fff url(#{facesContext.externalContext.requestContextPath}/view/img/h300.png) ;*/
+	background: #fff;
+	width: 700px;
+	/*border:1px solid #eee;	*/
+	-background: #666;
+	margin-top: 10px;
+	margin-left: 10px;
+}
+
+/* vert_accordion header */
+#vert_accordion h2 {
+	/*background:#fff url(#{facesContext.externalContext.requestContextPath}/view/img/h30.png);*/
+	background: #fff;
+	margin: 0;
+	padding: 10px 15px;
+	font-size: 14px;
+	font-weight: normal;
+	/*border:1px solid #eee; */
+	border-bottom: 1px solid #ddd;
+	cursor: pointer;
+}
+
+/* currently active header */
+#vert_accordion h2 {
+	cursor: default;
+	background-color: #eee;
+}
+
+/* vert_accordion pane */
+#vert_accordion div.pane { /*border:1px solid #eee;*/
+	border-width: 0 2px;
+	display: none;
+	height: 270px;
+	padding: 15px;
+	color: #aaa;
+	font-size: 12px;
+}
+
+#vert_accordion div.pane p {
+	margin: 0 0 5px 0;
+}
+
+#cover {
+	margin: 10px 0 0 0;
+	width: 800px;
+}
+
+h2 {
+	color: #6f91c0;
+	font-size: 14px;
+	margin-left: 20px;
+	margin-top: -15px;
+	font-weight: 300;
+}
+
+h1 {
+	color: #999;
+	font-size: 14px;
+	margin-left: 20px;
+	margin-top: -15px;
+	font-weight: 300;
+}
+
+#accordionTitle {
+	margin-bottom: 30px;
+	margin-top: 20px;
+}
+
+.buttonclass {
+	text-decoration: none;
+	margin-right: 5px;
+}
+
+#buttons { /*border-bottom: 1px solid #FFE8C3; */
+	padding: 10px;
+}
+
+#trennlinie {
+	border-bottom: 1px solid #ddd;
+	margin: 10px;
+}
+
+.rich-mpnl-controls img {
+	src: url("../../img/close.png");
+}
+
+.rich-stglpanel-header {
+background-color:#eee;
+border-color:#eee;
+height:15px;
+color:#666;
+font-size:12px;
+font-weight:bold;
+
+}
+
+.rich-stglpanel {
+background-color:#eee;
+border-color:#C0C0C0;
+}
+
+.rich-stglpanel-body {
+
+padding:0px;
+
+}
+</style>
+
+		
+
+		<div id="cover">
+		<h:form>
+		<rich:simpleTogglePanel  style="margin-left:-170px; margin-bottom: 10px; border-color: #eee; width:100% " opened="true" switchType="client"  >			
+				<ui:include src="./menu/menu_quickResult.xhtml" ></ui:include>			
+		 </rich:simpleTogglePanel>
+		</h:form>
+	<h:form>	
+	<div style="float:left; width:100%; height: 620px; margin-left: -170px; border:1px solid #ddd; padding-top:10px">
+	
+		<div id="vert_accordion"><!--  Folder  -->
+		
+
+		<!--  Tab 1 Header -->
+		<h2><img
+			src="#{facesContext.externalContext.requestContextPath}/view/img/result_folder.png"
+			style="valign: center; vertical-align: middle; margin-right: 5px" />
+		Information Retrieval Result:</h2>
+		<!--  Tab 1 Content -->
+		<div class="pane" style="display: block">
+			<div style="height:450px; overflow:auto; margin-left:15px; margin-top:10px " >
+			<h:outputText value="No resources found" rendered="#{dkmsReadModusAction.resultList.size == 0}"/>
+			<table cellspacing="1">
+				<c:forEach items="#{dkmsReadModusAction.resultList}" var="dci" id="dciList" rendered="#{dkmsReadModusAction.resultList.size > 0}">				
+				
+					 <c:if test="#{dci.dkmsContentItemType == '1'}">
+					 <tr>					   
+						<td style="border:1px solid #ddd; width:150px">
+							<h:commandLink action="#{dkmsReadModusAction.showExerciseSheetPresentation(dci)}"><h5 style="margin:5px">#{dci.title}</h5></h:commandLink>
+						</td >
+						<td style="border:1px solid #ddd; width:30px">					
+							<img src="#{facesContext.externalContext.requestContextPath}/view/img/angabe_verysmall.png" style="valign: center; vertical-align: middle; margin: 2px" title="Simple resource"/>
+						</td>						
+						<td style="border:1px solid #ddd; width:130px; padding-left:5px">
+							Simple resource
+						</td>						
+						<td style="border:1px solid #ddd; width:30px">
+							<h:commandLink action="#{dkmsReadModusAction.showExerciseSheetPresentation(dci)}"><img src="#{facesContext.externalContext.requestContextPath}/view/img/vorschau_verysmall.png" title="Show Details" style="margin:3px"/></h:commandLink>
+						</td>																	
+					</tr>
+				    </c:if>
+					<c:if test="#{dci.dkmsContentItemType == '2'}">	
+					 <tr>					   
+						<td style="border:1px solid #ddd; width:150px">
+							<h:commandLink action="#{dkmsReadModusAction.showSequencePresentation(dci)}"><h5 style="margin:5px">#{dci.title}</h5></h:commandLink>
+						</td>
+						<td style="border:1px solid #ddd; width:30px">
+							<img src="#{facesContext.externalContext.requestContextPath}/view/img/dokumente_verysmall.png" style="valign: center; vertical-align: middle; margin: 2px" title="Segmented resource"/>
+						</td>
+						<td style="border:1px solid #ddd; width:130px; padding-left:5px">
+							Segmented resource
+						</td>						
+						<td style="border:1px solid #ddd; width:30px">
+							<h:commandLink action="#{dkmsReadModusAction.showSequencePresentation(dci)}"><img src="#{facesContext.externalContext.requestContextPath}/view/img/vorschau_verysmall.png" title="Show Details" style="margin:3px"/></h:commandLink>
+						</td>																	
+					</tr>
+					</c:if>	
+					<c:if test="#{dci.dkmsContentItemType == '3'}">
+					 <tr>					   
+						<td style="border:1px solid #ddd; width:150px">
+							<h:commandLink action="#{dkmsReadModusAction.showDocumentPresentation(dci)}"><h5 style="margin:5px">#{dci.title}</h5></h:commandLink>
+						</td>
+						<td style="border:1px solid #ddd; width:30px">
+							<img src="#{facesContext.externalContext.requestContextPath}/view/img/pdf_dokument_verysmall.png" style="valign: center; vertical-align: middle; margin: 2px" title="Uploaded resource"/>
+						</td>
+						<td style="border:1px solid #ddd; width:130px; padding-left:5px">
+							Uploaded resource
+						</td>						
+						<td style="border:1px solid #ddd; width:30px">
+							<h:commandLink action="#{dkmsReadModusAction.showDocumentPresentation(dci)}"><img src="#{facesContext.externalContext.requestContextPath}/view/img/vorschau_verysmall.png" title="Details" style="margin:3px"/></h:commandLink>
+						</td>																	
+					</tr>
+					</c:if>
+					<c:if test="#{dci.dkmsContentItemType == '4'}">
+					 <tr>					   
+						<td style="border:1px solid #ddd; width:150px">
+							<h:commandLink action="#{dkmsReadModusAction.showWikiPresentation(dci)}"><h5 style="margin:5px">#{dci.title}</h5></h:commandLink>
+						</td>
+						<td style="border:1px solid #ddd; width:30px">					
+							<img src="#{facesContext.externalContext.requestContextPath}/view/img/editor_verysmall.png" style="valign: center; vertical-align: middle; margin: 2px" title="Wiki resource"/>
+						</td>
+						<td style="border:1px solid #ddd; width:130px; padding-left:5px">
+							Wiki resource
+						</td>						
+						<td style="border:1px solid #ddd; width:30px">
+							<h:commandLink action="#{dkmsReadModusAction.showWikiPresentation(dci)}"><img src="#{facesContext.externalContext.requestContextPath}/view/img/vorschau_verysmall.png" title="Show Wiki Article" style="margin:3px"/></h:commandLink>
+						</td>																	
+					</tr>
+					</c:if>
+					<c:if test="#{dci.dkmsContentItemType == '5'}">
+					 <tr>					   
+						<td style="border:1px solid #ddd; width:150px">
+							<h:commandLink action="#{dkmsReadModusAction.showBlogPresentation(dci)}"><h5 style="margin:5px">#{dci.title}</h5></h:commandLink>
+						</td>
+						<td style="border:1px solid #ddd; width:30px">					
+							<img src="#{facesContext.externalContext.requestContextPath}/view/img/blog_small.png" style="valign: center; vertical-align: middle; margin: 2px" title="Blog"/>
+						</td>	
+						<td style="border:1px solid #ddd; width:130px; padding-left:5px">
+							Blog
+						</td>					
+						<td style="border:1px solid #ddd; width:30px">
+							<h:commandLink action="#{dkmsReadModusAction.showBlogPresentation(dci)}"><img src="#{facesContext.externalContext.requestContextPath}/view/img/vorschau_verysmall.png" title="Show Blog" style="margin:3px"/></h:commandLink>
+						</td>																	
+					</tr>
+					</c:if>
+					<c:if test="#{dci.dkmsContentItemType == '6'}">
+					 <tr>					   
+						<td style="border:1px solid #ddd; width:150px">
+							<h:commandLink action="#{dkmsReadModusAction.showCombinedResourcesPresentation(dci)}"><h5 style="margin:5px">#{dci.title}</h5></h:commandLink>
+						</td>
+						<td style="border:1px solid #ddd; width:30px">					
+							<img src="#{facesContext.externalContext.requestContextPath}/view/img/chain_small.PNG" style="valign: center; vertical-align: middle; margin: 2px" title="Combined resources"/>
+						</td>	
+						<td style="border:1px solid #ddd; width:130px; padding-left:5px">
+							Combined resources
+						</td>					
+						<td style="border:1px solid #ddd; width:30px">
+							<h:commandLink action="#{dkmsReadModusAction.showCombinedResourcesPresentation(dci)}"><img src="#{facesContext.externalContext.requestContextPath}/view/img/vorschau_verysmall.png" title="Show Blog" style="margin:3px"/></h:commandLink>
+						</td>					
+					</tr>
+					</c:if>
+			
+			</c:forEach>
+			</table>
+			</div>
+		</div>
+	
+		
+
+		</div>
+			</div>
+
+			 
+		</h:form>
+		</div>
+
+
+	</ui:define>
+</ui:composition>

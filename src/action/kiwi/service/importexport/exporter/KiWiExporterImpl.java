@@ -531,7 +531,7 @@ public class KiWiExporterImpl implements ExporterLocal, ExporterRemote {
             root.appendChild(content);
         }
 
-        List<Tag> taggings = taggingService.getTags(item);
+        List<Tag> taggings = taggingService.getTaggings(item);
         if (taggings.size() > 0) {
             Element el_taggings = new Element("taggings", Constants.NS_KIWI_EXPORT);
             for (Tag t : taggings) {
@@ -633,7 +633,7 @@ public class KiWiExporterImpl implements ExporterLocal, ExporterRemote {
                 myCon.add(TripleStoreUtil.transformKiWiToSesame(f, t));
             }
 
-            for (Tag t : taggingService.getTags(item)) {
+            for (Tag t : taggingService.getTaggings(item)) {
                 for (KiWiTriple triple : t.getResource().listOutgoing()) {
                     myCon.add(TripleStoreUtil.transformKiWiToSesame(f, triple));
                 }

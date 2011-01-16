@@ -157,7 +157,7 @@ public class DocumentTagExtractlet extends AbstractMLExtractlet {
 				TaggingService taggingService = (TaggingService)Component.getInstance("taggingService");
 				
 				User user = null;
-				List<Tag> tags = taggingService.getTags(instance.getSourceResource().getContentItem());
+				List<Tag> tags = taggingService.getTaggings(instance.getSourceResource().getContentItem());
 				for (Tag tag : tags) {
 					if (tag.getTaggingResource().getId().equals(taggingResourceContentItemId)) {
 						user = tag.getTaggedBy();

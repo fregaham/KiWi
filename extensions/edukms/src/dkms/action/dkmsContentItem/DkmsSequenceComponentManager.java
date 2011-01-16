@@ -14,25 +14,29 @@ public class DkmsSequenceComponentManager {
 	
 	private String taskTitle;
 	
-	private int taskId;
+	private int taskId;   
 	
 	private DkmsContentItemFacade sequenceItem;
+	
+	private int viewStatus;
 
 	
 
+	
 	public DkmsSequenceComponentManager(){
 		
 	}
 	
-	public DkmsSequenceComponentManager(int taskId, String taskTitle, String version, String sequenceContent){
+	public DkmsSequenceComponentManager(int taskId, String taskTitle, String version, String sequenceContent, int viewStatus){
 		this.taskId = taskId;
 		this.taskTitle = taskTitle;
 		this.version = version;
 		this.sequenceContent = sequenceContent;
+		this.viewStatus = viewStatus;
+		
 		
 	}
-	
-	
+		
 
 	public int getTaskId() {
 		return taskId;
@@ -41,7 +45,7 @@ public class DkmsSequenceComponentManager {
 	public void setTaskId(int taskId) {
 		this.taskId = taskId;
 	}
-
+		
 	public String getTaskTitle() {
 		return taskTitle;
 	}
@@ -75,7 +79,13 @@ public class DkmsSequenceComponentManager {
 		this.sequenceItem = sequenceItem;
 	}
 	
-	
+	public int getViewStatus() {
+		return viewStatus;
+	}
+
+	public void setViewStatus(int viewStatus) {
+		this.viewStatus = viewStatus;
+	}
 
 	
 		

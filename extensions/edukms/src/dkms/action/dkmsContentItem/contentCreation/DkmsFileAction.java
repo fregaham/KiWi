@@ -24,8 +24,11 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.TransactionPropagationType;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.log.Log;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.UploadedFile;
 import org.richfaces.event.UploadEvent;
 import org.richfaces.model.UploadItem;
+
 
 import dkms.action.dkmsContentItem.DkmsContentItemBean;
 import dkms.action.dkmsContentItem.DkmsFileManager;
@@ -71,27 +74,23 @@ public class DkmsFileAction {
 	 * 
 	 * @param event
 	 */
-	public void picListener(UploadEvent event) {
+	public void picListener(FileUploadEvent event) {
 
-		UploadItem item = event.getUploadItem();
+		UploadedFile item = event.getFile();
 
 		log.info("File: '#0' with type '#1' was uploaded", item.getFileName(),
 				item.getContentType());
 
 		String name = FilenameUtils.getName(item.getFileName());
 		String type = item.getContentType();
-		
 
-		if (item.isTempFile()) {
-			try {				
-
-				File file = item.getFile();
+		log.info("File successfully read!");
 				
 				//TODO: Werte aus Properties lesen
 				
 				//lokalhost:
-				//String repos = "D:/dkms/images/";				
-				//String cache = "D:/dkms/images/cache/";
+				//String repos = "C:/images/";				
+				//String cache = "C:/images/cache/";
 				
 				//abcmaths-Server:
 				String repos = "/home/abcmaths/images/";				
@@ -99,28 +98,30 @@ public class DkmsFileAction {
 
 				
 				
+				File file = null;
+				// store the orig in file repos:
 				try {
-					
+					// create unique filename with timestamp+filename:
 					name = "" + new Date().getTime() + "_" + name;
-					DkmsFileService.copyFile(file, new File(repos + "/" + name));
+					file = DkmsFileService.copyFile(item.getContents(), new File(repos
+							+ "/" + name));
 				} catch (Exception e) {
 					log.error("error copy file ... " + e.getMessage());
 					e.printStackTrace();
 				}
 
-				// create the mini thumbnail image:
+				try {
+				// create shaped image:
 				//TODO: Werte aus property file auslesen
-				Integer width = new Integer(100);
-				Integer height = new Integer(75);
+				Integer width = new Integer(650);
+				Integer height = new Integer(2000);
 				File mini = new File(cache + "/" + width + "x" + height + "_"
 						+ name);
 				DkmsImageScaleService.createScaledFile(file, mini, width, height, true);				
 
-			} catch (IOException e) {
-				log.error("error reading file #0", item.getFile()
-						.getAbsolutePath());
-			}
-		}		
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 		
 		DkmsFileManager mt = new DkmsFileManager();
 		mt.setMimeType(type);
@@ -136,27 +137,23 @@ public class DkmsFileAction {
 	}
 	
 	
-	public void slideListener(UploadEvent event) {
+	public void slideListener(FileUploadEvent event) {
 
-		UploadItem item = event.getUploadItem();
+		UploadedFile item = event.getFile();
 
 		log.info("File: '#0' with type '#1' was uploaded", item.getFileName(),
 				item.getContentType());
 
 		String name = FilenameUtils.getName(item.getFileName());
 		String type = item.getContentType();
-		
 
-		if (item.isTempFile()) {
-			try {				
-
-				File file = item.getFile();
+		log.info("File successfully read!");
 				
 				//TODO: Werte aus Properties lesen
 				
 				//localhost:
-//				String repos = "I:/dkms/images/";				
-//				String cache = "I:/dkms/images/cache/";
+				//String repos = "C:/images/";				
+				//String cache = "C:/images/cache/";
 				
 				//abcmaths-Server:
 				String repos = "/home/abcmaths/images/";				
@@ -164,14 +161,19 @@ public class DkmsFileAction {
 
 				
 				
+				File file = null;
+				// store the orig in file repos:
 				try {
-					
+					// create unique filename with timestamp+filename:
 					name = "" + new Date().getTime() + "_" + name;
-					DkmsFileService.copyFile(file, new File(repos + "/" + name));
+					file = DkmsFileService.copyFile(item.getContents(), new File(repos
+							+ "/" + name));
 				} catch (Exception e) {
 					log.error("error copy file ... " + e.getMessage());
 					e.printStackTrace();
 				}
+
+				try {
 
 				// create the slideshow image:
 				//TODO: Werte aus property file auslesen
@@ -181,11 +183,9 @@ public class DkmsFileAction {
 						+ name);
 				DkmsImageScaleService.createScaledFile(file, mini, width, height, true);				
 
-			} catch (IOException e) {
-				log.error("error reading file #0", item.getFile()
-						.getAbsolutePath());
-			}
-		}		
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 		
 		DkmsSlideManager slt = new DkmsSlideManager();
 		slt.setMimeType(type);
@@ -201,43 +201,42 @@ public class DkmsFileAction {
 	}
 	
 	
-	public void fileListener(UploadEvent event) {
+	public void fileListener(FileUploadEvent event) {
 
-		UploadItem item = event.getUploadItem();
+		UploadedFile item = event.getFile();
 
 		log.info("File: '#0' with type '#1' was uploaded", item.getFileName(),
 				item.getContentType());
 
 		String name = FilenameUtils.getName(item.getFileName());
 		String type = item.getContentType();
-		
 
-		if (item.isTempFile()) {
-				
-
-				File file = item.getFile();
+		log.info("File successfully read!");
 
 				//TODO: Werte aus Properties lesen
 				
 				//lokalhost:
-				//String repos = "D:/dkms/files/";				
-				//String cache = "D:/dkms/files/cache/";
+				//String repos = "C:/images/";				
+				//String cache = "C:/images/cache/";
 				
 				//abcmaths-Server:
 				String repos = "/home/abcmaths/images/";				
 				String cache = "/home/abcmaths/images/cache/";			
 				
+				File file = null;
+				// store the orig in file repos:
 				try {
-					
+					// create unique filename with timestamp+filename:
 					name = "" + new Date().getTime() + "_" + name;
-					DkmsFileService.copyFile(file, new File(repos + "/" + name));
+					file = DkmsFileService.copyFile(item.getContents(), new File(repos
+							+ "/" + name));
 				} catch (Exception e) {
 					log.error("error copy file ... " + e.getMessage());
 					e.printStackTrace();
 				}
 
 
-		}		
+				
 		
 		DkmsFileManager mt = new DkmsFileManager();
 		mt.setMimeType(type);
@@ -252,44 +251,42 @@ public class DkmsFileAction {
 		dkmsContentItemBean.setDkmsMediaList(dkmsContentItemList);
 	}
 	
-	public void movieListener(UploadEvent event) {
+	public void movieListener(FileUploadEvent event) {
 
-		UploadItem item = event.getUploadItem();
+		UploadedFile item = event.getFile();
 
 		log.info("File: '#0' with type '#1' was uploaded", item.getFileName(),
 				item.getContentType());
 
 		String name = FilenameUtils.getName(item.getFileName());
-		String type = item.getContentType(); 
-		
+		String type = item.getContentType();
 
-		if (item.isTempFile()) {
-		
-				
-
-				File file = item.getFile();
+		log.info("File successfully read!");
 
 				//TODO: Werte aus Properties lesen
 				
 				//lokalhost:
-//				String repos = "I:/dkms/files/";				
-//				String cache = "I:/dkms/files/cache/";
+				//String repos = "C:/images/";				
+				//String cache = "C:/images/cache/";
 				
 				//abcmaths-Server:
 				String repos = "/home/abcmaths/images/";				
 				String cache = "/home/abcmaths/images/cache/";			
 				
+				File file = null;
+				// store the orig in file repos:
 				try {
-					
+					// create unique filename with timestamp+filename:
 					name = "" + new Date().getTime() + "_" + name;
-					DkmsFileService.copyFile(file, new File(repos + "/" + name));
+					file = DkmsFileService.copyFile(item.getContents(), new File(repos
+							+ "/" + name));
 				} catch (Exception e) {
 					log.error("error copy file ... " + e.getMessage());
 					e.printStackTrace();
 				}
 
-			
-		}		
+
+				
 		
 		DkmsMovieManager movt = new DkmsMovieManager();
 		movt.setMimeType(type);
@@ -308,9 +305,15 @@ public class DkmsFileAction {
 	@End(root = true, beforeRedirect = true) 
 	public String storeDkmsContentItem(){
 		
-		dkmsContentItemBean.setAuthorName(currentUser.getLogin());
+		//dkmsContentItemBean.setAuthorName(currentUser.getLogin());
+		dkmsContentItemBean.setAuthorName(currentUser.getFirstName() + " " + currentUser.getLastName());
+		if (dkmsContentItemBean.getDkmsContentItemName().equals("")){
+			dkmsContentItemBean.setDkmsContentItemName("No Title");
+		}
 		
 		DkmsContentItemFacade dkmsContentItemFacade =  dkmsContentItemService.createDkmsContentItem(dkmsContentItemBean);
+		dkmsContentItemFacade.setAuthor(currentUser);
+		
 		
 		if(dkmsBigIdeasAction != null){
 				addBigIdeas(dkmsContentItemFacade);
@@ -318,6 +321,7 @@ public class DkmsFileAction {
 		if(dkmsRepresentationTypeAction != null){
 			addRepresentationType(dkmsContentItemFacade);
 		}
+		
 		
 		
 		currentContentItem = dkmsContentItemFacade.getDelegate();
@@ -328,7 +332,14 @@ public class DkmsFileAction {
 	@End(root = true, beforeRedirect = true) 
 	public String storeInfoPlatformContentItem(){
 		
+		//dkmsContentItemBean.setAuthorName(currentUser.getLogin());
+		dkmsContentItemBean.setAuthorName(currentUser.getFirstName() + " " + currentUser.getLastName());
+		if (dkmsContentItemBean.getDkmsContentItemName().equals("")){
+			dkmsContentItemBean.setDkmsContentItemName("No Title");
+		}
+		
 		DkmsContentItemFacade dkmsContentItemFacade =  dkmsContentItemService.createDkmsContentItem(dkmsContentItemBean);
+		dkmsContentItemFacade.setAuthor(currentUser);
 		
 		if(dkmsBigIdeasAction != null){
 				addBigIdeas(dkmsContentItemFacade);
@@ -336,6 +347,8 @@ public class DkmsFileAction {
 		if(dkmsRepresentationTypeAction != null){
 			addRepresentationType(dkmsContentItemFacade);
 		}
+		
+		
 		
 		currentContentItem = dkmsContentItemFacade.getDelegate();
 		return "/edukms/abcmaths/home.xhtml";

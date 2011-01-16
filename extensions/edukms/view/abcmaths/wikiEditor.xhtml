@@ -65,42 +65,92 @@ h3 {
 	margin: 10px;
 }
 
+.rich-mpnl-controls img {
+	src: url("../../img/close.png");
+}
+
+.rich-stglpanel-header {
+background-color:#eee;
+border-color:#eee;
+height:15px;
+color:#666;
+font-size:12px;
+font-weight:bold;
+
+}
+
+.rich-stglpanel {
+background-color:#eee;
+border-color:#C0C0C0;
+}
+
+.rich-stglpanel-body {
+
+padding:0px;
+
+}
 
 
 </style>
 
 		 
-     
+        <h:form>
 		<div id="cover">
-		<h:form >
 		
-			<fieldset class="fieldsetborder"
-			style="float:left; width:100%; height: 700px; margin-left: -170px; border:1px solid #ddd">
+		
+		 <rich:simpleTogglePanel  style="margin-left:-170px; margin-bottom: 10px; border-color: #eee; width:100% " opened="true" switchType="client"  >			
+				<ui:include src="./menu/menu_wikiEditor.xhtml" ></ui:include>			
+		 </rich:simpleTogglePanel>
+		
+		
+				
+		<div style="float:left; width:100%; height: 620px; margin-left: -170px; border:1px solid #ddd; padding-top:10px">
 			
-			<div><img style="margin: 10px 15px 0 15px; float: left;"
-				src="#{facesContext.externalContext.requestContextPath}/view/img/editor.png" /><br />
-			<h2 style="margin-top: 5px;">You will now create a new Wikipedia Article:</h2>
+			<c:if test="#{dkmsContentItemBean.contentItemState == 'N'}">
+			<div>
+			<img style="float: left; margin-left:20px"
+				src="#{facesContext.externalContext.requestContextPath}/view/img/editor_verysmall.png" /><br />
+			<h2 >You will now create a new Wiki-Article:</h2>
 			<br />
 
 			
 			<table border="0"><tr><td valign="center">
-			<h3 style="margin: -2px 0px 0 20px">Step 1: Please insert a title for your article:&#160;&#160; </h3></td><td valign="middle">
+			<h3 style="margin: -2px 0px 0 20px">Step 1: Insert a title for your article:&#160;&#160; </h3></td><td valign="middle">
 			
 			<h:inputText id="dkmsContentItemName"
 				style="width:343px; margin:0 0 0 0px; vertical-align:top" required="true"
 				value="#{dkmsContentItemBean.dkmsContentItemName}" ><s:validate /><h:messages /></h:inputText>
 			</td></tr></table><br/>
-			<h3 style="margin: -10px 0 0 22px">Step 2: Before inserting images into your article please use the 'Image wizard'</h3>
+			<h3 style="margin: -10px 0 0 22px">Step 2: Use editor below for creating and formatting text</h3>
 			
 
 			<br />
-			<h3 style="margin: 0 0 0 22px">Step 3: Edit the content for your article below:</h3>
+			<h3 style="margin: 0 0 0 22px">Note: Use wizards for inserting images or movies into your resource</h3>
 			<br/>
 
 			</div>
+			</c:if>
+			<c:if test="#{dkmsContentItemBean.contentItemState == 'C'}">
+			<div><img style="float: left; margin-left:20px"
+				src="#{facesContext.externalContext.requestContextPath}/view/img/editor_verysmall.png" /><br />
+			<h2>Here you may edit and change the Wiki-Article: &#160; #{dkmsContentItemBean.dkmsContentItemName}</h2>
+			<br /><br/>
 
-			<div id="editor" style="margin-left:20px">
-			<rich:editor  language="en" width="700"
+			
+			
+			<h3 style="margin: -10px 0 0 22px">Use editor below for creating and formatting text</h3>
+			
+
+			<br />
+			<h3 style="margin: 0 0 0 22px">Note: Use wizards for inserting images or movies into your resource</h3>
+			<br/>
+
+			</div>
+			
+			</c:if>
+
+			<div id="editor" style="margin-left:20px; margin-top:-5px">
+			<rich:editor language="en" width="750"
 				height="500" value="#{dkmsContentItemBean.taskContent}" theme="advanced"
 				viewMode="visual"
 				plugins="safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,ibrowser">
@@ -124,124 +174,11 @@ h3 {
 
 			</div>				
 			
-			</fieldset>
-
-			<fieldset class="fieldsetborder" style="float:right; width: 200px; height: 700px; margin-right: -160px; border:1px solid #ddd">
-
+			</div>
 			
-			<div id="buttons">
-		
-		    
-			
-			<h:commandLink class="buttonclass" 	action="#{dkmsBasicAction.goToAbcmathsHome()}">
-			<img
-				src="#{facesContext.externalContext.requestContextPath}/view/img/arrowleft_small.png"
-				style="vertical-align: middle; margin-right: 8px; margin-left:6px" />Cancel</h:commandLink>
-			<br /><br/>
-		    <h:commandLink				
-				action="#{dkmsBasicAction.nextStepWiki()}" >
-				<img title="Weiter"
-					src="#{facesContext.externalContext.requestContextPath}/view/img/arrowright_small.png" style="vertical-align:middle; margin-right: 7px; margin-left:8px"/>Proceed
-			</h:commandLink>
-		
 		
 		</div>
-		<br/>
-		
-		<div id="trennlinie"></div>
-		<br/>
-		 <f:subview xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:a4j="http://richfaces.org/a4j"
-      xmlns:rich="http://richfaces.org/rich"> 
-    <rich:modalPanel id="panel" width="400" height="350">
-        <f:facet name="header" style="height:20px">
-            <h:panelGroup>
-                <h:outputText value="Upload Images"></h:outputText>
-            </h:panelGroup>
-        </f:facet>
-        <f:facet name="controls">
-            <h:panelGroup>
-                <h:graphicImage value="../img/close.png" styleClass="hidelink" id="hidelink" style="padding-top:7px"/>
-<!--                <img src="#{facesContext.externalContext.requestContextPath}/view/img/close.png" style="margin-top:1px" class="hidelink" id="hidelink"/>-->
-                <rich:componentControl for="panel" attachTo="hidelink" operation="hide" event="onclick"/>
-            </h:panelGroup>
-        </f:facet>
-        <br/>
-       <h2 style="float:left">Step 1: Upload one or more images:</h2>
-        <br/>
-        <div style="margin-left:10px">
-        <rich:fileUpload 
-						fileUploadListener="#{dkmsFileAction.picListener}"
-						immediateUpload="false"
-						maxFilesQuantity="30"
-						listHeight="130pt"
-						listWidth="240"
-				        allowFlash="true"
-				        acceptedTypes="jpg, gif, png" 
-						addControlLabel="Add File" 
-						clearAllControlLabel="Clear All" 
-						clearControlLabel="Clear"
-                        stopEntryControlLabel="Stop" 
-						uploadControlLabel="Upload">
-				        	
-<!--			        <a:support event="onuploadcomplete"  reRender="panel" actionListener="#{dkmsBasicAction.reloadWikiChangeEditor()}"/>-->
-		            <f:facet name="label">
-		                <h:outputText value="Upload State" />
-		        	</f:facet>					
-		   		</rich:fileUpload>	  
-		   		</div> 
-		   		<br/> <br/><br/>
-       <h2 style="float:left">Step 2:&#160;&#160; <h:commandLink style="font-size:14px;" value="Update pic-list" action="#{dkmsBasicAction.reloadWikiChangeEditor()}"/>
-			<a:support event="onClick" /></h2>
-       <br/>
-       
-       
-      
-    </rich:modalPanel>
-    <h:outputLink value="#" id="link">
-        <img title="Pic Upload"
-					src="#{facesContext.externalContext.requestContextPath}/view/img/picUpload_small.png" style="vertical-align:middle; margin-right: 8px; margin-left:15px"/>Image Wizard
-		
-        <rich:componentControl for="panel" attachTo="link" operation="show" event="onclick"/>
-    </h:outputLink>
-</f:subview>
-            
-	    <div id="trennlinie"></div>
-	    
-	    <div id="picCatalogue" style="height:520px; overflow:auto; margin-left:-10px;  ">
-	    <br/>
-		<h2 style="margin-left:25px">Image-List:</h2>
-		<table cellspacing="10" cellpadding="10">		
-		<c:forEach items="#{dkmsContentItemBean.dkmsMediaList}" var="item">    	    
-      	<tr><td >   
-      	    <img src="#{dkmsReadModusAction.getMiniMultimediaPicname(item)}" style="margin: 0px 15px 0 15px; border: 1px solid #ddd "  />
-      	    </td><td><h:commandLink value="Insert" action="#{dkmsBasicAction.insertPicIntoTaskContent(dkmsReadModusAction.getOriginalMultimediaFilename(item))}"/>
-			<a:support event="onClick" />
-			
-		</td></tr>
-		</c:forEach> 
-		</table>
-		
-		</div>		
-			</fieldset>
 		</h:form>
-		</div>
-		
-<!--		test:-->
-<!--		<c:forEach items="#{dkmsContentItemBean.dkmsMediaList}" var="item">    	    -->
-<!--      	   -->
-<!--      	    <img src="#{dkmsReadModusAction.getMiniMultimediaFilename(item)}" style="margin: 0px 15px 0 5px; float: left; " /><br/>-->
-<!--			pic-->
-<!--			<div id="trennlinie"></div>-->
-<!--		-->
-<!--		</c:forEach> -->
 
-
-
-     
-		
 	</ui:define>
 </ui:composition>

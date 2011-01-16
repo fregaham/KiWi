@@ -80,13 +80,52 @@ Annotations.prototype.annotation_get_style = function(id) {
 	return this.styles[id];
 };
 
+/**
+ * Get the list of annotation ids encoded in the element
+ * @param element
+ * @return list of annotation ids
+ */
+Annotations.prototype.getAnnotationsData = function(element) {
+	if (element.getUserData) {
+		return element.getUserData("annotations");
+	}
+	else {
+		var annotations = element.getAttribute("annotations");
+		if (annotations == null) {
+			return null;
+		}
+		return annotations.split(" ");
+	}
+};
+
+/**
+ * Store the list of annotation ids in the element. It uses the DOM level 3 user
+ * data, if available, if so, the onABSpanClone method will be provided to the
+ * setUserData call, which enshures the data will be copied when the element is
+ * cloned...
+ * 
+ * @param element
+ * @param annotations list of annotation ids
+ */
+Annotations.prototype.setAnnotationsData = function(element, annotations) {
+	if (element.setUserData) {
+		element.setUserData("annotations", annotations,
+				onABSpanClone.partial(this)); 
+	}
+	else {
+		element.setAttribute("annotations", annotations.join(" ")); 
+	}
+};
+
+
+
 Annotations.prototype.setAnnotationStyle = function (id, style) {
 	// The styles needs to be combined in the additive way... so we clear the style first
 	var textNodes = this.getAnnotationTextNodes (id);
 	for (var i = 0; i < textNodes.length; ++i) {
 		var abspan = this.getABSpan(textNodes[i]);
 		if (abspan != null) {
-			var annots = abspan.getUserData ("annotations");
+			var annots = this.getAnnotationsData(abspan);
 			this.clear_ab_style(abspan.style, annots);
 		}
 	}
@@ -97,7 +136,7 @@ Annotations.prototype.setAnnotationStyle = function (id, style) {
 	for (var i = 0; i < textNodes.length; ++i) {
 		var abspan = this.getABSpan(textNodes[i]);
 		if (abspan != null) {
-			var annots = abspan.getUserData ("annotations");
+			var annots = this.getAnnotationsData(abspan);
 			this.set_ab_style(abspan.style, annots);
 		}
 	}
@@ -265,7 +304,7 @@ Annotations.prototype.getABSpan = function(n) {
 	var p = n.parentNode;
 	if (p == null) return null;
 
-	if (p.getUserData("annotations") != null) {
+	if (this.getAnnotationsData(p) != null) {
 		return p;
 	}
 	return null;
@@ -277,7 +316,7 @@ Annotations.prototype.renameAnnotation = function (oldid, newid) {
 		var node = nodes[i];
 		var abspan = this.getABSpan (node);
 		if (abspan != null) {
-			var annots = abspan.getUserData("annotations");
+			var annots = this.getAnnotationsData(abspan);
 			if (annots != null) {
 				var newannots = [];
 				for ( var j = 0; j < annots.length; ++j) {
@@ -288,8 +327,8 @@ Annotations.prototype.renameAnnotation = function (oldid, newid) {
 						newannots.push(annots[j]);
 					}
 				}
-				
-				abspan.setUserData("annotations", newannots, onABSpanClone.partial(this));
+			
+				this.setAnnotationsData(abspan, newannots);
 			}
 		}
 	}
@@ -307,7 +346,7 @@ Annotations.prototype.getAnnotationTextNodes = function (id) {
 	while (n != null) {
 		var abspan = this.getABSpan (n);
 		if (abspan != null) {
-			var annots = abspan.getUserData("annotations");
+			var annots = this.getAnnotationsData(abspan);
 			if (annots != null) {
 				if (this.obj_in_array (id, annots)) {
 					ret.push (n);
@@ -339,7 +378,7 @@ Annotations.prototype.getAnnotations = function(n) {
 	if (ab == null) {
 		return [];
 	}
-	var ret = ab.getUserData("annotations");
+	var ret = this.getAnnotationsData(ab);
 	if (ret == null) {
 		return [];
 	}
@@ -385,13 +424,11 @@ Annotations.prototype.splitTextNode = function(n, offset) {
 		var abspan1 = document.createElement("span");
 		var abspan2 = document.createElement("span");
 
-		var annotations = abspan.getUserData("annotations");
-		abspan1.setUserData("annotations", annotations,
-				onABSpanClone.partial(this));
+		var annotations = this.getAnnotationsData(abspan);
+		this.setAnnotationsData(abspan1, annotations);
 		this.set_ab_style(abspan1.style, annotations);
 
-		abspan2.setUserData("annotations", this
-				.array_clone(annotations), onABSpanClone.partial(this));
+		this.setAnnotationsData(abspan2, this.array_clone(annotations));
 		this.set_ab_style(abspan2.style, annotations);
 
 		var p = abspan.parentNode;
@@ -426,11 +463,11 @@ Annotations.prototype.insertAnnotationToTextNode = function(annotation, n) {
 		n.parentNode.replaceChild(abspan, n);
 		abspan.appendChild(n);
 
-		abspan.setUserData("annotations", [ annotation ],
-				onABSpanClone.partial(this));
+		this.setAnnotationsData(abspan, [ annotation ]);
 		this.set_ab_style(abspan.style, [ annotation ]);
 	} else {
-		var alist = abspan.getUserData("annotations");
+		
+		var alist = this.getAnnotationsData(abspan);
 		alist.push(annotation);
 		this.set_ab_style(abspan.style, alist);
 	}
@@ -440,7 +477,7 @@ Annotations.prototype.removeAnnotationFromTextNode = function (annotation, n) {
 	var abspan = this.getABSpan(n);
 	if (abspan != null) {
 		/* build a new array without the annotation */
-		var annots = abspan.getUserData("annotations");
+		var annots = this.getAnnotationsData(abspan);
 		var newannots = [];
 
 		for (var i = 0; i < annots.length; ++i) {
@@ -462,7 +499,7 @@ Annotations.prototype.removeAnnotationFromTextNode = function (annotation, n) {
 				abspan.parentNode.removeChild (abspan);
 			}
 			else {
-				abspan.setUserData ("annotations", newannots, onABSpanClone.partial(this));
+				this.setAnnotationsData(abspan, newannots);
 				this.clear_ab_style(abspan.style, [annotation]);
 				this.set_ab_style(abspan.style, newannots);
 			}

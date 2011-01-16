@@ -79,6 +79,17 @@ public class ShowArtWorkAction {
 		 return "/artaround/pages/artworks/imagesOfArtwork.xhtml";
 	}
 	
+	
+	public String showAllNewArtWorks(){
+		
+		
+		List<ArtWorkFacade> artWorkList = artWorkService.getAllNewArtWorks();
+		
+		allArtWorks = artWorkList;
+		 
+		 return "/artaround/home.xhtml";
+	}
+	
 	public String selectArtWork(ArtWorkFacade artWork){
 		 log.info("Artworktitel: #0",artWork.getTitle());
 		 artWorkBean.init(artWork);	
@@ -91,10 +102,18 @@ public class ShowArtWorkAction {
 		 return "/artaround/pages/frontend/buyArtwork.xhtml";
 	}
 	
-	public void deleteArtWork(ArtWorkFacade artWork){
-		kiwiEntityManager.remove(artWork.getDelegate());
-		artWorks.remove(artWork);	
+	public String searchForDetails(){
+		 return "/artaround/pages/frontend/detailedSearch.xhtml";
 	}
+	
+	public void deleteArtWork(ArtWorkFacade artWork){
+		artWorkBean.init(artWork);
+		selectedArtWork = artWork;
+		kiwiEntityManager.remove(artWork.getDelegate());
+		artWorkService.getArtWorks().remove(artWork);		
+	}
+	
+	
 	
 	
 	/**
@@ -188,6 +207,23 @@ public class ShowArtWorkAction {
 		}
 		return null;
 	}
+	
+	
+	public String getMasterFileNameFromArtwork(ContentItem ci) {
+		ArtWorkFacade a = kiwiEntityManager.createFacade(ci,ArtWorkFacade.class);
+		
+		LinkedList<MultimediaFacade> ll = new LinkedList<MultimediaFacade>();
+		ll = a.getArtAroundMediaList();
+		
+		if (ll.size() > 0) {
+			MultimediaFacade mf = ll.getFirst();
+			MediaTmp mTmp = new MediaTmp(mf.getMimeType(), mf.getFilename());	
+			return getMultimediaFilename(mTmp);
+		}
+		return null;
+
+	}
+
 
 	public String getPreviewMasterFileNameFromArtwork(ArtWorkFacade a) {
 		LinkedList<MultimediaFacade> ll = new LinkedList<MultimediaFacade>();

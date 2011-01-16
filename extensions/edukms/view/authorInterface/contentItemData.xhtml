@@ -29,7 +29,7 @@
 /* root element for vert_accordion. decorated with rounded borders and gradient background image */
 #vert_accordion {
 	/*background:#fff url(#{facesContext.externalContext.requestContextPath}/view/img/h300.png) ;*/
-	background: #fff;
+	/*background: #fff;*/
 	width: 700px;
 	/*border:1px solid #eee;	*/
 	-background: #666;
@@ -91,6 +91,7 @@ h3 {
 	font-weight: 300;
 }
 
+
 h1 {
 	color: #999;
 	font-size: 14px;
@@ -117,32 +118,47 @@ h1 {
 	border-bottom: 1px solid #FFE8C3;
 	margin: 10px;
 }
-</style>
+.rich-mpnl-controls img {
+	src: url("../../img/close.png");
+}
 
-<!--		<script-->
-<!--			src="#{facesContext.externalContext.requestContextPath}/view/js/jQueryMain/jquery.tools.min.js"></script>-->
-<!--
-		 activate tabs with JavaScript -->
-<!--		<script>-->
-<!--	-->
-<!--			jQuery(function() { -->
-<!--		-->
-<!--			jQuery("#vert_accordion").tabs("#vert_accordion div.pane", {tabs: 'h2', effect: 'slide', initialIndex: null});-->
-<!--		});-->
-<!--			-->
-<!--		</script>-->
+.rich-stglpanel-header {
+background-color:#eee;
+border-color:#eee;
+height:15px;
+color:#666;
+font-size:12px;
+font-weight:bold;
+
+}
+
+.rich-stglpanel {
+background-color:#eee;
+border-color:#C0C0C0;
+}
+
+.rich-stglpanel-body {
+
+padding:0px;
+}
+</style>
 
 		<div id="cover">
 		<h:form>
-		<fieldset class="fieldsetborder"
-			style="float:left; width:100%; height: 570px; margin-left: -170px; border:1px solid #FFE8C3">		
+		
+		<rich:simpleTogglePanel  style="margin-left:-170px; margin-bottom: 10px; border-color: #FFE8C3; width:100% " opened="true" switchType="client"  >			
+				<ui:include src="./menu/menu_contentItemData.xhtml" ></ui:include>			
+		 </rich:simpleTogglePanel>
+
+		<div style="float:left; width:100%; height: 620px; margin-left: -170px; border:1px solid #FFE8C3; padding-top:10px">
+		
 
 			<!-- vert_accordion -->
 		<div id="vert_accordion"><!--  Folder  -->
 		<div id="accordionTitle"><img
 			src="#{facesContext.externalContext.requestContextPath}/view/img/tagging.png"
 			style="margin: 0px 15px 0 5px; float: left; vertical-align: top" />
-		<h3>Description and Tagging of Content Object:</h3>
+		<h3>Description and Categorisation of Content Object:</h3>
 		</div>
 
 
@@ -165,16 +181,9 @@ h1 {
 		</rich:editor>  	   	
 			
 		</rich:simpleTogglePanel>
-
-
-
-
-
-
-
-
 	
 	    <rich:simpleTogglePanel  opened="false" switchType="client" label="ABCMaths categorisation"  height="550" style="margin: 10px; width:740px">
+	    
 		<div style="float:left; ">	
 			
 		     
@@ -185,7 +194,7 @@ h1 {
 			 <rich:tree styleClass="tree" style="width:250px" switchType="ajax" nodeSelectListener="#{dkmsBigIdeasAction.onNodeSelect}">
 	            			
 	            			
-	            			<rich:recursiveTreeNodesAdaptor roots="#{dkmsBigIdeasAction.treeRoots}" var="item" nodes="#{item.children}" switchType="ajax">
+	            			<rich:recursiveTreeNodesAdaptor roots="#{dkmsBigIdeasAction.getBigIdeas()}" var="item" nodes="#{item.children}" switchType="ajax">
 	            				<rich:treeNode>
 	            					<h:outputText value="#{item.concept.preferredLabel}" />
 	        					</rich:treeNode>
@@ -204,7 +213,7 @@ h1 {
 			<!-- Choosen -->
 			<s:div id="bigIdeasList"  style="width:230px; margin-left: 30px; margin-top:10px; float:left; overflow:auto; border:1px solid #D2B48C; padding:10px">
 					
-					<ui:repeat value="#{dkmsBigIdeasAction.chosenBigIdeas}" var="pos">
+					<ui:repeat value="#{dkmsBigIdeasAction.bigIdeaSet}" var="pos">
 						<ul>
 						<li style="line-height:0.8em; list-style-image:none">
 							<a:commandLink action="#{dkmsBigIdeasAction.setSelectedBigIdea(pos)}" onclick="jQuery('.selectedTechniqueBox').css('background-color','white');jQuery(this).parent().parent().css('background-color','lightgray')">
@@ -220,36 +229,39 @@ h1 {
 			
 			
 			
+			<div style="float:left; ">	
 			
-			<div style="float:left">
-				     
+		     
              <!-- Tree -->
-			
+			 <p id="technique_chooser_message" class="message popupmessage" style="color:#fff; width:610px"></p>
 			 <div style="width:250px;  overflow:auto; float:left">
-			 <h2>Representation:</h2>
-			 <rich:tree styleClass="tree" style="width:250px" switchType="ajax" nodeSelectListener="#{dkmsRepresentationTypeAction.onNodeSelect}">
-	            			<rich:recursiveTreeNodesAdaptor roots="#{dkmsRepresentationTypeAction.treeRoots}" var="item" nodes="#{item.children}"  switchType="ajax">
+			 <h2>Content Area:</h2>	
+			 <rich:tree styleClass="tree" style="width:250px" switchType="ajax" nodeSelectListener="#{dkmsBigIdeasAction.onNodeSelect}">
+	            			
+	            			
+	            			<rich:recursiveTreeNodesAdaptor roots="#{dkmsBigIdeasAction.getContentAreas()}" var="item" nodes="#{item.children}" switchType="ajax">
 	            				<rich:treeNode>
 	            					<h:outputText value="#{item.concept.preferredLabel}" />
 	        					</rich:treeNode>
 							</rich:recursiveTreeNodesAdaptor>
+						
 	         </rich:tree>
 	         </div>
 	         <!-- Buttons -->
 	   		 <div style="float:left">
-					<a:commandButton value = "select &gt;&gt;" style="width:80px; margin:5px; margin-top:30px" reRender="representationTypeList" data="#{dkmsRepresentationTypeAction.addChosenRepresentationType()}" oncomplete="if(data==null)data='';jQuery('#technique_chooser_message').text(data);">
+					<a:commandButton value = "select &gt;&gt;" style="width:80px; margin:5px; margin-top:30px" reRender="contentAreasList" data="#{dkmsBigIdeasAction.addChosenBigIdea()}" oncomplete="if(data==null)data='';jQuery('#technique_chooser_message').text(data);">
 					</a:commandButton><br/>
 					
-					<a:commandButton value = " &lt;&lt; remove" style="width:80px; margin:5px" reRender="representationTypeList" data="#{dkmsRepresentationTypeAction.removeChosenRepresentationType()}" oncomplete="if(data==null)data='';jQuery('#technique_chooser_message').text(data);">
+					<a:commandButton value = " &lt;&lt; remove" style="width:80px;margin:5px" reRender="contentAreasList" data="#{dkmsBigIdeasAction.removeChosenBigIdea()}" oncomplete="if(data==null)data='';jQuery('#technique_chooser_message').text(data);">
 					</a:commandButton>
 			</div>	
 			<!-- Choosen -->
-			<s:div id="representationTypeList"  style="width:230px; margin-left: 30px; margin-top:10px; float:left; overflow:auto; border:1px solid #D2B48C; padding:10px">
+			<s:div id="contentAreasList"  style="width:230px; margin-left: 30px; margin-top:10px; float:left; overflow:auto; border:1px solid #D2B48C; padding:10px">
 					
-					<ui:repeat value="#{dkmsRepresentationTypeAction.chosenRepresentationTypes}" var="pos">
+					<ui:repeat value="#{dkmsBigIdeasAction.contentAreaSet}" var="pos">
 						<ul>
 						<li style="line-height:0.8em; list-style-image:none">
-							<a:commandLink action="#{dkmsRepresentationTypeAction.setSelectedRepresentationType(pos)}" onclick="jQuery('.selectedTechniqueBox').css('background-color','white');jQuery(this).parent().parent().css('background-color','lightgray')">
+							<a:commandLink action="#{dkmsBigIdeasAction.setSelectedBigIdea(pos)}" onclick="jQuery('.selectedTechniqueBox').css('background-color','white');jQuery(this).parent().parent().css('background-color','lightgray')">
 								#{pos.preferredLabel}
 							</a:commandLink>
 						</li>	
@@ -257,7 +269,266 @@ h1 {
 					</ui:repeat>
 					
 			</s:div>
-			</div> 
+			</div>
+			
+			
+			
+			<div style="float:left; ">	
+			
+		     
+             <!-- Tree -->
+			 <p id="technique_chooser_message" class="message popupmessage" style="color:#fff; width:610px"></p>
+			 <div style="width:250px;  overflow:auto; float:left">
+			 <h2>Language:</h2>	
+			 <rich:tree styleClass="tree" style="width:250px" switchType="ajax" nodeSelectListener="#{dkmsBigIdeasAction.onNodeSelect}">
+	            			
+	            			
+	            			<rich:recursiveTreeNodesAdaptor roots="#{dkmsBigIdeasAction.getLanguages()}" var="item" nodes="#{item.children}" switchType="ajax">
+	            				<rich:treeNode>
+	            					<h:outputText value="#{item.concept.preferredLabel}" />
+	        					</rich:treeNode>
+							</rich:recursiveTreeNodesAdaptor>
+						
+	         </rich:tree>
+	         </div>
+	         <!-- Buttons -->
+	   		 <div style="float:left">
+					<a:commandButton value = "select &gt;&gt;" style="width:80px; margin:5px; margin-top:10px" reRender="languagesList" data="#{dkmsBigIdeasAction.addChosenBigIdea()}" oncomplete="if(data==null)data='';jQuery('#technique_chooser_message').text(data);">
+					</a:commandButton><br/>
+					
+					<a:commandButton value = " &lt;&lt; remove" style="width:80px;margin:5px" reRender="languagesList" data="#{dkmsBigIdeasAction.removeChosenBigIdea()}" oncomplete="if(data==null)data='';jQuery('#technique_chooser_message').text(data);">
+					</a:commandButton>
+			</div>	
+			<!-- Choosen -->
+			<s:div id="languagesList"  style="width:230px; margin-left: 30px; margin-top:10px; float:left; overflow:auto; border:1px solid #D2B48C; padding:10px">
+					
+					<ui:repeat value="#{dkmsBigIdeasAction.languageSet}" var="pos">
+						<ul>
+						<li style="line-height:0.8em; list-style-image:none">
+							<a:commandLink action="#{dkmsBigIdeasAction.setSelectedBigIdea(pos)}" onclick="jQuery('.selectedTechniqueBox').css('background-color','white');jQuery(this).parent().parent().css('background-color','lightgray')">
+								#{pos.preferredLabel}
+							</a:commandLink>
+						</li>	
+						</ul>						
+					</ui:repeat>
+					
+			</s:div>
+			
+			</div>
+			
+			
+			
+			<div style="float:left; ">	
+			
+		     
+             <!-- Tree -->
+			 <p id="technique_chooser_message" class="message popupmessage" style="color:#fff; width:610px"></p>
+			 <div style="width:250px;  overflow:auto; float:left">
+			 <h2>Status:</h2>	
+			 <rich:tree styleClass="tree" style="width:250px" switchType="ajax" nodeSelectListener="#{dkmsBigIdeasAction.onNodeSelect}">
+	            			
+	            			
+	            			<rich:recursiveTreeNodesAdaptor roots="#{dkmsBigIdeasAction.getStati()}" var="item" nodes="#{item.children}" switchType="ajax">
+	            				<rich:treeNode>
+	            					<h:outputText value="#{item.concept.preferredLabel}" />
+	        					</rich:treeNode>
+							</rich:recursiveTreeNodesAdaptor>
+						
+	         </rich:tree>
+	         </div>
+	         <!-- Buttons -->
+	   		 <div style="float:left">
+					<a:commandButton value = "select &gt;&gt;" style="width:80px; margin:5px; margin-top:25px" reRender="statiList" data="#{dkmsBigIdeasAction.addChosenBigIdea()}" oncomplete="if(data==null)data='';jQuery('#technique_chooser_message').text(data);">
+					</a:commandButton><br/>
+					
+					<a:commandButton value = " &lt;&lt; remove" style="width:80px;margin:5px" reRender="statiList" data="#{dkmsBigIdeasAction.removeChosenBigIdea()}" oncomplete="if(data==null)data='';jQuery('#technique_chooser_message').text(data);">
+					</a:commandButton>
+			</div>	
+			<!-- Choosen -->
+			<s:div id="statiList"  style="width:230px; margin-left: 30px; margin-top:10px; float:left; overflow:auto; border:1px solid #D2B48C; padding:10px">
+					
+					<ui:repeat value="#{dkmsBigIdeasAction.statusSet}" var="pos">
+						<ul>
+						<li style="line-height:0.8em; list-style-image:none">
+							<a:commandLink action="#{dkmsBigIdeasAction.setSelectedBigIdea(pos)}" onclick="jQuery('.selectedTechniqueBox').css('background-color','white');jQuery(this).parent().parent().css('background-color','lightgray')">
+								#{pos.preferredLabel}
+							</a:commandLink>
+						</li>	
+						</ul>						
+					</ui:repeat>
+					
+			</s:div>
+			</div>
+			
+			
+			<div style="float:left; ">	
+			
+		     
+             <!-- Tree -->
+			 <p id="technique_chooser_message" class="message popupmessage" style="color:#fff; width:610px"></p>
+			 <div style="width:250px;  overflow:auto; float:left">
+			 <h2>Type of resource:</h2>	
+			 <rich:tree styleClass="tree" style="width:250px" switchType="ajax" nodeSelectListener="#{dkmsBigIdeasAction.onNodeSelect}">
+	            			
+	            			
+	            			<rich:recursiveTreeNodesAdaptor roots="#{dkmsBigIdeasAction.getTypesOfResource()}" var="item" nodes="#{item.children}" switchType="ajax">
+	            				<rich:treeNode>
+	            					<h:outputText value="#{item.concept.preferredLabel}" />
+	        					</rich:treeNode>
+							</rich:recursiveTreeNodesAdaptor>
+						
+	         </rich:tree>
+	         </div>
+	         <!-- Buttons -->
+	   		 <div style="float:left">
+					<a:commandButton value = "select &gt;&gt;" style="width:80px; margin:5px; margin-top:30px" reRender="typeOfResourcesList" data="#{dkmsBigIdeasAction.addChosenBigIdea()}" oncomplete="if(data==null)data='';jQuery('#technique_chooser_message').text(data);">
+					</a:commandButton><br/>
+					
+					<a:commandButton value = " &lt;&lt; remove" style="width:80px;margin:5px" reRender="typeOfResourcesList" data="#{dkmsBigIdeasAction.removeChosenBigIdea()}" oncomplete="if(data==null)data='';jQuery('#technique_chooser_message').text(data);">
+					</a:commandButton>
+			</div>	
+			<!-- Choosen -->
+			<s:div id="typeOfResourcesList"  style="width:230px; margin-left: 30px; margin-top:10px; float:left; overflow:auto; border:1px solid #D2B48C; padding:10px">
+					
+					<ui:repeat value="#{dkmsBigIdeasAction.typeOfResourceSet}" var="pos">
+						<ul>
+						<li style="line-height:0.8em; list-style-image:none">
+							<a:commandLink action="#{dkmsBigIdeasAction.setSelectedBigIdea(pos)}" onclick="jQuery('.selectedTechniqueBox').css('background-color','white');jQuery(this).parent().parent().css('background-color','lightgray')">
+								#{pos.preferredLabel}
+							</a:commandLink>
+						</li>	
+						</ul>						
+					</ui:repeat>
+					
+			</s:div>
+			</div>
+			
+			
+			
+			<div style="float:left; ">	
+			
+		     
+             <!-- Tree -->
+			 <p id="technique_chooser_message" class="message popupmessage" style="color:#fff; width:610px"></p>
+			 <div style="width:250px;  overflow:auto; float:left">
+			 <h2>Intention:</h2>	
+			 <rich:tree styleClass="tree" style="width:250px" switchType="ajax" nodeSelectListener="#{dkmsBigIdeasAction.onNodeSelect}">
+	            			
+	            			
+	            			<rich:recursiveTreeNodesAdaptor roots="#{dkmsBigIdeasAction.getIntentions()}" var="item" nodes="#{item.children}" switchType="ajax">
+	            				<rich:treeNode>
+	            					<h:outputText value="#{item.concept.preferredLabel}" />
+	        					</rich:treeNode>
+							</rich:recursiveTreeNodesAdaptor>
+						
+	         </rich:tree>
+	         </div>
+	         <!-- Buttons -->
+	   		 <div style="float:left">
+					<a:commandButton value = "select &gt;&gt;" style="width:80px; margin:5px; margin-top:30px" reRender="intentionsList" data="#{dkmsBigIdeasAction.addChosenBigIdea()}" oncomplete="if(data==null)data='';jQuery('#technique_chooser_message').text(data);">
+					</a:commandButton><br/>
+					
+					<a:commandButton value = " &lt;&lt; remove" style="width:80px;margin:5px" reRender="intentionsList" data="#{dkmsBigIdeasAction.removeChosenBigIdea()}" oncomplete="if(data==null)data='';jQuery('#technique_chooser_message').text(data);">
+					</a:commandButton>
+			</div>	
+			<!-- Choosen -->
+			<s:div id="intentionsList"  style="width:230px; margin-left: 30px; margin-top:10px; float:left; overflow:auto; border:1px solid #D2B48C; padding:10px">
+					
+					<ui:repeat value="#{dkmsBigIdeasAction.intentionSet}" var="pos">
+						<ul>
+						<li style="line-height:0.8em; list-style-image:none">
+							<a:commandLink action="#{dkmsBigIdeasAction.setSelectedBigIdea(pos)}" onclick="jQuery('.selectedTechniqueBox').css('background-color','white');jQuery(this).parent().parent().css('background-color','lightgray')">
+								#{pos.preferredLabel}
+							</a:commandLink>
+						</li>	
+						</ul>						
+					</ui:repeat>
+					
+			</s:div>
+			</div>
+			
+			
+			<div style="float:left; ">	
+			
+		     
+             <!-- Tree -->
+			 <p id="technique_chooser_message" class="message popupmessage" style="color:#fff; width:610px"></p>
+			 <div style="width:250px;  overflow:auto; float:left">
+			 <h2>Age group:</h2>	
+			 <rich:tree styleClass="tree" style="width:250px" switchType="ajax" nodeSelectListener="#{dkmsBigIdeasAction.onNodeSelect}">
+	            			
+	            			
+	            			<rich:recursiveTreeNodesAdaptor roots="#{dkmsBigIdeasAction.getAgeGroups()}" var="item" nodes="#{item.children}" switchType="ajax">
+	            				<rich:treeNode>
+	            					<h:outputText value="#{item.concept.preferredLabel}" />
+	        					</rich:treeNode>
+							</rich:recursiveTreeNodesAdaptor>
+						
+	         </rich:tree>
+	         </div>
+	         <!-- Buttons -->
+	   		 <div style="float:left">
+					<a:commandButton value = "select &gt;&gt;" style="width:80px; margin:5px; margin-top:30px" reRender="ageGroupsList" data="#{dkmsBigIdeasAction.addChosenBigIdea()}" oncomplete="if(data==null)data='';jQuery('#technique_chooser_message').text(data);">
+					</a:commandButton><br/>
+					
+					<a:commandButton value = " &lt;&lt; remove" style="width:80px;margin:5px" reRender="ageGroupsList" data="#{dkmsBigIdeasAction.removeChosenBigIdea()}" oncomplete="if(data==null)data='';jQuery('#technique_chooser_message').text(data);">
+					</a:commandButton>
+			</div>	
+			<!-- Choosen -->
+			<s:div id="ageGroupsList"  style="width:230px; margin-left: 30px; margin-top:10px; float:left; overflow:auto; border:1px solid #D2B48C; padding:10px">
+					
+					<ui:repeat value="#{dkmsBigIdeasAction.ageGroupSet}" var="pos">
+						<ul>
+						<li style="line-height:0.8em; list-style-image:none">
+							<a:commandLink action="#{dkmsBigIdeasAction.setSelectedBigIdea(pos)}" onclick="jQuery('.selectedTechniqueBox').css('background-color','white');jQuery(this).parent().parent().css('background-color','lightgray')">
+								#{pos.preferredLabel}
+							</a:commandLink>
+						</li>	
+						</ul>						
+					</ui:repeat>
+					
+			</s:div>
+			</div>
+			
+			
+			
+			
+<!--			<div style="float:left">-->
+<!--				     -->
+<!--           -->
+<!--			-->
+<!--			 <div style="width:250px;  overflow:auto; float:left">-->
+<!--			 <h2>Representation:</h2>-->
+<!--			 <rich:tree styleClass="tree" style="width:250px" switchType="ajax" nodeSelectListener="#{dkmsRepresentationTypeAction.onNodeSelect}">-->
+<!--	            			<rich:recursiveTreeNodesAdaptor roots="#{dkmsRepresentationTypeAction.treeRoots}" var="item" nodes="#{item.children}"  switchType="ajax">-->
+<!--	            				<rich:treeNode>-->
+<!--	            					<h:outputText value="#{item.concept.preferredLabel}" />-->
+<!--	        					</rich:treeNode>-->
+<!--							</rich:recursiveTreeNodesAdaptor>-->
+<!--	         </rich:tree>-->
+<!--	         </div>-->
+<!--	       -->
+<!--	   		 <div style="float:left">-->
+<!--					<a:commandButton value = "select &gt;&gt;" style="width:80px; margin:5px; margin-top:30px" reRender="representationTypeList" data="#{dkmsRepresentationTypeAction.addChosenRepresentationType()}" oncomplete="if(data==null)data='';jQuery('#technique_chooser_message').text(data);">-->
+<!--					</a:commandButton><br/>-->
+<!--					-->
+<!--					<a:commandButton value = " &lt;&lt; remove" style="width:80px; margin:5px" reRender="representationTypeList" data="#{dkmsRepresentationTypeAction.removeChosenRepresentationType()}" oncomplete="if(data==null)data='';jQuery('#technique_chooser_message').text(data);">-->
+<!--					</a:commandButton>-->
+<!--			</div>	-->
+<!--					<s:div id="representationTypeList"  style="width:230px; margin-left: 30px; margin-top:10px; float:left; overflow:auto; border:1px solid #D2B48C; padding:10px">-->
+<!--					-->
+<!--					<ui:repeat value="#{dkmsRepresentationTypeAction.chosenRepresentationTypes}" var="pos">-->
+<!--						<ul>-->
+<!--						<li style="line-height:0.8em; list-style-image:none">-->
+<!--							<a:commandLink action="#{dkmsRepresentationTypeAction.setSelectedRepresentationType(pos)}" onclick="jQuery('.selectedTechniqueBox').css('background-color','white');jQuery(this).parent().parent().css('background-color','lightgray')">-->
+<!--								#{pos.preferredLabel}-->
+<!--							</a:commandLink>-->
+<!--						</li>	-->
+<!--						</ul>						-->
+<!--					</ui:repeat>-->
+<!--					-->
+<!--			</s:div>-->
+<!--			</div> -->
 			   
 
 			
@@ -269,29 +540,21 @@ h1 {
 		
 		
 		
-		<rich:simpleTogglePanel  opened="false" switchType="client" label="Semantic criteria"  height="550" style="margin: 10px; width:740px">
-		<br/><br/>
-			<img src="#{facesContext.externalContext.requestContextPath}/view/img/menAtWork.gif" style="margin-left:100px"/>
-		</rich:simpleTogglePanel>
+<!--		<rich:simpleTogglePanel  opened="false" switchType="client" label="Semantic criteria"  height="550" style="margin: 10px; width:740px">-->
+<!--		<br/><br/>-->
+<!--			<img src="#{facesContext.externalContext.requestContextPath}/view/img/menAtWork.gif" style="margin-left:100px"/>-->
+<!--		</rich:simpleTogglePanel>-->
 		</div>
 		
 
 		</div>
-			</fieldset>
-
-			<fieldset class="fieldsetborder" style="float:right; width: 200px; height: 570px; margin-right: -160px; border:1px solid #FFE8C3">
+			</div>
 
 			
-			<div id="buttons">
-			<h:commandLink 
-				action="#{dkmsFileAction.storeDkmsContentItem()}">
-				<img
-					src="#{facesContext.externalContext.requestContextPath}/view/img/arrowright_small.png"
-					style="valign: center; vertical-align: middle; margin-right: 11px; margin-left:2px" /> Proceed</h:commandLink>
-		
-	    	
-			</div>
-			</fieldset>
+		  <rich:simpleTogglePanel  style="float:left; margin-left:-170px; margin-top: 10px; margin-bottom: 10px; border-color: #FFE8C3; width:100% " opened="true" switchType="client"  >
+			<ui:include src="./menu/menu_contentItemData.xhtml" ></ui:include>
+		 </rich:simpleTogglePanel> 
+		 
 		</h:form>
 		</div>
 		

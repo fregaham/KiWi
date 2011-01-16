@@ -115,7 +115,7 @@ public class ComponentDisplayRenderlet implements XOMRenderlet {
 				continue;
 			}
 
-			List<Tag> taggings = taggingService.getTags(componentCi);
+			List<Tag> taggings = taggingService.getTaggings(componentCi);
 			Element taglabels = new Element("div",Constants.NS_XHTML);
 			taglabels.appendChild("Tags: ");
 			//String taglabels = "Tags: ";

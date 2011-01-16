@@ -11,42 +11,21 @@
     xmlns:p="http://primefaces.prime.com.tr/ui">
                 
 	<p:panel id="recommendations" header="Recommendations" toggleable="true" closable="true" widgetVar="recommendationsWidget" closeListener="#{dashboardAction.removePortlet}">
-	<rich:dragIndicator id="dragRec"/>
-    <rich:dragIndicator id="dragRecSolr"/>
-	<rich:dragIndicator id="dragRuleBased"/>    
-    <rich:dragIndicator id="dragRecSocialCapital"/>
    	<h:form id="dragForm" >    
-      		<rich:panel id="dragMyPanel" >
+			<p:tabView>
 
-	           <f:facet name="header">
-						<h:outputText value="My Similar Recommendations" />
-						<!--<a:commandButton action="#{tagRelationAction.createTag}" value="Confirm" />-->
-				</f:facet>
-	
-	   			<rich:dropSupport id="simZone" acceptedTypes="text" dropValue="recType" dropListener="#{recommendationAction.processDrop}" reRender="dragMyPanel">
-				</rich:dropSupport>
 
-        		<s:span id="mySimSpan" rendered="#{recommendationActionScope.userSimilarItems.size() &gt; 0}">
-							<h:dataTable id="simTable" columns="1" var="simItem" value="#{recommendationActionScope.userSimilarItems}" >
-								                    <h:column>
-								                        <h:outputText value="#{simItem.contentItem.title}"></h:outputText>
-														<a:commandLink action="#{recommendationAction.removeSimilarRecommendation(simItem)}" value="  Remove" reRender="dragMyPanel"/>
-																														                        
-								                    </h:column>
-						    </h:dataTable>
-				</s:span>
-				<s:span id="nomySimSpan" rendered="#{recommendationActionScope.userSimilarItems.size() == 0}">
-							<h:outputText value="Drag your recommendations to here."/>
-				</s:span>				
-            </rich:panel>
+
+
 
             
-         <rich:panel > 
+
          <f:facet name="header">
 					<h:outputText value="Generated Recommendations" />
          </f:facet> 
-	    <rich:tabPanel switchType="ajax">
-	    	<rich:tab label="Individual">
+         
+
+	    	<p:tab title="Individual">
 			    <a:outputPanel id="userRecommendations" layout="block">
 			        <div>
 			        
@@ -81,9 +60,9 @@
                        
 			       </div>
 			    </a:outputPanel>
-	        </rich:tab>
+	        </p:tab>
 	        
-	        <rich:tab label="Group" reRender="dragPanel">
+	        <p:tab title="Group" reRender="dragPanel">
 			    <a:outputPanel id="groupRecommendations" layout="block">
 			            <s:span id="grouprec" rendered="#{recommendationActionScope.groupRecommendations.size() &gt; 0}">
 			                <div><ul>
@@ -109,9 +88,9 @@
 			                        <h:outputText value="No Grouped Recommendations."/>
 			            </s:span>
 			    </a:outputPanel>
-    		</rich:tab>
+    		</p:tab>
     	
-	        <rich:tab label="Social">
+	        <p:tab title="Social">
 			    <a:outputPanel id="socialRecommendations" layout="block">
 		            <s:span id="socialList" rendered="#{recommendationActionScope.contactRecommendations.size() &gt; 0}">
 						<div><ul>
@@ -145,9 +124,9 @@
 		                        <h:outputText value="No social recommendation"/>
 		            </s:span>
 			    </a:outputPanel>
-    	</rich:tab>
+    	</p:tab>
     	
-	        <rich:tab label="Rule Based">
+	        <p:tab title="Rule Based">
 			    <a:outputPanel id="ruleBasedRecommendations" layout="block">
 		            <s:span id="ruleBasedList" rendered="#{recommendationActionScope.ruleBasedRecommendations.size() &gt; 0}">
 						<div><ul>
@@ -164,8 +143,11 @@
 					                            <f:param name="id" />
 					                            <f:param name="kiwiid" value="#{ruleBasedRec.resource.kiwiIdentifier}"/>
 					                        </s:link>
-											<!--<a:commandLink action="#{recommendationAction.removeContactRecommendation(ruleBasedRec)}" value="  Remove" reRender="ruleBasedList,srcRuleTable"/>		                        
-					                        --></li>
+					                        <br/>
+											<h:outputText value="by "/>
+											<h:outputText value="#{ruleBasedRec.author.firstName} "/>
+											<h:outputText value="#{ruleBasedRec.author.lastName}"/>					                        
+											</li>
 		                            </a:outputPanel>
 									</h:column>
 								</h:dataTable>	
@@ -177,9 +159,9 @@
 		                        <h:outputText value="No rule based recommendations."/>
 		            </s:span>
 			    </a:outputPanel>
-    		</rich:tab>
+    		</p:tab>
     		
-   	        <rich:tab label="Solr">
+   	        <p:tab title="Solr">
 			    <a:outputPanel id="socialCapitalRecommendations" layout="block">
   		            <s:span id="recomlistSolr" rendered="#{recommendationActionScope.personalRecommendationsFromSolr.size() &gt; 0}">
 							<div><ul>
@@ -210,10 +192,10 @@
 									<h:outputText value="No recommendations so far."/>
 						</s:span> 
 			    </a:outputPanel>
-    	 </rich:tab>    	
+    	 </p:tab>    	
 
-	    </rich:tabPanel>   
-		</rich:panel> 
-    	</h:form>
+
+		</p:tabView>   
+		 	    	</h:form>
 	</p:panel>   
 </ui:composition>

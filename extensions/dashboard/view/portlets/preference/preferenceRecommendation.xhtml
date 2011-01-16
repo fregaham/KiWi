@@ -1,0 +1,63 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+	    xmlns:h="http://java.sun.com/jsf/html"
+	    xmlns:f="http://java.sun.com/jsf/core"
+	    xmlns:s="http://jboss.com/products/seam/taglib"
+	    xmlns:rich="http://richfaces.org/rich"
+	    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	    xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+	    xmlns:c="http://java.sun.com/jstl/core"
+	    xmlns:a="http://richfaces.org/a4j"
+	    xmlns:p="http://primefaces.prime.com.tr/ui">
+
+
+
+	<h:panelGrid columns="2">
+		<h:outputText value="Recommendations per view: " />
+		<h:inputText
+			value="#{kiwi.dashboard.preferenceAction.recommendationSize}"
+			size="2" />
+
+		<h:outputText value="Show Recommendations: " />
+		<h:selectBooleanCheckbox
+			value="#{kiwi.dashboard.preferenceAction.showRecommendation}" />
+
+		<h:outputText value="Show Standard Recommendations: " />
+		<h:selectBooleanCheckbox
+			value="#{kiwi.dashboard.preferenceAction.showStandardRecommendation}" />
+
+		<h:outputText value="Show Semantic Recommendations: " />
+		<h:selectBooleanCheckbox
+			value="#{kiwi.dashboard.preferenceAction.showSemanticVectorRecommendation}" />
+
+		<h:outputText value="Show Multifactor Recommendations: " />
+		<h:selectBooleanCheckbox
+			value="#{kiwi.dashboard.preferenceAction.showMultiFactorRecommendation}" />
+
+		<h:outputText value="Show Recommendations Grouped By Tag: " />
+		<h:selectBooleanCheckbox
+			value="#{kiwi.dashboard.preferenceAction.showTagGroupedRecommendation}" />
+
+		<h:outputText value="Show Recommendations Sent By Contacts: " />
+		<h:selectBooleanCheckbox
+			value="#{kiwi.dashboard.preferenceAction.showContactRecommendation}" />
+
+		<h:outputText value="Show Personal Recommendations: " />
+		<h:selectBooleanCheckbox
+			value="#{kiwi.dashboard.preferenceAction.showPersonalRecommendation}" />
+
+		<h:outputText value="Show Social Capital Recommendations: " />
+		<h:selectBooleanCheckbox
+			value="#{kiwi.dashboard.preferenceAction.showSocialCapitalRecommendation}" />
+
+
+		<p:commandButton
+			action="#{kiwi.dashboard.preferenceAction.saveUserPreference()}"
+			value="Save Preference" ajax="false" />
+
+	</h:panelGrid>
+
+
+
+
+</ui:composition>

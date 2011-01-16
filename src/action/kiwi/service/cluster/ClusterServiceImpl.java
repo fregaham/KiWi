@@ -133,8 +133,8 @@ public class ClusterServiceImpl implements ClusterServiceLocal, ClusterServiceRe
 	 * Return all pages tagged by users
 	 * @return
 	 */
-	public List<ContentItem> getTaggedPages(){
-		List<Tag> tagResources = taggingService.getAllDistinctTags();
+	public List<ContentItem> getTaggedPages() {
+		List<Tag> tagResources = taggingService.getAllTags();
 		List<ContentItem> pagesX = new ArrayList<ContentItem>();
 		List<ContentItem> pagesFinal = new ArrayList<ContentItem>();
 		Set<String> pagesTitle = new HashSet<String>();
@@ -148,7 +148,7 @@ public class ClusterServiceImpl implements ClusterServiceLocal, ClusterServiceRe
 				}
 			}
 			return pagesFinal;
-	}
+	}	
 	
 	
 	/**
@@ -156,14 +156,7 @@ public class ClusterServiceImpl implements ClusterServiceLocal, ClusterServiceRe
 	 * @return
 	 */
 	public Set<String> getDistinctTagLabels(){
-		List<Tag> tagResources = taggingService.getAllDistinctTags();
-		Set<String> tagLabels = new HashSet<String>();
-		for (Tag tag : tagResources) {
-			if (!tagLabels.contains(tag.getTaggingResource().getTitle())) {
-				tagLabels.add(tag.getTaggingResource().getTitle());
-			}
-		}	
-		return tagLabels;
+		return new HashSet<String>(taggingService.getDistinctTagLabels());
 	}
 	
 	/**

@@ -82,16 +82,44 @@ h1 {
 	margin-left: -5px;
 }
 
+.rich-mpnl-controls img {
+	src: url("../../img/close.png");
+}
+
+.rich-stglpanel-header {
+background-color:#eee;
+border-color:#eee;
+height:15px;
+color:#666;
+font-size:12px;
+font-weight:bold;
+
+}
+
+.rich-stglpanel {
+background-color:#eee;
+border-color:#C0C0C0;
+}
+
+.rich-stglpanel-body {
+
+padding:0px;
+
+}
+
 </style>
 
 		 
      
-		<div id="cover">
 		<h:form >
+		<div id="cover">
 		
-			<fieldset class="fieldsetborder"
-					style="float:left; width:100%; height: 570px; margin-left: -170px; border:1px solid #ddd">
-			
+		
+		 <rich:simpleTogglePanel  style="margin-left:-170px; margin-bottom: 10px; border-color: #eee; width:100% " opened="true" switchType="client"  >			
+				<ui:include src="./menu/menu_blogInsertionEditor.xhtml" ></ui:include>			
+		 </rich:simpleTogglePanel>
+	
+			<div style="float:left; width:100%; height: 580px; margin-left: -170px; border:1px solid #ddd; padding-top:10px">
 			<br/>
 			<div style="height:680px; overflow:auto; margin-top:-8px">
 			<br/>
@@ -138,47 +166,13 @@ h1 {
       	          
 		   
 		</div>
-			</fieldset>
-
-			 <fieldset class="fieldsetborder" style="float:right; width: 200px; height: 570px; margin-right: -160px; border:1px solid #ddd">
+		</div>	
 
 			
-			<div id="buttons">
-			
-			<h:commandLink class="buttonclass"
-			action="#{dkmsReadModusAction.goToResultList()}">
-			<img
-				src="#{facesContext.externalContext.requestContextPath}/view/img/arrowleft_small.png"
-				style="valign: center; vertical-align: middle; margin-right: 14px;" /> Back to Result List</h:commandLink>
-			<br /><br />
-			<h:commandLink class="buttonclass"
-			action="#{dkmsStoreAction.storeBlogComment()}">
-			<img
-				src="#{facesContext.externalContext.requestContextPath}/view/img/arrowright_small.png"
-				style="valign: center; vertical-align: middle; margin-right: 16px; margin-left:2px" />Proceed</h:commandLink>
-			<br /><br />
-			<div id="trennlinie"></div>
-		<br/>
 		
-<!--			<h:commandLink -->
-<!--				action="#{identity.logout()}">-->
-<!--				<img-->
-<!--					src="#{facesContext.externalContext.requestContextPath}/view/img/logout_small.png"-->
-<!--					style="valign: center; vertical-align: middle; margin-right: 5px; margin-left:-8px" /> Logout</h:commandLink>-->
-			</div>
-			</fieldset>
-		</h:form>
 		</div>
+		</h:form>
 		
-<!--		test:-->
-<!--		<c:forEach items="#{dkmsContentItemBean.dkmsMediaList}" var="item">    	    -->
-<!--      	   -->
-<!--      	    <img src="#{dkmsReadModusAction.getMiniMultimediaFilename(item)}" style="margin: 0px 15px 0 5px; float: left; " /><br/>-->
-<!--			pic-->
-<!--			<div id="trennlinie"></div>-->
-<!--		-->
-<!--		</c:forEach> -->
-
 
 	</ui:define>
 </ui:composition>

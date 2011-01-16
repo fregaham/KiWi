@@ -103,11 +103,12 @@ public class InteractionServiceImpl implements InteractionServiceLocal,
 									 
 				                       getUserTagInteractivity(user1,user2).size()+
 									 
-				  				       getUserEditingInteractivity(user1,user2).size() +
+				  				       //getUserEditingInteractivity(user1,user2).size() +
 									 
 									   getUserRatingInteractivity(user1,user2).size();
 
-			userInteractivityLevel = userInteractivityLevel/4;
+			//userInteractivityLevel = userInteractivityLevel/4;
+			userInteractivityLevel = userInteractivityLevel/3;
 		}
 		return userInteractivityLevel;
 	}
@@ -136,7 +137,7 @@ public class InteractionServiceImpl implements InteractionServiceLocal,
 			newWsers = users;
 			for (User user : newWsers) {
 				for (User user2 : newWsers) {
-					if (user!=user2  && !comparisions.contains(user.getLogin()+user2.getLogin())) {
+					if (user!=user2  && !comparisions.contains(user.getLogin()+user2.getLogin()) && !comparisions.contains(user2.getLogin()+user.getLogin())) {
 						//System.out.println("computeUserInteractivity...USER 1 "+user.getFirstName()+" USER 2 "+ user2.getFirstName());
 						float userInterctivityValue = computeUserInteractivity(user,user2);
 						if (userInterctivityValue>0f) {
@@ -144,6 +145,7 @@ public class InteractionServiceImpl implements InteractionServiceLocal,
 							kiwiEntityManager.persist(userInteraction);
 //							kiwiEntityManager.flush();
 							comparisions.add(user.getLogin()+user2.getLogin());
+							comparisions.add(user2.getLogin()+user.getLogin());
 						}
 					}
 				}
@@ -201,7 +203,7 @@ public class InteractionServiceImpl implements InteractionServiceLocal,
 	 */
 	@SuppressWarnings("unchecked")
 	public List<UserInteraction> listUserInteractions(){
-		List<UserInteraction> result = null;	
+		List<UserInteraction> result = null;
 		String s = "from kiwi.model.interaction.UserInteraction u";
 			javax.persistence.Query q = entityManager.createQuery(s);
 			try {
@@ -327,35 +329,6 @@ public class InteractionServiceImpl implements InteractionServiceLocal,
 			return result;
 		}
 	}
-	
-
-	/**
-	 * This returns the comment activities by user on a given content item.
-	 * @param user
-	 * @param contentItem
-	 * @return
-	 */
-	@SuppressWarnings({ "unused", "unchecked", "unchecked" })	
-	private List<CommentActivity> getUserCommentActivityByContentItem(User user, ContentItem contentItem) {
-		List<CommentActivity> result = new LinkedList<CommentActivity>();
-		Query q = entityManager.createNamedQuery("activities.listUserCommentActivityByContentItem");
-        q.setParameter("user", user);
-		q.setParameter("contentItem", contentItem);
-		q.setHint("org.hibernate.cacheable", true);
-		try {
-			result = (List<CommentActivity>) q.getResultList();
-		} catch (PersistenceException ex) {
-			ex.printStackTrace();
-			log.warn("error while listing user: query failed");
-		}
-
-		if (result == null) {
-			return Collections.EMPTY_LIST;
-		} else {
-			return result;
-		}
-	}	
-
 	/**
 	 * @param user1
 	 * @param user2
@@ -367,6 +340,8 @@ public class InteractionServiceImpl implements InteractionServiceLocal,
 
 		String s = " select ci from ContentItem ci join fetch ci.resource left outer join fetch ci.textContent tc "+
 				   " where ci.author.login =:user1 and tc.contentItem.author.login =:user2";
+		
+
 
 		javax.persistence.Query q = entityManager.createQuery(s);
 		q.setParameter("user1", user1.getLogin());

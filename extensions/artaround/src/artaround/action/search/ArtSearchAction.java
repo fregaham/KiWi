@@ -48,6 +48,7 @@ import org.jboss.seam.log.Log;
 import artaround.action.artwork.ArtWorkBean;
 import artaround.datamodel.artwork.ArtWorkFacade;
 import artaround.exception.ArtAroundSearchException;
+import artaround.service.ArtWorkService;
 
 /**
  * @author devadmin
@@ -81,6 +82,9 @@ public class ArtSearchAction implements Serializable {
 	
 	@In
 	private TripleStore tripleStore;
+	
+	@In(required = false)
+	private ArtWorkService artWorkService;
 	
 	@In
     private KiWiEntityManager kiwiEntityManager;
@@ -143,6 +147,19 @@ public class ArtSearchAction implements Serializable {
 		log.info(fullquery);
 		clear();
 		return run(null);
+	}
+	
+	public String searchMasterAdmin() {
+		log.info(fullquery);
+		clear();
+		return run(null);
+	}
+	
+	public String searchAllMasterAdmin() {
+		fullquery = "*";
+		log.info(fullquery);
+		clear();
+		return runMasterAdmin(null);
 	}
 	
 	
@@ -230,6 +247,40 @@ public class ArtSearchAction implements Serializable {
 		return "search";
 	}
 	
+	private String runMasterAdmin(Map<String, Set<String>> techniqueMap) {
+		try {			
+			KiWiSearchCriteria ksc = getCriteria();
+			
+			//technique
+			if(techniqueMap != null)
+				ksc.setRdfObjectProperties(techniqueMap);
+		
+				
+				Set<String> ts = ksc.getTypes();
+
+				for (Iterator iterator = selectedTypes.iterator(); iterator.hasNext();) {
+					KiWiUriResource type = (KiWiUriResource) iterator.next();
+					ts.add(type.getKiwiIdentifier());
+				}				
+				ksc.setTypes(ts);		
+			
+			searchResults = solrService.search(ksc);
+			
+			log.info(searchResults.getResults().size());
+			
+			//set status facets
+			if(searchResults != null) {
+				techniqueFacets = buildTechniqueFacet();
+				relevantTypes = buildRelevantTypes();
+			}
+			else Collections.emptyList();
+			
+		} catch(ArtAroundSearchException e) {
+			searchResults = new KiWiSearchResults();
+		}
+		return "/artaround/masterAdmin.xhtml";
+	}
+	
 
 
 	private KiWiSearchCriteria getCriteria() throws ArtAroundSearchException {
@@ -285,6 +336,11 @@ public class ArtSearchAction implements Serializable {
     public String getSearchView() {
     	search();
     	return  "/artaround/artaroundSearch.xhtml";
+	}
+    
+    public String getSearchViewMasterAdmin() {
+    	search();
+    	return  "/artaround/masterAdmin.xhtml";
 	}
 
 	public String getFullquery() {
@@ -426,6 +482,11 @@ public class ArtSearchAction implements Serializable {
 		return run(null);
 	}
 	
+	public String setMasterAdminType(KiWiUriResource type){
+		selectedTypes.add(type);
+		return runMasterAdmin(null);
+	}
+	
 	public List<KiWiUriResource> getSelectedTypes(){
 		LinkedList<KiWiUriResource> l = new LinkedList<KiWiUriResource>();
 		for(KiWiUriResource s: selectedTypes){
@@ -465,6 +526,11 @@ public class ArtSearchAction implements Serializable {
 		return run(techniqueMap);
 	}
 	
+	public String removeTypeMasterAdmin(KiWiUriResource typeResource){
+		selectedTypes.remove(typeResource);
+		return runMasterAdmin(techniqueMap);
+	}
+	
 	
 	private Set<String> kiwiResource2Uri(Set<KiWiUriResource> ks){
 		Set<String> ls = new HashSet<String>();
@@ -479,4 +545,23 @@ public class ArtSearchAction implements Serializable {
 		artWorkBean.init(artWork);
 		return "/artaround/pages/frontend/artWorkDetails.seam";
 	}
+	
+	public String deleteArtWork(ContentItem ci){
+		ArtWorkFacade artWork = kiwiEntityManager.createFacade(ci, ArtWorkFacade.class);	
+		artWorkBean.init(artWork);
+		kiwiEntityManager.remove(artWork.getDelegate());
+		artWorkService.getArtWorks().remove(artWork);
+		return "/artaround/masterAdmin.xhtml";
+	}
+	
+	public String lockArtWork(ContentItem ci, boolean lockStatus){
+		ArtWorkFacade artWork = kiwiEntityManager.createFacade(ci, ArtWorkFacade.class);	
+		artWorkBean.init(artWork);
+		artWorkBean.setPublicAccess(lockStatus);
+		artWorkService.updateArtWork(artWork, artWorkBean);
+		return "/artaround/masterAdmin.xhtml";
+	}
+	
+	
+	
 }

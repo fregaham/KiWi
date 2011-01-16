@@ -44,6 +44,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import kiwi.model.kbase.KiWiTriple;
 import kiwi.model.user.User;
 
 import org.hibernate.annotations.Cache;
@@ -70,11 +71,28 @@ public class RuleBasedRecommendation implements Serializable {
 	@OneToOne
     private User user;
 
-	@Column(name="sentence")
-    private String sentence;
+	@Column(name="firstQuery")
+    private String firstQuery;
+	
+	@Column(name="secondQuery")
+    private String secondQuery;	
+
+	@Column(name="tagRec")
+	private String tagRec;
+	
+	@Column(name="myTag")
+	private String myTag;	
+	
+	@Column(name="ruleType")
+    private String ruleType;		
 
     @Version
     private Long version;
+    
+	@OneToOne
+    private KiWiTriple kiwiTriple;  
+	
+	
 	
 	public RuleBasedRecommendation() {
 	}
@@ -112,13 +130,62 @@ public class RuleBasedRecommendation implements Serializable {
 		this.user = user;
 	}
 
-	
-	public String getSentence() {
-		return sentence;
+	public KiWiTriple getKiwiTriple() {
+		return kiwiTriple;
 	}
 
 
-	public void setSentence(String sentence) {
-		this.sentence = sentence;
+	public void setKiwiTriple(KiWiTriple kiwiTriple) {
+		this.kiwiTriple = kiwiTriple;
+	}
+
+
+	public String getFirstQuery() {
+		return firstQuery;
+	}
+
+
+	public void setFirstQuery(String firstQuery) {
+		this.firstQuery = firstQuery;
+	}
+
+
+	public String getSecondQuery() {
+		return secondQuery;
+	}
+
+
+	public void setSecondQuery(String secondQuery) {
+		this.secondQuery = secondQuery;
+	}
+
+
+	public String getRuleType() {
+		return ruleType;
+	}
+
+
+	public void setRuleType(String ruleType) {
+		this.ruleType = ruleType;
+	}
+
+
+	public String getTagRec() {
+		return tagRec;
+	}
+
+
+	public void setTagRec(String tagRec) {
+		this.tagRec = tagRec;
+	}
+
+
+	public String getMyTag() {
+		return myTag;
+	}
+
+
+	public void setMyTag(String myTag) {
+		this.myTag = myTag;
 	}	
 }

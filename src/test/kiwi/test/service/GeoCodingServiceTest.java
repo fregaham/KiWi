@@ -67,7 +67,7 @@ public class GeoCodingServiceTest extends KiWiTest {
             	
             	GeoCodingService gs = (GeoCodingService) Component.getInstance("kiwi.core.geoCodingService");
             	
-                final Location expected = new Location(47.8, 13.03);
+                final Location expected = new Location(47.80949, 13.05501);
                 final Location actual = gs.getLocationGoogle("Salzburg");
                 assertEquals(expected.getLatitude(), actual.getLatitude(), 0.02);
                 assertEquals(expected.getLongitude(), actual.getLongitude(), 0.02);

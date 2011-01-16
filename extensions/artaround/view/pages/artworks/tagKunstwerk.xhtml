@@ -15,7 +15,7 @@
                 xmlns:m="http://code.google.com/p/gmaps4jsf/"
 			 	xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:kiwi="http://www.kiwi-project.eu/jsf"
-                template="../../layout/template-2col.xhtml">
+                template="../../layout/template-3col.xhtml">
                 	
 	<ui:define name="breadcrumps">
 		<ul>
@@ -89,42 +89,36 @@
 	<div id="cover">
 	<ui:include src="../dialogs/edittags.xhtml"/>
 	
-	<div class="subcolumns">	
-	  <div class="c50l">
-    	<div class="subcl"> 
-    		<fieldset class="fieldsetborder">
-				<legend>#{messages['artaround.information']}</legend>
-				 <div style="background:#fff url(#{facesContext.externalContext.requestContextPath}/view/img/h300.png) repeat-x;
-							padding:10px; width:360px; -moz-border-radius:4px;">
-					<p  style="margin-bottom:10px;">
-					#{messages['artaround.artworks.artworkCreation.step3Legend']}
-					</p>
-					<img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif"/>&#160;
-					<h4 style="margin-bottom:10px;">#{messages['artaround.artworks.artworkCreation.step3']} ...</h4>
-					<div align="center" style="margin-bottom:20px;">
-						<h:form> 			 	
-							<a:commandButton value="#{messages['artaround.artworks.tagging']}" reRender="taggingPanel" styleClass="actionmenu-item" oncomplete="#{rich:component('artaroundTaggingPanel')}.show();"/>
-						</h:form>
-					</div>
-					<img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif"/>&#160;
-					<h4  style="margin-bottom:10px;">#{messages['artaround.artworks.artworkCreation.step4']}</h4>
-					<div align="center">
-						<h:form>
-	            			<h:commandButton action="#{artWorkWizardFinish.finish()}" 
-							value="#{messages['artaround.save']}" style="margin-top:5px;"/>
-						</h:form>
-					</div>
-				</div>
-			</fieldset>
-		</div>	
-	  </div>
-	  <div class="c50r">
-	    <div class="subcr">	    
-	      
-			
-		  </div>
-		</div>
-	</div>
+	<table cellpadding="10px" cellspacing="10px">	
+	  		<tr>
+    			<td valign="top" width="300px"> 
+		    		<fieldset class="fieldsetborder">
+						<legend>#{messages['artaround.information']}</legend>
+						 <div style="background:#fff url(#{facesContext.externalContext.requestContextPath}/view/img/h300.png) repeat-x;
+									padding:10px; width:360px; -moz-border-radius:4px;">
+							<p  style="margin-bottom:10px;">
+							#{messages['artaround.artworks.artworkCreation.step3Legend']}
+							</p>
+							<img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif"/>&#160;
+							<h4 style="margin-bottom:10px;">#{messages['artaround.artworks.artworkCreation.step3']} ...</h4>
+							<div align="center" style="margin-bottom:20px;">
+								<h:form> 			 	
+									<a:commandButton value="#{messages['artaround.artworks.tagging']}" reRender="taggingPanel" styleClass="actionmenu-item" oncomplete="#{rich:component('artaroundTaggingPanel')}.show();"/>
+								</h:form>
+							</div>
+							<img src="#{facesContext.externalContext.requestContextPath}/view/img/li.gif"/>&#160;
+							<h4  style="margin-bottom:10px;">#{messages['artaround.artworks.artworkCreation.step4']}</h4>
+							<div align="center">
+								<h:form>
+			            			<h:commandButton action="#{artWorkWizardFinish.finish()}" 
+									value="#{messages['artaround.save']}" style="margin-top:5px;"/>
+								</h:form>
+							</div>
+						</div>
+					</fieldset>
+				</td>
+			</tr>
+		</table>
 	</div>		 
   </ui:define>         
 	

@@ -25,7 +25,7 @@
 				value="Trash-Box" /></li>
 			<li><s:link
 				view="/edukms/authorInterface/reactivateConfirmation.xhtml"
-				value="Reactivate Document" /></li>
+				value="Reactivate Resource" /></li>
 		</ul>
 	</ui:define>
 
@@ -76,14 +76,44 @@ h2 {
 #hiddenCheckBox {
 	display:none;
 }
+
+.rich-mpnl-controls img {
+	src: url("../../img/close.png");
+}
+
+.rich-stglpanel-header {
+background-color:#eee;
+border-color:#eee;
+height:15px;
+color:#666;
+font-size:12px;
+font-weight:bold;
+
+}
+
+.rich-stglpanel {
+background-color:#eee;
+border-color:#C0C0C0;
+}
+
+.rich-stglpanel-body {
+
+padding:0px;
+
+}
 </style>
 
 
-		<h:form>
+		
 		<div id="cover">
+		
+		<h:form>
+		 <rich:simpleTogglePanel  style="margin-left:-170px; margin-bottom: 10px; border-color: #FFE8C3; width:100% " opened="true" switchType="client"  >			
+				<ui:include src="./menu/menu_reactivateConfirmation.xhtml" ></ui:include>			
+		 </rich:simpleTogglePanel>
+		 </h:form>
 
-		<fieldset class="fieldsetborder"
-			style="float:left; width:100%; height: 570px; margin-left: -170px; border:1px solid #FFE8C3">			
+		<div style="float:left; width:100%; height: 580px; margin-left: -170px; border:1px solid #FFE8C3; padding-top:10px">			
 			<br/>	
 		
 		<h2><img
@@ -95,30 +125,25 @@ h2 {
 		<h2 style="margin: 0 0 0 55px">I want to reactivate this document:&#160;&#160;</h2></td><td valign="middle">
 			
 <!--			<div id="hiddenCheckBox"><h:selectBooleanCheckbox id="trashbox"   value = "#{dkmsContentItemBean.trashState}"/></div>-->
-			</td><td height="50"><h:commandLink class="buttonclass"
+			</td><td height="50">
+			<h:form><h:commandLink class="buttonclass"
 				action="#{dkmsWriteModusAction.reactivateDkmsContentItem()}">
 				<img
 					src="#{facesContext.externalContext.requestContextPath}/view/img/ok_verysmall.png"
-					style="valign: center; vertical-align: middle; margin-right: 5px; " />Yes, proceed</h:commandLink></td></tr></table><br/>
+					style="valign: center; vertical-align: middle; margin-right: 5px; " />Yes, proceed</h:commandLink></h:form></td></tr></table><br/>
 		
 		
 
-		</fieldset>
-		<fieldset class="fieldsetborder" style="float:right; width: 200px; height: 570px; margin-right: -160px; border:1px solid #FFE8C3">
-		<div id="buttons">
-		<h:commandLink class="buttonclass"
-			action="#{dkmsReadModusAction.exitTrashConfirmation()}">
-			<img
-				src="#{facesContext.externalContext.requestContextPath}/view/img/arrowleft_small.png"
-				style="valign: center; vertical-align: middle; margin-right: 5px;" />Cancel</h:commandLink>
-		<br />
-		<br />
 		</div>
-		<div id="verzeichnis"></div>
-		</fieldset>
+		
+		<h:form>
+		 <rich:simpleTogglePanel  style="float:left; margin-left:-170px; margin-top: 10px; margin-bottom: 10px; border-color: #FFE8C3; width:100% " opened="true" switchType="client"  >
+			<ui:include src="./menu/menu_reactivateConfirmation.xhtml" ></ui:include>
+		 </rich:simpleTogglePanel>  
+		</h:form>
 
 		</div>
-		</h:form> 
+		
 
 
 

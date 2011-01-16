@@ -11,10 +11,11 @@
 	<ui:define name="breadcrumps">
 		<ul>
 			<li class="first"><s:link
-				view="/edukms/authorInterface/home.xhtml" value="| Author Home" /></li>
+				view="/edukms/authorInterface/home.xhtml" value="| Author Home" /></li>			
 			<li><s:link
 				view="/edukms/authorInterface/sequenceController.xhtml"
-				value="Task Sequence" /></li>
+				value="Segmented resource" /></li>
+		
 		</ul>
 	</ui:define>
 
@@ -105,32 +106,82 @@ h4 {
 
 }
 
+.rich-mpnl-controls img {
+	src: url("../../img/close.png");
+}
+
+.rich-stglpanel-header {
+background-color:#eee;
+border-color:#eee;
+height:15px;
+color:#666;
+font-size:12px;
+font-weight:bold;
+
+}
+
+.rich-stglpanel {
+background-color:#eee;
+border-color:#C0C0C0;
+}
+
+.rich-stglpanel-body {
+
+padding:0px;
+
+}
+
 
 </style>
 		<h:form>
 		<div id="cover"><!-- start cover -->
 
-		<fieldset class="fieldsetborder"
-			style="float:left; width:100%; height: 570px; margin-left: -170px; border:1px solid #FFE8C3">		
-		<!--  <legend>Editor fuer Uebungsblatt</legend> -->
-		 
+		<rich:simpleTogglePanel  style="margin-left:-170px; margin-bottom: 10px; border-color: #FFE8C3; width:100% " opened="true" switchType="client"  >			
+				<ui:include src="./menu/menu_segmentedRes.xhtml" ></ui:include>			
+		 </rich:simpleTogglePanel>
+
+		<div style="float:left; width:100%; height: 580px; margin-left: -170px; border:1px solid #FFE8C3; padding-top:10px">
 		
+		 
+		<c:if test="#{dkmsContentItemBean.contentItemState == 'N'}">
 			<div><img style="margin: 10px 15px 0 15px; float: left;"
 				src="#{facesContext.externalContext.requestContextPath}/view/img/dokumente_small.png" /><br />
-			<h2 style="margin-top: 5px;">Here you may create a structured online resource:</h2>
+			<h2 style="margin-top: 5px;">Here you may create a segmented resource:</h2>
 			<br /><br/>
 
 			
 			<table border="0"><tr><td valign="center">
 			<h4 style="margin: -2px 0px 0 30px">Step 1: Insert a title for your new distribution:&#160;&#160; </h4></td><td valign="middle">
 			
+<!--			<h:inputText id="dkmsContentItemName"-->
+<!--				style="width:335px; margin:0 0 0 0px; vertical-align:top" required="true"-->
+<!--				value="#{dkmsContentItemBean.dkmsContentItemName}" ><s:validate /><h:messages /></h:inputText>-->
 			<h:inputText id="dkmsContentItemName"
-				style="width:335px; margin:0 0 0 0px; vertical-align:top" required="true"
-				value="#{dkmsContentItemBean.dkmsContentItemName}" ><s:validate /><h:messages /></h:inputText>
+				style="width:335px; margin:0 0 0 0px; vertical-align:top"
+				value="#{dkmsContentItemBean.dkmsContentItemName}" ></h:inputText>
 			</td></tr></table><br/><br/>
 			<h4 style="margin: -10px 0 0 32px">Step 2: Create, entitle and edit the relevant components for your distribution on the menu below: </h4>
      		</div><br/>
+			</c:if>
+			<c:if test="#{dkmsContentItemBean.contentItemState == 'C'}">
+			<div><img style="margin: 10px 15px 0 15px; float: left;"
+				src="#{facesContext.externalContext.requestContextPath}/view/img/dokumente_small.png" /><br />
+			<h2 style="margin-top: 5px;">Here you may edit and change your segmented resource:</h2>
+			<br /><br/>
 
+			
+			<table border="0"><tr><td valign="center">
+			<h4 style="margin: -2px 0px 0 20px">Document title:&#160;&#160; </h4></td><td valign="top">
+			
+			<h:inputText id="dkmsContentItemName"
+				style="width:343px; margin:0 0 0 0px; vertical-align:top"
+				value="#{dkmsContentItemBean.dkmsContentItemName}" />
+			</td></tr></table><br/>
+			<h4 style="margin: -10px 0 0 22px">Create, entitle and edit the relevant components for your distribution on the menu below:</h4>
+			<br/>
+			</div>
+			</c:if>
+			
 			<div style="height:550px; overflow:auto; margin-left:25px; margin-top:10px ">
 										<table cellspacing="1">
 						
@@ -146,7 +197,13 @@ h4 {
 									<h2 style="margin:5px">Action</h2></td>
 								<td style="border:1px solid #FFE8C3; width:250px">
 									<h2 style="margin:5px">Last modified</h2>
+								</td>
+								<td style="border:1px solid #FFE8C3; width:80px">
+									<h2 style="margin:5px">View status</h2>
 								</td>	
+								<td style="border:1px solid #FFE8C3; width:30px">
+									<h2 style="margin:5px">Change</h2>
+								</td>
 							</tr>
 							<c:forEach items="#{dkmsContentItemBean.dkmsSequenceComponentList}" var="item" id="itemList">
 							<tr><!--Content-->
@@ -157,10 +214,10 @@ h4 {
 								</td >
 								<td align="center" style="border:1px solid #FFE8C3; width:30px">
 									<c:if test="#{empty item.sequenceContent}">
-										<img src="#{facesContext.externalContext.requestContextPath}/view/img/leer_circle_small.png" title="empty" style="margin:3px"/>
+										<img src="#{facesContext.externalContext.requestContextPath}/view/img/leer_circle_small.png" title="empty" />
 									</c:if>
 									<c:if test="#{not empty item.sequenceContent}">
-										<img src="#{facesContext.externalContext.requestContextPath}/view/img/ok_circle_small.png" title="in process" style="margin:3px"/>
+										<img src="#{facesContext.externalContext.requestContextPath}/view/img/ok_circle_small.png" title="in process" />
 									</c:if>
 								</td >
 								<td align="center" style="border:1px solid #FFE8C3; width:30px">
@@ -172,14 +229,30 @@ h4 {
 									</c:if>																	
 								</td>
 								<td style="border:1px solid #FFE8C3; width:250px">
-									<h3 style="margin:5px">#{item.taskId}: #{item.version}</h3>
-								</td>														
+									<h3 style="margin:5px">#{item.version}</h3>
+								</td>
+								<td style="border:1px solid #FFE8C3; width:80px">
+									<c:if test="#{item.viewStatus == 0}">
+										<h3 style="margin:5px">Published</h3>
+									</c:if>
+									<c:if test="#{item.viewStatus == 1}">
+										<h3 style="margin:5px">Hidden</h3>
+									</c:if>
+								</td>
+								<td style="border:1px solid #FFE8C3; width:30px">
+									<c:if test="#{item.viewStatus == 0}">
+										<h:commandButton value="Hide"  action="#{dkmsBasicAction.updateViewStatus(item)}" style="margin:3px; margin-left:10px"/>
+									</c:if>
+									<c:if test="#{item.viewStatus == 1}">
+										<h:commandButton value="Publish"  action="#{dkmsBasicAction.updateViewStatus(item)}" style="margin:3px; margin-left:10px"/>
+									</c:if>
+								</td>
 							</tr>
 							</c:forEach>
 					</table>
 					<br/>
 					<h:commandLink	action="#{dkmsBasicAction.newSequenceTask()}" ><img title="Add Task" src="#{facesContext.externalContext.requestContextPath}/view/img/plus.png" 
-					style="vertical-align:middle; margin-right: 5px; margin-left:0"/>Add Task
+					style="vertical-align:middle; margin-right: 5px; margin-left:0"/>Add New Task
 			</h:commandLink>				
 					</div>			
 			<h:commandLink	action="#{dkmsBasicAction.nextStepSequence()}" style="float:right; margin:-15px 20px 0 0; text-decoration:none">
@@ -187,45 +260,12 @@ h4 {
 					src="#{facesContext.externalContext.requestContextPath}/view/img/arrowright_small.png" style="vertical-align:middle"/>
 			</h:commandLink>
 		
-		</fieldset>
-		<fieldset class="fieldsetborder" style="float:right; width: 200px; height: 570px; margin-right: -160px; border:1px solid #FFE8C3">
-		<div id="buttons">
-		
-			<h:commandLink	action="#{dkmsBasicAction.newSequenceTask()}" ><img title="Add Task" src="#{facesContext.externalContext.requestContextPath}/view/img/plus.png" 
-			style="vertical-align:middle; margin-right: 5px; margin-left:0px"/>Add Task
-			</h:commandLink><br/>
-			
-			<h:commandLink class="buttonclass"  action="#{dkmsReadModusAction.previewSequence()}" ><img src="#{facesContext.externalContext.requestContextPath}/view/img/vorschau_symbol.png" style="valign:center; vertical-align:middle; margin-right:5px; margin-top:5px"  />Preview</h:commandLink>
-			<br/>
-			<div id="trennlinie"></div>
-			<br/>
-			<h:commandLink class="buttonclass" 	action="#{dkmsBasicAction.goToHome()}">
-			<img
-				src="#{facesContext.externalContext.requestContextPath}/view/img/arrowleft_small.png"
-				style="vertical-align: middle; margin-right: 5px; margin-left:8px" />Cancel</h:commandLink>
-			<br /><br/>
-			<c:if test="#{dkmsContentItemBean.contentItemState == 'N'}">
-															 
-		    <h:commandLink				
-				action="#{dkmsBasicAction.nextStepSequence()}" >
-				<img title="Weiter"
-					src="#{facesContext.externalContext.requestContextPath}/view/img/arrowright_small.png" style="vertical-align:middle; margin-right: 5px; margin-left:8px"/>Proceed
-			</h:commandLink>
-			</c:if>
-			<c:if test="#{dkmsContentItemBean.contentItemState == 'C'}">
-															 
-		    <h:commandLink				
-				action="#{dkmsBasicAction.nextToContentItemChangeData()}" >
-				<img title="Weiter"
-					src="#{facesContext.externalContext.requestContextPath}/view/img/arrowright_small.png" style="vertical-align:middle; margin-right: 5px; margin-left:8px"/>Proceed
-			</h:commandLink>
-			</c:if>
-		
-		
 		</div>
 		
+		 <rich:simpleTogglePanel  style="float:left; margin-left:-170px; margin-top: 10px; margin-bottom: 10px; border-color: #FFE8C3; width:100% " opened="true" switchType="client"  >
+			<ui:include src="./menu/menu_segmentedRes.xhtml" ></ui:include>
+		 </rich:simpleTogglePanel>   
 		
-		</fieldset>
 		</div>
 		</h:form>
 		<!-- end cover -->

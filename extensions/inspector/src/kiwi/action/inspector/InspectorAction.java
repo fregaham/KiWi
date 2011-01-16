@@ -138,7 +138,7 @@ public class InspectorAction implements Serializable {
 	}
 	
 	public List<Tag> listTags() {
-		return taggingService.getTags(currentContentItem);
+		return taggingService.getTaggings(currentContentItem);
 	}
 	
 	public String getTagRDF(Tag t) {

@@ -5,6 +5,7 @@
 	xmlns:a4j="http://richfaces.org/a4j"
 	xmlns:rich="http://richfaces.org/rich"
 	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core"
 	xmlns:a="http://richfaces.org/a4j"
 	template="layout/main.xhtml">
 
@@ -14,7 +15,7 @@
 				view="/edukms/authorInterface/home.xhtml" value="| Author Home" /></li>
 			<li><s:link
 				view="/edukms/authorInterface/documentUploadEditor.xhtml"
-				value="Upload Learning Material" /></li>
+				value="Upload Resource" /></li>
 		</ul>
 	</ui:define>
 
@@ -96,83 +97,142 @@ h3 {
 
 }
 
+.rich-mpnl-controls img {
+	src: url("../../img/close.png");
+}
 
+.rich-stglpanel-header {
+background-color:#eee;
+border-color:#eee;
+height:15px;
+color:#666;
+font-size:12px;
+font-weight:bold;
+
+}
+
+.rich-stglpanel {
+background-color:#eee;
+border-color:#C0C0C0;
+}
+
+.rich-stglpanel-body {
+
+padding:0px;
+
+}
 
 
 </style>
 		<h:form>
 		<div id="cover"><!-- start cover -->
 
-		<fieldset class="fieldsetborder"
-			style="float:left; width:100%; height: 700px; margin-left: -170px; border:1px solid #ddd">
-		<!--  <legend>Editor fuer Uebungsblatt</legend> -->
+		<rich:simpleTogglePanel  style="margin-left:-170px; margin-bottom: 10px; border-color: #FFE8C3; width:100% " opened="true" switchType="client"  >			
+				<ui:include src="./menu/menu_documentUploadEditor.xhtml" ></ui:include>			
+		 </rich:simpleTogglePanel>
+
+		<div style="float:left; width:100%; height: 620px; margin-left: -170px; border:1px solid #FFE8C3; padding-top:10px">
 		 
-		
-			<div><img style="margin: 10px 15px 0 15px; float: left;"
+		<c:if test="#{dkmsContentItemBean.contentItemState == 'N'}">
+			<div>
+			
+				
+			<img style="margin: 10px 15px 0 15px; float: left;"
 				src="#{facesContext.externalContext.requestContextPath}/view/img/dokumente_small.png" /><br />
-			<h2 style="margin-top: 5px;">Here you may upload files containing learning material for the Knowledge Base:</h2>
+			<h2 style="margin-top: 5px;">Here you may upload files containing external resources:</h2>
 			<br />
 
 			
 			<table border="0"><tr><td valign="center">
-			<h3 style="margin: -2px 0px 0 20px">Step 1: Insert a title for your new share:&#160;&#160; </h3></td><td valign="middle">
+			<h3 style="margin: -2px 0px 0 20px">Step 1: Insert a title for your new resource:&#160;&#160; </h3></td><td valign="middle">
 			
+<!--			<h:inputText id="dkmsContentItemName"-->
+<!--				style="width:343px; margin:0 0 0 0px; vertical-align:top" required="true"-->
+<!--				value="#{dkmsContentItemBean.dkmsContentItemName}" ><s:validate /><h:messages /></h:inputText>-->
 			<h:inputText id="dkmsContentItemName"
-				style="width:343px; margin:0 0 0 0px; vertical-align:top" required="true"
-				value="#{dkmsContentItemBean.dkmsContentItemName}" ><s:validate /><h:messages /></h:inputText>
+				style="width:343px; margin:0 0 0 0px; vertical-align:top"
+				value="#{dkmsContentItemBean.dkmsContentItemName}" ></h:inputText>
 			</td></tr></table><br/><br/>
 			<h3 style="margin: -10px 0 0 22px">Step 2: Add File(s) from your local directory and upload them:</h3>
-			<br />
+			<br />		
+			
 			</div>
 
-			<div id="uploadComponent">
 			
-				<rich:fileUpload 
-						fileUploadListener="#{dkmsFileAction.fileListener}"
-						immediateUpload="false"
-						maxFilesQuantity="20"
-						listHeight="400pt"
-						listWidth="auto"
-				        allowFlash="true"
-				        acceptedTypes="jpg, gif, png, ppt, doc, xls, rtf, txt, pdf, ps" 
-						addControlLabel="Add File" 
-						clearAllControlLabel="Clear All" 
-						clearControlLabel="Clear"
-                        stopEntryControlLabel="Stop" 
-						uploadControlLabel="Upload">
-				        	
-			        <a:support event="onuploadcomplete" reRender="cover" />
-		            <f:facet name="label">
-		                <h:outputText value="Upload State" />
-		        	</f:facet>					
-		   		</rich:fileUpload>	
+		</c:if>	
 		
+		<c:if test="#{dkmsContentItemBean.contentItemState == 'C'}">
+		
+		<div>
+			
+				
+			<img style="margin: 10px 15px 0 15px; float: left;"
+				src="#{facesContext.externalContext.requestContextPath}/view/img/dokumente_small.png" /><br />
+			<h2 style="margin-top: 5px;">Here you may delete or upload additional files containing external resources:</h2>
+			<br />
 
-			</div>				
 			
-		
-		</fieldset>
-		<fieldset class="fieldsetborder" style="float:right; width: 200px; height: 700px; margin-right: -160px; border:1px solid #FFE8C3">
-		<div id="buttons">
+			<table border="0"><tr><td valign="center">
+			<h3 style="margin: -2px 0px 0 20px">Title of resource:&#160;&#160; </h3></td><td valign="middle">
+			
+<!--			<h:inputText id="dkmsContentItemName"-->
+<!--				style="width:343px; margin:0 0 0 0px; vertical-align:top" required="true"-->
+<!--				value="#{dkmsContentItemBean.dkmsContentItemName}" ><s:validate /><h:messages /></h:inputText>-->
+			<h:inputText id="dkmsContentItemName"
+				style="width:343px; margin:0 0 0 0px; vertical-align:top"
+				value="#{dkmsContentItemBean.dkmsContentItemName}" ></h:inputText>
+			</td></tr></table><br/><br/>
+			<h3 style="margin: -10px 0 0 22px">Remove or add and upload additional file(s):</h3>
+			<br />		
+			
+			</div>
+		</c:if>		
 		
 			
-			<h:commandLink class="buttonclass" 	action="#{dkmsBasicAction.goToHome()}">
-			<img
-				src="#{facesContext.externalContext.requestContextPath}/view/img/arrowleft_small.png"
-				style="vertical-align: middle; margin-right: 5px; margin-left:6px" />Cancel</h:commandLink>
-			<br /><br/>
-		    <h:commandLink				
-				action="#{dkmsBasicAction.nextStepDocument()}" >
-				<img title="Weiter"
-					src="#{facesContext.externalContext.requestContextPath}/view/img/arrowright_small.png" style="vertical-align:middle; margin-right: 5px; margin-left:8px"/>Proceed
+			<div id="documentList" style="height:450px; overflow:auto">
+			
+			<c:forEach items="#{dkmsContentItemBean.dkmsMediaList}" var="item">
+      	    
+      	   
+      	    <table border="0" cellspacing="1" cellpadding="5" style="margin-left:10px">
+      	    <tr>
+      	    <td style="border:1px solid #FFE8C3; width:40px">
+      	    		 <a href="#{dkmsReadModusAction.getOriginalMultimediaFilename(item)}"><img
+			src="#{facesContext.externalContext.requestContextPath}/view/img/angabe.png"
+			style="margin: 5px " /></a><br/>
+			</td>
+			<td style="border:1px solid #FFE8C3; width:300px">
+					
+					<a style="margin:5px" href="#{dkmsReadModusAction.getOriginalMultimediaFilename(item)}">#{dkmsReadModusAction.getOriginalMultimediaFilenameShort(item)}</a>
+			</td>
+			<td style="border:1px solid #FFE8C3; width:50px">
+			<h:commandButton value="Remove" action="#{dkmsStoreAction.removeUploadedResourse(item)}" style="margin:5px"/>
+			</td>
+			</tr>
+			</table>			
+		
+			</c:forEach> 
+			
+			<br/>
+					<h:commandLink	action="#{dkmsBasicAction.nextStepDocumentUploadWizard()}" ><img title="Upload Resource" src="#{facesContext.externalContext.requestContextPath}/view/img/plus.png" 
+					style="vertical-align:middle; margin-right: 5px; margin-left:10px"/>Upload new resource
 			</h:commandLink>
+		
+			</div>
+			
+			
+			
+			
+		
 		
 		
 		</div>
 		
-	
-		
-		</fieldset>
+
+		  <rich:simpleTogglePanel  style="float:left; margin-left:-170px; margin-top: 10px; margin-bottom: 10px; border-color: #FFE8C3; width:100% " opened="true" switchType="client"  >
+			<ui:include src="./menu/menu_documentUploadEditor.xhtml" ></ui:include>
+		 </rich:simpleTogglePanel>  
+		 
 		</div>
 		</h:form>
 		<!-- end cover -->

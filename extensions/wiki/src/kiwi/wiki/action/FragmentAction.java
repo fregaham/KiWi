@@ -193,7 +193,7 @@ public class FragmentAction implements Serializable {
 	
 	public List<ExtendedTagCloudEntry> getTagCloud() {
 		if(tagCloud == null && fragmentFacade != null) {
-			tagCloud = tagCloudService.aggregateTags(taggingService.getTags(fragmentFacade.getDelegate()));
+			tagCloud = tagCloudService.aggregateTags(taggingService.getTaggings(fragmentFacade.getDelegate()));
 		}
 		
 		return tagCloud;

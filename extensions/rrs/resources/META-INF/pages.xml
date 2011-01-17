@@ -25,16 +25,11 @@
         </navigation>
     </page>
     
+    <!--
     <page view-id="/rrs/upload_edit.xhtml" >
-        <navigation from-action="#{rrs.importAction.edit}">
-            <redirect view-id="/rrs/upload_annotate.xhtml"/>
-        </navigation>
-    </page>
-    
-     <page view-id="/rrs/upload_annotate.xhtml" >
         <navigation from-action="#{rrs.importAction.annotate}">
             <redirect view-id="/home.xhtml"/>
         </navigation>
     </page>
-    
+    -->
 </pages>

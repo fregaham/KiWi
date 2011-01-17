@@ -32,6 +32,10 @@
     		</div>
     		
     		<div>
+    			<h:inputText size="80" value="#{rrs.importAction.titleText}"/>
+    		</div>
+    		
+    		<div>
     			<rich:editor id="rrsImportEditor" height="600" width="800" required="false"
 					theme="advanced" configuration="tinymce-small"
 					plugins="safari,pagebreak,style,layer,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,visualchars,nonbreaking,xhtmlxtras"
@@ -39,7 +43,7 @@
 				</rich:editor>
     		</div>
     		
-    		<h:commandButton action="#{rrs.importAction.edit}" value="Proceed"/>
+    		<h:commandButton action="#{rrs.importAction.annotate}" value="Done"/>
     	</rich:panel>
     	
     	<!-- </p:panel>-->

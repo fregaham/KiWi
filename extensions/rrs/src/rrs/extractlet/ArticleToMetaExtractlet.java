@@ -62,6 +62,9 @@ public class ArticleToMetaExtractlet extends AbstractExtractlet {
 			client.executeMethod(put);
 				
 			String jsonlines = put.getResponseBodyAsString();
+			
+			// log.info("jsonlines: \n#0", jsonlines);
+			
 			// JSONArray array = new JSONArray(json);
 			
 			//for (int i = 0; i < array.length(); ++i) {

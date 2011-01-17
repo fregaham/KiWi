@@ -16,6 +16,11 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
 
 
 import kiwi.api.content.ContentItemService;
@@ -57,8 +62,11 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.TransactionPropagationType;
+import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.core.Conversation;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.transaction.Transaction;
 //import org.primefaces.event.FileUploadEvent;
 //import org.primefaces.model.UploadedFile;
 import org.richfaces.event.UploadEvent;
@@ -244,7 +252,7 @@ public class ImportAction {
 		}
 	}
 
-	public void doImport() throws URISyntaxException, HttpException, IOException {
+	public void doImport() throws URISyntaxException, HttpException, IOException, SecurityException, IllegalStateException, RollbackException, HeuristicMixedException, HeuristicRollbackException, SystemException, NotSupportedException {
 		log.info("Import");
 		
 		HttpClient client = new HttpClient();
@@ -264,11 +272,33 @@ public class ImportAction {
 		contentItem.addType(tripleStore.createUriResource(pub + "PublicationInterface"));
 		
 		contentItemService.updateMediaContentItem(contentItem, data, contentType, name);
+		contentItemService.updateTextContentItem(contentItem, html);
 		contentItemService.saveContentItem(contentItem);
 		
 		ContentItem mycollection = tripleStore.createUriResource(pub + "mycollection").getContentItem();
 		taggingService.createTagging("mycollection", contentItem, mycollection, currentUser);
+
+		// This is not clean, obviously
+		// TODO: fix, 
+		entityManager.flush();
+		Transaction.instance().commit();
+		Transaction.instance().begin();
 		
+		suggestions = informationExtractionService.extractSuggestions(contentItem.getResource(), contentItem.getTextContent(), contentItem.getLanguage());
+		
+		KiWiResource pubTitle = tripleStore.createUriResource(pub + "title");
+		KiWiResource pubAbstract = tripleStore.createUriResource(pub + "abstract");
+		
+		for (Suggestion suggestion : suggestions) {
+			if (suggestion.getKind() == Suggestion.DATATYPE) {
+				if (suggestion.getRoles().contains(pubTitle)) {
+					titleText = suggestion.getInstance().getContext().getInContext();
+				}
+				else if (suggestion.getRoles().contains(pubAbstract)) {
+					abstractText = suggestion.getInstance().getContext().getInContext();
+				}
+			}
+		}
 		// HttpPut httpput = new HttpPut(requestUri);
        
         //ResponseHandler<String> responseHandler = new
@@ -276,6 +306,7 @@ public class ImportAction {
 
 	}
 	
+	/*
 	public void edit() {
 		// done editing, annotate.
 				
@@ -297,20 +328,26 @@ public class ImportAction {
 				}
 			}
 		}
-	}
+	}*/
 	
-	public void annotate() {
+	public String annotate() {
+		
+		contentItemService.updateTextContentItem(contentItem, html);
+		
 		KiWiUriResource pubTitle = tripleStore.createUriResource(pub + "title");
-		KiWiUriResource pubAbstract = tripleStore.createUriResource(pub + "abstract");
+		// KiWiUriResource pubAbstract = tripleStore.createUriResource(pub + "abstract");
 		
 		contentItemService.updateTitle(contentItem, titleText);
 		tripleStore.createTriple(contentItem.getResource(), pubTitle, tripleStore.createLiteral(titleText));
-		tripleStore.createTriple(contentItem.getResource(), pubAbstract, tripleStore.createLiteral(abstractText));
+		// tripleStore.createTriple(contentItem.getResource(), pubAbstract, tripleStore.createLiteral(abstractText));
 		
 		contentItemService.saveContentItem(contentItem);
 		
+		currentApplicationFactory.switchApplication("wiki");
 		currentContentItemFactory.setCurrentItemKiWiId(contentItem.getKiwiIdentifier());
 		currentContentItemFactory.refresh();
+		
+		return "/wiki/home.xhtml";
 	}
 	
 	public List<ContentItem> listImportedPublications() throws NamespaceResolvingException {

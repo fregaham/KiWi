@@ -44,7 +44,11 @@ function Annotations () {
 
 	this.dom_events = false;
 
-	this.styles = {};
+	// this.styles = {};
+	
+	this.default_color = [0.2, 0.0, 0.0, 0.0];
+	
+	this.colors = {}
 	
 	this.types = {};
 
@@ -72,12 +76,24 @@ Annotations.prototype.enableDOMEvents = function() {
 	this.dom_events = true;
 };
 
+/*
 Annotations.prototype.annotation_set_style = function(id, style) {
 	this.styles[id] = style;
 };
 
 Annotations.prototype.annotation_get_style = function(id) {
 	return this.styles[id];
+};*/
+
+/**
+ * @param color Array of four elements [r,g,b,a] in values in range <0.0,1.0> 
+ */
+Annotations.prototype.annotation_set_color = function(id, color) {
+	this.colors[id] = color;
+};
+
+Annotations.prototype.annotation_get_color = function(id) {
+	return this.colors[id];
 };
 
 /**
@@ -119,7 +135,7 @@ Annotations.prototype.setAnnotationsData = function(element, annotations) {
 
 
 
-Annotations.prototype.setAnnotationStyle = function (id, style) {
+Annotations.prototype.setAnnotationColor = function (id, color) {
 	// The styles needs to be combined in the additive way... so we clear the style first
 	var textNodes = this.getAnnotationTextNodes (id);
 	for (var i = 0; i < textNodes.length; ++i) {
@@ -130,7 +146,7 @@ Annotations.prototype.setAnnotationStyle = function (id, style) {
 		}
 	}
 				
-	this.annotation_set_style (id, style);
+	this.annotation_set_color (id, color);
 				
 	// ok, and now set the new combined style again
 	for (var i = 0; i < textNodes.length; ++i) {
@@ -148,21 +164,43 @@ Annotations.prototype.setAnnotationStyle = function (id, style) {
  * @annots Array of annots
  */
 Annotations.prototype.set_ab_style = function(style, annots) {
+	
+	var a = 0;
+	var r = 0;
+	var g = 0;
+	var b = 0;
+	
 	for ( var i = 0; i < annots.length; ++i) {
-		var s = this.annotation_get_style(annots[i]);
-		for ( var key in s) {
-			style[key] = s[key];
+		
+		var _color = this.annotation_get_color(annots[i]);
+		if (_color == null) {
+			_color = this.default_color;
 		}
+		
+		var _a = _color[0];
+		var _r = _color[1];
+		var _g = _color[2];
+		var _b = _color[3];
+		
+		a = _a + a*(1-_a);
+		r = (_r * _a + r * a * (1 - _a)) / a;
+		g = (_g * _a + g * a * (1 - _a)) / a;
+		b = (_b * _a + b * a * (1 - _a)) / a;
 	}
+	
+	style["backgroundColor"] = "rgba(" + Math.floor(255 * r + 0.5) + "," + Math.floor(255 * g + 0.5) + "," + Math.floor(255 * b + 0.5) + "," + a + ")";
 };
 
 Annotations.prototype.clear_ab_style = function(style, annots) {
-	for ( var i = 0; i < annots.length; ++i) {
+	
+	style["backgroundColor"] = null;
+	
+	/*for ( var i = 0; i < annots.length; ++i) {
 		var s = this.annotation_get_style(annots[i]);
 		for ( var key in s) {
 			style[key] = null;
 		}
-	}
+	}*/
 };
 
 Annotations.prototype.getRoot = function() {
@@ -1021,7 +1059,8 @@ Annotations.prototype.deserializeAnnotations = function (root, getControlElement
 			var begin_e = this.nextTextNode(root, begins[id]);
 			var end_e = ends[id];
 
-			this.annotation_set_style (id, {backgroundColor:"#E0E0F0"});
+			//this.annotation_set_style (id, {backgroundColor:"#E0E0F0"});
+			this.annotation_set_color(id, this.default_color);
 
 			this.insertAnnotationToTextNode (id, begin_e);
 			if (begin_e != end_e) {

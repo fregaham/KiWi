@@ -150,11 +150,17 @@
 				var n = t.fragments.firstTextNode(e);
 				if (n != null) {
 					var fragmentIds = t.fragments.getAnnotations(n);
-					// TODO: cycle through fragmentIds on onClick
-					// for now just take the first one
-					
+					// cycle through available annotations.
 					if (fragmentIds.length > 0) {
+						
 						t.selectedFragmentId = fragmentIds[0];
+						
+						var i = 0;
+						for (var i = 0; i < fragmentIds.length - 1; ++i) {
+							if (oldSelectedFragmentId == fragmentIds[i]) {
+								t.selectedFragmentId = fragmentIds[i + 1];
+							}
+						}
 					}
 				}
 				
@@ -165,6 +171,14 @@
 					}
 					else {
 						cm.setActive('fragments', false);
+					}
+					
+					if (oldSelectedFragmentId != null) {
+						t.fragments.setAnnotationColor (oldSelectedFragmentId, [0.2, 0.0, 0.0, 0.0]);
+					}
+					
+					if (t.selectedFragmentId != null) {
+						t.fragments.setAnnotationColor (t.selectedFragmentId, [0.2, 0.0, 1.0, 0.0]);
 					}
 				}
 				

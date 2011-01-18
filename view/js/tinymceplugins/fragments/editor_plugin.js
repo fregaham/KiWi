@@ -20,7 +20,7 @@
 			fragmentJSLib._setFragment = function (t, fragmentId) {
 				if (t.creating) {
 					t.fragments.renameAnnotation ("__tmp__", fragmentId);
-					t.fragments.setAnnotationStyle (fragmentId, {backgroundColor:"#E0E0F0"});
+					t.fragments.setAnnotationColor (fragmentId, [0.2, 0.0, 0.0, 0.0]); /*{backgroundColor:"#E0E0F0"});*/
 				}
 			}.partial(t);
 			
@@ -63,7 +63,7 @@
 					t.editingFragmentId = t.selectedFragmentId;
 				}
 				else {
-					t.fragments.setAnnotationStyle ("__tmp__", {backgroundColor:"#E0E0F0"});
+					t.fragments.setAnnotationColor ("__tmp__", [0.2, 0.0, 0.0, 0.0]);//{backgroundColor:"#E0E0F0"});
 					t.fragments.createAnnotationAroundSelection ("__tmp__",  t.ed.selection.getRng());
 					t.editingFragmentId = null;
 					t.creating = true;

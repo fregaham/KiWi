@@ -435,7 +435,7 @@ public class EditorModel {
 	public void deleteFragment(KiWiResource containingItem, KiWiResource fragment) {
 		this.getFragments(containingItem).remove(fragment);
 		
-		if (fragmentid2resource.containsKey(fragment)) {
+		if (fragmentid2resource.containsKey(fragment.getKiwiIdentifier())) {
 			fragmentid2resource.remove(fragment.getKiwiIdentifier());
 		}
 		else {
@@ -1037,7 +1037,7 @@ public class EditorModel {
 		KiWiUriResource fragmentOf = tripleStore.createUriResource(Constants.NS_KIWI_SPECIAL + "fragmentOf");
 		
 		// We also create all the fragments...
-		for (KiWiResource res : fragmentid2resource.values()) {
+		for (KiWiResource res : fragmentid2resource.values()) {			
 			assert res.isUriResource();
 			
 			KiWiUriResource uriRes = (KiWiUriResource) res;
@@ -1062,7 +1062,7 @@ public class EditorModel {
 		}
 		
 		// now, we delete the fragments that should be deleted.
-		for (KiWiResource fragmentResource : deletedFragments) {
+		for (KiWiResource fragmentResource : deletedFragments) {			
 			ContentItem ci = getContentItemByKiWiId(fragmentResource.getKiwiIdentifier());
 			if (ci != null) {
 				contentItemService.removeContentItem(ci);

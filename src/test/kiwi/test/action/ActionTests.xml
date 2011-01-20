@@ -4,6 +4,7 @@
     <test name="EditContentTest" junit="false">
         <classes>
             <class name="kiwi.test.action.EditContentTest"/>
+            <class name="kiwi.test.action.EditFragmentTest"/>
         </classes>
     </test>
 </suite>

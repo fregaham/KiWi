@@ -689,13 +689,12 @@ public class EditorAction implements Serializable {
 		String[] split = js.split(" ", 2);
 		setCurrentContext (split[0]);
 		if ("".equals(split[1])) {
-			fragment = getModel().createFragment(currentContext); // fragmentService.createFragment(currentContext, FragmentFacade.class);
-			//fragment.setAuthor(currentUser);
+			fragment = getModel().createFragment(currentContext);
 			fragmentCreating = true;
 		}
 		else {
 			fragment = getModel().getResourceByFragmentId(split[1]);
-			//fragmentFacade = fragmentService.getContentItemFragment(currentContext, split[1], FragmentFacade.class);
+			fragmentCreating = false;
 		}
 		
 		taggedResource = fragment;
@@ -719,7 +718,6 @@ public class EditorAction implements Serializable {
 	public void fragmentCancel() {
 		if (fragmentCreating) {
 			if (fragment != null) {
-				//fragmentService.removeFragment(fragmentFacade);
 				getModel().deleteFragment(currentContext, fragment);
 			}
 		}

@@ -74,6 +74,7 @@ public class EditFragmentTest extends KiWiTest {
 			{
 				CurrentContentItemFactory ciFactory = (CurrentContentItemFactory) 
 						Component.getInstance("currentContentItemFactory");
+				ciFactory.setCurrentItemTitle("Lorem Ipsum With Fragments");
 				ciFactory.loadContentItem();
 				
 				setValue("#{editorAction.content}", 
@@ -83,7 +84,7 @@ public class EditFragmentTest extends KiWiTest {
 						"At vero eos et accusam et justo duo dolores et ea rebum. " +
 						"Stet clita kasd gubergren, no sea takimata sanctus est " +
 						"Lorem ipsum dolor sit amet.");
-				setValue("#{editorAction.title}", "Lorem Ipsum");
+				setValue("#{editorAction.title}", "Lorem Ipsum With Fragments");
 			}
 			
 			@Override
@@ -93,7 +94,7 @@ public class EditFragmentTest extends KiWiTest {
 	             ContentItemService cis = (ContentItemService)
 	             		Component.getInstance("contentItemService");
 	             
-	             ContentItem ci1 = cis.getContentItemByTitle("Lorem Ipsum");
+	             ContentItem ci1 = cis.getContentItemByTitle("Lorem Ipsum With Fragments");
 	             Assert.assertNotNull(ci1);
 	             Assert.assertNotNull(ci1.getResource());
 	             Assert.assertNotNull(ci1.getResource().getKiwiIdentifier());
@@ -173,7 +174,7 @@ public class EditFragmentTest extends KiWiTest {
 				ContentItemService cis = (ContentItemService)
          		Component.getInstance("contentItemService");
          
-				ContentItem ci1 = cis.getContentItemByTitle("Lorem Ipsum");
+				ContentItem ci1 = cis.getContentItemByTitle("Lorem Ipsum With Fragments");
 				Assert.assertNotNull(ci1);
 				Assert.assertNotNull(ci1.getResource());
 				Assert.assertNotNull(ci1.getResource().getKiwiIdentifier());
@@ -207,7 +208,7 @@ public class EditFragmentTest extends KiWiTest {
 				
 				TaggingService ts = (TaggingService)Component.getInstance("taggingService");
          
-				ContentItem ci = cis.getContentItemByTitle("Lorem Ipsum");
+				ContentItem ci = cis.getContentItemByTitle("Lorem Ipsum With Fragments");
 				
 				ContentItem fragment = cis.getContentItemByKiwiId(fragmentId);
 				Assert.assertNotNull(fragment);
@@ -239,7 +240,7 @@ public class EditFragmentTest extends KiWiTest {
 				CurrentContentItemFactory ciFactory = (CurrentContentItemFactory) 
 				Component.getInstance("currentContentItemFactory");
 				
-				ciFactory.setCurrentItemTitle("Lorem Ipsum");
+				ciFactory.setCurrentItemTitle("Lorem Ipsum With Fragments");
 				ciFactory.loadContentItem();
 				
 				setValue("#{editorAction.fragmentJS}", " " + fragmentId);
@@ -291,7 +292,7 @@ public class EditFragmentTest extends KiWiTest {
 				
 				TaggingService ts = (TaggingService)Component.getInstance("taggingService");
          
-				ContentItem ci = cis.getContentItemByTitle("Lorem Ipsum");
+				ContentItem ci = cis.getContentItemByTitle("Lorem Ipsum With Fragments");
 				
 				ContentItem fragment = cis.getContentItemByKiwiId(fragmentId);
 				Assert.assertNotNull(fragment);
@@ -336,11 +337,11 @@ public class EditFragmentTest extends KiWiTest {
 			{
 				CurrentContentItemFactory ciFactory = (CurrentContentItemFactory) 
 					Component.getInstance("currentContentItemFactory");
+				ciFactory.setCurrentItemTitle("Lorem Ipsum With Fragments2");
 				ciFactory.loadContentItem();
 				
 				setValue("#{editorAction.content}", 
 						"Lorem ipsum");
-				setValue("#{editorAction.title}", "Lorem Ipsum");
 			}
 		}.run();
 		

@@ -182,10 +182,16 @@ public class DkmsContentItemBean implements Serializable {
 		
 		LinkedList<DkmsSequenceComponentFacade> ll6 = selectedDkmsContentItem.getDkmsSequenceComponentList();
 		dkmsSequenceComponentList = new LinkedList<DkmsSequenceComponentManager>();
-		for (DkmsSequenceComponentFacade dkmsSequenceComponentFacade : ll6) {
+		int taskId;
+		for (DkmsSequenceComponentFacade dkmsSequenceComponentFacade : ll6) {	
 			dkmsSequenceComponentList.add(new DkmsSequenceComponentManager(dkmsSequenceComponentFacade.getTaskId(), dkmsSequenceComponentFacade.getTaskTitle(), dkmsSequenceComponentFacade.getVersion(), dkmsSequenceComponentFacade.getSequenceContent(), dkmsSequenceComponentFacade.getViewStatus()));
+			
+		}		
+		//sortieren nach TaskId
+		for (DkmsSequenceComponentFacade dkmsSequenceComponentFacade : ll6) {			
+			dkmsSequenceComponentList.set(dkmsSequenceComponentFacade.getTaskId(), new DkmsSequenceComponentManager(dkmsSequenceComponentFacade.getTaskId(), dkmsSequenceComponentFacade.getTaskTitle(), dkmsSequenceComponentFacade.getVersion(), dkmsSequenceComponentFacade.getSequenceContent(), dkmsSequenceComponentFacade.getViewStatus()));
 		}
-		
+						
 		LinkedList<DkmsCombinedComponentFacade> ll7 = selectedDkmsContentItem.getDkmsCombinedComponentList();
 		dkmsCombinedComponentList = new LinkedList<DkmsCombinedComponentManager>();
 		for (DkmsCombinedComponentFacade dkmsCombinedComponentFacade : ll7) {

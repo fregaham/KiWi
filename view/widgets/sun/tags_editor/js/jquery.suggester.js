@@ -159,7 +159,8 @@
 			this.el.show();
 
 			// Put focus into text field
-			this.elTxt.focus();
+                        if (!options.noFocus)
+                            this.elTxt.focus();
 		}
 
                 /**

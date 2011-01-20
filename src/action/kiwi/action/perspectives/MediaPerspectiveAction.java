@@ -83,7 +83,7 @@ public class MediaPerspectiveAction {
     @In
     private ContentItemService contentItemService;
 
-    @In
+    @In(required = false)
     private ContentItem currentContentItem;
 
     @In

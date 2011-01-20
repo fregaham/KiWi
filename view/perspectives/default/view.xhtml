@@ -8,7 +8,8 @@
 	xmlns:rich="http://richfaces.org/rich"
     xmlns:kiwi="http://www.kiwi-project.eu/jsf"
     xmlns:c="http://java.sun.com/jstl/core"
-	xmlns:a="http://richfaces.org/a4j">
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:p="http://primefaces.prime.com.tr/ui">
 
 
 	    <!-- fragments in the view. (needs to be included outside the form, for it has its own inside.)  -->
@@ -59,7 +60,7 @@
                 #{rich:component('fragmentsPanel')}.hide();
             }
             
-            fragmentJSLib.onCancel = function () {
+            ragmentJSLib.onCancel = function () {
                 #{rich:component('fragmentsPanel')}.hide();
             }
 
@@ -114,6 +115,16 @@
         </script>
 		
         <!-- include resource from webservice so that we can support JSF tags inside the content -->
+        
+        <s:div style="text-align: center;">
+				<c:if test="#{kiwi.core.ui.mediaPerspectiveAction.hasMediaContent(currentContentItem)}">
+					<h:form>
+						<p:commandButton value="Download" ajax="false">
+							<p:fileDownload value="#{kiwi.core.ui.mediaPerspectiveAction.getMedia(currentContentItem)}" />
+						</p:commandButton>
+					</h:form>
+				</c:if>
+			</s:div>
         
         <kiwi:renderHtml contentItem="#{contentItem}" currentUser="#{currentUser}"/>     
         <kiwi:microformats contentItem="#{contentItem}"/>

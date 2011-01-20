@@ -441,6 +441,15 @@ public class EditorModel {
 		else {
 			deletedFragments.add(fragment);
 		}
+		
+		// Remove any virtual tags added to the fragment we are deleting
+		Iterator<Tag> iter = addedTags.iterator();
+		while(iter.hasNext()) {
+			Tag tag = iter.next();
+			if (fragment.equals(tag.getTaggedResource().getResource())) {
+				iter.remove();
+			}
+		}
 	}
 	
 	public void removeTag(Tag t) {
@@ -1133,6 +1142,7 @@ public class EditorModel {
 			
 			String taggedResourceKiwiid = tag.getTaggedResource().getResource().getKiwiIdentifier();
 			ContentItem taggedResource = getContentItemByKiWiId(taggedResourceKiwiid);
+			
 			assert taggedResource != null;
 			
 			String label = tag.getTaggingResource().getTitle();

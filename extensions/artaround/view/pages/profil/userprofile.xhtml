@@ -12,6 +12,7 @@ Copyright © Rolf Sint, Michael Schneider, Christian Osterrieder, 2010
 				xmlns:m="http://code.google.com/p/gmaps4jsf/" 
 				xmlns:c="http://java.sun.com/jstl/core" 
 				xmlns:kiwi="http://www.kiwi-project.eu/jsf" 
+				xmlns:p="http://primefaces.prime.com.tr/ui"
 				template="../../layout/template-2col.xhtml">
 				
     <ui:define name="breadcrumps">
@@ -132,8 +133,8 @@ Copyright © Rolf Sint, Michael Schneider, Christian Osterrieder, 2010
     </ui:define>
     <ui:define name="body">
         <div id="cover">
-            <h:form>
-                <div id="verto_accordion">
+<!--            <h:form  id = "t2">-->
+                <div id="t1">
                     <!--  Logo Arbeitsbereich  -->
                     <fieldset class="fieldsetborder" style="margin-right:300px">
                         <legend>
@@ -150,12 +151,19 @@ Copyright © Rolf Sint, Michael Schneider, Christian Osterrieder, 2010
                     <br/>
                     
                     <h:panelGrid width="700">
-          			 <rich:simpleTogglePanel  opened="false" switchType="client" label="Allgemeines"  height="550">
+                    
+                    
+			
+           			   <!--  <rich:modalPanel opened="false" switchType="client" label="Allgemeines"  height="550" id = "artTest">-->
                     <!--  Tab 0 Allgemeines -->
-                  
+                  <rich:panel label="Allgemeines">
+					                                                                 
+               
+                                
                     <div class="paneo">
                         <table cellpadding="5px" cellspacing="20px">
                             <tr>
+                             
                                 <td valign="top" align="center">
                                     <fieldset class="fieldsetborder">
                                         <legend>
@@ -163,38 +171,89 @@ Copyright © Rolf Sint, Michael Schneider, Christian Osterrieder, 2010
                                         </legend>
                                         <div class="expose">
                                             <div class="dialog">
+                                               <h:form>
                                                 <h:panelGrid columns="2" rowClasses="prop" columnClasses="name,value">
                                                     <h:outputText value="#{messages['artaround.login.firstname']}" />
                                                     <h:inputText id="firstname" value="#{artaround.profileAction.profileBean.firstName}">
                                                     </h:inputText>
+                                                                                                       
                                                     <h:outputText value="#{messages['artaround.login.lastname']}" /><h:inputText id="lastname" value="#{artaround.profileAction.profileBean.lastName}"/><h:outputText value="#{messages['artaround.myProfil.label.gender']} " /><h:inputText id="sex" value="#{artaround.profileAction.profileBean.gender}" /><h:outputText value="#{messages['artaround.myProfil.label.birthday']} "/><h:inputText id="birthday" value="#{artaround.profileAction.profileBean.gebDate}"/><h:outputText value="#{messages['artaround.myProfil.label.street']} "/><h:inputText id="street" value="#{artaround.profileAction.profileBean.postalAdressStreetAndNumber}" /><h:outputText value="#{messages['artaround.myProfil.city']} "/><h:inputText id="city" value="#{artaround.profileAction.profileBean.postalAdressCity}" /><h:outputText value="Staat"/><h:inputText id="state" value="#{artaround.profileAction.profileBean.postalAdressCountryCode}" />
+                                                	<br/>
+                                                	<center>
+                                                	<h:commandButton value="#{messages['artaround.save']}" action="#{artaround.profileAction.store}" style="float:right" />
+                        							</center>
                                                 </h:panelGrid>
+                                                </h:form>
                                             </div>
                                         </div>
                                     </fieldset><!--  end allgemeine Informationen -->
                                 </td>
+                                
                                 <td valign="top">
                                     <fieldset class="fieldsetborder">
                                         <legend>
                                             #{messages['artaround.myFoto']}
                                         </legend>
-                                        <div class="expose" style="text-align:center; width:280px; height:156px;">
-                                            <!--<img src="#{facesContext.externalContext.requestContextPath}/view/img/testbild_profil.jpg" alt="Kein Bild geladen" title="Testbild"/>-->
-                                            <s:graphicImage id = "profilePictureImg" alt = "no picture available" style="padding: 3px; border: 1px solid black; height: 100px"
-	    					value="#{artaround.profileService.data}" 
-	    	                fileName="#{artaround.profileAction.currentUser.contentItem.mediaContent.fileName}"/>
-	    	                <br/><br/>
-	    	                <a href="#" id = "profilePicture" onclick="jQuery('#uploadProfilePicture').fadeIn('fast');">Profilbild ändern</a>
-											<br/>
-                                        </div>
+                                        
+                                          <h:form  id = "t2">
+                                             <div class="expose" style="text-align:center; width:280px; height:156px;" id="main_media_content">
+	                                            <!--<img src="#{facesContext.externalContext.requestContextPath}/view/img/testbild_profil.jpg" alt="Kein Bild geladen" title="Testbild"/>-->
+	                                           
+	                                          
+	                                             <p:commandLink onclick="mediaUploadDialog.show();" id="main_media_content1" title="click to edit">
+	                                         	
+	                                            <s:graphicImage alt = "no picture available" style="padding: 3px; border: 1px solid black; height: 100px" id="art_image"
+						    					value="#{artaround.profileService.data}" 
+						    	                fileName="#{artaround.profileAction.currentUser.contentItem.mediaContent.fileName}">
+						    	                <s:transformImageSize width="400" maintainRatio="true"/>
+						    	                </s:graphicImage>
+						    	                 
+						    	                <br/>
+						    	                <h:outputText value = "Profilbild ändern"/> 
+						    	                </p:commandLink>
+						    	              
+						    	                <br/><br/>
+						    	                
+<!--						    	                <a href="#" id = "profilePicture" onclick="jQuery('#uploadProfilePicture').fadeIn('fast');">Profilbild ändern</a>-->
+												
+<!--												 <p:commandLink onclick="mediaUploadDialog.show();" id="main_media_content" style="position: absolute; right:2px; top:2px;" title="click to edit">-->
+<!--												<s:graphicImage value="#{kiwi.core.ui.mediaPerspectiveAction.getMediaContent(currentContentItem).data}" >-->
+<!--												<s:transformImageSize width="400" maintainRatio="true"/>-->
+<!--												</s:graphicImage>-->
+												
+												<br/>
+                                        	</div>
+                                        	 </h:form>
+                                        
+<!--                                        					                     <p:commandLink onclick="mediaUploadDialog.show();" id="main_media_content" style="position: absolute; right:2px; top:2px;" title="click to edit">-->
+<!--                                        <div class="expose" style="text-align:center; width:280px; height:156px;">-->
+                                     <!--         <img src="#{facesContext.externalContext.requestContextPath}/view/img/testbild_profil.jpg" alt="Kein Bild geladen" title="Testbild"/> -->
+<!--                                           -->
+<!--                                           -->
+<!--                                           -->
+<!--                                            <s:graphicImage id = "profilePictureImg" alt = "no picture available" style="padding: 3px; border: 1px solid black; height: 100px"-->
+<!--	    					value="#{artaround.profileService.data}" -->
+<!--	    	                fileName="#{artaround.profileAction.currentUser.contentItem.mediaContent.fileName}"/>-->
+<!--	    	                -->
+<!--	    	                					<s:graphicImage value="#{kiwi.core.ui.mediaPerspectiveAction.getMediaContent(currentContentItem).data}" >-->
+<!--						<s:transformImageSize width="400" maintainRatio="true"/>-->
+<!--					</s:graphicImage>-->
+	    	                
+<!--	    	                -->
+<!--	    	                <br/><br/>-->
+<!--											<br/>-->
+<!--                                        </div>-->
+<!--                            			 <s:transformImageSize maintainRatio="true" width="80"/>-->
+<!--                                         </p:commandLink>   -->
+
                                     </fieldset>
                                 </td>
                             </tr>
                         </table>
                     </div>
-                    <h:commandButton value="#{messages['artaround.save']}" action="#{artaround.profileAction.store}" style="float:right" />
-           			
-         		     </rich:simpleTogglePanel>
+                  
+<!--           			</h:form>-->
+         		    </rich:panel>
            			</h:panelGrid>     
                     
                     <h:panelGrid width="700">
@@ -259,7 +318,7 @@ Copyright © Rolf Sint, Michael Schneider, Christian Osterrieder, 2010
                  
                                        
                 </div><rich:messages styleClass="message"/>
-            </h:form>
+<!--            </h:form>-->
         </div><!-- end cover -->
         
       <div id="uploadProfilePicture" style="display:none" class="popup_600">
@@ -267,4 +326,37 @@ Copyright © Rolf Sint, Michael Schneider, Christian Osterrieder, 2010
 	 </div>
         
     </ui:define>
+    
+    <ui:define name="panels">
+    	<p:dialog header="Profile Image Upload" widgetVar="mediaUploadDialog" modal="true" width="670" height="500" onCloseUpdate="t2">
+		<h:form prependId="false">
+			<s:div id="art_mediapanel">
+				<s:div styleClass="ui-messages-error ui-corner-all" rendered="#{kiwi.core.ui.mediaPerspectiveAction.unsaved}">
+					<s:div >
+						<h:outputText value="There are unsaved changes. Click on 'save' to make your updates persistent."/>
+					</s:div>
+	
+					<s:div style="text-align: center; margin-top: 2px;">
+						<p:commandButton value="Save" update="art_mediapanel,imageMetadataPanel" actionListener="#{kiwi.core.ui.mediaPerspectiveAction.save}" />
+					</s:div>
+				</s:div>
+				
+				<s:div style="text-align: center;">
+					<s:graphicImage value="#{kiwi.core.ui.mediaPerspectiveAction.getMediaContent(currentContentItem).data}" >
+						<s:transformImageSize width="400" maintainRatio="true"/>
+					</s:graphicImage>
+				</s:div>
+				
+				<s:div style="text-align: center; margin-top: 10px;">
+					<p:fileUpload fileUploadListener="#{kiwi.core.ui.mediaPerspectiveAction.listener}" 
+					              allowTypes="*.jpg;*.png;*.gif;"
+								  auto="true" update="art_mediapanel" />
+				</s:div>
+			</s:div>
+		</h:form>
+	</p:dialog>
+		<!--   <ui:include src="../dialogs/mediaupload.xhtml" /> -->
+<!--		<ui:include src="/dialogs2/mediaupload.xhtml" />-->
+	</ui:define>
+    
 </ui:composition>

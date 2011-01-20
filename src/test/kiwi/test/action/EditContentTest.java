@@ -44,9 +44,9 @@ import junit.framework.Assert;
 import kiwi.api.content.ContentItemService;
 import kiwi.context.CurrentContentItemFactory;
 import kiwi.model.content.ContentItem;
+import kiwi.test.base.KiWiTest;
 
 import org.jboss.seam.Component;
-import org.jboss.seam.mock.SeamTest;
 import org.testng.annotations.Test;
 
 /**
@@ -54,12 +54,11 @@ import org.testng.annotations.Test;
  * 			(stephanie.stroka@salzburgresearch.at)
  *
  */
-public class EditContentTest extends SeamTest {
-
+public class EditContentTest extends KiWiTest {
+	
 	@Test
 	public void testLogin() throws Exception
 	{
-	
 		new FacesRequest("/edit.xhtml") {
 		
 			@Override
@@ -100,9 +99,13 @@ public class EditContentTest extends SeamTest {
 			
 			@Override
 			protected void invokeApplication() throws Exception {
-		
 				invokeMethod("#{editorAction.storeContentItem}");
-
+			}
+		}.run();
+		
+		new FacesRequest() {
+			@Override
+			protected void invokeApplication() throws Exception {
 	             ContentItemService cis = (ContentItemService)
 	             		Component.getInstance("contentItemService");
 	             
@@ -124,14 +127,14 @@ public class EditContentTest extends SeamTest {
 	             
 	             Assert.assertTrue(content.length() > 0);
 	             
-	             Assert.assertEquals("Lorem ipsum dolor sit amet, consetetur sadipscing " +
+	             Assert.assertEquals("<div xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:kiwi=\"http://www.kiwi-project.eu/kiwi/html/\" " +
+	             		"kiwi:type=\"page\">Lorem ipsum dolor sit amet, consetetur sadipscing " +
 						"elitr, sed diam nonumy eirmod tempor invidunt ut " +
 						"labore et dolore magna aliquyam erat, sed diam voluptua. " +
 						"At vero eos et accusam et justo duo dolores et ea rebum. " +
 						"Stet clita kasd gubergren, no sea takimata sanctus est " +
-						"Lorem ipsum dolor sit amet.", content);
+						"Lorem ipsum dolor sit amet.</div>", content);
 			}
-			
 		}.run();
 	}
 }

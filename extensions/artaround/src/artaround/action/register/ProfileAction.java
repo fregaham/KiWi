@@ -34,6 +34,7 @@
 package artaround.action.register;
 
 import kiwi.api.entity.KiWiEntityManager;
+import kiwi.model.content.ContentItem;
 import kiwi.model.content.MediaContent;
 import kiwi.model.user.User;
 
@@ -42,6 +43,7 @@ import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.log.Log;
@@ -68,7 +70,9 @@ public class ProfileAction {
 	@In
 	private User currentUser;
 	
-
+	@Out(required = false)
+	private ContentItem currentContentItem;
+						
 	@Logger
 	private Log log;
 	
@@ -80,6 +84,9 @@ public class ProfileAction {
 	@Create
 	public void begin(){
 			    
+		
+		currentContentItem = currentUser.getContentItem();
+		
 		userFacade = kiwiEntityManager.createFacade(currentUser.getContentItem(), ArtAroundUserFacade.class);
 		
 		log.info(userFacade.getGebDate());

@@ -77,11 +77,16 @@ body{
 		div.tagsEditor_loading{
 			width: 16px;
 			height: 16px;
-			position: absolute;
-			right: 8px;
-			top: 8px;
 			background-image: url('../../common/img/wait.gif');	
 		}
+                div.tagsEditor_loading.main {
+                    position:absolute;
+                    right:23px;
+                    top:0;
+                }
+                div.tagsEditor_loading.inline {
+			display:inline-block;
+                }
 
 		div.tagsEditor_requiredTags{
                     margin-top:5px;
@@ -112,6 +117,11 @@ body{
                     border-bottom:1px dashed #CECECE;
 		}
 
+                div.tagsEditor_freeTagsEditor {
+                    margin-top: 10px;
+                    margin-bottom:10px;
+}
+
 		div.tagsEditor_freeTagsEditor #tagsEditor_inputText{
 			border: 1px solid lightGrey;
 			margin-right: 5px;
@@ -121,15 +131,6 @@ body{
 			cursor: pointer;
 		}
 
-		div.tagsEditor_addTags{
-			margin-top: 10px;
-		}
-                div.tagsEditor_addTags a {
-                    color: #EE6523;
-                }
-                div.tagsEditor_addTags a:hover {
-                    text-decoration:underline;
-                }
 		div.tagsEditor_recommendTags{
 			color: gray;
 			margin-top: 5px;
@@ -257,16 +258,99 @@ div.tagsEditor_tagCloud {
     border-top:1px dashed #CECECE;
 }
 
+div.tagsEditor_tagCloud div.hint {
+    position: relative;
+    left: 90px;
+    top: 60px;
+    background-image: url(../img/magic_wand_tag.png);
+    background-repeat: no-repeat;
+    width: 300px;
+    padding-left: 75px;
+    text-align: left;
+}
+div.tagsEditor_tagCloud div.hint p {
+    color: gray;
+}
+div.tagsEditor_tagCloud div.hint a {
+    color: rgb(238, 101, 35);
+    font-size: 20px;
+    cursor:pointer;
+}
+div.tagsEditor_tagCloud div.hint a:hover {
+    text-decoration: underline;
+}
+
 div.tagsEditor_tagCloud div.noTags {
     display:none;
 }
 div.tagsEditor_tagCloud.noTags div.noTags {
     display:block;
+    padding-top:30px;
+    text-align:center;
 }
 
-div.suntagEditor_inlineTags span.free {
+div.suntagEditor_inlineTags {
+    margin-bottom:10px;
+}
+div.suntagEditor_inlineTags a.free {
     color: black;
 }
-div.suntagEditor_inlineTags span.controlled {
+div.suntagEditor_inlineTags a.controlled {
     color: #EB0000;
+}
+div.suntagEditor_inlineTags a {
+    text-decoration: none;
+}
+div.suntagEditor_inlineTags a:hover {
+    text-decoration: underline;
+}
+
+div.helpIcon {
+    background-image:url(../img/help.png);
+    background-position:0px 0px;
+    cursor:pointer;
+    height:16px;
+    position:absolute;
+    right:30px;
+    top:43px;
+    width:16px;
+}
+div.helpIcon:hover {
+    background-position:0px 16px;
+}
+
+div.tagsEditorHelp {
+    bottom:20px;
+    left:47px;
+    position:absolute;
+    right:30px;
+    top:43px;
+}
+
+div.tagsEditorHelp span.left_arrow {
+    width: 15px;
+    height: 15px;
+    background-image:url("../img/left_arrow.png");
+    margin-right: 10px;
+    cursor: pointer;
+    display: inline-block;
+    opacity: 0.6;
+}
+
+div.tagsEditorHelp span.right_arrow {
+    width: 15px;
+    height: 15px;
+    background-image:url("../img/right_arrow.png");
+    cursor: pointer;
+    display: inline-block;
+    opacity: 0.6;
+}
+
+div.tagsEditorHelp table tr {
+    border-bottom: 1px dotted gray;
+}
+
+div.tagsEditorHelp table td.control {
+    width:180px;
+    vertical-align:top;
 }

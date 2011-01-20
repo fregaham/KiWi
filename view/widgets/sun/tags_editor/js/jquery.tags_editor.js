@@ -48,11 +48,11 @@
         // This scale also defines proportional size for other tags, 
         // i.e. a tag with score 50% of the max, gets 50% of this size
         // Note: That the font size can be further "clipped" with MAX_TAG_FONT_SIZE
-        this.TAG_FONT_SCALE = 5;
+        this.TAG_FONT_SCALE = 4;
 
 	// This is a further threshold on the font-size, clipping too "big" tags
         // This is normally equal to TAG_FONT_SCALE, but may be lower
-        this.MAX_TAG_FONT_SIZE = 3;
+        this.MAX_TAG_FONT_SIZE = 2;
 
 	// Tags with low score resulting with display size lower than specified
 	// below are not shown in the UI (again, in "em")
@@ -145,7 +145,7 @@
 	 * loading data (initial, or recommended tags)
 	 */
 	this.showProgress = function(){
-		$(this.CS).find("div.tagsEditor_loading").show();
+		$(this.CS).find("div.tagsEditor_loading.main").show();
 		this.progressSemaphor++;
 
                 //console.log("showProgress:" + this.progressSemaphor);
@@ -157,7 +157,7 @@
 	this.hideProgress = function(){
 		this.progressSemaphor--;
 		if (this.progressSemaphor <= 0) {
-                    $(this.CS).find("div.tagsEditor_loading").hide();
+                    $(this.CS).find("div.tagsEditor_loading.main").hide();
                     this.progressSemaphor = 0;
                 }
                     //console.log("hideProgress:" + this.progressSemaphor);
@@ -400,14 +400,16 @@
             var h = "";
             
             $.each(this.tagsMap, function(uri, tag) {
+                var href = "/KiWi/search.seam?q=" + encodeURIComponent(tag.label);
+
                 if (tag.prefix) {
-                    h += "<span class='controlled' title='" + tag.label + " (controlled tag)'"
+                    h += "<a class='controlled' title='" + tag.label + " (controlled tag)' href='" + href + "' target='_blank'"
                         + ">" + tag.prefix + ":" + tag.label;
                 } else {
-                    h += "<span class='free' title='" + tag.label + " (free tag)'>" + tag.label
+                    h += "<a class='free' title='" + tag.label + " (free tag)' href='" + href + "' target='_blank'>" + tag.label
                 }
 
-                h += "</span> ";
+                h += "</a> ";
             });
 
             $(inlineTagsViewEl).html(h);
@@ -887,7 +889,8 @@
 	 *
 	 */
 	this.fetchRecommendedTags = function(){
-		this.showProgress();
+		// Show inline progress indication
+                $(this.CS).find("div.tagsEditor_tagCloud div.hint div.tagsEditor_loading").show();
 
 		var self = this;
 
@@ -917,7 +920,11 @@
 	 *
 	 */
 	this.onSuccessFetchRecommendedTags = function(data){
-		this.hideProgress();
+		// Hide inline progress indication
+                $(this.CS).find("div.tagsEditor_tagCloud div.hint div.tagsEditor_loading").hide();
+
+                // Update the UI
+                $(this.CS).find(".tagsEditor_tagCloud div.hint").hide();
                 $(this.CS).find(".tagsEditor_tagCloud").removeClass("noTags");
 		$(this.CS).find(".tagsEditor_tagCloud").show();
 
@@ -933,8 +940,11 @@
 	}
 
 	this.onFailureFetchRecommendedTags = function(xhr, textStatus, errorThrown){
-		this.ajaxDone();
+                // Hide inline progress indication
+                $(this.CS).find("div.tagsEditor_tagCloud div.hint div.tagsEditor_loading").hide();
 
+                // Update the UI
+                $(this.CS).find(".tagsEditor_tagCloud div.hint").hide();
                 $(this.CS).find(".tagsEditor_tagCloud").addClass("noTags");
                 $(this.CS).find(".tagsEditor_tagCloud").show();
 
@@ -946,8 +956,11 @@
 	}
 
         this.hideRecommendedTags = function(){
-            $(this.CS).find(".tagsEditor_tagCloud").hide();
-            $(this.CS).find("A.tagsEditor_recommendTags").show();
+            // Reset to clean state
+            $(this.CS).find("div.tagsEditor_tagCloud div.tagsEditor_required").hide();
+            $(this.CS).find("div.tagsEditor_tagCloud div.tagsEditor_optional").hide();
+            $(this.CS).find("div.tagsEditor_tagCloud").removeClass("noTags");
+            $(this.CS).find("div.tagsEditor_tagCloud div.hint").show();
         }
 
 	/**
@@ -1388,20 +1401,20 @@
 		// Create basic DOM skeleton
 		$(this.CS).append(this.template_widget, {});
 
-		// Hook up handlers for Add Tags and Recommend Tags links
+		// Hook up handlers for Recommend Tags and Help links
 		var self = this;
-		$(this.CS).find("A.tagsEditor_addTags").click(function(event){
-			$(self.CS).find("A.tagsEditor_addTags").hide();
-			$(self.CS).find(".tagsEditor_freeTagsEditor").show();
-
-			// Activate the suggester component
-			self.suggester.show({parent:$(self.CS).find("div.suggesterDiv")});
-			
-		});
-		$(this.CS).find("A.tagsEditor_recommendTags").click(function(event){
-			$(self.CS).find("A.tagsEditor_recommendTags").hide();
+		$(this.CS).find("div.tagsEditor_tagCloud div.hint a").click(function(event){
+			// TODO: Should progress indication here
 			self.fetchRecommendedTags();
 		});
+                
+                $(this.CS).find("div.helpIcon").hover(function(event){
+                    $(self.CS).find("div.tagsEditor").fadeOut();
+                    $(self.CS).find("div.tagsEditorHelp").fadeIn();
+                },function(event){
+                    $(self.CS).find("div.tagsEditorHelp").fadeOut();
+                    $(self.CS).find("div.tagsEditor").fadeIn();
+                });
 
 		// Initialize suggester
 		this.suggester = new $.Suggester(false);
@@ -1423,6 +1436,8 @@
 			this.invokeAddTagWithLabel(label, suggester);
 		},this);
 
+                // Activate the suggester component
+                this.suggester.show({parent:$(this.CS).find("div.suggesterDiv"), noFocus: true});
 
 
 
@@ -1461,6 +1476,11 @@
 
                 this.fetchPrefixes();
 	},
+
+        this.onLoad = function(){
+            // 
+            this.adjustTagCloudHeight();
+        }
 
         this.attach = function(parent){
             $(parent).append($(this.CS));

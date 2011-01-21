@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
@@ -1182,5 +1183,26 @@ public class EditorModel {
 		}
 
 		// Well, that should be it...
+	}
+
+	/**
+	 * RRS specific, 
+	 * return list of tag labels that are used in this content item or its fragments
+	 * @return
+	 */
+	public List<String> getUsedTagLabels() {
+		Set<String> ret = new TreeSet<String>();
+		
+		for (Collection<Tag> ts : tags.values()) {
+			for (Tag t : ts) {
+				ret.add(t.getTaggingResource().getTitle());
+			}
+		}
+		
+		for (Tag t : addedTags) {
+			ret.add(t.getTaggingResource().getTitle());
+		}
+		
+		return new LinkedList<String> (ret);
 	}
 }

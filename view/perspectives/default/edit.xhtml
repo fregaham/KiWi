@@ -90,6 +90,13 @@
 						</a:status>
 					</s:div>
 					
+					<s:div>
+						<h3>Other tags in the document</h3>
+						<ui:repeat value="#{editorAction.usedTagLabels}" var="t">
+							<a:commandLink action="#{editorAction.appendTag(t)}" value=" #{t}" reRender="editorFragmentForm"/>
+						</ui:repeat>
+					</s:div>
+					
 					<rich:togglePanel id="comments" switchType="ajax"
 						stateOrder="closed,open">
 						<f:facet name="closed">

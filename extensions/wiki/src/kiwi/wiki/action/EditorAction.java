@@ -1085,4 +1085,18 @@ public class EditorAction implements Serializable {
 		EditorModel model = getModel();
 		model.insertNestedItem(nestedItemId);
 	}
+	
+	/**
+	 * RRS specific,
+	 * 
+	 * get list of all tags used in the currently edited item
+	 */
+	public List<String> getUsedTagLabels() {
+		EditorModel model = getModel();
+		return model.getUsedTagLabels();
+	}
+	
+	public void appendTag(String tag) {
+		this.tagLabel += tag;
+	}
 }

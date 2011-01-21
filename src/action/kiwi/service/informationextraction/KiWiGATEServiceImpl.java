@@ -71,6 +71,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.Synchronized;
 import org.jboss.seam.log.Log;
 
 /**
@@ -88,6 +89,7 @@ import org.jboss.seam.log.Log;
 @Name("kiwi.informationextraction.gateService")
 @Scope(ScopeType.APPLICATION)
 @AutoCreate
+@Synchronized(timeout=60000)
 public class KiWiGATEServiceImpl implements KiWiGATEServiceLocal {
 
 	@Logger

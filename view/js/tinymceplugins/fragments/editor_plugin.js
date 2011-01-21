@@ -56,21 +56,27 @@
 			}.partial(t);
 			
 			// Register the command so that it can be invoked by using tinyMCE.activeEditor.execCommand('mceKiwibookmark');
-			ed.addCommand('mceFragment', function(t) {
-
+			ed.addCommand('mceModifyFragment', function(t) {
 				if (t.selectedFragmentId != null) {
 					t.creating = false;
 					t.editingFragmentId = t.selectedFragmentId;
+					fragmentJSLib.showFragmentsPanel(null, t.editingFragmentId);
 				}
-				else {
+				/*else {
 					t.fragments.setAnnotationColor ("__tmp__", [0.2, 0.0, 0.0, 0.0]);//{backgroundColor:"#E0E0F0"});
 					t.fragments.createAnnotationAroundSelection ("__tmp__",  t.ed.selection.getRng());
 					t.editingFragmentId = null;
 					t.creating = true;
-				}
+				}*/
 				
+			}.partial(t));
+			
+			ed.addCommand('mceAddFragment', function(t) {
+				t.fragments.setAnnotationColor ("__tmp__", [0.2, 0.0, 0.0, 0.0]);//{backgroundColor:"#E0E0F0"});
+				t.fragments.createAnnotationAroundSelection ("__tmp__",  t.ed.selection.getRng());
+				t.editingFragmentId = null;
+				t.creating = true;
 				fragmentJSLib.showFragmentsPanel(null, t.editingFragmentId);
-				
 			}.partial(t));
 			
 			ed.addCommand('mceSuggestions', function(t) {
@@ -83,10 +89,16 @@
 			}.partial(t));
 
 			// Register kiwibookmark button
-			ed.addButton('fragments', {
-				title : 'Create/edit fragment',
-				cmd : 'mceFragment',
-				image : url + '/bookmark.png'
+			ed.addButton('modifyfragment', {
+				title : 'Edit fragment',
+				cmd : 'mceModifyFragment',
+				image : url + '/modifybookmark.png'
+			});
+			
+			ed.addButton('addfragment', {
+				title : 'Create fragment',
+				cmd : 'mceAddFragment',
+				image : url + '/addbookmark.png'
 			});
 			
 			ed.addButton('suggestions', {
@@ -167,10 +179,10 @@
 				// If we have selected a (non-suggestion) fragment, set the fragment button active. 
 				if (oldSelectedFragmentId != t.selectedFragmentId) {
 					if (t.selectedFragmentId != null && t.fragments.types[t.selectedFragmentId] == null) {
-						cm.setActive('fragments', true);
+						cm.setActive('modifyfragment', true);
 					}
 					else {
-						cm.setActive('fragments', false);
+						cm.setActive('modifyfragment', false);
 					}
 					
 					if (oldSelectedFragmentId != null) {
@@ -182,8 +194,7 @@
 					}
 				}
 				
-				cm.setActive('suggestions', fragmentJSLib.suggestionsDisplayed);
-				
+				cm.setActive('suggestions', fragmentJSLib.suggestionsDisplayed);	
 			}.partial(t));
 		}
 	});

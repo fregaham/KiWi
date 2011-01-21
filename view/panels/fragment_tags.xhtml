@@ -1,0 +1,26 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+		    	xmlns:rich="http://richfaces.org/rich"
+		    	xmlns:a="http://richfaces.org/a4j"
+	            xmlns:p="http://primefaces.prime.com.tr/ui" 
+	            xmlns:c="http://java.sun.com/jstl/core"
+    			xmlns:kiwi="http://www.kiwi-project.eu/jsf">
+	<p:tab title="Fragment Tags">
+        <h:form id="fragment_tags_widget">
+        	<ul>
+        	<ui:repeat value="#{rrs.fragmentTagsAction.fragments}" var="fragment">
+        		<li style="list-style: square"><a href="##{fragment.kiwiIdentifier}">
+       				<ui:repeat value="#{rrs.fragmentTagsAction.getFragmentTags(fragment)}" var="tag">
+       					<h:outputText value=" #{tag.title}"/>
+       				</ui:repeat>
+        		</a></li>
+        	</ui:repeat>
+        	</ul> 
+	    </h:form>           
+	</p:tab>
+</ui:composition>

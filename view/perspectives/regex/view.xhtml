@@ -1,0 +1,58 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+    xmlns:kiwi="http://www.kiwi-project.eu/jsf"
+    xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:p="http://primefaces.prime.com.tr/ui"
+	xmlns:a="http://richfaces.org/a4j">
+
+
+		<style>
+	    </style> 
+		
+		<h1>RegEx annotation for <h:outputText value=" "/><h:outputText property="http://www.kiwi-project.eu/kiwi/core/title"/></h1>
+		
+		<p style="margin-top: 20px; margin-left: 10px; margin-right: 10px;" class="help">
+		 
+		</p>
+
+		<br/>
+
+		<div>
+			<ul>
+			<ui:repeat value="#{rrs.regExAnnotator.groupedFragments}" var="ti">
+				<li style="list-style: square">
+				<strong>
+					<s:link view="/home.xhtml" value="#{ti.item.title}" propagation="none">
+      					<f:param name="kiwiid" value="#{ti.item.kiwiIdentifier}"/>
+      				</s:link>
+      			</strong>
+				
+				<ul style="padding-left: 1em;">
+				<ui:repeat value="#{ti.fragments}" var="frg">
+					<li style="list-style: square; padding-left: 1em;">
+						<s:link view="/home.xhtml" value="#{frg.text}" propagation="none">
+							<f:param name="kiwiid" value="#{frg.item.kiwiIdentifier}"/>
+						</s:link>
+					
+						<i> tags:
+						<ui:repeat value="#{frg.tags}" var="tag">
+							<s:link view="/home.xhtml" value="#{tag.title}" propagation="none">
+								<f:param name="kiwiid" value="#{tag.kiwiIdentifier}"/>
+							</s:link>
+							,
+						</ui:repeat>
+						</i>
+					</li>
+				</ui:repeat>
+				</ul>
+				</li>
+			</ui:repeat>
+			</ul>
+		</div>
+</ui:composition>

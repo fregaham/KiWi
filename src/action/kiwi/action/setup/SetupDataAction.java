@@ -238,7 +238,13 @@ public class SetupDataAction implements Serializable {
     	ContentItem ci_publication = tripleStore.createUriResource("http://nlp.fit.vutbr.cz/2010/publications#Publication").getContentItem();
     	p_publication.getTypes().add(ci_publication);
     	perspectiveService.addPerspective(p_publication);
-    }
+    	
+    	Perspective p_regex = new Perspective("RegEx", "regex");
+    	p_regex.setDescription("Create tagged fragments by regular expressions");
+    	p_regex.getTypes().add(ci_tag);
+    	perspectiveService.addPerspective(p_regex);
+    	
+;    }
 
     public void doInformationExtraction() {
 		String gateHome = configurationService.getConfiguration("kiwi.work.dir") + File.separator + "gate";

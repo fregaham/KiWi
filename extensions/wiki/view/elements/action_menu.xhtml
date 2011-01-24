@@ -24,7 +24,7 @@
         			<p:menuitem styleClass="p_actions" value="#{messages['wiki.menu.history']}" action="/wiki/history.xhtml" ajax="false"/>
         			<p:menuitem styleClass="p_actions" value="#{messages['wiki.menu.edit_individualPermission']}" action="/wiki/individualPermissions.xhtml" rendered="#{permissionAction.hasRole('admin') or permissionAction.hasPermission('editPermissions')}" ajax="false"/>
         			<p:menuitem styleClass="p_actions" value="RDF" url="#{configurationService.baseUri}/linkeddata.seam?uri=#{kiwi.ui.utility.encodeURL(currentContentItem.resource.uri)}" rendered="#{permissionAction.hasRole('admin') or permissionAction.hasPermission('read')}" ajax="false"/>
-        			<p:menuitem styleClass="p_actions" value="Delete" ajax="true" onclick="alert('not yet implemeted')"/>
+        			<p:menuitem styleClass="p_actions" value="Delete" ajax="false" action="#{deleteAction.delete}"/>
         			</p:submenu>
    		 		</p:menu>
 			</li>

@@ -57,6 +57,13 @@
 							<h:outputText value=", " />
 						</c:forEach>
 					</s:div>
+					
+					<s:div>
+						<h3>Other tags in the document</h3>
+						<ui:repeat value="#{editorAction.usedTagLabels}" var="t">
+							<a:commandLink action="#{editorAction.appendTag(t)}" value=" #{t}" reRender="editorFragmentForm"/>
+						</ui:repeat>
+					</s:div>
 
 					<s:div id="taginput" style="margin-top: 1em;">
 						<h3>New Tags:</h3>

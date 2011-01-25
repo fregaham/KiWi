@@ -262,9 +262,9 @@ public class RegExAnnotator {
 		
 		Matcher m = p.matcher(plaintext);
 		find: while(m.find()) {
-			int start = m.start();
-			int end = m.end();
-			String content = m.group();
+			int start = m.start(1);
+			int end = m.end(1);
+			String content = m.group(1);
 			
 			log.info("match #0:#1 #2", start, end, content);
 			

@@ -341,24 +341,6 @@ public class KiWiXomUtils {
 		return np;
 	}
 	
-	public static NodePos getTextNode(Node n, int offset, int pos) {			
-		NodePosIterator npi = new NodePosIterator(n, offset);
-		NodePos np = null;
-		while(npi.hasNext()) {
-			np = npi.next();
-						
-			if (np.getNode() instanceof Text) {
-				Text text = (Text)np.getNode();
-				String value = text.getValue();
-				if ((np.getPos() - np.getPrefix().length()) <= pos && (np.getPos() + value.length()) >= pos) {
-					return np;
-				}
-			}
-		}
-		
-		return np;
-	}
-	
 
 	public static void insertNodeInsideText (Text t, Node node, int pos) {
 		ParentNode pn = t.getParent();
@@ -378,7 +360,7 @@ public class KiWiXomUtils {
 	}
 	
 	public static void insertNodeAtPos (Node root, int offset, int pos, Node node) {
-		NodePos np = getTextNode(root, offset, pos);
+		NodePos np = getNode(root, offset, pos);
 		if (np != null) {
 			insertNodeInsideText((Text)(np.getNode()), node, pos - np.getPos());
 		}

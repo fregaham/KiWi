@@ -443,7 +443,8 @@ public class ImportAction {
 				text = plaintext2html(((Text)texts.get(0)).getValue());
 			}
 			else {
-				text = "";
+				// interpret it as XHTML
+				text = doc.getFirstChildElement("text").toXML();
 			}
 			
 			Nodes urls = doc.query("url/text()");
@@ -451,7 +452,16 @@ public class ImportAction {
 				url = ((Text)urls.get(0)).getValue();
 			}
 			
-			ContentItem item = contentItemService.createContentItem();
+			// let's overwrite content items with the same title.
+			
+			ContentItem item = null;
+			if (!"UNTITLED".equals(title)) {
+				item = contentItemService.getContentItemByTitle(title);
+			}
+			
+			if (item == null) {
+				item = contentItemService.createContentItem();
+			}
 			
 			item.addType(tripleStore.createUriResource(pub + "Publication"));
 			item.addType(tripleStore.createUriResource(pub + "PublicationInterface"));
@@ -501,6 +511,7 @@ public class ImportAction {
 			}
 			
 			contentItemService.saveContentItem(item);
+			log.info("Imported #0", item.getTitle());
 		}
 	}
 }

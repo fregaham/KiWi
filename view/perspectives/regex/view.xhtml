@@ -36,9 +36,12 @@
 				<ul style="padding-left: 1em;">
 				<ui:repeat value="#{ti.fragments}" var="frg">
 					<li style="list-style: square; padding-left: 1em;">
-						<s:link view="/home.xhtml" value="#{frg.text}" propagation="none">
-							<f:param name="kiwiid" value="#{frg.item.kiwiIdentifier}"/>
-						</s:link>
+						<h:outputText value="#{frg.prefix}"/>
+						<a href="#{configurationService.baseUri}/home.seam?kiwiid=#{ti.item.kiwiIdentifier}##{frg.item.kiwiIdentifier}">
+							<h:outputText value="#{frg.text}"/>
+						</a>
+						<h:outputText value="#{frg.postfix}"/>
+						
 					
 						<i> tags:
 						<ui:repeat value="#{frg.tags}" var="tag">

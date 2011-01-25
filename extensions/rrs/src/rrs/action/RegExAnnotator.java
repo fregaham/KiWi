@@ -82,11 +82,28 @@ public class RegExAnnotator {
 
 		private ContentItem item;
 		
+		private String prefix;
+		private String postfix;
+		
 		private String text;
 		
 		private List<ContentItem> tags;
-		
-		
+
+		public String getPrefix() {
+			return prefix;
+		}
+
+		public void setPrefix(String prefix) {
+			this.prefix = prefix;
+		}
+
+		public String getPostfix() {
+			return postfix;
+		}
+
+		public void setPostfix(String postfix) {
+			this.postfix = postfix;
+		}
 	}
 	
 	public static class GroupedFragmentUI {
@@ -197,12 +214,12 @@ public class RegExAnnotator {
 							
 							fui.setTags(taggingService.getTags(fragmentItem));
 							
-							if (fragmentItem.getTextContent() != null) {
+							/*if (fragmentItem.getTextContent() != null) {
 								fui.setText(KiWiXomUtils.xom2plain(fragmentItem.getTextContent().getXmlDocument()));
 							}
 							else {
 								fui.setText("");
-							}
+							}*/
 							
 							gf.getFragments().add(fui);
 						}
@@ -211,6 +228,45 @@ public class RegExAnnotator {
 			}
 			
 			groupedFragments = new LinkedList<GroupedFragmentUI> (id2gf.values());
+			
+			// create prefixes and postfixes and texts
+			for (GroupedFragmentUI gf : groupedFragments) {
+				if (gf.getItem().getTextContent() != null) {
+					
+					// We get the text coordinates of the fragments
+					Document xom = gf.getItem().getTextContent().getXmlDocument();
+					String plain = KiWiXomUtils.xom2plain(xom);
+					
+					Map<String, Integer> begins = new HashMap<String, Integer> ();
+					Map<String, Integer> ends = new HashMap<String, Integer> ();
+					
+					KiWiXomUtils.NodePosIterator iter = new KiWiXomUtils.NodePosIterator(xom);
+					while(iter.hasNext()) {
+						NodePos np = iter.next();
+						if (np.getNode() instanceof Element) {
+							Element e = (Element)np.getNode();
+							if ("bookmarkstart".equals(e.getLocalName())) {
+								begins.put(e.getAttributeValue("id"), np.getPos());
+							}
+							else if ("bookmarkend".equals(e.getLocalName())) {
+								ends.put(e.getAttributeValue("id"), np.getPos());
+							}
+						}
+					}
+					
+					for (FragmentUI f : gf.getFragments()) {
+						
+						String fid = f.getItem().getKiwiIdentifier();
+						if (begins.containsKey(fid) && ends.containsKey(fid)) {
+							int begin = begins.get(fid);
+							int end = ends.get(fid);
+							f.setText(plain.substring(begin, end));
+							f.setPrefix(plain.substring(Math.max(begin - 80, 0), begin));
+							f.setPostfix(plain.substring(end, Math.min(end + 80, plain.length())));
+						}
+					}
+				}				
+			}
 		}
 		
 		return groupedFragments;

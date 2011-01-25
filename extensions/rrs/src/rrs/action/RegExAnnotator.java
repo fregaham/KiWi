@@ -109,6 +109,18 @@ public class RegExAnnotator {
 	public static class GroupedFragmentUI {
 		private ContentItem item;
 		private List<FragmentUI> fragments;
+		private List<ContentItem> tags;
+		
+		public List<ContentItem> getTags() {
+			if (tags == null) {
+				tags = new LinkedList<ContentItem> ();
+			}
+			return tags;
+		}
+
+		public void setTags(List<ContentItem> tags) {
+			this.tags = tags;
+		}
 		
 		public void setItem(ContentItem item) {
 			this.item = item;
@@ -202,7 +214,7 @@ public class RegExAnnotator {
 							if (!id2gf.containsKey(fragmentOfItem.getKiwiIdentifier())) {
 								gf = new GroupedFragmentUI();
 								gf.setItem(fragmentOfItem);
-								
+								gf.setTags(taggingService.getTags(fragmentOfItem));
 								id2gf.put(fragmentOfItem.getKiwiIdentifier(), gf);
 							}
 							else {

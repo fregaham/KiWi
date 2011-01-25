@@ -144,6 +144,15 @@ public class ImportAction {
 	private ContentItem contentItem;
 	private Collection<Suggestion> suggestions;
 	
+	private String tag;
+	
+	public String getTag() {
+		return tag;
+	}
+	public void setTag(String tag) {
+		this.tag = tag;
+	}
+
 	private String titleText;
 	public String getTitleText() {
 		return titleText;
@@ -389,18 +398,23 @@ public class ImportAction {
 	
 	
 	public void listenerXml(UploadEvent event) throws IOException {
-
-		log.info("listenerXml here");
-		
 		UploadItem item = event.getUploadItem();
 		data = item.getData();
 		size = data.length;
+		
+		log.info("listenerXml here, size: #0, data: #1", size, data);
 	}
 	
 	public void doImportXml() throws ValidityException, ParsingException, IOException {
 		String str = new String(data, "UTF-8");
 		Builder b = new Builder();
 		Document xom = b.build(str, null);
+		
+		// user has specified a tag that all these document should be tagged with
+		ContentItem ciTag = null;
+		if (tag != null && !"".equals(tag)) {
+			ciTag = taggingService.parseTag(tag);
+		}
 		
 		Nodes nodes = xom.query("/docs/doc");
 		for (int i = 0; i < nodes.size(); ++i) {
@@ -446,6 +460,9 @@ public class ImportAction {
 			
 			ContentItem mycollection = tripleStore.createUriResource(pub + "mycollection").getContentItem();
 			taggingService.createTagging("mycollection", item, mycollection, currentUser);
+			if (ciTag != null) {
+				taggingService.createTagging(ciTag.getTitle(), item, ciTag, currentUser);
+			}
 			
 			contentItemService.updateTitle(item, title);
 			contentItemService.updateTextContentItem(item, text);
@@ -457,7 +474,6 @@ public class ImportAction {
 			if (abstrakt != null) {
 				tripleStore.createTriple(item.getResource(), pubAbstract, tripleStore.createLiteral(abstrakt));
 			}
-			
 			
 			if (url != null) {
 				try {

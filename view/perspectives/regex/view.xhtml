@@ -32,6 +32,14 @@
       					<f:param name="kiwiid" value="#{ti.item.kiwiIdentifier}"/>
       				</s:link>
       			</strong>
+      			
+      			tags: 
+      			<ui:repeat value="#{ti.tags}" var="tag">
+					<s:link view="/home.xhtml" value="#{tag.title}" propagation="none">
+						<f:param name="kiwiid" value="#{tag.kiwiIdentifier}"/>
+					</s:link>
+					,
+				</ui:repeat>
 				
 				<ul style="padding-left: 1em;">
 				<ui:repeat value="#{ti.fragments}" var="frg">

@@ -68,6 +68,10 @@
     	
     	<h3>Import XML file with multiple articles</h3>
     	
+    	<div>
+    	Tag: <h:inputText value="#{rrs.importAction.tag}"/>
+    	</div>
+    	
     	<rich:panel id="xmlfilepanel">
     	    <rich:fileUpload fileUploadListener="#{rrs.importAction.listenerXml}"
     	   		maxFilesQuantity="1"

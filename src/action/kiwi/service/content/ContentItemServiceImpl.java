@@ -436,11 +436,11 @@ public class ContentItemServiceImpl implements ContentItemServiceLocal, ContentI
     	tc.setXmlDocument(content);
     	
     	// To check if the content has changed, check whether both contents produce the same output for the editor
-    	if(_item.getTextContent() != null && _item.getTextContent().getXmlString(true).equals(tc.getXmlString(true))) {
+    	/*if(_item.getTextContent() != null && _item.getTextContent().getXmlString(true).equals(tc.getXmlString(true))) {
     		log.error("!!!!!!!!!!!!!!!!! renderingPipeline fails");
     		return;
 			//throw new TextContentNotChangedException("Could not create TextContentUpdate for an unchanged text content");
-		}
+		}*/
     	entityManager.persist(tc);
     	
     	// TODO: check whether content has changed and create version

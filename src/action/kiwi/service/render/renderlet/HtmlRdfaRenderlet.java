@@ -145,7 +145,7 @@ public class HtmlRdfaRenderlet implements XOMRenderlet {
 			Constants.NS_KIWI_CORE+"id"}));
 	
 	public void applyRecursive (KiWiResource origContext, KiWiResource context, Node n, Map<String, String> prefix2namespace, Map<String, Element> kiwiid2a, Set<String> triples) {
-		
+				
 		if (n instanceof Element) {
 			Element e = (Element)n;
 			
@@ -154,15 +154,18 @@ public class HtmlRdfaRenderlet implements XOMRenderlet {
 			
 			/* Internal links. Just store references to them and process them later (to match the target with properties) */
 			if ("a".equals(e.getLocalName()) && e.getAttributeValue("kind", Constants.NS_KIWI_HTML) != null) {
-				String targetKiwiId = e.getAttributeValue("target", Constants.NS_KIWI_HTML).trim();
-				kiwiid2a.put(context.getKiwiIdentifier() + " " + targetKiwiId, e);
+				String target = e.getAttributeValue("target", Constants.NS_KIWI_HTML);
+				if (target != null && context != null) {
+					String targetKiwiId = target.trim();
+					kiwiid2a.put(context.getKiwiIdentifier() + " " + targetKiwiId, e);
 				
-				// If the link has a "rel", convert it into a proper RDFa format.
-				if (e.getAttributeValue("rel") != null) {
-					String relKiwiId = e.getAttributeValue("rel").trim();
-					ContentItem relCi = contentItemService.getContentItemByKiwiId(relKiwiId);
-					if (relCi != null) {
-						e.addAttribute(new Attribute("rel", generateCurie(relCi.getResource(), prefix2namespace)));
+					// If the link has a "rel", convert it into a proper RDFa format.
+					if (e.getAttributeValue("rel") != null) {
+						String relKiwiId = e.getAttributeValue("rel").trim();
+						ContentItem relCi = contentItemService.getContentItemByKiwiId(relKiwiId);
+						if (relCi != null) {
+							e.addAttribute(new Attribute("rel", generateCurie(relCi.getResource(), prefix2namespace)));
+						}
 					}
 				}
 			}
@@ -220,7 +223,7 @@ public class HtmlRdfaRenderlet implements XOMRenderlet {
 						a.addAttribute(new Attribute("class", "new"));
 					}
 						
-					if (relCi != null) {
+					if (relCi != null && nextContext != null) {
 						triples.add(nextContext.getKiwiIdentifier() + " " + relCi.getKiwiIdentifier() + " " + ci.getKiwiIdentifier());
 					}
 					
@@ -251,8 +254,11 @@ public class HtmlRdfaRenderlet implements XOMRenderlet {
 				else {
 					e.addAttribute(new Attribute("property", generateCurie(propertyCi.getResource(), prefix2namespace)));
 					
-					String propertyContent = RdfaSavelet.extractPropertyContent (e);					
-					triples.add(nextContext.getKiwiIdentifier() + " " + propertyCi.getKiwiIdentifier() + " " + MD5.md5sum(propertyContent));
+					String propertyContent = RdfaSavelet.extractPropertyContent (e);
+					
+					if (nextContext != null) {
+						triples.add(nextContext.getKiwiIdentifier() + " " + propertyCi.getKiwiIdentifier() + " " + MD5.md5sum(propertyContent));
+					}
 				}
 			}
 			
@@ -301,8 +307,10 @@ public class HtmlRdfaRenderlet implements XOMRenderlet {
 					else {
 						e.addAttribute(new Attribute("typeof", generateCurie(typeofCi.getResource(), prefix2namespace)));
 						
-						/* Remember the triple, so we don't add it again.  */ 
-						triples.add(nextContext.getKiwiIdentifier() + " " + "uri::" + Constants.NS_RDF + "type" + " " + typeofCi.getKiwiIdentifier());
+						/* Remember the triple, so we don't add it again.  */
+						if (nextContext != null) {
+							triples.add(nextContext.getKiwiIdentifier() + " " + "uri::" + Constants.NS_RDF + "type" + " " + typeofCi.getKiwiIdentifier());
+						}
 					}
 				}
 				
@@ -318,7 +326,9 @@ public class HtmlRdfaRenderlet implements XOMRenderlet {
 						e.addAttribute(new Attribute("rel", generateCurie(relCi.getResource(), prefix2namespace)));
 						
 						/* Remember the triple, so we don't add it again.  */ 
-						triples.add(context.getKiwiIdentifier() + " " + relCi.getKiwiIdentifier() + " " + nextContext.getKiwiIdentifier());
+						if (nextContext != null) {
+							triples.add(context.getKiwiIdentifier() + " " + relCi.getKiwiIdentifier() + " " + nextContext.getKiwiIdentifier());
+						}
 					}
 				}
 			}
@@ -330,7 +340,7 @@ public class HtmlRdfaRenderlet implements XOMRenderlet {
 			}
 			
 			/* After we have gone through all the descendants of the about element, add all the other triples as empty span elements */
-			if (aboutCi != null) {
+			if (aboutCi != null && nextContext != null) {
 				for(KiWiTriple triple : nextContext.listOutgoing()) {
 					if (disabledProperties.contains(triple.getProperty().getUri())) {
 						continue;

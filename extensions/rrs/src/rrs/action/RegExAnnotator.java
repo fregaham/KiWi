@@ -1,6 +1,8 @@
 package rrs.action;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -84,7 +86,24 @@ public class RegExAnnotator {
 		
 		private String prefix;
 		private String postfix;
-		
+		private int begin;
+		public int getBegin() {
+			return begin;
+		}
+
+		public void setBegin(int begin) {
+			this.begin = begin;
+		}
+
+		public int getEnd() {
+			return end;
+		}
+
+		public void setEnd(int end) {
+			this.end = end;
+		}
+
+		private int end;
 		private String text;
 		
 		private List<ContentItem> tags;
@@ -275,8 +294,17 @@ public class RegExAnnotator {
 							f.setText(plain.substring(begin, end));
 							f.setPrefix(plain.substring(Math.max(begin - 80, 0), begin));
 							f.setPostfix(plain.substring(end, Math.min(end + 80, plain.length())));
+							f.setBegin(begin);
+							f.setEnd(end);
 						}
 					}
+					
+					Collections.sort(gf.getFragments(), new Comparator<FragmentUI> () {
+
+						@Override
+						public int compare(FragmentUI o1, FragmentUI o2) {
+							return o1.getBegin() - o2.getBegin();
+						}});
 				}				
 			}
 		}

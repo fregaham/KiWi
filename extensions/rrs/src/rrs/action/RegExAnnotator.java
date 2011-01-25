@@ -361,16 +361,23 @@ public class RegExAnnotator {
 		
 		if (filter == null || "".equals(filter)) {
 			for(ContentItem item : contentItemService.getContentItems()) {
-				if (item.getTextContent() != null && !item.isDeleted()) {
+				if (item.getTextContent() != null && 
+						!item.isDeleted() && 
+						!item.getResource().hasType(Constants.NS_KIWI_SPECIAL + "Fragment")) {
 					annotateInTransaction(p, item);
 				}
 			}
 		}
 		else {
 			KiWiSearchCriteria criteria = solrService.parseSearchString(filter);
+			
+			criteria.setLimit(Integer.MAX_VALUE);
+			
 			KiWiSearchResults results = solrService.search(criteria);
 			for (SearchResult result : results.getResults()) {
-				if (!result.getItem().isDeleted() && result.getItem().getTextContent() != null) {
+				if (!result.getItem().isDeleted() && 
+						result.getItem().getTextContent() != null && 
+						!result.getItem().getResource().hasType(Constants.NS_KIWI_SPECIAL + "Fragment")) {
 					annotateInTransaction(p, result.getItem());
 				}
 			}
